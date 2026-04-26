@@ -1,0 +1,84 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json.bak
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+expo-env.d.ts
+
+# EAS
+eas.json.local
+
+# Native
+ios/
+android/
+*.ipa
+*.apk
+*.aab
+
+# Env
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Build
+build/
+out/
+
+# Test
+coverage/
+.nyc_output/
+
+# Sentry
+.sentryclirc
+
+# Supabase
+.supabase/
+**/migrations/.tmp/
+
+# Content pipeline (geçici üretim çıktıları)
+content-pipeline/output/*.json
+content-pipeline/output/audio/
+
+# Tasarım kaynak dosyaları
+*.fig
+*.sketch
+*.psd
+*.ai
+
+# Sırlar
+secrets/
+*.pem
+serviceAccountKey.json
+GoogleService-Info.plist
+google-services.json

@@ -1,0 +1,1069 @@
+# PROJECT_PLAN.md — AirSpeak (Havacılık İngilizcesi Mobil Uygulaması)
+
+> **Marka adı: AirSpeak** — "Hava + Konuşma". Net, betimleyici, global anlaşılır, telaffuz vaadini doğrudan iletir.
+
+> Bu dosya onaylandıktan sonra proje kök dizinine `PROJECT_PLAN.md` olarak kopyalanacaktır.
+
+---
+
+## 0. Bağlam (Context)
+
+**Problem:** Türkiye'deki havacılık öğrencileri ve profesyonelleri (pilot adayı, kabin memuru, teknisyen, yer hizmetleri) ICAO Seviye 4, SHGM İngilizce Yeterlilik Sınavı, YDS Havacılık ve sektör mülakatlarına özel hazırlanmış, **Türkçe arayüzlü, rol bazlı, gerçekten öğreten** bir mobil uygulamaya sahip değil. Mevcut çözümler genel İngilizce öğretiyor; havacılık jargonu, sınav simülasyonu, telaffuz analizi yok.
+
+**Hedef:** 16-18 haftada MVP. Premium ürün konumlanması — ₺349/ay çapa fiyat. 1. yıl 1.500 ücretli abone, 2. yıl 4.000 abone hedefi.
+
+**Sonuç:** Havacılık öğrencisinin ve profesyonelin **gerçekten İngilizce öğrendiği**, ICAO 4'ü geçtiği, mülakatta konuşabildiği, fiyatı haklı çıkaran sonuç odaklı bir uygulama.
+
+**Kritik karar (kullanıcıyla):**
+- **Üretim modeli:** Solo (Claude) + AI çapraz doğrulama. Eğitmen bütçesi yok.
+- **AI konuşma + telaffuz:** MVP'de var (₺349'u haklı çıkarmak için şart).
+- **MVP'ye eklenen 7 kritik özellik:** ICAO 4 sözlü AI examiner, sınav günü geri sayım, NOTAM/METAR/ATIS okuma, frazeoloji cep sözlüğü, offline indirme, konuşma kayıt arşivi, referral sistemi.
+- **Faz 2 öncelik:** Topluluk + peer practice (sesli oda, kullanıcı eşleşmesi).
+- **Risk azaltma:** İçerik doğrulama protokolü (aşağıda detay).
+
+---
+
+## 1. Teknoloji Stack'i
+
+| Katman | Teknoloji | Gerekçe |
+|---|---|---|
+| Mobil framework | **React Native + Expo (SDK 52+)** | Tek kod tabanı, OTA update |
+| Dil | **TypeScript** | Tip güvenliği |
+| Backend | **Supabase** (Free → Launch'ta Pro) | Auth + Postgres + Storage + Realtime + RLS |
+| State | **Zustand** + **TanStack Query** | Sade UI state + server cache |
+| Cache | **react-native-mmkv** | Offline ders verisi |
+| Ödeme | **RevenueCat** | iOS/Android abonelik soyutlama; Apple/Google Small Business %15 |
+| Bildirim | **expo-notifications** | Edge Function'la trigger |
+| Ses oynatma | **expo-av** | Diyalog, dinleme |
+| **AI Konuşma** | **Claude Haiku 4.5** (ucuz) + **Sonnet 4.6** (zor sorularda) | Voice-to-voice rol oyna, mülakat simülasyonu |
+| **STT (Speech-to-Text)** | **OpenAI Whisper API** ($0.006/dk) | Telaffuz tanıma + transkript |
+| **TTS (Text-to-Speech)** | **ElevenLabs Turbo v2.5** veya **Cartesia** | AI cevabı sesli okuma + ses içerik üretimi |
+| **Telaffuz analizi** | Whisper word-level confidence + custom phoneme matching | MVP için yeterli; Faz 2'de Speechace |
+| Analitik | **PostHog** | Funnel + feature flag |
+| Hata izleme | **Sentry** | Crash + perf |
+| Form | **react-hook-form** + **zod** | Validasyon |
+| Navigasyon | **expo-router** | File-based, deep link |
+| UI | **NativeWind** + **react-native-reanimated** + **lottie** | Tailwind RN + animasyon |
+| i18n | **i18next** + **expo-localization** | **EN ana dil (global ürün liderliği için)**, TR tam destek MVP'de, AR/RU/ES Faz 2 |
+| Reklam (free tier) | **react-native-google-mobile-ads** | AdMob, sadece free kullanıcı |
+
+---
+
+## 2. Klasör Yapısı
+
+```
+thy-app/
+├── app/                          # expo-router ekranları
+│   ├── (auth)/
+│   │   ├── login.tsx
+│   │   ├── register.tsx
+│   │   ├── forgot-password.tsx
+│   │   └── onboarding/
+│   │       ├── role-select.tsx
+│   │       ├── level-test.tsx
+│   │       └── goals.tsx
+│   ├── (tabs)/
+│   │   ├── home.tsx
+│   │   ├── learn.tsx
+│   │   ├── practice.tsx
+│   │   ├── league.tsx
+│   │   └── profile.tsx
+│   ├── lesson/[id].tsx
+│   ├── quiz/[id].tsx
+│   ├── exam/[type].tsx
+│   ├── conversation/[scenario].tsx     # AI konuşma
+│   ├── pronunciation/[id].tsx          # telaffuz drill
+│   ├── badges.tsx
+│   ├── shop.tsx
+│   ├── paywall.tsx
+│   └── _layout.tsx
+├── src/
+│   ├── components/
+│   │   ├── ui/
+│   │   ├── lesson/                     # 6 egzersiz tipi
+│   │   ├── gamification/               # xp, streak, hearts
+│   │   ├── ai/                         # voice recorder, conversation bubble
+│   │   └── league/
+│   ├── features/
+│   │   ├── auth/
+│   │   ├── lessons/
+│   │   ├── srs/                        # SM-2 algoritması
+│   │   ├── ai-conversation/            # Claude entegrasyonu
+│   │   ├── pronunciation/              # Whisper + analiz
+│   │   ├── gamification/
+│   │   ├── subscription/
+│   │   └── notifications/
+│   ├── lib/
+│   │   ├── supabase.ts
+│   │   ├── revenuecat.ts
+│   │   ├── claude.ts                   # Anthropic SDK
+│   │   ├── whisper.ts
+│   │   ├── elevenlabs.ts
+│   │   ├── posthog.ts
+│   │   ├── storage.ts
+│   │   └── queryClient.ts
+│   ├── hooks/
+│   ├── stores/
+│   ├── types/
+│   ├── constants/
+│   ├── utils/
+│   └── locales/
+│       ├── tr.json
+│       └── en.json
+├── supabase/
+│   ├── migrations/
+│   ├── functions/                      # AI proxy, cron, content review
+│   └── seed/
+├── content-pipeline/                   # İçerik üretim & doğrulama
+│   ├── prompts/                        # Üretim prompt template'leri
+│   ├── validation/                     # ICAO Doc 9432 referansı, çapraz LLM kontrol
+│   ├── output/                         # JSON ders dosyaları
+│   └── scripts/                        # batch generation, import
+├── admin/                              # (Faz 2) Next.js admin
+├── assets/
+├── app.json, eas.json, package.json, tsconfig.json
+```
+
+---
+
+## 3. Veritabanı Şeması (Supabase / Postgres)
+
+### 3.1. Kullanıcı & Profil
+```sql
+profiles (
+  id uuid PK references auth.users, username, full_name, avatar_url,
+  role text check (role in ('pilot','cabin','technician','ground','student')),
+  level text check (level in ('A1','A2','B1','B2','C1')),
+  daily_goal_minutes int default 15,
+  timezone text default 'Europe/Istanbul',
+  active_hours int[] default '{18,19,20,21}',
+  is_student bool default false,                   -- .edu.tr doğrulama
+  created_at, updated_at
+)
+user_settings ( user_id PK, notifications_enabled, sound_enabled, language, ... )
+```
+
+### 3.2. İçerik
+```sql
+categories ( id, slug, name_tr, name_en, role, icon, order_index )
+courses ( id, category_id, title_tr, level, role, order_index, is_premium )
+units ( id, course_id, title_tr, order_index, xp_reward, is_premium )
+
+lessons (
+  id, unit_id, title_tr, type,  -- vocabulary|dialogue|listening|reading|pronunciation|conversation
+  content jsonb, duration_minutes, xp_reward, is_premium, order_index,
+  -- içerik doğrulama metadata
+  generated_by text,             -- ai|manual
+  validation_status text,        -- pending|cross_validated|user_verified|flagged
+  icao_reference text,           -- 'Doc 9432 §4.2.1' gibi
+  generated_at timestamptz, validated_at timestamptz
+)
+
+exercises (
+  id, lesson_id, type,  -- multiple_choice|fill_blank|match|listen|speak|order|conversation
+  question jsonb, answer jsonb, explanation_tr text,
+  difficulty int, xp_reward int default 10,
+  validation_status text
+)
+
+audio_assets (
+  id, lesson_id, url, transcript_tr, transcript_en,
+  duration_seconds, source text  -- elevenlabs|cartesia|liveatc|recorded
+)
+
+-- SRS terim havuzu (sütun 1 — terim hafızası)
+vocabulary_terms (
+  id, term text, term_tr text, definition_en, definition_tr,
+  category_id, role, level, audio_url, image_url,
+  example_sentences jsonb,            -- 5 örnek cümle
+  pronunciation_phonetic text,
+  icao_reference text,
+  validation_status text
+)
+
+-- AI konuşma senaryoları (sütun 3)
+conversation_scenarios (
+  id, role, level, title_tr, context_prompt text,  -- Claude system prompt
+  initial_message text, success_criteria jsonb,
+  estimated_duration_minutes, xp_reward, is_premium
+)
+
+exam_simulations ( id, type, title_tr, total_questions, time_limit_minutes, is_premium, free_preview_count default 1 )
+exam_questions ( id, exam_id, question, options jsonb, correct_answer, explanation, ... )
+```
+
+### 3.3. İlerleme + SRS
+```sql
+user_lesson_progress ( user_id, lesson_id, status, score, attempts, last_attempt_at, PK(user_id, lesson_id) )
+user_exercise_attempts ( id, user_id, exercise_id, is_correct, time_spent_seconds, created_at )
+user_exam_attempts ( id, user_id, exam_id, score, completed_at, answers jsonb )
+
+-- SRS state (SuperMemo SM-2)
+user_term_srs (
+  user_id, term_id,
+  ease_factor numeric default 2.5,    -- SM-2 EF (1.3-2.5)
+  interval_days int default 1,
+  repetitions int default 0,
+  next_review_at timestamptz,
+  last_quality int,                   -- 0-5 (kullanıcı zorluk değerlendirmesi)
+  PK(user_id, term_id)
+)
+
+-- AI konuşma logları + arşiv (kullanıcı geri dinler, ilerlemeyi görür)
+user_conversations (
+  id, user_id, scenario_id, started_at, ended_at,
+  message_count int, transcript jsonb,
+  audio_url text,                     -- tüm konuşma birleşik ses dosyası (replay için)
+  scores jsonb,                       -- {fluency, vocabulary, grammar, pronunciation}
+  xp_earned int, tokens_used int,     -- maliyet takibi
+  is_archived bool default true,      -- premium kullanıcı sınırsız tut, free 7 gün
+  exam_mode text                      -- null|icao_oral|interview|story|picture
+)
+
+-- ICAO 4 sözlü sınav AI examiner soruları
+oral_exam_prompts (
+  id, type text,                      -- picture|story|problem|topic
+  prompt_tr text, prompt_en text, image_url text,
+  expected_duration_seconds int, level text, role text,
+  evaluation_rubric jsonb              -- ICAO 4 6 alan: pron, struct, vocab, fluency, comp, interactions
+)
+
+-- Sınav günü geri sayım planı
+user_exam_schedules (
+  id, user_id, exam_type, exam_date,
+  daily_plan jsonb,                    -- AI üretilen 30 günlük plan
+  status text, created_at
+)
+
+-- NOTAM/METAR/ATIS okuma materyalleri
+aviation_documents (
+  id, type text,                       -- notam|metar|taf|atis|chart
+  raw_text text, decoded_tr text, difficulty int,
+  comprehension_questions jsonb, audio_url text
+)
+
+-- Frazeoloji cep sözlüğü
+phraseology_entries (
+  id, term text, category text,        -- ground|tower|approach|enroute|emergency
+  context text, icao_reference text,
+  example_audio_url text, search_vector tsvector
+)
+
+-- Offline indirme takibi
+offline_downloads (
+  id, user_id, content_type, content_id,
+  size_bytes, downloaded_at, expires_at
+)
+
+-- Referral sistemi
+referrals (
+  id, referrer_user_id, referred_user_id, code text,
+  status text,                         -- pending|signed_up|subscribed
+  reward_granted bool, created_at, completed_at
+)
+referral_codes ( user_id PK, code text unique, total_invites int, total_subscribed int )
+
+-- Telaffuz attempts
+user_pronunciation_attempts (
+  id, user_id, term_id, audio_url,
+  transcript_actual text, target_text text,
+  word_accuracy_scores jsonb,         -- her kelime için 0-100
+  overall_score int, created_at
+)
+```
+
+### 3.4. Gamification
+```sql
+xp_logs ( id, user_id, amount, source, source_id, created_at )
+user_xp_summary ( user_id PK, total_xp, current_level, xp_in_level, xp_to_next, weekly_xp )
+
+streaks ( user_id PK, current_streak, longest_streak, last_activity_date, freeze_count default 0 )
+streak_freezes_used ( id, user_id, used_on_date, source )
+
+badges ( id, slug, name_tr, description_tr, icon_url, category, requirement jsonb, xp_reward, coin_reward, is_hidden )
+user_badges ( user_id, badge_id, earned_at, PK(user_id, badge_id) )
+
+daily_quests ( id, user_id, date, quests jsonb, completed_count, claimed )
+quest_templates ( id, type, target_value, xp_reward, coin_reward, description_tr, role )
+
+leagues ( id, name, tier, min_xp, color, icon )
+league_seasons ( id, week_start, week_end, status )
+user_league_membership ( user_id, season_id, league_tier, weekly_xp, rank, PK(user_id, season_id) )
+
+hearts ( user_id PK, current default 5, max default 5, last_refill_at, refill_interval_minutes default 30 )
+coins ( user_id PK, balance default 0 )
+coin_transactions ( id, user_id, amount, reason, reference_id, created_at )
+shop_items ( id, slug, name_tr, description_tr, cost_coins, type, is_premium_only )
+user_purchases ( id, user_id, item_id, purchased_at, used_at )
+```
+
+### 3.5. Abonelik
+```sql
+subscriptions (
+  id, user_id, revenuecat_customer_id, product_id,        -- standart_monthly | standart_yearly | student_monthly | student_yearly
+  status, started_at, expires_at, will_renew, platform, raw_event jsonb
+)
+subscription_events ( id, user_id, event_type, raw jsonb, created_at )
+
+-- AI maliyet takibi (premium kullanıcı bile maliyet çıkarır)
+ai_usage_logs (
+  id, user_id, feature text,           -- conversation|pronunciation|exam_feedback
+  model text, tokens_in int, tokens_out int, cost_usd numeric, created_at
+)
+```
+
+### 3.6. Bildirim, Sosyal, İçerik Doğrulama
+```sql
+push_tokens ( user_id, token, platform, last_seen_at )
+notification_logs ( id, user_id, type, sent_at, opened_at )
+
+content_flags (             -- Kullanıcı "bu yanlış" bildirimi
+  id, user_id, content_type, content_id, reason text, status, created_at
+)
+content_reviews (           -- Solo doğrulama protokolü logları
+  id, content_id, content_type, validator text,    -- claude_sonnet|gpt4|human
+  result jsonb, created_at
+)
+
+friendships, forum_posts, forum_comments  -- Faz 2
+```
+
+**RLS:** Tüm tablolar açık. Kullanıcı sadece kendi `user_id`'sine ait kayıtları okur/yazar. İçerik tabloları herkese okunur. AI logları sadece kullanıcının kendi.
+
+---
+
+## 4. Ekran Listesi (44 Ekran)
+
+### Auth & Onboarding (8)
+1. Splash, 2. Karşılama (3 slayt), 3. Kayıt, 4. Giriş, 5. Şifre Sıfırlama, 6. Rol Seçimi, 7. Seviye Belirleme Testi, 8. Hedef Belirleme
+
+### Ana Tab (5)
+9. Ana Sayfa (günün görevleri, streak, "Kaldığın yerden devam"), 10. Öğren (ders ağacı), 11. Pratik (quiz + AI konuşma + sınav hub), 12. Lig, 13. Profil
+
+### Ders & Pratik (8)
+14. Ders Detayı, 15. Egzersiz Ekranı (6 tip), 16. **AI Konuşma Ekranı** (voice-to-voice, transkript), 17. **Telaffuz Drill**, 18. SRS Tekrar Ekranı, 19. Ders Sonucu, 20. Ünite Tamamlandı, 21. Ders Kilidi (mini paywall)
+
+### Sınav (3)
+22. Sınav Listesi (ICAO 4, SHGM, YDS, Mülakat), 23. Sınav Çözme, 24. Sınav Sonuç (band score + AI zayıflık analizi)
+
+### Gamification (4)
+25. Rozetler, 26. XP & Level Detay, 27. Mağaza, 28. Can Bekleme
+
+### Premium (3)
+29. Paywall (Standart vs Pro karşılaştırma), 30. Trial Aktif, 31. Premium Pro tanıtım
+
+### Yeni MVP Özellikleri (9)
+32. **ICAO 4 Sözlü AI Examiner** — picture/story/problem/topic 4 görev, AI değerlendirme, ICAO rubric puanlama
+33. **Sınav Günü Geri Sayım & Plan** — sınav tarihi gir, AI 30 günlük plan üretsin, T-7/T-1 özel mod
+34. **NOTAM/METAR/ATIS Okuma** — gerçek doküman, decode pratiği, comprehension quiz
+35. **Frazeoloji Cep Sözlüğü** — alfabetik + kategori, full-text arama, offline, ICAO Doc 9432 referans
+36. **Offline İndirme Yönetimi** — premium: ders/ses/SRS toplu indir, depolama yönetimi
+37. **Konuşma Arşivi** — geçmiş AI konuşmalar liste, geri dinle, "1 ay önce vs şimdi" karşılaştırma
+38. **Mock Mülakat Stüdyosu** — kayıt al, AI değerlendir, geri izle (sözlü examiner alt modu)
+39. **Davet Et / Referral** — kişisel kod, "ikinize 1 ay ücretsiz" akışı, paylaşım sheet
+40. **Davet Tablosu** — gönderilen + dönüşen davetler, kazanılan ödül takibi
+
+### Profil & Ayarlar (4)
+41. Profil Düzenle, 42. Ayarlar, 43. İlerleme Raporu (AI feedback dahil), 44. Yardım & Destek + İçerik Bildir
+
+---
+
+## 5. Pedagojik Çerçeve — Premium Fiyatın Haklılaştırması
+
+Bu fiyatta (₺349) kullanıcı **eğlence değil sonuç** bekler. 4 sütunlu pedagojik mimari:
+
+### Sütun 1: SRS Terim Hafızası
+- 2.500 havacılık terimi (4 rolde)
+- SuperMemo SM-2 algoritması ile spaced repetition
+- Her terim: TR/EN tanım, 5 örnek cümle, AI ses (ElevenLabs), fonetik, görsel
+- "30 gün sonra %85 hatırlama" hedefi
+
+### Sütun 2: Senaryo Bazlı Diyalog
+- 200+ gerçek operasyon senaryosu
+- Branching dialogue (yanlış cevap konuşmayı yanlış yöne götürür)
+- Pilot-kule, kabin-yolcu, teknisyen-mühendis, ground ops
+
+### Sütun 3: AI Konuşma Partneri (Claude Haiku 4.5 + Sonnet 4.6)
+- Voice-to-voice: kullanıcı konuşur (Whisper transkript) → Claude cevap → ElevenLabs sesli okur
+- Rol oyna: "Sen kulesin, ben pilotum" / "Bana ICAO 4 mülakat yap"
+- Spesifik feedback: ICAO frazeoloji uyumu, gramer, kelime, akıcılık 1-6 puan
+- System prompt'ta ICAO Doc 9432 + standart frazeoloji enjekte
+
+### Sütun 4: Telaffuz Analizi (Whisper + Phoneme Match)
+- Hedef cümle ekrana gelir, kullanıcı söyler
+- Whisper word-level confidence + custom fonem karşılaştırma
+- Yanlış telaffuz edilen kelimeler kırmızı, doğru olan yeşil
+- ICAO Seviye 4 telaffuz rubric'ine göre 1-6 puan
+
+### Sütun 5: ICAO 4 Sözlü Sınav Birebir Simülasyonu (yeni — ana premium farkı)
+4 gerçek görev tipi, AI examiner Sonnet 4.6 ile:
+- **Picture description** — uçak/havaalanı fotoğrafı, 1-2 dk anlat
+- **Story telling** — verilen senaryoyu (acil iniş, türbülans) anlat
+- **Problem solving** — kriz durumu, sözlü çöz
+- **Common topics** — havacılık serbest konuşma (10 konu havuzu)
+
+ICAO 6 alan rubric'i (pronunciation, structure, vocabulary, fluency, comprehension, interactions) — her biri 1-6.
+Konuşma kayıt edilir, **arşivde geri dinlenir**, bir ay sonrasıyla karşılaştırma grafiği.
+
+---
+
+## 6. Gamification Mekaniği — Matematik
+
+### XP Tablosu
+| Aksiyon | XP |
+|---|---|
+| Egzersiz doğru | 10 |
+| Ders tamamlama | 50 |
+| Quiz tam puan | 100 |
+| **AI konuşma 5+ dk + skor 70+** | **80** |
+| **Telaffuz drill skor 70+** | **30** |
+| **SRS tekrar (10 terim)** | **40** |
+| Günlük görev (her biri) | 30 |
+| Haftalık meydan okuma | 300 |
+| Sınav simülasyonu | 200 |
+| Streak 7 gün | 100 |
+| Streak 30 gün | 500 |
+
+### Level Eşikleri
+`Level N için kümülatif XP = 100 * N^1.5` → L5: 1.118 / L10: 3.162 / L25: 12.500 / L50: 35.355
+
+### Streak
+- Günde 1 ders/quiz/AI konuşma → +1
+- 24:00 grace, sonra 0
+- Premium: ayda 2 otomatik freeze
+- Ödüller: 3 gün 30 coin · 7 gün 100 XP + rozet · 30 gün 500 XP + rozet · 100 gün "Centurion"
+
+### Lig
+- Haftalık (Pazartesi 00:00 Europe/Istanbul) — pg_cron
+- 30'lu grup, weekly_xp DESC sıralama
+- 5 tier: Bronz → Gümüş → Altın → Elmas → Usta
+- Top 7 yükselir, son 10 düşer (Bronz hariç)
+- İlk 3'e bonus coin (200/100/50)
+
+### Hearts, Coins, Shop
+- Free: 5 can, 30 dk'da +1
+- Coin kazanım: lig sıralama, görev, level atlama
+- Shop: streak freeze (100), can (30), hint (20)
+
+---
+
+## 7. Freemium & Paywall — ₺349 Bandı
+
+### Free Tadımlık
+- İlk 7 gün: streak freeze ücretsiz
+- İlk ünite tüm rolde açık
+- AI konuşma: 3 mesaj/gün
+- Telaffuz drill: 5 deneme/gün
+- Sınav simülasyonu: 1 deneme ücretsiz
+- ICAO 4 sözlü AI examiner: 1 görev ücretsiz (4'ten 1'i, premium duvarı)
+- Konuşma arşivi: son 7 gün (premium sınırsız)
+- Frazeoloji sözlüğü: tam erişim (free hook, retention için)
+- NOTAM/METAR okuma: 5 doküman ücretsiz/hafta
+- Offline indirme: kapalı (premium özel)
+- Reklamlı
+
+### Free Limitleri
+- 3 ders/gün (önceki 5'ten düşürüldü — premium itme baskısı)
+- SRS tekrar: günlük 20 terim
+- 5 can sistemi
+
+### Paywall Tetikleyicileri
+| An | Mesaj |
+|---|---|
+| Onboarding sonrası | "İlk 7 gün ücretsiz" |
+| 4. derste ekran kilidi | "Sınırsıza geç" |
+| AI 3 mesaj bitince | "Sınırsız AI ile pratik" |
+| Telaffuz 5 dolduğunda | "ICAO 4 için sınırsız drill" |
+| Sınav 2. denemede | "Tüm sınav setleri" |
+| Streak 3 günde | "Kaybetme — premium freeze" |
+| 7. gün trial sonu | Ana dönüşüm noktası |
+| Lig top 3'te | "Ödülünü 2× al" |
+| Rozet kazanımında %20 | Yumuşak hatırlatma |
+| ICAO 4 sözlü 1. görev sonrası | "Diğer 3 görevi aç" |
+| Sınav günü modu açıldığında | "30 günlük plan premium ile" |
+| Offline indir butonuna basınca | "Sınırsız offline ile çalış" |
+
+### Fiyat Yapısı (RevenueCat ürünleri)
+
+| Ürün | RC ID | Fiyat | Hedef |
+|---|---|---|---|
+| Standart Aylık | `standart_monthly` | **₺349** | Ana dönüşüm |
+| Standart Yıllık | `standart_yearly` | **₺2.499** (~₺208/ay) | LTV maksimizasyon |
+| Öğrenci Aylık | `student_monthly` | **₺199** | Üniversite/MTAL (.edu.tr) |
+| Öğrenci Yıllık | `student_yearly` | **₺1.499** (~₺125/ay) | Genç sadık |
+| Pro Yıllık (Faz 1.5) | `pro_yearly` | **₺3.999** | Aktif pilot/ATC, sınırsız her şey |
+
+**7 gün trial** her üründe.
+
+### Net Gelir Beklentisi
+- 1.000 Standart aylık abone × ₺349 = ₺349K brüt → **net ~₺175K/ay**
+- Apple/Google Small Business: %15 (yıllık <$1M ciro)
+- KDV %20 + RevenueCat %1 + altyapı + vergi sonrası
+
+---
+
+## 8. AI Maliyet Modeli (Premium Sürdürülebilirlik)
+
+| Servis | Birim maliyet | Kullanıcı/ay tahmini | Aylık maliyet/kullanıcı |
+|---|---|---|---|
+| Claude Haiku 4.5 (konuşma) | $1/M in, $5/M out | 60 dk = ~60K token | **~$0.30** = ₺10 |
+| Claude Sonnet 4.6 (zor mülakat) | $3/M in, $15/M out | 10 dk = ~10K token | **~$0.15** = ₺5 |
+| Whisper STT | $0.006/dk | 30 dk telaffuz + 30 dk konuşma | **~$0.36** = ₺12 |
+| ElevenLabs TTS | $0.30/1K karakter | 50K karakter | **~$15/ay flat** (Creator plan amortisman: ₺3/kullanıcı) |
+| **Toplam AI maliyet/premium kullanıcı/ay** | | | **~₺30** |
+
+Premium fiyat ₺349 → AI maliyeti %8.6. **Sürdürülebilir.**
+
+**Maliyet kontrolü:**
+- AI rate limit: günlük 30 dk konuşma, 30 dk telaffuz drill
+- Pro üye: 60 dk + sınırsız drill
+- Aşırı kullanım uyarısı + Pro'ya yönlendirme
+
+---
+
+## 9. İçerik Üretim & Doğrulama Protokolü (Eğitmensiz)
+
+**Risk:** Eğitmen yok → yanlış içerik = "bu app yanlış öğretiyor" krizi.
+**Çözüm:** 4 katmanlı doğrulama.
+
+### Katman 1: Üretim (Claude)
+- Master prompt template'leri `content-pipeline/prompts/`
+- ICAO Doc 9432 standart frazeoloji referansı her prompt'ta
+- Rol bazlı bağlam: pilot için yer kontrolü vs en-route ayrı
+
+### Katman 2: Çapraz LLM Doğrulama
+- Üretilen her içerik **GPT-4** veya **farklı Claude oturumu** ile doğrulanır
+- Prompt: "Bu içerikte ICAO frazeolojisi yanlış mı, terim yanlış mı, gramer hatası var mı? JSON döndür."
+- Skoru < 90 olan içerik elenir, yeniden üretilir
+- `content_reviews` tablosuna log
+
+### Katman 3: Otomatik Kalite Kontrolleri
+- Terim listesi kontrol: ICAO 9432 standart sözlüğüyle eşleşme
+- Diyalog uzunluk, çeşitlilik, zorluk dağılımı testleri
+- Ses üretimi (ElevenLabs) sonrası: Whisper transkripti orijinal metinle %95+ uyuşmalı
+
+### Katman 4: Kullanıcı Geri Bildirim Döngüsü
+- Her ders sonunda "🚩 Hata bildir" butonu
+- 3+ kullanıcı aynı içeriği bildirirse otomatik flag → senin onayına düşer
+- "Topluluk doğrulaması" badge'i — 1.000+ kullanıcı sorunsuz geçtiyse "verified"
+
+### İçerik Üretim Hedefleri (MVP)
+| Tip | Hedef adet (MVP) | Üretim süresi |
+|---|---|---|
+| Vocabulary terim | 800 (Pilot 300 + Kabin 250 + Teknisyen 250) | Sprint 4-6 |
+| Diyalog senaryosu | 60 | Sprint 5-7 |
+| AI konuşma scenarios | 30 | Sprint 5-6 |
+| Telaffuz drill cümle | 200 | Sprint 6 |
+| Quiz egzersizi | 600 | Sprint 4-7 |
+| ICAO 4 mock sınav | 3 set | Sprint 7 |
+| SHGM mock | 2 set | Sprint 7 |
+| Mülakat soru bankası | 100 | Sprint 7 |
+
+**Tüm içerik Claude tarafından üretilir, çapraz doğrulanır, ses ElevenLabs ile sentezlenir.**
+
+---
+
+## 10. Push Notification Stratejisi
+
+| Trigger | Zaman | Mesaj |
+|---|---|---|
+| Streak risk | 20:00 (akıllı) | "Serini kaybetme — 1 ders yeter ✈️" |
+| Streak kırıldı | Ertesi sabah | "Yeniden başlamanın vakti" |
+| Görev hazır | 09:00 | "Bugünün 3 görevi seni bekliyor" |
+| Görev yarım | 21:00 | "1 görev kaldı, 30 XP" |
+| Lig sonu | Pazar 18:00 | "Top 7'ye 80 XP — Altın Lig kapıda" |
+| Yeni rozet | Anlık | "🏅 [Rozet adı]" |
+| SRS tekrar | Kullanıcı saatine göre | "20 terim tekrar zamanı" |
+| AI konuşma teşvik | 19:00, 3+ gün hiç konuşmayan | "Bugün 5 dk pilot rolü oyna" |
+| Trial T-1 | T-24h | "Üyeliğin yarın başlıyor — istersen iptal" |
+| 3 gün inaktif | Sabah | "Kabine dönmenin vakti" |
+| Sınav günü | Kullanıcı tarihi girdiyse | "ICAO sınavına 7 gün — son tekrar" |
+
+---
+
+## 11. Analytics Event Listesi
+
+```
+auth_signed_up { method, role, level, is_student }
+auth_logged_in
+onboarding_completed { duration_seconds }
+level_test_completed { result_level, score }
+lesson_started { lesson_id, type, is_premium }
+lesson_completed { lesson_id, score, xp_earned, hearts_lost }
+exercise_answered { exercise_id, is_correct, time_spent }
+srs_review_completed { count, accuracy }
+ai_conversation_started { scenario_id }
+ai_conversation_ended { scenario_id, duration, message_count, score, tokens_used }
+pronunciation_attempt { term_id, score, attempts }
+quiz_completed { quiz_id, score }
+exam_started / exam_completed { exam_type, score, band }
+streak_increased / streak_lost / streak_freeze_used
+badge_earned { badge_slug }
+level_up { new_level, total_xp }
+league_joined / league_promoted / league_demoted
+hearts_depleted / heart_purchased { method }
+shop_purchase { item_slug, cost }
+paywall_viewed { trigger }
+paywall_dismissed { trigger }
+trial_started { product }
+subscription_started { product, price }
+subscription_cancelled { product, reason }
+content_flagged { content_id, reason }
+notification_opened { type }
+ai_cost_threshold_hit                 -- günlük limit
+```
+
+**Funnel'lar:** signup → onboarding → 1. ders → 1. AI konuşma → 7 gün streak → paywall → trial → paid → renewal.
+
+---
+
+## 12. Sprint Planı (14-16 Hafta MVP)
+
+### Sprint -1 — Tasarım Reference + Wireframe (Hafta -1) 🆕
+**Amaç:** Sprint 0 başlamadan önce tasarım dilini sabitle, 4-6 hafta zaman kazandır.
+
+**Görevler:**
+- **Gün 1:** Mobbin.com'da 50 ekran screenshot al — onboarding, ders ekranı, paywall, profil, gamification (Duolingo, ElsaSpeak, Khan Academy, Babbel, Busuu kategorisi)
+- **Gün 2:** Figma Community'den 3 template indir + incele (kopyalama, örüntü öğren) — "Language learning UI kit", "Education app", "Mobile onboarding"
+- **Gün 3:** Figma'da `AirSpeak Design System` dosyası — color styles + text styles + spacing + radius tokens (logo paletinden)
+- **Gün 4-5:** 6 ana ekran low-fi wireframe — Ana sayfa, Ders, Egzersiz, AI Konuşma, Paywall, Profil
+- **Gün 6-7:** v0.dev / Galileo AI ile high-fi mockup baseline üret, Figma'ya port
+
+**Çıktı:** Tasarım dosyası, 6 ana ekran hi-fi mockup, color/type style locked.
+**Commit:** repo henüz yok — Figma share link.
+
+### Sprint 0 — Hazırlık (Hafta 0)
+- Expo + TypeScript + Git + EAS
+- Supabase Free, RevenueCat hesap, App Store + Play Console
+- PostHog + Sentry kurulum
+- Tasarım sistemi temeli (renkler, font, logo)
+- Anthropic API key, OpenAI key, ElevenLabs hesap
+- **Commit:** `feat: proje iskeleti ve altyapı kurulumu`
+
+### Sprint 1 — Auth & Onboarding (Hafta 1-2)
+- Email + Google login (Supabase Auth)
+- Profil tablosu, RLS
+- Welcome → Kayıt → Rol → Seviye Testi → Hedef
+- i18n (TR), tema, navigation, splash, base UI
+- **Commit:** `feat: kullanıcı kaydı ve onboarding akışı`
+
+### Sprint 2 — İçerik Şeması & Ders Motoru (Hafta 3-4)
+- Tüm content tablo migration'ları
+- Seed: Pilot rolü 1 ünite + 5 ders + 30 egzersiz (manuel JSON)
+- Ders ağacı UI
+- 4 egzersiz tipi: multiple_choice, fill_blank, match, listen
+- İlerleme + MMKV cache (offline)
+- **Commit:** `feat: ders motoru ve egzersiz tipleri`
+
+### Sprint 3 — Gamification Çekirdeği (Hafta 5-6)
+- XP, level (DB trigger), Streak (Edge Function cron), Hearts (refill), Coins
+- Shop ekranı (3 ürün)
+- Rozet motoru (ilk 10 rozet, otomatik trigger)
+- Ana sayfa: streak ateşi, XP bar, can sayısı
+- Ders sonucu lottie animasyonu
+- **Commit:** `feat: xp, streak, can, coin sistemi ve rozetler`
+
+### Sprint 4 — SRS + Görev + Lig (Hafta 7-8)
+- SuperMemo SM-2 SRS implementasyonu
+- SRS tekrar ekranı, vocabulary_terms tablosuna 800 terim seed (üretim Sprint paralel)
+- Daily quest generator (gece cron, 3 görev)
+- Lig algoritması (Edge Function, pg_cron Pazartesi 00:00)
+- Lig ekranı, haftalık ödül dağıtımı
+- **Commit:** `feat: srs hafıza sistemi, günlük görevler, lig`
+
+### Sprint 5 — AI Konuşma Çekirdeği (Hafta 9-10)
+- Claude API entegrasyonu (Anthropic SDK), Edge Function proxy
+- Voice recorder bileşeni (expo-av)
+- Whisper STT pipeline, ElevenLabs TTS
+- AI konuşma ekranı: voice-to-voice, transkript bubble, skor görüntüleme
+- 30 conversation_scenarios seed
+- AI maliyet logger + günlük limit
+- **Commit:** `feat: AI konuşma partneri ve voice-to-voice`
+
+### Sprint 6 — Telaffuz Analizi + Premium (Hafta 11-12)
+- Telaffuz drill ekranı, Whisper word-level confidence
+- Phoneme matching algoritması (basit MVP versiyonu)
+- ICAO Seviye 4 rubric puanlama
+- 200 telaffuz cümlesi seed
+- RevenueCat SDK entegrasyonu, 5 ürün
+- Paywall ekranı + 9 tetikleyici
+- Free limitler, reklam (AdMob) entegrasyonu
+- Subscription webhook → Supabase
+- **Commit:** `feat: telaffuz analizi, abonelik ve paywall`
+
+### Sprint 7 — Sınav Simülasyonu + ICAO 4 AI Examiner + Bildirimler (Hafta 13-14)
+- ICAO 4 yazılı mock (3 set × 50 soru), SHGM (2 set × 40), YDS havacılık çıkmış
+- Mülakat soru bankası (100 soru)
+- **ICAO 4 sözlü AI examiner**: 4 görev tipi, Sonnet 4.6, 6 alan rubric
+- **Konuşma arşivi**: tüm AI konuşmalar geri dinlenir
+- **Mock mülakat stüdyosu** (oral examiner alt mod)
+- Zamanlayıcı, sonuç ekranı, band score, AI zayıflık özeti
+- Push token + expo-notifications, 11 bildirim trigger
+- İçerik bildir akışı (content_flags)
+- **Commit:** `feat: sınav simülasyonu, ICAO 4 sözlü AI examiner, bildirimler`
+
+### Sprint 8 — Frazeoloji + NOTAM + Offline + Sınav Günü Modu (Hafta 15-16)
+- **Frazeoloji cep sözlüğü**: 1.000+ entry seed, full-text search, kategorik tarama
+- **NOTAM/METAR/ATIS okuma modülü**: 100 doküman seed, decode pratiği, comprehension
+- **Sınav günü geri sayım & AI plan üretici**: tarih gir → 30/14/7/1 günlük plan, T-1 özel mod
+- **Offline indirme**: ders + ses + SRS toplu indir, depolama yöneticisi, expires kontrolü
+- **Referral sistemi**: kişisel kod, paylaşım sheet, davet tablosu, ödül akışı
+- **Commit:** `feat: frazeoloji, dokuman okuma, offline, sınav günü modu, referral`
+
+### Sprint 9 — İçerik Üretim Yoğunluk + Cila + Yayın (Hafta 17-18)
+- 800 terim üretim + çapraz doğrulama (Claude × GPT-4)
+- 60 diyalog senaryosu üretim
+- 1.000 frazeoloji entry üretim
+- 100 NOTAM/METAR örnek
+- 200 telaffuz cümlesi
+- 30 ICAO 4 sözlü examiner prompt'u (picture/story/problem/topic)
+- Tüm ses dosyaları ElevenLabs ile (~80K karakter)
+- KVKK, Üyelik Sözleşmesi, Gizlilik
+- Performans optimizasyon, hata düzeltme
+- TestFlight + Play Internal
+- 30 kişi beta test (havacılık öğrencisi)
+- App Store + Play submission
+- **Commit:** `chore: içerik seed ve yayın hazırlıkları`
+
+### Faz 2 (MVP sonrası, 8-10 hafta) — Önceliklendirilmiş
+**1. öncelik: Topluluk + Peer Practice (kullanıcı seçimi)**
+- Sesli oda (10 dk pratik), aynı seviyeden eşleşme
+- AI moderatör (Claude) — sessizlik, dengesiz konuşma uyarısı
+- Konuşma sonrası karşılıklı puanlama, rozet
+- Arkadaş ekleme, arkadaşlarla yarışma
+- Topluluk forumu (soru-cevap, mülakat deneyimi paylaşımı)
+
+**Sonraki sıra:**
+- Pro tier (₺3.999/yıl) sınırsız + mentor seansı (Cal.com entegrasyon)
+- Speechace API ile gerçek fonem analizi
+- LiveATC gerçek kule dinleme (telif kontrol sonrası)
+- Admin paneli web (Next.js) + içerik onay süreci
+- B2B portali (havayolu kurumsal lisans)
+- Üniversite SSO (kampüs e-postası)
+- CRM İngilizcesi modülü
+- Sertifikalı PDF rapor
+- Apple Watch / Widget
+
+---
+
+## 13. NPM Paketleri
+
+```jsonc
+{
+  "expo": "~52.0.0",
+  "expo-router": "~4.0.0",
+  "expo-notifications": "~0.29.0",
+  "expo-av": "~15.0.0",
+  "expo-localization": "~16.0.0",
+  "expo-secure-store": "~14.0.0",
+  "expo-speech": "~13.0.0",
+  "expo-file-system": "~18.0.0",
+  "@supabase/supabase-js": "^2.45.0",
+  "react-native-mmkv": "^3.0.0",
+  "@tanstack/react-query": "^5.50.0",
+  "zustand": "^5.0.0",
+  "react-native-purchases": "^8.0.0",
+  "react-hook-form": "^7.52.0",
+  "zod": "^3.23.0",
+  "nativewind": "^4.0.0",
+  "react-native-reanimated": "~3.16.0",
+  "lottie-react-native": "~7.0.0",
+  "posthog-react-native": "^3.0.0",
+  "@sentry/react-native": "^5.30.0",
+  "i18next": "^23.10.0",
+  "react-i18next": "^14.0.0",
+  "date-fns": "^3.6.0",
+  "react-native-google-mobile-ads": "^14.0.0",
+  "@react-native-google-signin/google-signin": "^13.0.0",
+  "@anthropic-ai/sdk": "^0.30.0",
+  "openai": "^4.65.0"
+}
+```
+
+---
+
+## 14. Risk Noktaları (Eğitmensiz Solo Üretim)
+
+| Risk | Olasılık | Etki | Çözüm |
+|---|---|---|---|
+| **Yanlış ICAO frazeolojisi → kriz** | **Orta** | **Yüksek** | 4 katmanlı doğrulama protokolü; 🚩 hata bildir; ilk 30 kullanıcıya beta + agresif feedback toplama |
+| Apple/Google %15-30 komisyon | Yüksek | Orta | Yıllık fiyatlamada hesaba katıldı; Small Business başvurusu |
+| AI maliyet patlaması | Düşük | Orta | Günlük rate limit, Pro tier yönlendirme, ai_usage_logs takip |
+| Trial ücret iadesi yüksek olur | Orta | Orta | İlk 7 gün değer hissi tasarım — onboarding'de hemen AI konuşma + telaffuz dene |
+| Düşük dönüşüm (<%4) | Orta | Yüksek | A/B test paywall (PostHog), 9 tetikleyici, 7. gün hook |
+| ElevenLabs tek nokta arıza | Düşük | Düşük | Cartesia yedek planı (kod soyutlandı) |
+| Whisper API gecikme | Orta | Orta | Streaming + local Whisper.cpp fallback (Faz 2) |
+| Türkçe içerik yetersizliği | Orta | Yüksek | İlk 4 hafta sadece Pilot, sonra paralel Kabin + Teknisyen |
+| KVKK uyumu | Orta | Yüksek | Aydınlatma metni, açık rıza, veri silme akışı |
+| Üniversite ödeme gücü düşük | Yüksek | Orta | ₺199 öğrenci tier, .edu.tr doğrulama |
+| App Store red (havacılık jargonu) | Düşük | Yüksek | Eğitim kategorisi, açıklayıcı screenshot, ICAO Doc 9432 referansı |
+| **AI konuşma yanlış öğretir** | **Orta** | **Yüksek** | System prompt'ta sıkı kural seti, Doc 9432 referansı, "öğretmen onaylı" senaryolar AI'sız |
+
+---
+
+## 15. Doğrulama (Verification)
+
+**Kabul kriterleri (yayın öncesi):**
+- [ ] Yeni kullanıcı 5 dakikada onboarding tamamlar
+- [ ] 1 ders + 1 quiz + 1 AI konuşma → XP/streak/SRS güncellenir
+- [ ] AI konuşma 5 dk pürüzsüz çalışır, transkript doğru
+- [ ] Telaffuz drill ICAO rubric'e göre 1-6 puan verir
+- [ ] 5 yanlışta canlar biter, 30 dk'da +1
+- [ ] Pazartesi 00:00 lig sıfırlanır, kullanıcı doğru tier'a düşer
+- [ ] 7 gün streak → rozet otomatik
+- [ ] Free 4. derste paywall görür
+- [ ] AI 3 mesaj sonrası paywall
+- [ ] Trial başlar, 7 gün sonra ödeme alınır (sandbox)
+- [ ] 800 terimin %100'ü çapraz doğrulanmış
+- [ ] Push streak hatırlatma 20:00'da gelir
+- [ ] PostHog'da signup → trial funnel'ı görünür
+- [ ] Çevrimdışı son 3 ders açılır
+- [ ] AI maliyet günlük limitte durur
+
+**E2E test (Sprint 8):** Detox veya Maestro.
+
+---
+
+## 16. Açık Sorular (Sprint 0 Başlamadan)
+
+1. **Logo & marka adı** — yoksa 3 öneri sunarım
+2. **Anthropic API erişimi var mı?** Yoksa hesap açma + faturalama
+3. **OpenAI API + ElevenLabs hesap** — kim açacak (sen)?
+4. **Apple Developer + Google Play hesabı** — TC kimlik + iyzico için banka var mı?
+5. **Domain adı** — landing + admin için
+6. **Beta test grubu** — 30 öğrenci (havacılık üniversitesi bağlantısı)?
+7. **İlk pazar:** TR App Store + TR Play. Yıl 2'de Orta Doğu/Türki Cumhuriyetler?
+
+---
+
+## 17. Sonraki Adım
+
+Plan onaylandıktan sonra:
+1. Bu dosya `PROJECT_PLAN.md` olarak `/Users/ozlemakcin/Desktop/thy app/` altına kopyalanır
+2. Git repo başlatılır (`git init`, `.gitignore`)
+3. **Sprint 0** başlar: Expo iskelet kurulumu
+
+> "Tamam başla" demediğin sürece kod yazmıyorum. Her sprint sonunda Türkçe commit + sana özet rapor.
+
+---
+
+## 18. Yıl 1 Global Ürün Liderliği Yol Haritası (Solo, Sermayesiz, Tam Zamanlı)
+
+### Stratejik Pozisyon
+**Hedef tanımı:** Aviation English kategorisinde **AI-first + mobil-first + gamified** alt-niş'inde dünyada **#1 ürün** olmak. Bu kategori bugün boş — ilk girersen default lider olursun. 12 ay'da kullanıcı sayısında değil, **ürün kalitesi ve niş tanınmada** liderlik.
+
+### 12 Ay Faz Planı
+
+| Ay | Faz | Aksiyon | KPI |
+|---|---|---|---|
+| 1-4 | **MVP Geliştirme** | Sprint 0-9 mevcut plan, EN-ana UI | Çalışan MVP, 30 beta kullanıcı |
+| 5 | **Beta + Cila** | 30 kişi closed beta (10 TR + 20 global aviation forumdan), feedback iterasyonu | Bug-free, NPS >40 |
+| 6 | **Lansman Patlama** | ProductHunt (top 5 of the day hedefi), Twitter thread (#avgeek), Reddit r/flying & r/cabincrew, YouTube demo video, Hacker News show | 2K download, 100 paying |
+| 7-9 | **İçerik Marketing Maraton** | YouTube channel ("ICAO 4 prep" SEO), TikTok pilot creator işbirliği (5 micro-influencer), Aviation podcast 3 misafir, App Store ASO optimization | 10K download, 500 paying |
+| 10-12 | **Konsolidasyon + Yıl 2 Hazırlık** | Yorumlardan ürün iterasyonu, viral kanalı büyüt (YouTube 10K sub, Twitter 5K), Faz 2 başla (peer practice), yatırım turu pitch deck | 25K download, 1.500-2.500 paying |
+
+### EN-First UI Stratejisi
+- **Default dil: EN.** Kullanıcı uygulamayı açınca İngilizce görür.
+- **Telefon dili Türkçeyse otomatik TR'ye geç** (kullanıcı tercihi)
+- Tüm metinler i18next ile, EN/TR paralel
+- App Store/Play Store EN ana açıklama, TR ikincil
+- ASO anahtar kelimeleri: "ICAO 4", "aviation English", "pilot english", "ATC english", "cabin crew english"
+
+### Marketing Kanalları (Sıfır Bütçe Ağır Top)
+
+**Organik Hub (yıl boyu):**
+- **YouTube channel** — "Aviation English with AI" — haftalık 1 video, ICAO 4 ipuçları, gerçek pilot misafir röportaj
+- **Twitter (X) hesabı** — günlük havacılık terimi + tweet thread, #avgeek topluluğu etkileşim
+- **TikTok** — kısa pilot rolü AI konuşma demosu (viral potansiyel yüksek)
+- **Reddit** — r/flying, r/aviation, r/cabincrew, r/ATC topluluğunda değer içerik (paylaş, satma)
+
+**Tek Atış Patlamalar:**
+- **ProductHunt launch** — ekipsiz solo geliştirici hikayesi + AI examiner demo
+- **Hacker News Show HN** — teknik hikaye (Claude + Whisper aviation)
+- **Aviation podcast 3-5 episod** — misafir konuşmacı (Pilot's Discretion, 360 Flight, Aviation Week)
+
+**Topluluk Avantajı:**
+- Türkiye havacılık öğrenci grupları (Facebook, Discord) — organik
+- Pilot okulu mezun grupları
+- THY Akademi kursiyer kanalları
+- LinkedIn aviation hashtag'leri
+
+### Yıl 1 Sonu Hedefler
+- **25K download global** (15K TR + 10K global)
+- **2.000 paying user**
+- **₺3.5-5M yıllık run rate**
+- **YouTube 10K subscriber, Twitter 5K follower**
+- **Niş tanınma:** "AI-first aviation English app" denince akla ilk gelen ürün
+- **Yıl 2 yatırım turu** için $300-500K seed pitch hazır
+
+### Solo Sürdürülebilirlik Korunaklılığı
+- **Health backup:** sigorta + acil durum 3 ay tampon
+- **Toplu satış değil, tekil satış:** App store + RevenueCat = sıfır müşteri yönetimi
+- **AI ekip yerine:** Claude code + içerik üretimi, ChatGPT marketing copy, Cursor IDE
+- **Yalnızlık:** Indie hacker community (Twitter), monthly call başka solo founder'larla
+
+### Risk: 12 Ay Yeterli mi?
+- **%30-40 olasılık:** "Niş içinde #1" başarılı (mütevazı ama gerçek başarı)
+- **%50 olasılık:** "İyi ürün ama henüz tanınmıyor" — yıl 2'ye gerçek momentum sarkar
+- **%10-20 olasılık:** Ya viral patlama (TikTok pilot creator videoyu yapar, +500K view) ya da viral fiyasko (yanlış ICAO content krizi)
+
+**Plana yansıma:** Bu yol haritası mevcut Sprint 0-9 planını değiştirmez, üzerine **lansman + marketing fazını** ekler.
+
+---
+
+## 19. Tasarım & UX Stratejisi (Solo + AI Tools)
+
+### Felsefe
+Premium hissi (₺349) + havacılık estetiği (kokpit panel: lacivert + kehribar) + mobil-first, tek el kullanım. Her ekranda 1 birincil aksiyon. Anlık feedback (haptic + animasyon).
+
+### Tasarım Sistemi (Logo Uyumlu)
+**Renk paleti — logodan türetilmiş:**
+
+```
+PRIMARY (logo)
+  Navy 900     #0A1F3D    en koyu, dark mode başlık
+  Navy 700     #0F2D5C    logo "air" + ana marka rengi
+  Navy 500     #1E4A8C    button hover, orta tonlar
+  Blue 500     #2E7CD6    logo "speak" + ana CTA
+  Blue 400     #4F95E0    link, secondary action
+  Blue 100     #DCE9F8    BG tint, badge
+
+ACCENT (UI için, %5 kullanım)
+  Amber 500    #F59E0B    streak ateşi, kritik uyarı, premium rozet
+  Amber 100    #FEF3C7    BG tint
+
+NEUTRAL
+  Slate 900    #0A1429    dark BG
+  Slate 800    #1A2540    dark surface
+  Slate 100    #F1F5F9    light surface
+  Slate 50     #FAFBFD    light BG
+  Slate 500    #64748B    secondary text
+
+SEMANTIC
+  Success      #10B981
+  Danger       #EF4444
+  Warning      #F59E0B    (= Amber 500)
+  Info         #2E7CD6    (= Blue 500)
+```
+
+**Kullanım kuralı:** UI'nin %95'i mavi tonları, %5 amber vurgu (sadece streak ateşi, kritik uyarı, premium rozet).
+
+**Tipografi:** Inter (gövde + başlık) + JetBrains Mono (ICAO frazeoloji, METAR). Google Fonts ücretsiz.
+**Spacing:** 4px scale (4/8/12/16/24/32/48/64). Radius: 8/12/16/9999. Touch min 44pt.
+**Component lib:** **Tamagui** (performans + Expo uyumu) + NativeWind utility class.
+
+### Üretim Akışı
+1. **Wireframe** (Figma free, 1 hafta) — 44 ekran low-fi + flow diagram
+2. **AI Hi-fi** (v0.dev + Galileo AI, 2 hafta) — yüksek kalite mockup baseline
+3. **Reference apps çalış** — Duolingo (gamification UX), ElsaSpeak (telaffuz UI), Khan Academy (ders ağacı), Replika/Character.ai (AI sohbet UI), Linear/Raycast/Arc (premium animasyon kalitesi)
+4. **Component library kod** (Sprint 1) — Tamagui ile temel atomic component'ler, Storybook doc
+5. **Mikro-etkileşim** (sprintler boyu) — react-native-reanimated 3 + moti + lottie-react-native
+6. **Lottie animasyonlar** (LottieFiles ücretsiz) — rozet kazanımı, level up, streak ateşi, kutlama
+
+### Araçlar (Toplam ₺0-1.500/ay)
+| Araç | Kullanım | Maliyet |
+|---|---|---|
+| Figma | Tasarım, prototip | Free |
+| v0.dev | AI component üretimi | Free / $20 |
+| Galileo AI | Figma AI mockup (opsiyonel) | $19/ay |
+| LottieFiles | Animasyon kütüphanesi | Free |
+| Phosphor / Lucide | İkon (5K+) | Free |
+| Unsplash + Midjourney | Görsel/illüstrasyon | $10-30/ay |
+| Coolors.co | Renk paleti tweaks | Free |
+| Mockuphone | App Store screenshot | Free |
+| Storybook | Component dokümantasyon | Free |
+
+### Kritik UX Akışları
+**Onboarding (<2 dk):** Splash → 3 slayt → Kayıt → Rol → 10 soru seviye testi → Hedef → Ana sayfa
+**İlk ders (3-5 dk):** Ders kartı → Intro → 5-7 egzersiz → Sonuç (XP+, can, lottie kutlama) → Sıradaki ders CTA
+**AI Konuşma (5-10 dk):** Senaryo seç → Brief → Mikrofon basılı tut → Whisper STT → Claude → ElevenLabs TTS → 5-10 round → 6 alan rubric skoru → Arşive kaydet
+**Paywall (%5-10 dönüşüm):** Trigger → 3 plan kart (Aylık/Yıllık/Öğrenci) → "İlk 7 gün ücretsiz" → Ödeme sheet → Trial confirm
+
+### Görsel Kimlik
+- **Logo:** Looka/Brandmark $20-40 ya da Midjourney + Figma kendin
+- **App icon:** belirgin tek sembol (uçak kanadı/kule/mikrofon), light+dark adaptive
+- **Tonality:** profesyonel + sıcak, akademik değil, ticari değil
+
+### Sprint'lere Tasarım Yansıması
+Sprint 0: paleti + tipografi + ikon + logo + app icon + ana 6 ekran wireframe
+Sprint 1-9: her sprintte ilgili ekranların hi-fi tasarımı kod öncesi tamamlanır (Figma → Tamagui implementasyon)
+Sprint 9 cila: motion polish, ekran geçişleri, lottie animasyonlar, App Store screenshot mockup
+
+### UX Test
+- Sprint 5 sonrası: 5 kişi moderated test (sen yönet, 1 saat × 5)
+- Sprint 7 sonrası: 10 kişi Maze.co free tier
+- Lansman öncesi: 30 beta + PostHog session replay (paid'e geçince)
+
+### Tasarım Kalitesi Riski
+**"Solo geliştirici görüntüsü, premium hissi yok"** riskine karşı:
+- Tamagui hazır component → ham görünmez
+- v0/Galileo AI baseline → pro başlangıç
+- Linear/Raycast/Arc animasyon kalitesini kopyala
+- Beta kullanıcıdan UX feedback erken al, iterate
+
+---
+
+## 20. Marka Adı Önerileri
+
+Sprint 0'da domain + App Store + ticari marka kontrolü yapılacak. Aşağıdaki 10 öneri arasından kullanıcı seçecek (bu plan onaylandığında).
+
+| # | Ad | Anlam | Sıralama |
+|---|---|---|---|
+| 1 | **Climb** | "Tırmanış" + "level up" — pilot jargonu | 🥇 Öneri |
+| 2 | **Wilco** | "Will Comply" — radyotelefoni | 🥈 Öneri |
+| 3 | **Roger** | "Anlaşıldı" — sıcak | 🥉 Öneri |
+| 4 | **AirSpeak** | Hava + konuşma | Net betimleyici |
+| 5 | **AeroLingo** | Aviation + linguistics | Duolingo cross-ref |
+| 6 | **Tailwind** | Arka rüzgar (CSS framework karışıklığı riski) | Akılda kalır |
+| 7 | **Cleared** | "Cleared for takeoff" | Pilot odaklı |
+| 8 | **Squawk** | Transponder kodu | Eşsiz, geek |
+| 9 | **Final** | "Final approach" + sınav | Çift anlam |
+| 10 | **Vector** | ATC yönlendirme + matematik | Modern teknoloji hissi |
+
+**SEÇİLEN MARKA: AirSpeak** ✅
+**ANA DOMAIN: airspeak.app** ✅ (`.com` dolu, `.app` Google'ın app-odaklı TLD'si)
+
+### AirSpeak — Sprint 0 Kontrol Listesi
+- [ ] Domain satın al: **`airspeak.app`** (ana), `airspeak.ai` (premium yatırım, opsiyonel), `useairspeak.com` (marketing yedek)
+- [ ] DNS: Cloudflare üzerinden yönlendir
+- [ ] App Store + Play Store arama: "AirSpeak" çakışma yok mu?
+- [ ] Sosyal medya kullanıcı adları: @airspeak veya @airspeakapp (Twitter/X, Instagram, TikTok, YouTube, LinkedIn) — toplu kapma
+- [ ] Ticari marka taraması: TPMK (Türkiye), USPTO (US), EUIPO (AB) — sınıf 9 (yazılım) + 41 (eğitim)
+- [x] **Logo tasarımı tamamlandı** ✅ — Uçak (önden görünüm) + konuşma balonu, açık üst halka (ufuk hissi), lacivert + mavi monokromatik palet, "airspeak" wordmark + "Havacılık Dili Öğretici" TR tagline
+- [ ] **EN tagline versiyonu üret:** "Aviation English Tutor" veya "Master Aviation English"
+- [ ] **App icon sembol-only varyant** çıkar (wordmark+tagline olmadan, sadece daire+uçak+balon)
+- [ ] Asset üret: logo-full-light.svg, logo-full-dark.svg, logo-mark-only.svg, wordmark-only.svg, app-icon-1024.png, app-icon-512.png, app-icon-180.png, app-icon-120.png, favicon.ico, og-image-1200x630.png
+- [ ] Logoyu vektörleştir (Vector Magic veya Illustrator AI image trace) — orijinal raster ise SVG'ye çevir
+- [ ] Ana web sayfası: `airspeak.app` üzerinde landing (Vercel + Next.js, ücretsiz)
+
+### URL Stratejisi
+- **airspeak.app** → ana site, App Store/Play Store yönlendirme, dökümantasyon
+- **airspeak.app/blog** → SEO içerik (ICAO 4 prep, aviation English ipuçları)
+- **airspeak.app/admin** → admin paneli (Faz 2)
+- **api.airspeak.app** → Supabase Edge Functions custom domain (opsiyonel)
+
+### AirSpeak Marka Tonu
+- **Tagline opsiyonları:** "Master aviation English." / "Speak the sky." / "ICAO 4'ten kokpite — havacılık İngilizcesi"
+- **Marka kişiliği:** Profesyonel + sıcak, kaptan pilot güvenirliği, AI öğretmen sıcaklığı
+- **Görsel dil:** lacivert gökyüzü + kehribar kokpit ışığı, minimal sans-serif (Inter), boş alan vurgusu
+
+---
+
+## 21. Özet Değişiklikler (Önceki Plan'a Göre)
+
+| Konu | Önceki | Yeni |
+|---|---|---|
+| Ana fiyat | ₺99/ay | **₺349/ay** (₺199 öğrenci) |
+| AI konuşma | Faz 2 | **MVP Sprint 5** |
+| Telaffuz analizi | Faz 2 | **MVP Sprint 6** |
+| MVP süresi | 12 hafta | **14-16 hafta** (Sprint 8 eklendi) |
+| Free ders limiti | 5/gün | **3/gün** (premium itme baskısı) |
+| Pedagojik temel | Gamification öncelikli | **4 sütunlu pedagoji** (SRS, senaryo, AI, telaffuz) |
+| İçerik üretimi | Tanımsız | **Solo Claude + 4 katmanlı doğrulama protokolü** |
+| Eğitmen | Önerilmişti | Yok — AI çapraz doğrulama + kullanıcı feedback |
+| MVP içerik hacmi | 1 rol başlangıç | **800 terim + 60 senaryo + 30 AI scenario + 200 telaffuz cümle + 600 quiz** |
+| Sprint sayısı | 7 | **9** |
+| MVP ekstra özellikler | — | **ICAO 4 sözlü AI examiner, sınav günü modu, NOTAM/METAR okuma, frazeoloji sözlüğü, offline, konuşma arşivi, referral** |
+| Faz 2 önceliği | — | **Topluluk + peer practice (sesli oda)** |
+| Ekran sayısı | 35 | **44** |
+| Pedagojik sütun sayısı | 4 | **5** (ICAO 4 sözlü simülasyonu eklendi) |
