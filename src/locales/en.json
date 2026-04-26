@@ -1,0 +1,70 @@
+{
+  "common": {
+    "back": "Back",
+    "next": "Next",
+    "skip": "Skip",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "loading": "Loading…"
+  },
+  "welcome": {
+    "tagline": "Master Aviation English",
+    "getStarted": "Get started",
+    "haveAccount": "I have an account"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters",
+    "loading": "Please wait…",
+    "forgotPassword": "Forgot password",
+    "haveAccount": "Already have an account? Log in",
+    "noAccount": "No account? Sign up",
+    "login": {
+      "title": "Log in",
+      "subtitle": "Continue your aviation English journey",
+      "cta": "Log in"
+    },
+    "register": {
+      "title": "Sign up",
+      "subtitle": "First 7 days free",
+      "cta": "Sign up"
+    },
+    "forgot": {
+      "title": "Reset password",
+      "subtitle": "We'll send a reset link to your email",
+      "cta": "Send link",
+      "sent": "Check your inbox — reset link sent."
+    }
+  },
+  "tabs": {
+    "home": "Home",
+    "learn": "Learn",
+    "practice": "Practice",
+    "league": "League",
+    "profile": "Profile"
+  },
+  "home": {
+    "greeting": "Welcome, Captain!",
+    "subtitle": "Today's missions and continue from where you left"
+  },
+  "learn": {
+    "title": "Learn",
+    "subtitle": "Lesson tree by your role and level"
+  },
+  "practice": {
+    "title": "Practice",
+    "subtitle": "AI conversation · Quiz · Exam · Pronunciation · SRS"
+  },
+  "league": {
+    "title": "League",
+    "subtitle": "Weekly leaderboard — climb tiers, earn rewards"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Your stats, badges, settings",
+    "signOut": "Sign out"
+  }
+}

@@ -1,0 +1,8 @@
+node_modules
+dist
+.expo
+ios
+android
+*.lock
+package-lock.json
+PROJECT_PLAN.md

@@ -1,0 +1,70 @@
+{
+  "common": {
+    "back": "Geri",
+    "next": "İleri",
+    "skip": "Atla",
+    "continue": "Devam et",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "loading": "Yükleniyor…"
+  },
+  "welcome": {
+    "tagline": "Havacılık İngilizcesinde Ustalaş",
+    "getStarted": "Başla",
+    "haveAccount": "Hesabım var"
+  },
+  "auth": {
+    "email": "E-posta",
+    "password": "Şifre",
+    "passwordHint": "En az 8 karakter",
+    "loading": "Lütfen bekle…",
+    "forgotPassword": "Şifremi unuttum",
+    "haveAccount": "Hesabın var mı? Giriş yap",
+    "noAccount": "Hesabın yok mu? Kayıt ol",
+    "login": {
+      "title": "Giriş yap",
+      "subtitle": "AirSpeak yolculuğuna devam et",
+      "cta": "Giriş yap"
+    },
+    "register": {
+      "title": "Kayıt ol",
+      "subtitle": "İlk 7 gün ücretsiz",
+      "cta": "Kayıt ol"
+    },
+    "forgot": {
+      "title": "Şifre sıfırla",
+      "subtitle": "E-postana sıfırlama linki göndereceğiz",
+      "cta": "Link gönder",
+      "sent": "E-postanı kontrol et — sıfırlama linki gönderildi."
+    }
+  },
+  "tabs": {
+    "home": "Ana sayfa",
+    "learn": "Öğren",
+    "practice": "Pratik",
+    "league": "Lig",
+    "profile": "Profil"
+  },
+  "home": {
+    "greeting": "Hoş geldin, Kaptan!",
+    "subtitle": "Bugünün görevleri ve kaldığın yerden devam et"
+  },
+  "learn": {
+    "title": "Öğren",
+    "subtitle": "Rolüne ve seviyene özel ders ağacı"
+  },
+  "practice": {
+    "title": "Pratik",
+    "subtitle": "AI konuşma · Quiz · Sınav · Telaffuz · SRS"
+  },
+  "league": {
+    "title": "Lig",
+    "subtitle": "Haftalık sıralama — tier yüksel, ödül kazan"
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "İstatistiklerin, rozetler, ayarlar",
+    "signOut": "Çıkış yap"
+  }
+}

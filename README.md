@@ -11,9 +11,10 @@
 
 - ✅ Plan onaylandı — bkz. [PROJECT_PLAN.md](./PROJECT_PLAN.md)
 - ✅ Logo tasarlandı (vektörleştirilecek)
-- ⏳ Sprint -1: Tasarım reference + wireframe (1 hafta)
-- ⏳ Sprint 0: Proje altyapısı, hesaplar, domain
-- ⏳ Sprint 1-9: MVP geliştirme (16-18 hafta)
+- ✅ **Sprint 0 kod iskeleti hazır** — Expo + TS + Tamagui + Supabase + i18n + auth + onboarding + tabs
+- ⏳ Sprint -1: Figma tasarım + wireframe (paralel, kullanıcı tarafı)
+- ⏳ Sprint 0 geri kalan: hesaplar, domain, npm install, ilk run
+- ⏳ Sprint 1-9: MVP geliştirme
 
 ## Proje Yapısı (Sprint 0'da Oluşacak)
 

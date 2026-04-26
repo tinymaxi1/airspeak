@@ -1,0 +1,13 @@
+{
+  "extends": ["expo", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "warn",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/consistent-type-imports": "warn",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  "ignorePatterns": ["node_modules/", "dist/", ".expo/", "ios/", "android/", "*.config.js"]
+}

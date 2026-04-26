@@ -1,0 +1,59 @@
+import { Tabs } from 'expo-router';
+import { useTheme } from 'tamagui';
+import { Home, BookOpen, Brain, Trophy, User } from '@tamagui/lucide-icons';
+import { useTranslation } from 'react-i18next';
+
+export default function TabsLayout() {
+  const theme = useTheme();
+  const { t } = useTranslation();
+
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: theme.primary?.val,
+        tabBarInactiveTintColor: theme.textSecondary?.val,
+        tabBarStyle: {
+          backgroundColor: theme.surface?.val,
+          borderTopColor: theme.border?.val,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: t('tabs.home', 'Ana sayfa'),
+          tabBarIcon: ({ color }) => <Home color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="learn"
+        options={{
+          title: t('tabs.learn', 'Öğren'),
+          tabBarIcon: ({ color }) => <BookOpen color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="practice"
+        options={{
+          title: t('tabs.practice', 'Pratik'),
+          tabBarIcon: ({ color }) => <Brain color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="league"
+        options={{
+          title: t('tabs.league', 'Lig'),
+          tabBarIcon: ({ color }) => <Trophy color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: t('tabs.profile', 'Profil'),
+          tabBarIcon: ({ color }) => <User color={color} size={24} />,
+        }}
+      />
+    </Tabs>
+  );
+}
