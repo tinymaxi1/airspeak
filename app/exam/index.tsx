@@ -86,6 +86,37 @@ export default function ExamHubScreen() {
             </Button>
           </YStack>
         </Card>
+
+        {/* Havayolu Mülakat Hub */}
+        <Card
+          padding="$4"
+          backgroundColor="$accent"
+          onPress={() => router.push('/exam/airlines')}
+          pressStyle={{ scale: 0.98 }}
+        >
+          <YStack gap="$2">
+            <XStack gap="$2" alignItems="center">
+              <Text fontSize={36}>✈️</Text>
+              <YStack flex={1}>
+                <Text fontSize="$5" fontWeight="700" color="$accentText">
+                  Havayolu Mülakat Bankası
+                </Text>
+                <Text fontSize="$3" color="$accentText">
+                  31 havayolu · TR + Orta Doğu + Avrupa
+                </Text>
+              </YStack>
+              <Text fontSize="$5" color="$accentText">
+                →
+              </Text>
+            </XStack>
+            <Text fontSize="$2" color="$accentText">
+              Emirates · Qatar · Lufthansa · BA · Ryanair · Wizz · ITA + 25 daha
+            </Text>
+            <Text fontSize="$2" color="$accentText">
+              Her havayolu için: aşamalar · ipuçları · model cevap · mock interview
+            </Text>
+          </YStack>
+        </Card>
       </YStack>
     </ScrollView>
   );
