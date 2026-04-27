@@ -101,13 +101,13 @@ export default function PracticeScreen() {
           </XStack>
         </Card>
 
-        {/* ICAO 4 Simulator - Premium */}
+        {/* ICAO 4 Simulator */}
         <Card
           padding="$4"
           backgroundColor="$surface"
           bordered
-          opacity={0.7}
-          onPress={() => router.push('/paywall')}
+          onPress={() => router.push('/exam/icao4')}
+          pressStyle={{ scale: 0.98 }}
         >
           <XStack gap="$3" alignItems="center">
             <Text fontSize={36}>✈️</Text>
@@ -119,9 +119,12 @@ export default function PracticeScreen() {
                 4 görev tipi, 6-alan rubric
               </Text>
               <Text fontSize="$2" color="$warning">
-                🔒 PREMIUM
+                İlk görev ücretsiz · 7 görev premium
               </Text>
             </YStack>
+            <Text fontSize="$5" color="$text">
+              →
+            </Text>
           </XStack>
         </Card>
 

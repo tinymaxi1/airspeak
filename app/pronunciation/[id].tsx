@@ -12,6 +12,7 @@ import {
   type PronunciationResult,
 } from '@/features/pronunciation/scorer';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { useQuestsStore } from '@/stores/questsStore';
 import { track } from '@/lib/posthog';
 
 type Stage = 'ready' | 'recording' | 'scoring' | 'result';
@@ -23,6 +24,7 @@ export default function PronunciationScreen() {
 
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
+  const incrementQuest = useQuestsStore((s) => s.incrementProgress);
 
   const [stage, setStage] = useState<Stage>('ready');
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
@@ -71,6 +73,8 @@ export default function PronunciationScreen() {
       setResult(scored);
       setStage('result');
       addXp(scored.overallScore >= 70 ? 30 : 10, 'pronunciation_drill');
+      incrementQuest('practice_pronunciation', 1);
+      incrementQuest('streak_check', 1);
       recordDailyActivity();
       track('pronunciation_attempt', {
         sentence_id: sentence.id,

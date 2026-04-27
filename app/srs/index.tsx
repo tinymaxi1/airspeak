@@ -2,9 +2,12 @@ import { ScrollView } from 'react-native';
 import { YStack, XStack, H2, H3, Paragraph, Card, Button, Text, Progress } from 'tamagui';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { PILOT_VOCAB_FAZ1, type VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
+import type { VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
+import { getVocabForRole } from '@/features/lessons/seed';
+import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useSrsStore } from '@/stores/srsStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { useQuestsStore } from '@/stores/questsStore';
 import { isNewCard } from '@/features/srs/algorithm';
 import { track } from '@/lib/posthog';
 
@@ -21,6 +24,10 @@ export default function SrsReviewScreen() {
   const cards = useSrsStore((s) => s.cards);
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
+  const incrementQuest = useQuestsStore((s) => s.incrementProgress);
+  const role = useOnboardingStore((s) => s.role);
+
+  const vocabSet = getVocabForRole(role);
 
   const [queue, setQueue] = useState<VocabularyTerm[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -32,7 +39,7 @@ export default function SrsReviewScreen() {
     const due: VocabularyTerm[] = [];
     const newCards: VocabularyTerm[] = [];
 
-    for (const term of PILOT_VOCAB_FAZ1) {
+    for (const term of vocabSet) {
       const card = cards[term.id];
       if (!card) {
         ensureCard(term.id);
@@ -113,8 +120,10 @@ export default function SrsReviewScreen() {
   function handleQuality(quality: number) {
     reviewTerm(term!.id, quality);
     addXp(quality >= 4 ? 5 : 3, 'srs_review');
+    incrementQuest('srs_review', 1);
     if (reviewedCount === 0) {
       recordDailyActivity();
+      incrementQuest('streak_check', 1);
     }
     setReviewedCount((c) => c + 1);
     track('srs_review_completed', {

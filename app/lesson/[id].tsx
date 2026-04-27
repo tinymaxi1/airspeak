@@ -2,9 +2,13 @@ import { ScrollView } from 'react-native';
 import { YStack, XStack, H2, H3, Paragraph, Card, Button, Text, Progress } from 'tamagui';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { PILOT_VOCAB_FAZ1, type VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
+import { CelebrationOverlay } from '@/components/ui/CelebrationOverlay';
+import type { VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
+import { getVocabForRole } from '@/features/lessons/seed';
+import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
+import { useQuestsStore } from '@/stores/questsStore';
 import { track } from '@/lib/posthog';
 
 interface VocabExercise {
@@ -20,7 +24,7 @@ interface VocabExercise {
  */
 function generateExercises(terms: VocabularyTerm[]): VocabExercise[] {
   return terms.slice(0, 5).map((term) => {
-    const otherTerms = PILOT_VOCAB_FAZ1.filter((t) => t.id !== term.id);
+    const otherTerms = terms.filter((t) => t.id !== term.id);
     const distractors = shuffle(otherTerms).slice(0, 3).map((t) => t.termTr);
     const options = shuffle([term.termTr, ...distractors]);
     return {
@@ -45,7 +49,9 @@ export default function LessonScreen() {
   const params = useLocalSearchParams<{ id: string }>();
   const { addXp, recordDailyActivity, loseHeart, addCoins } = useGamificationStore();
   const markLessonCompleted = useProgressStore((s) => s.markLessonCompleted);
-  const [exercises] = useState<VocabExercise[]>(() => generateExercises(PILOT_VOCAB_FAZ1));
+  const incrementQuest = useQuestsStore((s) => s.incrementProgress);
+  const role = useOnboardingStore((s) => s.role);
+  const [exercises] = useState<VocabExercise[]>(() => generateExercises(getVocabForRole(role)));
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -89,6 +95,9 @@ export default function LessonScreen() {
       const score = Math.round((correctCount / total) * 100);
       const lessonId = typeof params.id === 'string' ? params.id : 'unknown';
       markLessonCompleted(lessonId, score);
+      // Daily quest progress
+      incrementQuest('complete_lessons', 1);
+      incrementQuest('streak_check', 1);
       track('lesson_completed', {
         lesson_id: lessonId,
         score: correctCount,
@@ -214,9 +223,16 @@ export default function LessonScreen() {
 function LessonComplete({ correctCount, total }: { correctCount: number; total: number }) {
   const percent = Math.round((correctCount / total) * 100);
   const xpEarned = correctCount * 10 + 50;
+  const isPerfect = correctCount === total;
 
   return (
     <YStack flex={1} padding="$4" gap="$5" backgroundColor="$background" justifyContent="center">
+      <CelebrationOverlay
+        emoji={isPerfect ? '🏆' : '🎉'}
+        title={isPerfect ? 'Mükemmel!' : 'Tebrikler!'}
+        subtitle={`+${xpEarned} XP`}
+        visible={true}
+      />
       <YStack alignItems="center" gap="$3">
         <Text fontSize={64}>🎉</Text>
         <H2 color="$text">Ders tamamlandı!</H2>

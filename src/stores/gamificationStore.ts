@@ -8,6 +8,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { storage } from '@/lib/storage';
 import { track } from '@/lib/posthog';
+import { useQuestsStore } from './questsStore';
 
 interface GamificationState {
   totalXp: number;
@@ -108,6 +109,7 @@ export const useGamificationStore = create<GamificationState>()(
           xpToNext: calc.xpToNext,
         });
         track('xp_earned', { amount, source });
+        useQuestsStore.getState().incrementProgress('earn_xp', amount);
         if (calc.level > oldLevel) {
           track('level_up', { new_level: calc.level, total_xp: newTotal });
         }

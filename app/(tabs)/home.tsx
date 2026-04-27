@@ -6,6 +6,7 @@ import { StreakBadge } from '@/components/gamification/StreakBadge';
 import { XpBar } from '@/components/gamification/XpBar';
 import { HeartsRow } from '@/components/gamification/HeartsRow';
 import { CoinsBadge } from '@/components/gamification/CoinsBadge';
+import { DailyQuests } from '@/components/gamification/DailyQuests';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 
@@ -79,76 +80,31 @@ export default function HomeScreen() {
           </Card>
         )}
 
-        {/* Bugünün Görevleri */}
-        <YStack gap="$2">
-          <H3 color="$text">Bugünün görevleri</H3>
-          <Card padding="$4" backgroundColor="$surface" bordered>
-            <XStack gap="$3" alignItems="center">
-              <Text fontSize="$6">📚</Text>
-              <YStack flex={1}>
-                <Text fontSize="$5" fontWeight="600" color="$text">
-                  İlk dersi tamamla
-                </Text>
-                <Text fontSize="$3" color="$textSecondary">
-                  +50 XP · ~5 dakika
-                </Text>
-              </YStack>
-              <Button
-                size="$3"
-                backgroundColor="$primary"
-                color="$primaryText"
-                onPress={() => {
-                  recordDailyActivity();
-                  router.push('/lesson/sample-001');
-                }}
-              >
-                Başla
-              </Button>
-            </XStack>
-          </Card>
+        {/* Daily Quests */}
+        <DailyQuests />
 
-          <Card padding="$4" backgroundColor="$surface" bordered opacity={0.6}>
-            <XStack gap="$3" alignItems="center">
-              <Text fontSize="$6">🎙️</Text>
-              <YStack flex={1}>
-                <Text fontSize="$5" fontWeight="600" color="$text">
-                  AI ile 1 kez konuş
-                </Text>
-                <Text fontSize="$3" color="$textSecondary">
-                  +80 XP · 🔒 PREMIUM
-                </Text>
-              </YStack>
-              <Button
-                size="$3"
-                variant="outlined"
-                onPress={() => router.push('/paywall')}
-              >
-                🔒
-              </Button>
-            </XStack>
-          </Card>
-
-          <Card padding="$4" backgroundColor="$surface" bordered>
-            <XStack gap="$3" alignItems="center">
-              <Text fontSize="$6">🧠</Text>
-              <YStack flex={1}>
-                <Text fontSize="$5" fontWeight="600" color="$text">
-                  10 yeni terim öğren
-                </Text>
-                <Text fontSize="$3" color="$textSecondary">
-                  +30 XP · SRS akıllı hafıza
-                </Text>
-              </YStack>
-              <Button
-                size="$3"
-                variant="outlined"
-                onPress={() => router.push('/srs')}
-              >
-                Aç
-              </Button>
-            </XStack>
-          </Card>
-        </YStack>
+        {/* Quick start */}
+        <Card padding="$4" backgroundColor="$primary">
+          <YStack gap="$2">
+            <Text fontSize="$3" color="$primaryText" textTransform="uppercase">
+              Hızlı başla
+            </Text>
+            <Text fontSize="$5" fontWeight="700" color="$primaryText">
+              İlk dersi aç →
+            </Text>
+            <Button
+              size="$4"
+              backgroundColor="$primaryText"
+              color="$primary"
+              onPress={() => {
+                recordDailyActivity();
+                router.push('/(tabs)/learn');
+              }}
+            >
+              Ders ağacını aç
+            </Button>
+          </YStack>
+        </Card>
       </YStack>
     </ScrollView>
   );

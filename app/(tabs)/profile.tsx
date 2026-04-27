@@ -190,6 +190,29 @@ export default function ProfileScreen() {
 
         <Separator />
 
+        {/* Shop */}
+        <Card
+          padding="$4"
+          backgroundColor="$accent"
+          onPress={() => router.push('/shop')}
+          pressStyle={{ scale: 0.98 }}
+        >
+          <XStack gap="$3" alignItems="center">
+            <Text fontSize={32}>🪙</Text>
+            <YStack flex={1}>
+              <Text fontSize="$5" fontWeight="700" color="$accentText">
+                Mağaza
+              </Text>
+              <Text fontSize="$3" color="$accentText">
+                Streak freeze, ekstra can, XP boost
+              </Text>
+            </YStack>
+            <Text fontSize="$5" color="$accentText">
+              →
+            </Text>
+          </XStack>
+        </Card>
+
         {/* Premium */}
         <Card padding="$4" backgroundColor="$warning">
           <YStack gap="$2">
