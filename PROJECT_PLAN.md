@@ -334,8 +334,26 @@ friendships, forum_posts, forum_comments  -- Faz 2
 
 ## 4. Ekran Listesi (44 Ekran)
 
-### Auth & Onboarding (8)
-1. Splash, 2. Karşılama (3 slayt), 3. Kayıt, 4. Giriş, 5. Şifre Sıfırlama, 6. Rol Seçimi, 7. Seviye Belirleme Testi, 8. Hedef Belirleme
+### Auth & Onboarding (22 — conversion-optimized detaylı versiyon)
+1. **Splash**
+2-4. **Welcome 3 slayt** (problem-empati / çözüm-magic / acil-CTA, conversion psikolojisi)
+5. **Auth method choice** (Apple / Google / Email)
+6. **Register form** (canlı şifre güvenlik göstergesi)
+7. **Email verification**
+8. **"Sen kimsin?"** (5 rol kartı)
+9. **"Hangi durumdasın?"** (öğrenci/mezun/çalışan/sektör değiştiren)
+10. **"Hedefin ne?"** (multi-select 1-3, 8 seçenek)
+11. **"Sınav tarihin var mı?"** (conditional, DatePicker)
+12. **"Seviyeni nasıl tarif edersin?"** (4 seçenek + emin değilim)
+13. **"Hangi alanlarda zorlanıyorsun?"** (multi-select 7 alan)
+14. **"Konularda rahatlık?"** (rol bazlı 4 madde, 1-5 slider)
+15. **"Günde ne kadar zaman?"** (5/10/15/30/60+ dk)
+16. **"En aktif saatler?"** (multi-select 4 dilim)
+17. **Placement test açılışı** (panik yapmama mesajı)
+18-26. **Placement test 10 soru** (audio + image + multi-format, A1→C1 progression)
+27. **Sonuç ekranı** (level rozet + 6 alan bar grafiği + spesifik vaat)
+28. **Kişisel plan önerisi** (timeline + günlük dakika + tahmini sonuç)
+29. **Bildirim izni + onay** (3 spesifik trigger seçimi)
 
 ### Ana Tab (5)
 9. Ana Sayfa (günün görevleri, streak, "Kaldığın yerden devam"), 10. Öğren (ders ağacı), 11. Pratik (quiz + AI konuşma + sınav hub), 12. Lig, 13. Profil
@@ -1049,7 +1067,633 @@ Sprint 0'da domain + App Store + ticari marka kontrolü yapılacak. Aşağıdaki
 
 ---
 
-## 21. Özet Değişiklikler (Önceki Plan'a Göre)
+## 21. Faz Mimarisi — Yıllar Süren Seviye Sistemi (Duolingo Modeli)
+
+### Felsefe
+Kullanıcı bir paneli (rolü) **3-4 yılda bile bitiremez**. Tekrar yok — her egzersiz eşsiz. SRS sadece terim seviyesinde tekrar yapar. Bu yapı uzun vadeli **premium retention**'ı maksimize eder (3 yıl × ₺2.499 = ₺7.497 LTV/kullanıcı).
+
+### Hiyerarşi
+```
+Rol → Faz (A1-Captain) → Modül → Ünite → Ders → Egzersiz
+```
+
+### Pilot Rolü Sayısal (örnek)
+| Faz | Süre | Modül | Ünite | Ders | Egzersiz |
+|---|---|---|---|---|---|
+| Faz 1 — A1 Foundation | 3-4 ay | 4 | 40 | 200 | ~1.200 |
+| Faz 2 — A2 Building | 4-5 ay | 5 | 60 | 300 | ~1.800 |
+| Faz 3 — B1 Operational | 5-6 ay | 5 | 70 | 350 | ~2.100 |
+| Faz 4 — B2 Professional ⭐ ICAO 4 | 6-8 ay | 6 | 80 | 400 | ~2.400 |
+| Faz 5 — C1 Expert | 6-12 ay | 6 | 80 | 400 | ~2.400 |
+| Faz 6 — Captain Mastery ♾️ | Sürekli | 4+/yıl | 40+/yıl | 200+/yıl | ~1.200+/yıl |
+| **Toplam (Faz 1-5)** | **2-3 yıl** | **26** | **330** | **1.650** | **~9.900** |
+
+### Faz İçerikleri (Pilot)
+
+**Faz 1 — A1 Foundation:**
+- Modül 1: Cockpit & Aircraft Basics
+- Modül 2: Basic ATC Communication (NATO phonetics, sayılar, frekanslar)
+- Modül 3: Pre-Flight Procedures
+- Modül 4: Numbers & Time in Aviation
+
+**Faz 2 — A2 Building:**
+- Routine ATC Phraseology (60 ünite)
+- Aircraft Systems Operational (APU, bleed air, autopilot, FMS)
+- Approach & Landing Basics (ILS, VOR, GPS)
+- Weather Vocabulary (METAR full decode, TAF, SIGMET)
+- Cabin Coordination
+
+**Faz 3 — B1 Operational:**
+- Non-Routine ATC (vectors, holding, conflicts)
+- Emergency Communication (MAYDAY, PAN-PAN, squawk 7500/7600/7700)
+- NOTAM & Weather Advanced
+- International Operations Basics (accent variation)
+- Critical Thinking Aviation
+
+**Faz 4 — B2 Professional (ICAO 4 ready):**
+- ICAO 4 Mock Exam Series (10 set × 4 görev)
+- Mülakat hazırlık (THY/Pegasus/Emirates özel)
+- Real-World Scenarios (bird strike, engine failure, medical)
+- Multi-Aircraft Coordination (TCAS RA)
+- Documentation in English (ASR, tech log)
+- ICAO 4 Final Prep
+
+**Faz 5 — C1 Expert:**
+- Type Rating English (B737/A320/A330)
+- International Operations (ETOPS, polar, trans-oceanic, CPDLC)
+- CRM & Leadership English
+- Incident & Investigation
+- Aviation Law & Regulations
+- Continuous Professional Development
+
+**Faz 6 — Captain Mastery (sürekli):**
+- Aylık 8-12 yeni ders
+- Vaka çalışmaları, kaza analizleri
+- Industry interview series
+- Type-specific updates
+- Premium Plus + B2B özel
+
+### Tekrarsızlık Mekanikleri
+- **Lesson level:** Bir ders bir kez tamamlanır, "completed" damgası alır. Skor <%80 ise 1 hafta sonra otomatik review queue'ya girer.
+- **Term level (SRS):** 9.900 egzersiz eşsiz; aynı terim 3-5 farklı bağlamda. SM-2 algoritması terimi kullanıcının unutma eğrisine göre çıkarır.
+- **Skill decay:** 30 gün dokunulmayan skill strength % düşer, refresh rozeti yanar (Duolingo crown sistemi).
+
+### Unlock Mantığı
+- Yeni kullanıcı: sadece Faz 1, Modül 1, Ünite 1 açık.
+- Ünite tamamlandı → sıradaki ünite + ⭐ rozet
+- Modül tamamlandı → 🏆 rozet + 200 XP bonus
+- Faz tamamlandı → 🌟 büyük kutlama + level rozeti (örn: "A1 → A2") + paylaşılabilir
+- Faz 4 sonu → "ICAO 4 hazırsın" PDF diploması (premium özel)
+
+### Yıllık Tamamlama Hızı
+| Kullanıcı | Günlük | Yıllık ders | Tamamlanan |
+|---|---|---|---|
+| Hafif | 5 dk | 200 | A1 + A2'nin yarısı |
+| Düzenli (önerilen) | 15 dk | 600 | A1 + A2 + B1 (3 yıl total) |
+| Ciddi | 30 dk | 1.200 | A1-B2'nin yarısı (2 yıl) |
+| Yoğun | 60 dk | 2.000 | A1-B2 tamamı (1 yıl) |
+
+### İçerik Üretim Roadmap
+- **MVP (Ay 0-4):** Faz 1 tam (200 ders) + Faz 2 ilk modülü (60 ders) = 260 ders
+- **Ay 4-12:** Aylık 80-100 yeni ders, Faz 2-3 dolar = ~850 ders
+- **Yıl 2:** Faz 4 + mülakat, ICAO 4 ready = ~1.500 ders
+- **Yıl 3+:** Faz 5 + Faz 6 + diğer roller paralel
+- **Solo + AI üretim kapasitesi:** ~3.000 ders/yıl
+
+### Conversion Etkisi
+- Yıllık abone × 3 yıl premium = **₺7.497 LTV** (1 kullanıcı için)
+- "Bitmeyen yolculuk" → düzenli streak → düşük churn (yıllık <%15 hedef)
+- Faz atlama paylaşılır → organik viral
+- ICAO 4 diploması = somut sonuç → ağızdan ağıza
+
+---
+
+## 22. Detaylı Onboarding İçeriği — Conversion Optimized
+
+### Welcome 3 Slayt (Conversion Psikolojisi)
+
+**Slayt 1 — Problem-Empati:**
+- Başlık: "ICAO 4'ten geçemeyenlerin %73'ü İngilizce yetersizliğinden."
+- Alt: "Sınava çalışmadın değil — havacılığın diliyle çalışmadın."
+- Görsel: lacivert gradient + soru işareti lottie
+
+**Slayt 2 — Çözüm-Magic:**
+- Başlık: "AI öğretmenle gerçek pilot dilinde konuş."
+- Görsel: telefon mockup + canlı AI konuşma demosu (kullanıcı bubble + AI cevap + 6-alan rubric)
+- 3 madde: AI konuşma · ICAO 4 simülatörü · Telaffuz analizi
+
+**Slayt 3 — Acil-CTA:**
+- Başlık: "İlk 7 gün senden değil. Bizden."
+- Alt: "Tüm premium özellikler. Sıfır taahhüt."
+- 3 güvence rozeti: kredi kartı şart değil · tek dokunuşta iptal · hatırlatma var
+- CTA primary: amber "Hadi başlayalım" (premium hissi)
+- Sosyal kanıt: "4.832 kullanıcı şu an öğreniyor"
+
+### 7 Conversion Manivelası
+1. Spesifik vaat (5 ayda B1→B2, ICAO 4 geçeceksin)
+2. Yatırım psikolojisi / sunk cost (4 dk profil doldurma)
+3. Aha anı erken (ilk 60 sn AI demo)
+4. Sosyal kanıt (kullanıcı sayısı, üniversite logoları)
+5. Loss aversion (streak gün 1'den başlar)
+6. Tatlı kapı (7 gün premium ücretsiz tadımlık)
+7. Görsel free vs premium karşılaştırma
+
+### Tanıma Soruları (8 ekran, kişiselleştirme verisi)
+1. Rol seçimi (5 kart, zorunlu)
+2. Durum (öğrenci/mezun/çalışan/sektör değiştiren)
+3. Hedef multi-select (1-3, 8 seçenek: ICAO 4, SHGM, mülakat, kariyer, yurtdışı, vs)
+4. Sınav tarihi (DatePicker — conditional)
+5. Self-reported level (A1-A2 / B1-B2 / C1+ / emin değilim)
+6. Zorluk alanları multi-select (7 alan)
+7. Konu rahatlığı (rol bazlı 4 madde, 1-5 slider)
+8. Günlük süre + aktif saatler
+
+### Placement Test (10 soru, ~3 dk)
+- Adaptive zorluk (A1→C1 progression)
+- Kategori dağılımı: vocabulary, phraseology, listening, reading, grammar, critical
+- Audio + image + multi-format
+- "Bilmiyorum" seçeneği (panik önleme)
+- Timer YOK (stres azalt)
+- Cevap sonrası 2-saniye explanation (öğrenmeden devam etme)
+
+### Sonuç & Plan
+- Animasyonlu level rozeti (B1, vs)
+- 6 alan bar grafiği (güçlü/zayıf görsel)
+- Spesifik vaat: "5 ayda B2'ye, günde 15 dk yeter"
+- Kişisel timeline preview
+- Bildirim izni 3 spesifik trigger seçimi (streak, görev, lig)
+
+### Toplanan Profil Verisi (14 alan)
+```json
+{
+  "role", "status", "goals[]", "exam_type", "exam_date",
+  "self_reported_level", "weak_areas[]", "comfort_levels{}",
+  "daily_goal_minutes", "active_hours[]",
+  "notification_prefs{}", "placement_test{level, score, by_category}"
+}
+```
+
+---
+
+## 23. Vocabulary Bankası — Hazır 150 Terim (3 rol)
+
+### Pilot (50)
+**Kategori dağılımı:**
+- Kokpit & Parçalar: 15 (cockpit, fuselage, wing, flap, aileron, rudder, elevator, throttle, yoke, landing gear, spoiler, winglet, pitot tube...)
+- Navigasyon: 8 (heading, altitude, flight level, waypoint, VOR, ILS, holding pattern, magnetic course)
+- Hava Durumu: 8 (METAR, TAF, ATIS, turbulence, wind shear, icing, CB, ceiling)
+- Acil Durum: 6 (mayday, pan-pan, emergency descent, ditching, squawk 7700, brace position)
+- ATC Frazeoloji: 8 (cleared for takeoff, line up and wait, hold short, taxi, pushback, wilco, roger, say again)
+- Aletler: 5 (altimeter, attitude indicator, transponder, TCAS, autopilot)
+
+### Kabin Memuru (50)
+**Kategori dağılımı:**
+- PA Anonsları & Yolcu İletişimi: 12 (boarding, welcome aboard, fasten seatbelt sign, cabin lighting, duty-free, customs form, transfer, baggage claim, local/Zulu time...)
+- Acil Durum & Emniyet: 10 (doors armed, brace position, evacuation slide, emergency exit, life vest, oxygen mask, ditching, fire extinguisher, AED, first aid)
+- Kabin Servisi & Galley: 8 (galley, trolley, catering, dietary restriction, allergen, crew rest, crew meal)
+- Özel Yolcu: 5 (SSR, UM, MEDA, INAD, DEPU, WCHR/WCHS/WCHC)
+- Pilot↔Kabin Koordinasyon: 5 (interphone, all-call, cabin secure, ready for takeoff, cabin crew prepare for departure)
+- Kalkış & Boarding: 5 (boarding gate, jet bridge, last-minute boarding, headcount)
+- Mülakat & Sektör: 5 (competency interview, group exercise, height-reach test, customer service)
+
+### Teknisyen (50)
+**Kategori dağılımı:**
+- Dokümantasyon: 8 (AMM, CMM, IPC, WDM, TSM, SRM, ATA 100, Service Bulletin)
+- ATA Chapter sistemleri: 10 (ATA 21/24/27/28/29/32/33/49/71/79)
+- Aletler & Ekipman: 7 (torque wrench, micrometer, caliper, borescope, multimeter, jack, lockwire pliers)
+- Muayene & NDT: 7 (NDT, MPI, FPI, eddy current, ultrasonic, visual, borescope inspection)
+- Tamir & Hasar: 6 (defect entry, damage limit, structural repair, patch, corrosion, fatigue crack)
+- Sertifikasyon & Quality: 6 (EASA Form 1, FAA 8130-3, CRS, CRP, RII, AOG, dirty fingerprint sheet)
+- Bağlantı elemanları: 6 (self-locking nut, cotter pin, lockwire, torque seal, shim, bushing)
+
+### Detaylı YAML örneği hazır 13 terim
+**Pilot:** cockpit, cleared for takeoff, METAR
+**Kabin:** cabin crew prepare for departure, doors armed and cross checked, unruly passenger, brace position, special service request
+**Teknisyen:** AMM, torque wrench, NDT, Service Bulletin, EASA Form 1
+
+Her örnek şu alanlarla: term, term_tr, pronunciation, category, difficulty, definition (EN+TR), 5 example sentence, ICAO/AMM reference, related_terms, audio_url, image_url placeholder.
+
+### Sprint 9 Üretim Planı (Kalan 650 Terim)
+- Pilot 250 yeni → toplam 300
+- Kabin 200 yeni → toplam 250
+- Teknisyen 200 yeni → toplam 250
+- **Hafta 1:** Claude üretim + GPT-4 cross-validation
+- **Hafta 2:** ElevenLabs ses üretimi (~1 saat ses), görsel (Unsplash + Midjourney)
+- **Maliyet:** ~$100 (~₺3.700)
+
+---
+
+## 24. Faz 1 Modul 1 Detaylı Müfredat (Pilot — "Cockpit & Aircraft Basics")
+
+### Özet
+- 10 ünite × 5 ders = 50 ders, ~300 egzersiz, ~80 yeni terim, ~10-12 saat çalışma
+- Free: Ünite 1-5 (50%), Ünite 6+ premium gate
+- Tamamlama rozeti: "Cockpit Master" + 1000 XP bonus
+
+### Ünite Yapısı
+
+| # | Ünite | Hedef | Yeni Terim |
+|---|---|---|---|
+| 1 | Aircraft Anatomy | Uçak temel parçaları | fuselage, wing, tail, cockpit, engine, landing gear |
+| 2 | Cockpit Components | Yoke, throttle, instruments | yoke, throttle, altimeter, attitude indicator |
+| 3 | Engine Basics | Jet vs turboprop, başlat seq | jet engine, turboprop, RPM, EGT |
+| 4 | Landing Gear & Brakes | Gear ops, anti-skid | nose gear, main gear, three greens, anti-skid |
+| 5 | Wings & Control Surfaces | Lift, flap, spoiler, slat | lift, flap, spoiler, slat, angle of attack |
+| 6 | Mid-Module Quiz Checkpoint | Tekrar + paywall hook | 0 (recap) |
+| 7 | Fuel System Basics | Jet A, FOB, refuel | Jet A, FOB, fuel burn, refueler |
+| 8 | Electrical System Basics | Power, busses | generator, APU, AC/DC bus, GPU |
+| 9 | Hydraulic System Basics | Hydraulic ops, pump | EDP, EMP, 3000 PSI, manual reversion |
+| 10 | Final Test + Cockpit Master | Modül recap + AI roleplay + 100q test | 0 (recap) |
+
+### Her Derste Standart Yapı (5-6 egzersiz)
+1. Image labeling / matching (görsel anlama)
+2. Multiple choice (vocabulary)
+3. Boşluk doldurma (dialog context)
+4. Audio listening (ATC veya kokpit konuşması)
+5. Pronunciation drill (Whisper analizi)
+6. Mini quiz (drag-drop sentence)
+
+### Conversion Hook'ları
+- Ünite 1-5: tamamen free → aha anı + alışkanlık
+- Ünite 6 mini paywall: "Modülün yarısı bitti"
+- Ünite 7+ premium gate: tam ekran trial CTA
+- Ünite 10 rozeti: paylaşılabilir kart (sosyal viral)
+- Trial → paid dönüşüm beklenti: %65 (sunk cost + completion bias)
+
+### Ders 1.1 Örnek Detay (referans)
+**Ders:** "Main Aircraft Parts" · 50 XP · 5 dk · 6 egzersiz
+1. Görsel + isim eşleştirme (6 part, 6 kelime)
+2. Multiple choice — fuselage tanımı
+3. Dialog boşluk — Captain & engineer
+4. Listening — ATC clip "request taxi"
+5. Pronunciation — fuselage /ˈfjuː.zəˌlɑːʒ/
+6. Sentence build — "The pilot is in the cockpit"
+
+### Üretim Maliyeti (Modül 1)
+- 50 ders × 6 egzersiz = 300 egzersiz
+- Claude: ~$15 · GPT-4 valid: ~$10 · ElevenLabs ses: ~$8 · Görsel: ~$25
+- **Toplam: ~$60 (~₺2.200), 2-3 günlük üretim**
+
+### Modul 2 Detayı (Basic ATC Communication)
+10 ünite × 5 ders = 50 ders, ~12-14 saat. **Modul 2 rozet: "Radio Operator"** + 1.500 XP.
+
+| # | Ünite | Anahtar İçerik |
+|---|---|---|
+| 11 | NATO Phonetic Alphabet | Alpha-Zulu (26 kelime) |
+| 12 | Numbers Pronunciation | "tree", "fife", "niner" |
+| 13 | Call Signs | Turkish, Speedbird, tail number |
+| 14 | Roger / Wilco / Affirmative | Standart cevap kelimeleri |
+| 15 | Frequency Reading | "one one eight decimal one" |
+| 16 | Time Reading | UTC / Zulu / local |
+| 17 | Basic Greetings | Initial contact, polite forms |
+| 18 | First Contact Phrases | Position, intent, squawk |
+| 19 | Ending Communication | Sign-off, 121.5 emergency |
+| 20 | Recap + Final Test | 75 soru + AI roleplay (premium) |
+
+### Modul 3 Detayı (Pre-Flight Procedures)
+10 ünite × 5 ders = 50 ders, ~12-14 saat. **Modul 3 rozet: "Pre-Flight Pro"** + 2.000 XP.
+
+| # | Ünite | Anahtar İçerik |
+|---|---|---|
+| 21 | Flight Plan Basics | ICAO 4444 format, sections |
+| 22 | Weather Briefing | METAR full decode, TAF |
+| 23 | NOTAM Vocabulary | Q-code, abbreviations |
+| 24 | Walk-around Inspection | Damage vocab, defect entry |
+| 25 | Cabin Briefing | Captain's brief, doors armed |
+| 26 | Pushback Communication | "request push and start" |
+| 27 | Engine Start | Sequence, hot start, hung start |
+| 28 | Taxi Phrases | Taxiway IDs, intersection |
+| 29 | Holding Short | "hold short", "line up and wait" |
+| 30 | Recap + Final Test | 100 soru + AI ground roleplay (premium) |
+
+### Modul 1+2+3 Birlikte (MVP Faz 1 ilk %50)
+- 30 ünite × 5 ders = **150 ders, ~900 egzersiz, ~280 yeni terim, ~36 saat içerik**
+- Free içerik: 75 ders (her modülün ilk 5 ünitesi) → kullanıcı 1 ay bağlanır
+- Premium gate'leri: her modülün 6. ünitesi + 10. ünite AI roleplay
+- 3 rozet: Cockpit Master + Radio Operator + Pre-Flight Pro
+- Free → trial dönüşüm: ~%50 (3 modül sonu kümülatif)
+- Trial → paid: %65-75 (sunk cost yüksek)
+- **Üretim maliyeti: ~$170 (₺6.300), 1 hafta solo + Claude**
+
+### Modul 4 Detayı (Numbers & Time in Aviation) — Faz 1 Final
+10 ünite × 5 ders = 50 ders, ~12-14 saat. **Modul 4 rozet: "Numbers Specialist"** + 2.500 XP. Ünite 40 = **A1 → A2 level up** event (paylaşılabilir, yıllık %25 indirim teklifi).
+
+| # | Ünite | Anahtar İçerik |
+|---|---|---|
+| 31 | Heading (000-360) | Compass, "two seven zero", reciprocal |
+| 32 | Altitude (Feet, FL) | Transition altitude, climb/descend phraseology |
+| 33 | Speed (Knots, Mach) | KTS, Mach .78, indicated/ground/true airspeed |
+| 34 | Distance (NM, SM) | Nautical mile, DME, RVR |
+| 35 | Frequency Advanced | Multi-channel, comm loss, 7600 squawk |
+| 36 | Time Conversion | UTC math, daylight saving, duty time |
+| 37 | Date Format | DDMMYY, NOTAM validity, schedule days |
+| 38 | Quantity & Volume | MTOW, ZFW, fuel lbs/kg/L, CG |
+| 39 | Mathematical Operations | %, ratio, pilot math (GS × time = distance) |
+| 40 | Module Recap + **A1 Final Test** | Faz 1 sentezi + level-up ceremony |
+
+### Faz 1 (Pilot) Tamamlanma Özeti
+- **40 ünite × 5 ders = 200 ders, ~1.200 egzersiz, ~350 yeni terim, ~50 saat**
+- 4 büyük rozet: Cockpit Master, Radio Operator, Pre-Flight Pro, Numbers Specialist
+- A1 Graduate sertifikası + paylaşılabilir kart
+- Free içerik: 100 ders (her modülün ilk 5 ünitesi)
+- Faz 1 boyunca conversion noktaları: 4 modül paywall + 1 mega level-up
+- **Beklenen free → trial: %55-60 (Faz 1 sonu kümülatif)**
+- **Trial → paid: %75-80 (50 saat yatırım = yüksek sunk cost)**
+
+### Faz 1 Üretim Maliyeti
+- 200 ders × 6 egzersiz = 1.200 egzersiz
+- Claude + GPT-4 + ElevenLabs + görsel + lisanslı ATC clips: **~$230 (~₺8.500)**
+- Üretim süresi: **2 hafta solo + Claude**
+
+### Modul 5 Detayı (Routine ATC Phraseology) — Faz 2 başlangıç (A2)
+10 ünite × 5 ders = 50 ders, ~14-16 saat. **Modul 5 rozet: "ATC Master"** + 2.500 XP. A2 sertifikasına %20 ilerleme.
+
+**Faz 2 farkı:** Faz 1 tek tek kelime/cümle öğretti. Faz 2 **dialog akışında 5-7 mesajlık ATC senaryolarında** doğru cevap seçilir. AI konuşma egzersizleri ~25 (Faz 1'de ~10 idi).
+
+| # | Ünite | Anahtar İçerik |
+|---|---|---|
+| 41 | Departure Phraseology | Pushback → cruise tam dialog |
+| 42 | Climb Phraseology | "Climb to FL", step climbs, restrictions |
+| 43 | Cruise & En-Route | Position reports, freq change, direct routing |
+| 44 | Descent Phraseology | TOD, speed restrictions, stepped descent |
+| 45 | Approach Phraseology | ILS, vectors to final, established |
+| 46 | Landing Phraseology | "Cleared to land", go-around, taxi to gate |
+| 47 | Vector Instructions | Headings, vector reasons, resume own nav |
+| 48 | Speed & Altitude Restrictions | Cross at/above/below, "unable" usage |
+| 49 | Route Changes & Re-Routing | Hold patterns, EFC, diversion, fuel emergency |
+| 50 | Recap + ATC Master Final | **Pilot↔AI ATC** full flight roleplay (premium) + 100 soru test |
+
+### Modul 5 Üretim Maliyeti
+- 50 ders × 7 egzersiz = 350 egzersiz + 25 AI konuşma scenario
+- Claude + GPT-4 + ElevenLabs + görsel + ATC lisans: **~$110 (~₺4.000)**
+- Üretim süresi: **1 hafta solo + Claude**
+
+### Modul 6-26 (Faz 2-5 Geri Kalan)
+Aynı yapı, A2→C1 progression. **MVP'de Modul 4 (Faz 1 final) + Modul 5 üretilir.** Sonrası MVP yayın sonrası aylık 1-2 modül.
+
+**Yıl 1 sonu hedef içerik:**
+- Faz 1 tam (Modul 1-4, 200 ders)
+- Faz 2'nin %50'si (Modul 5-7, ~150 ders)
+- **Toplam: ~350 ders Pilot rolünde ulaşılabilir içerik**
+
+**Yıl 2 sonu hedef:**
+- Faz 1-3 tam (Modul 1-14, ~700 ders)
+- B1 + ICAO 4 hazırlık başlangıç
+
+**Yıl 3 sonu hedef:**
+- Faz 1-5 tam (Modul 1-26, ~1.650 ders)
+- A1→C1 tam yolculuk, Captain Mastery (Faz 6) sürekli ekleme
+
+---
+
+## 25. Marketing & ASO Copy — Lansman Paketi
+
+### App Store / Play Store Listing
+**Title:** AirSpeak: ICAO Hazırlık (TR) / AirSpeak: Aviation English (EN)
+**Subtitle:** Pilot İngilizcesi ve sınav (TR) / AI tutor for ICAO 4 + pilots (EN)
+**Promotional Text (170c):** Yapay zeka öğretmenle pilot İngilizcesi öğren. ICAO Seviye 4 simülatörü, telaffuz analizi, Türkçe arayüz. İlk 7 gün ücretsiz.
+**Keywords:** ICAO,havacılık,ingilizce,pilot,kabin memuru,SHGM,YDS,THY,mülakat,uçak (TR) / ICAO,aviation,english,pilot,ATC,airline,interview,phraseology,flight (EN)
+**Description (4000c):** Tam metin TR + EN, 5 ana özellik vurgusu (AI konuşma, ICAO 4 simülatörü, telaffuz, SRS, sınav günü modu) + 3 fiyat planı + güvence cümleleri.
+
+### Landing Page (airspeak.app)
+**Hero H1:** "Pilot İngilizcesinde Ustalaş. ICAO 4'ü Geç." / "Master Aviation English. Pass ICAO 4."
+**Subhead:** Yapay zeka öğretmenle gerçek pilot dilinde konuş. ICAO Seviye 4 simülatörü. Telaffuz analizi. İlk 7 gün ücretsiz.
+**3 Feature kolon:** AI konuşma · ICAO 4 simülatörü · Telaffuz analizi
+**Testimonial:** 3 ⭐⭐⭐⭐⭐ alıntı (THY pilot, ATC trainee, kabin memuru)
+**Pricing:** 3 plan kart yan yana (Standart ₺349, Yıllık ₺2.499 EN POPÜLER, Öğrenci ₺1.499)
+**FAQ:** 6 sık sorulan (yeterlilik, free içerik, KVKK, cihaz, içerik tazeliği, eğitmen onayı)
+
+### ProductHunt Launch
+**Tagline:** "AI tutor for aviation English & ICAO 4 prep" (45c)
+**Description:** 260c hikaye anlatımı (problem-çözüm-CTA)
+**Maker comment:** Solo founder hikayesi + Claude/Whisper teknik detay + ilk 50 yoruma 1 ay premium
+
+### Sosyal Medya Bios
+- **Twitter (160c):** ✈️ AI tutor for aviation English & ICAO 4 prep · @AnthropicAI ile · airspeak.app
+- **Instagram (150c):** ✈️ Havacılık İngilizcesi mobil uygulaması · AI öğretmen + ICAO 4 · İlk 7 gün ücretsiz
+- **TikTok (80c):** ✈️ Pilot olmak için İngilizce öğret bizim AI'mız · 👇 İndir
+- **LinkedIn:** Şirket sayfası, AI-first aviation English platform tanımı, KVKK + GDPR vurgusu
+- **YouTube:** Kanal description: ICAO 4 prep + ATC phraseology + pilot interviews + pronunciation tutorials
+
+### YouTube/TikTok İlk Video Script (45 sn)
+- Hook (0-5s): "Pilot olmak istiyorsun ama ICAO 4'ten geçemiyorsun?" → "ÇÜNKÜ HAVACILIĞIN DİLİNİ ÖĞRENMİYORSUN"
+- Problem (5-15s): %73 istatistiği + Duolingo/Cambly limitleri
+- Solution (15-30s): AirSpeak özetlenir, AI konuşma + ICAO 4 sim demo
+- Demo (30-40s): Telefonda canlı kullanım
+- CTA (40-45s): airspeak.app + indir butonları
+- Aviation hashtag setiyle (#pilot #icao #avgeek #thy)
+
+### Email Sequence (5 e-posta, trial cycle)
+1. **Welcome (saat 0):** "Hoş geldin Kaptan" + ilk dersi başlat CTA
+2. **Day 3:** "Streak 3. günde — kaybetme" + bilim+başarı oranı
+3. **Day 6 (trial son):** "Yarın trial bitiyor" + 3 seçenek + yıllık %40 indirim
+4. **Trial bitti (downgrade):** "Ücretsiz tier'a düştün" + sınır karşılaştırması + hızlı geri dönüş CTA
+5. **30 gün inaktif (winback):** "Seni özledik" + 1 ay ücretsiz teklif
+
+### Press Release (TR)
+**Başlık:** "Türkiye'nin İlk Yapay Zeka Destekli Havacılık İngilizcesi Uygulaması AirSpeak Yayında"
+**Lid + kurucu alıntısı + 3 istatistik + özellikler + fiyat + iletişim**
+
+### Influencer Outreach Şablonu
+- Hedef: aviation TikTok creators (50K-500K), pilot YouTuber'lar, kabin Instagram'cıları
+- Teklif: 1 yıl ücretsiz Premium + opsiyonel %30 referral komisyonu
+- Cold mail formatı: kişiselleştirme + ürün özeti + iki teklif + Loom demo opsiyonu
+
+### SEO Blog Post Konuları (Yıl 1)
+1. "ICAO Level 4 Sınavı: Tam Hazırlık Rehberi 2026"
+2. "THY Pilot Mülakatı Soruları ve Cevapları"
+3. "METAR Decode: Pilotların Bilmesi Gereken 50 Kısaltma"
+4. "NATO Fonetik Alfabesi Tam Liste"
+5. "Pegasus / AnadoluJet / Sun Express Mülakat Karşılaştırması"
+6. "ICAO 4 Telaffuz Tuzakları: Türk Pilotların En Çok Yaptığı Hatalar"
+7. "Kabin Memuru THY Mülakat Kılavuzu"
+8. "Ücretsiz vs Ücretli Aviation English Uygulamaları"
+
+Her blog post 1500-2500 kelime, app download CTA içerir. Yıl 1 hedef: 24 blog post (haftalık 1).
+
+### Lansman Önceliği (Hangi Kanal Önce?)
+1. **Hafta 1:** App Store + Play Store submission, landing page live
+2. **Hafta 2:** ProductHunt launch (Pazartesi sabahı 00:01 PST)
+3. **Hafta 3:** Aviation TikTok 5 micro-influencer outreach
+4. **Hafta 4:** İlk press release Türk teknoloji ve havacılık medyasına
+5. **Sürekli:** Twitter/Instagram günlük post, blog 2 hafta 1 post
+
+---
+
+## 26. Teknisyen Faz 1 Detaylı Müfredat (A1 Foundation)
+
+### Özet
+- 4 Modul × 10 Ünite × 5 Ders = **200 ders, ~1.200 egzersiz, ~400 yeni terim, ~55 saat**
+- 4 büyük rozet + A1 Graduation
+- Üretim maliyeti: ~$220 (~₺8.100), 2 hafta solo + Claude
+
+### Modul Yapısı
+
+**Modul T1 — Tools & Workshop Basics**
+| # | Ünite | Anahtar İçerik |
+|---|---|---|
+| 1 | Hand Tools | wrench, spanner, screwdriver, hammer, pliers, ratchet |
+| 2 | Measuring Tools | micrometer, vernier caliper, dial gauge, feeler gauge |
+| 3 | Power Tools | drill, grinder, impact wrench, rivet gun, torque wrench |
+| 4 | Safety Equipment (PPE) | safety shoes, gloves, goggles, ear protection, hard hat |
+| 5 | Workshop Layout | workbench, tool board, hangar bay |
+| 6 | Quiz Checkpoint | recap |
+| 7 | Tool Storage & FOD Prevention | FOD walk, magnetic pickup, shadow board |
+| 8 | Tool Calibration | calibration sticker, due date, expired |
+| 9 | Tool Requisition & Return | sign out, return, log book |
+| 10 | Final + "Tools Specialist" rozet | recap |
+
+**Modul T2 — AMM & Documentation**
+| # | Ünite | Anahtar İçerik |
+|---|---|---|
+| 11 | What is AMM? | OEM, manufacturer, revision |
+| 12 | ATA 100 Chapter System | ATA 21/24/27/28/29/32/49/71 |
+| 13 | Reading AMM Tasks | job card, sub-task, prerequisites |
+| 14 | IPC | part number, figure, item, effectivity |
+| 15 | WDM Basics | schematic, wire bundle, connector |
+| 16 | Quiz Checkpoint | recap |
+| 17 | Service Bulletins | SB, alert, recommended, modification |
+| 18 | Airworthiness Directives | AD, FAA, EASA, compliance, deadline |
+| 19 | Document Revisions | effective date, withdrawn, superseded |
+| 20 | Final + "Documentation Pro" rozet | recap |
+
+**Modul T3 — Aircraft Systems Overview**
+| # | Ünite | Anahtar İçerik |
+|---|---|---|
+| 21 | Powerplant Basics | jet engine, fan, compressor, turbine, N1/N2 |
+| 22 | Hydraulic System | reservoir, pump, accumulator, actuator |
+| 23 | Electrical System | battery, generator, bus, circuit breaker |
+| 24 | Pneumatic / Bleed Air | bleed air, pressurization, air conditioning |
+| 25 | Fuel System | fuel tank, pump, filter, vent, drain |
+| 26 | Quiz Checkpoint | recap |
+| 27 | Flight Controls | aileron, elevator, rudder, cable, surface |
+| 28 | Landing Gear | strut, wheel, tire, brake, retraction |
+| 29 | Avionics Intro | radio, navigation, autopilot, instruments |
+| 30 | Final + "Systems Aware" rozet | recap |
+
+**Modul T4 — Inspection & Hardware (Faz 1 Final)**
+| # | Ünite | Anahtar İçerik |
+|---|---|---|
+| 31 | Visual Inspection | visual check, abnormal, anomaly |
+| 32 | Common Defects | crack, corrosion, dent, scratch, fatigue |
+| 33 | Fasteners | bolt, nut, washer, thread, hex, grip length |
+| 34 | Lockwire & Torque Seal | safety wire, witness mark |
+| 35 | Cotter Pins & Self-Locking Nuts | castle nut, prevailing torque |
+| 36 | Quiz Checkpoint | recap |
+| 37 | NDT Introduction | non-destructive, MPI, FPI, eddy current |
+| 38 | Quality Control Basics | RSQM, inspector, hold tag, release |
+| 39 | Defect Reporting | dirty fingerprint, write-up, report |
+| 40 | Final + **"A1 Technician Apprentice"** rozet 🌟 | A1 graduation |
+
+### Conversion Strategy
+- Free içerik: 100 ders (her modulün ilk 5 ünitesi)
+- Premium gate'leri: 6. + 10. ünite (×4 modül = 8 paywall hook)
+- A1 Graduation event: paylaşılabilir kart + yıllık %25 indirim
+- Free → trial: %50-55, Trial → paid: %70-75
+- Pilot'a göre Pro tier yükseltme oranı daha düşük (mentor ihtiyacı az)
+
+### Pilot vs Teknisyen Karşılaştırma
+| | Pilot Faz 1 | Teknisyen Faz 1 |
+|---|---|---|
+| Ders | 200 | 200 |
+| Yeni terim | ~350 | ~400 |
+| Süre | ~50 saat | ~55 saat |
+| AI konuşma egzersiz | ~10 (Faz 1) | ~5 (daha az dialog) |
+| Görsel ihtiyacı | Orta | **Yüksek** (alet, AMM, hasar foto) |
+| Üretim maliyeti | ~$230 | ~$220 |
+| Conversion vurgusu | ATC simülasyon | AMM/RSQM derinlik |
+
+### MVP'de Yer Alacak İçerik (Toplam)
+- **Pilot Faz 1:** 200 ders ✅ Detaylı planlandı
+- **Pilot Faz 2 Modul 5:** 50 ders ✅ Detaylı planlandı
+- **Teknisyen Faz 1:** 200 ders ✅ Detaylı planlandı
+- **TOPLAM MVP içerik haritası: 450 ders** (Sprint 9 üretim hedefi)
+
+---
+
+## 27. İçerik Üretim Şablonları (Sprint 9 İçin Hazır)
+
+### Vocabulary Term Şeması
+```yaml
+id, term, term_tr, pronunciation_phonetic
+category, difficulty (1-5)
+definition_en, definition_tr
+examples: 5 cümle (en + tr)
+icao_reference
+related_terms[]
+audio_url (ElevenLabs üretim)
+image_url
+```
+
+### Placement Test Question Şeması
+```typescript
+{
+  id, level (A1-C1), category, role,
+  question_en, options[4], correct_id,
+  audio_url?, image_url?,
+  explanation_tr, icao_reference?
+}
+```
+
+### Lesson Şeması (yeni — faz mimarisinde)
+```typescript
+{
+  id, unit_id, faz, modul, unite, lesson_order,
+  title_tr, title_en,
+  type: 'vocabulary' | 'dialogue' | 'listening' | 'reading' | 'pronunciation' | 'conversation',
+  prerequisite_lessons[],
+  estimated_minutes,
+  xp_reward, is_premium,
+  exercises: Exercise[],
+  validation_status, generated_by, icao_reference
+}
+```
+
+### Üretim Prompt (Claude için)
+```
+Generate {count} aviation English lesson(s) for AirSpeak.
+Faz: {A1|A2|B1|B2|C1|Captain}
+Role: {pilot|cabin|technician|ground|student}
+Module: {moduleSlug}
+Topic: {topicDescription}
+
+Constraints:
+- Reference ICAO Doc 9432 standard phraseology
+- Each lesson has 5-7 exercises (mix of types)
+- Realistic aviation context, no political/sensitive scenarios
+- Cultural neutrality
+- A1: simple vocabulary, present tense
+- A2: routine scenarios
+- B1: non-routine, emergency intro
+- B2: ICAO 4 calibrated
+- C1: complex, type-specific, leadership
+
+Output: JSON Lesson schema
+```
+
+### Kalite Kontrolleri (4 katman)
+1. Master prompt (Claude üretim)
+2. Çapraz LLM (GPT-4 doğrulama, score < 90 elenir)
+3. Otomatik test (ICAO 9432 sözlüğü match, ses-transkript %95+ uyum)
+4. Kullanıcı flag → 3+ rapor sonrası manuel review
+
+---
+
+## 24. Wireframe Referansları (Figma'da Çizilecek)
+
+6 ana ekran ASCII layout sahibinin elinde (sohbet geçmişi). Figma'da bunlar uygulanacak:
+1. Welcome Slayt (problem/çözüm/CTA)
+2. Onboarding Soru Ekranı (kart seçimli, progress bar)
+3. Placement Test Sorusu (audio + 4 cevap kartı)
+4. Sonuç Ekranı (level rozet + 6 alan bar grafiği + spesifik vaat)
+5. İlk Ana Sayfa (streak + countdown + 3 görev + sana özel ders)
+6. Paywall (4 fayda + 3 plan kart + 3 güvence rozeti)
+
+Conversion özellikleri her wireframe'de gömülü (premium etiket, kilit ikonu, anchor pricing, social proof sayacı).
+
+---
+
+## 25. Özet Değişiklikler (Önceki Plan'a Göre)
 
 | Konu | Önceki | Yeni |
 |---|---|---|
