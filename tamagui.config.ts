@@ -55,7 +55,9 @@ const tokens = createTokens({
   },
 });
 
-const lightTheme = {
+type ThemeTokens = Record<string, string>;
+
+const lightTheme: ThemeTokens = {
   background: palette.slate50,
   backgroundHover: palette.slate100,
   backgroundPress: palette.blue100,
@@ -79,7 +81,7 @@ const lightTheme = {
   dangerSubtle: palette.danger100,
 };
 
-const darkTheme: typeof lightTheme = {
+const darkTheme: ThemeTokens = {
   background: palette.slate900,
   backgroundHover: palette.slate800,
   backgroundPress: palette.navy700,
@@ -117,11 +119,5 @@ export const config = createTamagui({
     },
   },
 });
-
-export type AirSpeakConfig = typeof config;
-
-declare module 'tamagui' {
-  interface TamaguiCustomConfig extends AirSpeakConfig {}
-}
 
 export default config;

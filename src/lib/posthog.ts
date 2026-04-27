@@ -1,5 +1,8 @@
 import PostHog from 'posthog-react-native';
 
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+type EventProperties = Record<string, JsonValue>;
+
 let posthog: PostHog | null = null;
 
 export function initAnalytics(): void {
@@ -9,14 +12,14 @@ export function initAnalytics(): void {
     if (__DEV__) console.warn('PostHog API key missing — analytics disabled.');
     return;
   }
-  posthog = new PostHog(apiKey, { host, captureAppLifecycleEvents: true });
+  posthog = new PostHog(apiKey, { host, captureNativeAppLifecycleEvents: true });
 }
 
-export function track(event: string, properties?: Record<string, unknown>): void {
+export function track(event: string, properties?: EventProperties): void {
   posthog?.capture(event, properties);
 }
 
-export function identify(userId: string, properties?: Record<string, unknown>): void {
+export function identify(userId: string, properties?: EventProperties): void {
   posthog?.identify(userId, properties);
 }
 

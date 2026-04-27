@@ -73,13 +73,6 @@
           "icon": "./assets/logo/notification-icon.png",
           "color": "#2E7CD6"
         }
-      ],
-      [
-        "@sentry/react-native/expo",
-        {
-          "organization": "airspeak",
-          "project": "mobile"
-        }
       ]
     ],
     "experiments": {
