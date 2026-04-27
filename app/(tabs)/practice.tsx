@@ -101,7 +101,33 @@ export default function PracticeScreen() {
           </XStack>
         </Card>
 
-        {/* ICAO 4 Simulator */}
+        {/* Sınav Hazırlık Hub — rol bazlı */}
+        <Card
+          padding="$4"
+          backgroundColor="$primary"
+          onPress={() => router.push('/exam')}
+          pressStyle={{ scale: 0.98 }}
+        >
+          <XStack gap="$3" alignItems="center">
+            <Text fontSize={36}>🎯</Text>
+            <YStack flex={1}>
+              <Text fontSize="$5" fontWeight="700" color="$primaryText">
+                Sınav Hazırlık
+              </Text>
+              <Text fontSize="$3" color="$primaryText">
+                ICAO 4 · SHGM · YDS · Mülakat — rolüne özel
+              </Text>
+              <Text fontSize="$2" color="$primaryText">
+                Pilot 5 sınav · Kabin 4 · Teknisyen 3 · Yer 3 · Öğrenci 3
+              </Text>
+            </YStack>
+            <Text fontSize="$5" color="$primaryText">
+              →
+            </Text>
+          </XStack>
+        </Card>
+
+        {/* ICAO 4 Simulator (hızlı erişim) */}
         <Card
           padding="$4"
           backgroundColor="$surface"
@@ -110,16 +136,16 @@ export default function PracticeScreen() {
           pressStyle={{ scale: 0.98 }}
         >
           <XStack gap="$3" alignItems="center">
-            <Text fontSize={36}>✈️</Text>
+            <Text fontSize={36}>🎙️</Text>
             <YStack flex={1}>
               <Text fontSize="$5" fontWeight="700" color="$text">
-                ICAO 4 Sözlü Simülatör
+                ICAO 4 Sözlü Simülatör (Hızlı)
               </Text>
               <Text fontSize="$3" color="$textSecondary">
-                4 görev tipi, 6-alan rubric
+                4 görev tipi, 6-alan rubric — AI examiner
               </Text>
               <Text fontSize="$2" color="$warning">
-                İlk görev ücretsiz · 7 görev premium
+                İlk görev ücretsiz
               </Text>
             </YStack>
             <Text fontSize="$5" color="$text">
