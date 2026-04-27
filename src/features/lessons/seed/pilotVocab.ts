@@ -26,11 +26,22 @@ export interface VocabularyTerm {
   examples: { en: string; tr: string }[];
   icaoReference?: string;
   relatedTerms: string[];
+  /**
+   * Zengin tanım (200-400 kelime) — terim detay sayfasında "Daha fazla oku" expand içinde.
+   * 5-katmanlı yapı:
+   * 1. Etimoloji + tarihçe
+   * 2. Operasyonel/teknik bağlam
+   * 3. Yaygın yanlış kullanım
+   * 4. İlgili terimler ile bağlantı
+   * 5. Sektör örneği / vaka
+   */
+  richDefinitionTr?: string;
   // === 20 dil layer (additif, opsiyonel) ===
   i18n?: {
     term?: Partial<Record<string, string>>;       // term in 20 langs
     definition?: Partial<Record<string, string>>; // definition in 20 langs
     examples?: Partial<Record<string, { text: string }[]>>; // examples in 20 langs
+    richDefinition?: Partial<Record<string, string>>; // rich definition in 20 langs
   };
   // === Audio (TTS — Sprint 10) ===
   audio?: {
@@ -51,6 +62,15 @@ export const PILOT_VOCAB_FAZ1: VocabularyTerm[] = [
     ],
     icaoReference: 'ICAO Annex 6, Part I',
     relatedTerms: ['flight deck', 'captain', 'first officer'],
+    richDefinitionTr: `**Etimoloji + tarihçe**: "Cockpit" 16. yüzyılda İngiliz horoz dövüşü çukurlarına verilen isimden türemiştir — kapalı, küçük, yoğun atmosferli alan anlamına geliyordu. 1900'lerin başında küçük tek pilotlu uçakların pilotunun oturduğu sıkı kabini tanımlamak için kullanıldı. Modern Boeing/Airbus ticari uçaklarında "flight deck" terimi tercih edilir (daha profesyonel) ancak "cockpit" hâlâ yaygın kullanım.
+
+**Operasyonel bağlam**: Modern jet kokpitinde 4 ana enstrüman grubu bulunur: (1) Primary Flight Display (PFD) — irtifa, hız, dikey hız, attitude, heading. (2) Navigation Display (ND) — harita, rota, waypoint. (3) Engine Indication and Crew Alerting System (EICAS/ECAM) — motor parametreleri, sistem uyarıları. (4) Multi-Function Display (MFD) — radar, weather, sistem detay. Üç bölüm vardır: Captain (sol), First Officer (sağ), Center pedestal (throttle, FMS, radio).
+
+**Yaygın yanlış kullanım**: "Cockpit" kelimesi bazen kabinle (cabin) karıştırılır — kabin yolcu bölümü, kokpit pilot bölümüdür. Diğer karışıklık: "flight deck" ile "cockpit" arasında — büyük uçaklarda flight deck doğru terim, GA (genel havacılık) küçük uçaklarda cockpit kullanılır.
+
+**İlgili terimler**: Flight deck, Pedestal, Glareshield, Overhead panel, Center console, FMS (Flight Management System), MCP (Mode Control Panel), Sidestick (Airbus), Yoke (Boeing).
+
+**Örnek**: Boeing 777'de cockpit erişimi reinforced door'la (9/11 sonrası güçlendirilmiş) kontrol edilir. Pilot dışında sadece yetkili crew (purser, captain'ın izniyle) girebilir. Captain seyrüsefer hidrostatik kapı açma kodunu uygulayarak girer. Bu güvenlik protokolü Germanwings 9525 (2015) felaketi sonrası iki kişi kuralı ile güçlendirildi: kokpitte her zaman en az 2 yetkili crew olmalı.`,
   },
   { id: 'voc_pilot_002', term: 'fuselage', termTr: 'gövde', pronunciation: '/ˈfjuː.zəˌlɑːʒ/', category: 'aircraft_parts', difficulty: 2,
     definitionEn: 'The main body of an aircraft that holds passengers, crew, and cargo.',

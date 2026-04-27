@@ -1,142 +1,142 @@
 {
   "common": {
-    "back": "Back",
-    "next": "Next",
-    "skip": "Skip",
-    "continue": "Continue",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "loading": "Loading…",
-    "minutes": "min"
+    "back": "Voltar",
+    "next": "Seguinte",
+    "skip": "Pular",
+    "continue": "Continuar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Apagar",
+    "loading": "A carregar…",
+    "minutes": "Tenho"
   },
   "welcome": {
-    "tagline": "Master Aviation English",
-    "getStarted": "Get started",
-    "haveAccount": "I have an account"
+    "tagline": "Domine o inglês da aviação",
+    "getStarted": "Comece já",
+    "haveAccount": "Tenho uma conta"
   },
   "auth": {
-    "email": "Email",
-    "password": "Password",
-    "passwordHint": "At least 6 characters",
-    "loading": "Please wait…",
-    "forgotPassword": "Forgot password",
-    "haveAccount": "Already have an account? Log in",
-    "noAccount": "No account? Sign up",
+    "email": "E-mail",
+    "password": "Palavra-passe",
+    "passwordHint": "Pelo menos 6 caracteres",
+    "loading": "Por favor, aguarde…",
+    "forgotPassword": "Esqueceu-se da palavra-passe",
+    "haveAccount": "Já tem uma conta? Inicie sessão",
+    "noAccount": "Ainda não tem conta? Registe-se",
     "login": {
-      "title": "Log in",
-      "subtitle": "Continue your aviation English journey",
-      "cta": "Log in"
+      "title": "Iniciar sessão",
+      "subtitle": "Continue a sua jornada no inglês da aviação",
+      "cta": "Iniciar sessão"
     },
     "register": {
-      "title": "Sign up",
-      "subtitle": "First 7 days free",
-      "cta": "Sign up"
+      "title": "Inscreva-se",
+      "subtitle": "Os primeiros 7 dias são gratuitos",
+      "cta": "Inscreva-se"
     },
     "forgot": {
-      "title": "Reset password",
-      "subtitle": "We'll send a reset link to your email",
-      "cta": "Send link",
-      "sent": "Check your inbox — reset link sent."
+      "title": "Redefinir palavra-passe",
+      "subtitle": "Enviaremos um link de redefinição para o seu e-mail",
+      "cta": "Enviar link",
+      "sent": "Verifique a sua caixa de entrada — foi-lhe enviado um link para repor a senha."
     }
   },
   "onboarding": {
-    "step": "Step {{current}}/{{total}}",
+    "step": "Passo {{current}}/{{total}}",
     "roleSelect": {
-      "title": "What's your aviation role?",
-      "subtitle": "We'll build a personalized learning path."
+      "title": "Qual é a sua função no setor da aviação?",
+      "subtitle": "Iremos criar um percurso de aprendizagem personalizado."
     },
     "roles": {
       "pilot": {
-        "title": "Pilot / Trainee",
-        "desc": "ICAO 4, type rating, ATPL prep"
+        "title": "Piloto / Estagiário",
+        "desc": "ICAO 4, qualificação de tipo, preparação para a ATPL"
       },
       "cabin": {
-        "title": "Cabin Crew / Candidate",
-        "desc": "Interviews, passenger ops, emergencies"
+        "title": "Tripulação de Cabine / Candidato",
+        "desc": "Entrevistas, operações de passageiros, emergências"
       },
       "technician": {
-        "title": "Aircraft Technician / Trainee",
-        "desc": "AMM, RSQM, interviews"
+        "title": "Técnico de aeronaves / Estagiário",
+        "desc": "AMM, RSQM, entrevistas"
       },
       "ground": {
-        "title": "Ground Operations",
-        "desc": "Pilot & passenger communication"
+        "title": "Operações em terra",
+        "desc": "Comunicação entre o piloto e o passageiro"
       },
       "student": {
-        "title": "Aviation Student",
-        "desc": "High school / college level"
+        "title": "Estudante de aviação",
+        "desc": "Nível secundário / universitário"
       }
     },
     "levelTest": {
-      "title": "Let's get to know you",
-      "intro": "10 short questions. About 3 minutes. Focus on accuracy, not speed.",
-      "warning": "Wrong answer = no penalty. This test calibrates your lesson difficulty. There's an \"I don't know\" option — don't stress.",
-      "start": "Start test →",
-      "progress": "Question {{current}} / {{total}}",
-      "answer": "Answer",
-      "skip": "I don't know, skip",
-      "correct": "✓ Correct!",
-      "wrong": "✗ Incorrect",
-      "next": "Next question →",
-      "finish": "See results →"
+      "title": "Vamos conhecê-lo melhor",
+      "intro": "10 perguntas curtas. Cerca de 3 minutos. Concentre-se na precisão, não na rapidez.",
+      "warning": "Resposta errada = sem penalização. Este teste permite ajustar o nível de dificuldade da sua aula. Existe uma opção «Não sei» — não se preocupe.",
+      "start": "Iniciar teste →",
+      "progress": "Pergunta {{atual}} / {{total}}",
+      "answer": "Resposta",
+      "skip": "Não sei, deixa isso para lá",
+      "correct": "✓ Correto!",
+      "wrong": "✗ Incorreto",
+      "next": "Próxima pergunta →",
+      "finish": "Ver resultados →"
     },
     "goals": {
-      "title": "How much time per day?",
-      "subtitle": "You can change this anytime.",
-      "yourLevel": "Your level",
-      "cta": "Start AirSpeak 🛫"
+      "title": "Quanto tempo por dia?",
+      "subtitle": "Pode alterar isto a qualquer momento.",
+      "yourLevel": "O seu nível",
+      "cta": "Inicie o AirSpeak 🛫"
     },
     "daily": {
-      "5": "5 min",
-      "5_title": "Quick review",
-      "10": "10 min",
-      "10_title": "Light",
-      "15": "15 min",
+      "5": "Cinco minutos",
+      "10": "dez minutos",
+      "15": "quinze minutos",
+      "30": "Trinta minutos",
+      "60": "Mais de 60 minutos",
+      "5_title": "Resumo rápido",
+      "10_title": "Luz",
       "15_title": "Regular",
-      "30": "30 min",
-      "30_title": "Serious",
-      "60": "60+ min",
-      "60_title": "Intensive"
+      "30_title": "Sério",
+      "60_title": "Intensivo"
     }
   },
   "level": {
-    "A1": "Beginner",
-    "A2": "Elementary",
-    "B1": "Intermediate",
-    "B2": "Upper-Intermediate",
-    "C1": "Advanced"
+    "A1": "Principiante",
+    "A2": "Básico",
+    "B1": "Nível intermédio",
+    "B2": "Nível intermediário-avançado",
+    "C1": "Avançado"
   },
   "tabs": {
-    "home": "Home",
-    "learn": "Learn",
-    "practice": "Practice",
-    "league": "League",
-    "profile": "Profile"
+    "home": "Página inicial",
+    "learn": "Aprenda",
+    "practice": "Prática",
+    "league": "Liga",
+    "profile": "Perfil"
   },
   "home": {
-    "greeting": "Welcome, Captain!",
-    "subtitle": "Today's missions and continue from where you left",
-    "yourLevel": "Your level",
-    "dailyGoal": "Daily goal",
-    "streak": "Streak",
-    "xp": "XP"
+    "greeting": "Bem-vindo, Capitão!",
+    "subtitle": "As missões de hoje e continue de onde parou",
+    "yourLevel": "O seu nível",
+    "dailyGoal": "Objetivo diário",
+    "streak": "Série de vitórias",
+    "xp": "Pontos de Experiência"
   },
   "learn": {
-    "title": "Learn",
-    "subtitle": "Lesson tree by your role and level"
+    "title": "Aprenda",
+    "subtitle": "Árvore de lições de acordo com a sua função e nível"
   },
   "practice": {
-    "title": "Practice",
-    "subtitle": "AI conversation · Quiz · Exam · Pronunciation · SRS"
+    "title": "Prática",
+    "subtitle": "Conversa com IA · Questionário · Exame · Pronúncia · SRS"
   },
   "league": {
-    "title": "League",
-    "subtitle": "Weekly leaderboard — climb tiers, earn rewards"
+    "title": "Liga",
+    "subtitle": "Classificação semanal — suba de nível e ganhe recompensas"
   },
   "profile": {
-    "title": "Profile",
-    "subtitle": "Your stats, badges, settings",
-    "signOut": "Sign out"
+    "title": "Perfil",
+    "subtitle": "As suas estatísticas, emblemas e definições",
+    "signOut": "Sair"
   }
 }

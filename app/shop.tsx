@@ -72,6 +72,17 @@ export default function ShopScreen() {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <YStack padding="$4" gap="$4" backgroundColor="$background" minHeight="100%">
+        {/* Geri butonu */}
+        <XStack alignItems="center" gap="$2">
+          <Button
+            size="$3"
+            chromeless
+            onPress={() => (router.canGoBack() ? router.back() : router.replace('/(tabs)/home'))}
+          >
+            ← Geri
+          </Button>
+        </XStack>
+
         <YStack gap="$1">
           <H2 color="$text">🪙 Mağaza</H2>
           <Paragraph color="$textSecondary">

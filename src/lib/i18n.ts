@@ -89,7 +89,7 @@ export function initI18n(): void {
   const lang = detectLanguage();
   applyRTL(lang);
   void i18n.use(initReactI18next).init({
-    compatibilityJSON: 'v4',
+    compatibilityJSON: 'v3', // RN environment Intl.PluralRules tam desteklemiyor
     resources: RESOURCES,
     lng: lang,
     fallbackLng: ['en', 'tr'], // chain: kullanıcı dili → en → tr

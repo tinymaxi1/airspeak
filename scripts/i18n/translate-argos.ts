@@ -15,6 +15,35 @@
  * Bu TypeScript wrapper Python subprocess çağırır.
  */
 import { spawn } from 'child_process';
+import os from 'os';
+import path from 'path';
+
+/**
+ * Python user site-packages dizinini bul + spawn'a env olarak ver.
+ * macOS Apple Python 3.9: ~/Library/Python/3.9
+ * Linux: ~/.local
+ * Bu dizinde argostranslate kurulu, subprocess de bulabilir olmalı.
+ */
+function getPythonEnv(): NodeJS.ProcessEnv {
+  const home = os.homedir();
+  const pyVersions = ['3.14', '3.13', '3.12', '3.11', '3.10', '3.9', '3.8'];
+  const candidates: string[] = [
+    ...pyVersions.map((v) => path.join(home, 'Library', 'Python', v)),
+    path.join(home, '.local'),
+  ];
+
+  return {
+    ...process.env,
+    PYTHONUSERBASE: candidates.find((c) => {
+      try {
+        require('fs').accessSync(c);
+        return true;
+      } catch {
+        return false;
+      }
+    }) || home,
+  };
+}
 
 export const ARGOS_SUPPORTED = [
   'en', 'tr', 'ar', 'fa', 'de', 'fr', 'es', 'it', 'pt', 'nl',
@@ -49,7 +78,10 @@ print(argostranslate.translate.translate(text, '${sourceLang}', '${targetLang}')
 `.trim();
 
   return new Promise((resolve, reject) => {
-    const proc = spawn('python3', ['-c', pythonScript]);
+    const proc = spawn('python3', ['-c', pythonScript], {
+      env: getPythonEnv(),
+      cwd: os.homedir(), // proje dizini Python sys.path'ini kirletmesin
+    });
     let out = '';
     let err = '';
     proc.stdout.on('data', (d) => (out += d));
@@ -91,7 +123,10 @@ print(json.dumps(results))
 `.trim();
 
   return new Promise((resolve, reject) => {
-    const proc = spawn('python3', ['-c', pythonScript]);
+    const proc = spawn('python3', ['-c', pythonScript], {
+      env: getPythonEnv(),
+      cwd: os.homedir(), // proje dizini Python sys.path'ini kirletmesin
+    });
     let out = '';
     let err = '';
     proc.stdout.on('data', (d) => (out += d));

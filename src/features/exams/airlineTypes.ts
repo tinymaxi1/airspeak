@@ -108,4 +108,16 @@ export interface InterviewQuestion {
   modelAnswerEn?: string;
   /** Cevap için ipuçları */
   tipsTr: string[];
+  /**
+   * Uzun öğretici cevap (300-500 kelime) — "Daha fazla oku" expand içinde.
+   *
+   * 6-katmanlı yapı:
+   * 1. Sorunun ardındaki HR/psikoloji perspektifi
+   * 2. Bu mülakat aşamasında neden sorulur
+   * 3. 3 farklı seviyeli cevap örneği (zayıf/orta/güçlü)
+   * 4. STAR formatı uygulamada nasıl
+   * 5. Havayolu-spesifik uyarlama (Emirates X / Qatar Y vurgular)
+   * 6. Tipik takip soruları
+   */
+  detailedExplanationTr?: string;
 }

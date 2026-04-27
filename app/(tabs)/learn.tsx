@@ -2,7 +2,7 @@ import { ScrollView } from 'react-native';
 import { YStack, XStack, H2, H3, Paragraph, Card, Text, Progress } from 'tamagui';
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   getModulesForRole,
   isUnitUnlocked,
@@ -16,7 +16,8 @@ import { useOnboardingStore } from '@/stores/onboardingStore';
 
 export default function LearnScreen() {
   const { t } = useTranslation();
-  const completedSet = useProgressStore((s) => new Set(s.completedLessonIds));
+  const completedIds = useProgressStore((s) => s.completedLessonIds);
+  const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
   const role = useOnboardingStore((s) => s.role);
   const modules = getModulesForRole(role);
   const [activeModuleIdx, setActiveModuleIdx] = useState(0);

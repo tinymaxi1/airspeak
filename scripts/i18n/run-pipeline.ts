@@ -147,13 +147,61 @@ export async function runPipeline(target: string): Promise<void> {
     case 'exams':
       console.log('⚠️ Exam pipeline yapım aşamasında');
       break;
+    case 'placement-long':
+      await pipelinePlacementLong({ deeplApiKey, useArgos });
+      break;
+    case 'interview-detailed':
+      await pipelineInterviewDetailed({ deeplApiKey, useArgos });
+      break;
+    case 'vocab-rich':
+      await pipelineVocabRich({ deeplApiKey, useArgos });
+      break;
     case 'all':
       await pipelineUiStrings({ deeplApiKey, useArgos });
       await pipelineVocab({ deeplApiKey, useArgos });
       break;
     default:
-      console.log('Geçerli target: ui-strings | vocab | exams | all');
+      console.log('Geçerli target: ui-strings | vocab | exams | placement-long | interview-detailed | vocab-rich | all');
   }
+}
+
+/**
+ * Placement test 22 sorusuna explanationLongTr (300-500 kelime) çevir.
+ * Her dile ~80K karakter, DeepL Free tek seferde rahat sığar.
+ */
+async function pipelinePlacementLong(opts: { deeplApiKey?: string; useArgos: boolean }): Promise<void> {
+  console.log('📚 Placement Long Explanations → 18 dil...');
+  console.log('  ~80K karakter × 18 dil — DeepL Free 1 ay kotasında rahat sığar');
+  console.log('  ⚠️ Bu pipeline questions.ts dosyasını okur ve i18n.explanationLong alanı doldurur');
+  console.log('  ⚠️ Şu an stub — gerçek implementasyon Sprint 9\'da Claude pipeline ile yapılır');
+  console.log('  Komut: ts-node scripts/i18n/run-pipeline.ts --target placement-long\n');
+  // Gerçek implementasyon Sprint 9'da:
+  // 1. PLACEMENT_QUESTIONS'tan explanationLongTr olanları çek
+  // 2. Her birini 18 dile çevir (DeepL/Argos hibrit)
+  // 3. questions.ts'e i18n.explanationLong alanı ekle (programatik AST manipulation veya inline JSON output)
+}
+
+/**
+ * 155 mülakat sorusunun detailedExplanationTr alanını 18 dile çevir.
+ * ~600K karakter, DeepL Free quota'da 1.2 ay sürer.
+ */
+async function pipelineInterviewDetailed(opts: { deeplApiKey?: string; useArgos: boolean }): Promise<void> {
+  console.log('💼 Interview Detailed Explanations → 18 dil...');
+  console.log('  ~600K karakter × 18 dil = ~11M total — DeepL Free quota 1.2 ay');
+  console.log('  Sprint 9\'da Claude batch ile parallel translation alternatif');
+  console.log('  Komut: ts-node scripts/i18n/run-pipeline.ts --target interview-detailed\n');
+  // Sprint 9'da implementasyon
+}
+
+/**
+ * 1300 vocab terimi richDefinitionTr alanını 18 dile çevir.
+ * ~400K karakter, DeepL Free quota'da 0.8 ay.
+ */
+async function pipelineVocabRich(opts: { deeplApiKey?: string; useArgos: boolean }): Promise<void> {
+  console.log('📚 Vocab Rich Definitions → 18 dil...');
+  console.log('  ~400K karakter × 18 dil = ~7.2M total');
+  console.log('  Sprint 9\'da Claude batch parallel');
+  console.log('  Komut: ts-node scripts/i18n/run-pipeline.ts --target vocab-rich\n');
 }
 
 /**

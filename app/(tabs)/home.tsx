@@ -1,4 +1,5 @@
 import { ScrollView } from 'react-native';
+import { useMemo } from 'react';
 import { YStack, XStack, H2, H3, Paragraph, Card, Button, Text, Progress } from 'tamagui';
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
@@ -18,10 +19,11 @@ export default function HomeScreen() {
   const dailyGoal = useOnboardingStore((s) => s.dailyGoalMinutes);
   const role = useOnboardingStore((s) => s.role);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
-  const completedSet = useProgressStore((s) => new Set(s.completedLessonIds));
+  const completedIds = useProgressStore((s) => s.completedLessonIds);
+  const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
 
-  const next = getNextLesson(role, completedSet, false);
-  const overall = getOverallProgress(role, completedSet);
+  const next = useMemo(() => getNextLesson(role, completedSet, false), [role, completedSet]);
+  const overall = useMemo(() => getOverallProgress(role, completedSet), [role, completedSet]);
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">

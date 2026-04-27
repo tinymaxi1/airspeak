@@ -1,7 +1,7 @@
 import { ScrollView } from 'react-native';
 import { YStack, XStack, H2, H3, Paragraph, Card, Button, Text, Progress } from 'tamagui';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { CelebrationOverlay } from '@/components/ui/CelebrationOverlay';
 import { generateLesson } from '@/features/lessons/lessonGenerator';
 import type { Exercise } from '@/features/lessons/exerciseTypes';
@@ -19,7 +19,8 @@ export default function LessonScreen() {
   const markLessonCompleted = useProgressStore((s) => s.markLessonCompleted);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
   const role = useOnboardingStore((s) => s.role);
-  const seenSet = useExerciseHistoryStore((s) => new Set(s.seenExerciseIds));
+  const seenIds = useExerciseHistoryStore((s) => s.seenExerciseIds);
+  const seenSet = useMemo(() => new Set(seenIds), [seenIds]);
   const markSeen = useExerciseHistoryStore((s) => s.markSeen);
 
   const [exercises] = useState<Exercise[]>(() =>

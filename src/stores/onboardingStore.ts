@@ -1,11 +1,22 @@
 /**
  * Onboarding state — kullanıcının onboarding boyunca verdiği yanıtlar.
  * Tamamlanınca profile'a yazılır (Sprint 1 sonu).
+ *
+ * 4-boyutlu placement sistemi:
+ * - generalEnglish (CEFR)
+ * - aviationEnglish (rol bazlı havacılık dili)
+ * - aviationKnowledge (rol bazlı operasyonel bilgi)
+ * - communication (sözlü/mülakat/senaryo)
  */
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { storage } from '@/lib/storage';
-import type { UserRole, Level } from '@/types/profile';
+import type {
+  UserRole,
+  Level,
+  DimensionResult,
+  Recommendations,
+} from '@/types/profile';
 
 export type UserStatus = 'student' | 'graduate' | 'working' | 'switching';
 export type Goal =
@@ -17,18 +28,29 @@ export type Goal =
   | 'career_advancement'
   | 'university_exam'
   | 'fun';
-export type WeakArea =
-  | 'speaking'
-  | 'listening'
-  | 'reading'
-  | 'writing'
-  | 'pronunciation'
-  | 'terminology'
-  | 'grammar';
 
+/**
+ * 4-boyutlu placement sonucu.
+ *
+ * Geriye uyumlu alanlar (level, totalScore, byCategory) korunur — eski
+ * tüketici dosyalar (home.tsx, profile.tsx) ufak refactor'a kadar çalışır.
+ */
 export interface PlacementResult {
+  // === 4 boyut (yeni) ===
+  generalEnglish: DimensionResult;
+  aviationEnglish: DimensionResult;
+  aviationKnowledge: DimensionResult;
+  communication: DimensionResult;
+  recommendations: Recommendations;
+  /** ISO date string */
+  completedAt: string;
+
+  // === Geriye uyumlu (deprecated alias) ===
+  /** = generalEnglish.label (CEFR) */
   level: Level;
+  /** 4 boyut ortalaması (%) */
   totalScore: number;
+  /** Tüm kategori toplamı (eski 6-kategori şeması) */
   byCategory: {
     vocabulary: number;
     listening: number;
@@ -46,8 +68,6 @@ export interface OnboardingState {
   examType: string | null;
   examDate: string | null; // ISO date
   selfReportedLevel: Level | 'unknown' | null;
-  weakAreas: WeakArea[];
-  comfortLevels: Record<string, number>; // 1-5 scale
   dailyGoalMinutes: 5 | 10 | 15 | 30 | 60 | null;
   activeHours: number[];
   notificationPrefs: {
@@ -64,11 +84,12 @@ export interface OnboardingState {
   toggleGoal: (goal: Goal) => void;
   setExam: (examType: string | null, examDate: string | null) => void;
   setSelfLevel: (level: Level | 'unknown') => void;
-  toggleWeakArea: (area: WeakArea) => void;
-  setComfortLevel: (key: string, value: number) => void;
   setDailyGoal: (minutes: 5 | 10 | 15 | 30 | 60) => void;
   setActiveHours: (hours: number[]) => void;
-  setNotificationPref: (key: keyof OnboardingState['notificationPrefs'], value: boolean) => void;
+  setNotificationPref: (
+    key: keyof OnboardingState['notificationPrefs'],
+    value: boolean,
+  ) => void;
   setPlacementResult: (result: PlacementResult) => void;
   reset: () => void;
 }
@@ -80,8 +101,6 @@ const initialState = {
   examType: null,
   examDate: null,
   selfReportedLevel: null,
-  weakAreas: [],
-  comfortLevels: {},
   dailyGoalMinutes: null,
   activeHours: [18, 19, 20, 21],
   notificationPrefs: {
@@ -115,16 +134,6 @@ export const useOnboardingStore = create<OnboardingState>()(
       },
       setExam: (examType, examDate) => set({ examType, examDate }),
       setSelfLevel: (level) => set({ selfReportedLevel: level }),
-      toggleWeakArea: (area) => {
-        const areas = get().weakAreas;
-        set({
-          weakAreas: areas.includes(area)
-            ? areas.filter((a) => a !== area)
-            : [...areas, area],
-        });
-      },
-      setComfortLevel: (key, value) =>
-        set({ comfortLevels: { ...get().comfortLevels, [key]: value } }),
       setDailyGoal: (minutes) => set({ dailyGoalMinutes: minutes }),
       setActiveHours: (hours) => set({ activeHours: hours }),
       setNotificationPref: (key, value) =>

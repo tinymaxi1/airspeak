@@ -15,16 +15,17 @@ import https from 'https';
 
 const DEEPL_FREE_HOST = 'api-free.deepl.com';
 
-// DeepL'in desteklediği diller — 20 hedefimizden 17'si destekleniyor
-// Desteklenmeyenler: fa (Farsça), hi (Hintçe), th (Tayca), ms (Malayca), id (Endonezce)
-// Bunlar için Argos veya başka kaynak kullanılır
+// DeepL'in desteklediği diller — 20 hedefimizden 16'sı destekleniyor (2024+)
+// Desteklenmeyenler: fa (Farsça), hi (Hintçe), th (Tayca), ms (Malayca)
+// Bunlar için Argos kullanılır
 const DEEPL_LANG_MAP: Record<string, string> = {
   en: 'EN-US', tr: 'TR', ar: 'AR', de: 'DE', fr: 'FR',
   es: 'ES', it: 'IT', pt: 'PT-PT', nl: 'NL', pl: 'PL',
   el: 'EL', zh: 'ZH', ja: 'JA', ko: 'KO', ru: 'RU',
+  id: 'ID', // 2024'te eklendi
 };
 
-const UNSUPPORTED_BY_DEEPL = ['fa', 'hi', 'id', 'th', 'ms'];
+const UNSUPPORTED_BY_DEEPL = ['fa', 'hi', 'th', 'ms'];
 
 export function isSupportedByDeepL(lang: string): boolean {
   return !UNSUPPORTED_BY_DEEPL.includes(lang);
@@ -136,25 +137,34 @@ if (require.main === module) {
     process.exit(1);
   }
 
-  const text = process.argv[2];
-  const target = process.argv[3];
+  const arg1 = process.argv[2];
 
-  if (!text || !target) {
-    console.log('Usage: DEEPL_API_KEY=xxx ts-node translate-deepl.ts "<text>" <lang>');
-    console.log('Or: ts-node translate-deepl.ts --usage   (kontrol kotanı)');
-    process.exit(1);
-  }
-
-  if (text === '--usage') {
-    getDeepLUsage(apiKey).then((u) => {
-      console.log(`Kullanılan: ${u.characterCount.toLocaleString()} / ${u.characterLimit.toLocaleString()} (${u.percentUsed}%)`);
-    });
+  // --usage komutu (target gerekmez)
+  if (arg1 === '--usage') {
+    getDeepLUsage(apiKey)
+      .then((u) => {
+        console.log(`Kullanılan: ${u.characterCount.toLocaleString()} / ${u.characterLimit.toLocaleString()} (${u.percentUsed}%)`);
+      })
+      .catch((e) => {
+        console.error('DeepL hatası:', e.message);
+        process.exit(1);
+      });
   } else {
-    translateDeepL([text], target, apiKey).then((r) => {
-      console.log(r[0]);
-    }).catch((e) => {
-      console.error(e);
+    // Çeviri komutu — text + target gerekli
+    const text = arg1;
+    const target = process.argv[3];
+
+    if (!text || !target) {
+      console.log('Usage: npm run translate:deepl -- "<text>" <lang>');
+      console.log('   Or: npm run translate:usage   (kotayı görmek için)');
       process.exit(1);
-    });
+    }
+
+    translateDeepL([text], target, apiKey)
+      .then((r) => console.log(r[0]))
+      .catch((e) => {
+        console.error('Çeviri hatası:', e.message);
+        process.exit(1);
+      });
   }
 }

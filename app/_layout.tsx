@@ -32,11 +32,26 @@ export default function RootLayout() {
       <TamaguiProvider config={config} defaultTheme={colorScheme ?? 'light'}>
         <QueryClientProvider client={queryClient}>
           <StatusBar style="auto" />
-          <Stack screenOptions={{ headerShown: false }}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              headerBackTitle: 'Geri',
+            }}
+          >
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="lesson/[id]" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="lesson/[id]" options={{ presentation: 'modal', headerShown: true, headerTitle: 'Ders' }} />
+            <Stack.Screen name="paywall" options={{ presentation: 'modal', headerShown: true, headerTitle: 'Premium' }} />
+            <Stack.Screen name="shop" options={{ headerShown: true, headerTitle: 'Mağaza' }} />
+            <Stack.Screen name="srs/index" options={{ headerShown: true, headerTitle: 'SRS Tekrar' }} />
+            <Stack.Screen name="exam/index" options={{ headerShown: true, headerTitle: 'Sınav Hazırlık' }} />
+            <Stack.Screen name="exam/airlines" options={{ headerShown: true, headerTitle: 'Havayolları' }} />
+            <Stack.Screen name="exam/airline/[id]" options={{ headerShown: true, headerTitle: 'Havayolu Detay' }} />
+            <Stack.Screen name="exam/icao4" options={{ headerShown: true, headerTitle: 'ICAO 4 Sözlü' }} />
+            <Stack.Screen name="settings/language" options={{ headerShown: true, headerTitle: 'Dil Seç' }} />
+            <Stack.Screen name="quiz/[id]" options={{ headerShown: true, headerTitle: 'Quiz' }} />
+            <Stack.Screen name="conversation/[scenario]" options={{ headerShown: true, headerTitle: 'AI Konuşma' }} />
+            <Stack.Screen name="pronunciation/[id]" options={{ headerShown: true, headerTitle: 'Telaffuz' }} />
           </Stack>
         </QueryClientProvider>
       </TamaguiProvider>

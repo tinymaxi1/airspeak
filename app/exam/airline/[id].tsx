@@ -562,6 +562,11 @@ function MockInterview({
               </YStack>
             </Card>
 
+            {/* Daha fazla oku — detaylı cevap (300-500 kelime) */}
+            {q.detailedExplanationTr && (
+              <DetailedExplanationExpand text={q.detailedExplanationTr} />
+            )}
+
             <Button size="$5" backgroundColor="$primary" color="$primaryText" onPress={next}>
               {idx + 1 < questions.length ? 'Sonraki soru →' : 'Mock interview\'ı bitir →'}
             </Button>
@@ -605,6 +610,37 @@ function hiringStatusLabel(status: string): string {
       open_day_only: '📅 Open Day',
       experienced_only: '🎯 Tecrübeli',
     }[status] ?? status
+  );
+}
+
+/**
+ * Detaylı cevap expand komponenti — uzun öğretici cevabı tıklamayla genişletir.
+ */
+function DetailedExplanationExpand({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+
+  if (!expanded) {
+    return (
+      <Button size="$4" variant="outlined" onPress={() => setExpanded(true)}>
+        📖 Detaylı cevabı oku (300-500 kelime)
+      </Button>
+    );
+  }
+
+  return (
+    <Card padding="$4" backgroundColor="$surface" bordered>
+      <YStack gap="$2">
+        <Text fontSize="$3" color="$primary" textTransform="uppercase">
+          📚 Detaylı Cevap
+        </Text>
+        <Paragraph color="$text" lineHeight="$1">
+          {text}
+        </Paragraph>
+        <Button size="$2" variant="outlined" onPress={() => setExpanded(false)}>
+          ▲ Kapat
+        </Button>
+      </YStack>
+    </Card>
   );
 }
 

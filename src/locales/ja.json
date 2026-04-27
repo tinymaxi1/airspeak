@@ -1,142 +1,142 @@
 {
   "common": {
-    "back": "Back",
-    "next": "Next",
-    "skip": "Skip",
-    "continue": "Continue",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "loading": "Loading…",
-    "minutes": "min"
+    "back": "戻る",
+    "next": "次へ",
+    "skip": "スキップ",
+    "continue": "続きを読む",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "loading": "読み込み中…",
+    "minutes": "私には"
   },
   "welcome": {
-    "tagline": "Master Aviation English",
-    "getStarted": "Get started",
-    "haveAccount": "I have an account"
+    "tagline": "航空英語をマスターする",
+    "getStarted": "はじめましょう",
+    "haveAccount": "アカウントを持っています"
   },
   "auth": {
-    "email": "Email",
-    "password": "Password",
-    "passwordHint": "At least 6 characters",
-    "loading": "Please wait…",
-    "forgotPassword": "Forgot password",
-    "haveAccount": "Already have an account? Log in",
-    "noAccount": "No account? Sign up",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "passwordHint": "6文字以上",
+    "loading": "少々お待ちください…",
+    "forgotPassword": "パスワードをお忘れですか",
+    "haveAccount": "すでにアカウントをお持ちですか？ログインしてください",
+    "noAccount": "アカウントをお持ちではありませんか？ 登録する",
     "login": {
-      "title": "Log in",
-      "subtitle": "Continue your aviation English journey",
-      "cta": "Log in"
+      "title": "ログイン",
+      "subtitle": "航空英語の学習を続けていきましょう",
+      "cta": "ログイン"
     },
     "register": {
-      "title": "Sign up",
-      "subtitle": "First 7 days free",
-      "cta": "Sign up"
+      "title": "登録する",
+      "subtitle": "最初の7日間は無料です",
+      "cta": "登録する"
     },
     "forgot": {
-      "title": "Reset password",
-      "subtitle": "We'll send a reset link to your email",
-      "cta": "Send link",
-      "sent": "Check your inbox — reset link sent."
+      "title": "パスワードをリセットする",
+      "subtitle": "リセット用のリンクをメールでお送りします",
+      "cta": "リンクを送信する",
+      "sent": "受信トレイをご確認ください。リセット用のリンクをお送りしました。"
     }
   },
   "onboarding": {
-    "step": "Step {{current}}/{{total}}",
+    "step": "ステップ {{current}}/{{total}}",
     "roleSelect": {
-      "title": "What's your aviation role?",
-      "subtitle": "We'll build a personalized learning path."
+      "title": "航空業界でのご担当はどのようなお仕事ですか？",
+      "subtitle": "あなたに合わせた学習プランを作成いたします。"
     },
     "roles": {
       "pilot": {
-        "title": "Pilot / Trainee",
-        "desc": "ICAO 4, type rating, ATPL prep"
+        "title": "パイロット／研修生",
+        "desc": "ICAO 4、機種認定、ATPL準備課程"
       },
       "cabin": {
-        "title": "Cabin Crew / Candidate",
-        "desc": "Interviews, passenger ops, emergencies"
+        "title": "客室乗務員／応募者",
+        "desc": "乗客への対応、乗務業務、緊急時対応"
       },
       "technician": {
-        "title": "Aircraft Technician / Trainee",
-        "desc": "AMM, RSQM, interviews"
+        "title": "航空機整備士／見習い",
+        "desc": "AMM、RSQM、インタビュー"
       },
       "ground": {
-        "title": "Ground Operations",
-        "desc": "Pilot & passenger communication"
+        "title": "地上作戦",
+        "desc": "パイロットと乗客とのコミュニケーション"
       },
       "student": {
-        "title": "Aviation Student",
-        "desc": "High school / college level"
+        "title": "航空学科の学生",
+        "desc": "高校・大学レベル"
       }
     },
     "levelTest": {
-      "title": "Let's get to know you",
-      "intro": "10 short questions. About 3 minutes. Focus on accuracy, not speed.",
-      "warning": "Wrong answer = no penalty. This test calibrates your lesson difficulty. There's an \"I don't know\" option — don't stress.",
-      "start": "Start test →",
-      "progress": "Question {{current}} / {{total}}",
-      "answer": "Answer",
-      "skip": "I don't know, skip",
-      "correct": "✓ Correct!",
-      "wrong": "✗ Incorrect",
-      "next": "Next question →",
-      "finish": "See results →"
+      "title": "あなたについて教えてください",
+      "intro": "10の短い質問です。所要時間は約3分です。スピードよりも正確さを重視してください。",
+      "warning": "間違えても減点されません。このテストはレッスンの難易度を調整するためのものです。「わからない」という選択肢もありますので、気負わずにどうぞ。",
+      "start": "テストを開始 →",
+      "progress": "質問 {{current}} / {{total}}",
+      "answer": "回答",
+      "skip": "どうでしょう、スキップします",
+      "correct": "✓ 正解です！",
+      "wrong": "✗ 誤り",
+      "next": "次の質問 →",
+      "finish": "結果を見る →"
     },
     "goals": {
-      "title": "How much time per day?",
-      "subtitle": "You can change this anytime.",
-      "yourLevel": "Your level",
-      "cta": "Start AirSpeak 🛫"
+      "title": "1日あたりどのくらいの時間ですか？",
+      "subtitle": "これはいつでも変更できます。",
+      "yourLevel": "あなたのレベル",
+      "cta": "AirSpeakを起動する 🛫"
     },
     "daily": {
-      "5": "5 min",
-      "5_title": "Quick review",
-      "10": "10 min",
-      "10_title": "Light",
-      "15": "15 min",
-      "15_title": "Regular",
-      "30": "30 min",
-      "30_title": "Serious",
-      "60": "60+ min",
-      "60_title": "Intensive"
+      "5": "5分",
+      "10": "10分",
+      "15": "15分",
+      "30": "30分",
+      "60": "60分以上",
+      "5_title": "簡単なレビュー",
+      "10_title": "光",
+      "15_title": "通常",
+      "30_title": "真剣な",
+      "60_title": "集中"
     }
   },
   "level": {
-    "A1": "Beginner",
-    "A2": "Elementary",
-    "B1": "Intermediate",
-    "B2": "Upper-Intermediate",
-    "C1": "Advanced"
+    "A1": "初心者",
+    "A2": "小学校",
+    "B1": "中級",
+    "B2": "中上級",
+    "C1": "上級"
   },
   "tabs": {
-    "home": "Home",
-    "learn": "Learn",
-    "practice": "Practice",
-    "league": "League",
-    "profile": "Profile"
+    "home": "ホーム",
+    "learn": "学ぶ",
+    "practice": "練習",
+    "league": "リーグ",
+    "profile": "プロフィール"
   },
   "home": {
-    "greeting": "Welcome, Captain!",
-    "subtitle": "Today's missions and continue from where you left",
-    "yourLevel": "Your level",
-    "dailyGoal": "Daily goal",
-    "streak": "Streak",
-    "xp": "XP"
+    "greeting": "ようこそ、船長！",
+    "subtitle": "本日のミッションと、前回中断したところからの続き",
+    "yourLevel": "あなたのレベル",
+    "dailyGoal": "毎日の目標",
+    "streak": "連勝",
+    "xp": "経験値"
   },
   "learn": {
-    "title": "Learn",
-    "subtitle": "Lesson tree by your role and level"
+    "title": "学ぶ",
+    "subtitle": "役割とレベル別のスキルツリー"
   },
   "practice": {
-    "title": "Practice",
-    "subtitle": "AI conversation · Quiz · Exam · Pronunciation · SRS"
+    "title": "練習",
+    "subtitle": "AI会話・クイズ・試験・発音・SRS"
   },
   "league": {
-    "title": "League",
-    "subtitle": "Weekly leaderboard — climb tiers, earn rewards"
+    "title": "リーグ",
+    "subtitle": "週間ランキング — ランクを上げて、報酬を獲得しましょう"
   },
   "profile": {
-    "title": "Profile",
-    "subtitle": "Your stats, badges, settings",
-    "signOut": "Sign out"
+    "title": "プロフィール",
+    "subtitle": "ステータス、バッジ、設定",
+    "signOut": "ログアウト"
   }
 }

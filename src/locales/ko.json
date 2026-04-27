@@ -1,142 +1,142 @@
 {
   "common": {
-    "back": "Back",
-    "next": "Next",
-    "skip": "Skip",
-    "continue": "Continue",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "loading": "Loading…",
-    "minutes": "min"
+    "back": "뒤로",
+    "next": "다음",
+    "skip": "건너뛰기",
+    "continue": "계속",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "loading": "로딩 중…",
+    "minutes": "저는"
   },
   "welcome": {
-    "tagline": "Master Aviation English",
-    "getStarted": "Get started",
-    "haveAccount": "I have an account"
+    "tagline": "항공 영어 마스터하기",
+    "getStarted": "시작하기",
+    "haveAccount": "계정이 있습니다"
   },
   "auth": {
-    "email": "Email",
-    "password": "Password",
-    "passwordHint": "At least 6 characters",
-    "loading": "Please wait…",
-    "forgotPassword": "Forgot password",
-    "haveAccount": "Already have an account? Log in",
-    "noAccount": "No account? Sign up",
+    "email": "이메일",
+    "password": "비밀번호",
+    "passwordHint": "최소 6자",
+    "loading": "잠시만 기다려 주세요…",
+    "forgotPassword": "비밀번호 찾기",
+    "haveAccount": "이미 계정이 있으신가요? 로그인",
+    "noAccount": "계정이 없으신가요? 가입하기",
     "login": {
-      "title": "Log in",
-      "subtitle": "Continue your aviation English journey",
-      "cta": "Log in"
+      "title": "로그인",
+      "subtitle": "항공 영어 학습을 계속해 보세요",
+      "cta": "로그인"
     },
     "register": {
-      "title": "Sign up",
-      "subtitle": "First 7 days free",
-      "cta": "Sign up"
+      "title": "가입하기",
+      "subtitle": "첫 7일 무료",
+      "cta": "가입하기"
     },
     "forgot": {
-      "title": "Reset password",
-      "subtitle": "We'll send a reset link to your email",
-      "cta": "Send link",
-      "sent": "Check your inbox — reset link sent."
+      "title": "비밀번호 재설정",
+      "subtitle": "이메일로 비밀번호 재설정 링크를 보내드리겠습니다",
+      "cta": "링크 보내기",
+      "sent": "수신함을 확인해 주세요. 재설정 링크를 보내드렸습니다."
     }
   },
   "onboarding": {
-    "step": "Step {{current}}/{{total}}",
+    "step": "{{current}}단계 / {{total}}단계",
     "roleSelect": {
-      "title": "What's your aviation role?",
-      "subtitle": "We'll build a personalized learning path."
+      "title": "항공 분야에서 어떤 역할을 맡고 계신가요?",
+      "subtitle": "여러분만을 위한 맞춤형 학습 과정을 마련해 드리겠습니다."
     },
     "roles": {
       "pilot": {
-        "title": "Pilot / Trainee",
-        "desc": "ICAO 4, type rating, ATPL prep"
+        "title": "조종사 / 수습 조종사",
+        "desc": "ICAO 4, 기종 자격, ATPL 준비 과정"
       },
       "cabin": {
-        "title": "Cabin Crew / Candidate",
-        "desc": "Interviews, passenger ops, emergencies"
+        "title": "승무원 / 지원자",
+        "desc": "면접, 승객 업무, 비상 상황"
       },
       "technician": {
-        "title": "Aircraft Technician / Trainee",
-        "desc": "AMM, RSQM, interviews"
+        "title": "항공기 정비사 / 수습사원",
+        "desc": "AMM, RSQM, 인터뷰"
       },
       "ground": {
-        "title": "Ground Operations",
-        "desc": "Pilot & passenger communication"
+        "title": "지상 작전",
+        "desc": "조종사와 승객 간의 의사소통"
       },
       "student": {
-        "title": "Aviation Student",
-        "desc": "High school / college level"
+        "title": "항공학 전공 학생",
+        "desc": "고등학교/대학 수준"
       }
     },
     "levelTest": {
-      "title": "Let's get to know you",
-      "intro": "10 short questions. About 3 minutes. Focus on accuracy, not speed.",
-      "warning": "Wrong answer = no penalty. This test calibrates your lesson difficulty. There's an \"I don't know\" option — don't stress.",
-      "start": "Start test →",
-      "progress": "Question {{current}} / {{total}}",
-      "answer": "Answer",
-      "skip": "I don't know, skip",
-      "correct": "✓ Correct!",
-      "wrong": "✗ Incorrect",
-      "next": "Next question →",
-      "finish": "See results →"
+      "title": "여러분에 대해 좀 더 알아볼까요?",
+      "intro": "짧은 질문 10개입니다. 약 3분 정도 소요됩니다. 속도보다는 정확성에 집중해 주세요.",
+      "warning": "틀려도 감점은 없습니다. 이 테스트는 수업 난이도를 조정하기 위한 것입니다. ‘모르겠어요’라는 선택지도 있으니 너무 걱정하지 마세요.",
+      "start": "테스트 시작 →",
+      "progress": "질문 {{current}} / {{total}}",
+      "answer": "답변",
+      "skip": "글쎄, 건너뛰자",
+      "correct": "✓ 맞아요!",
+      "wrong": "✗ 틀림",
+      "next": "다음 질문 →",
+      "finish": "결과 보기 →"
     },
     "goals": {
-      "title": "How much time per day?",
-      "subtitle": "You can change this anytime.",
-      "yourLevel": "Your level",
-      "cta": "Start AirSpeak 🛫"
+      "title": "하루에 얼마나 시간을 할애해야 하나요?",
+      "subtitle": "이 설정은 언제든지 변경할 수 있습니다.",
+      "yourLevel": "귀하의 레벨",
+      "cta": "AirSpeak 시작하기 🛫"
     },
     "daily": {
-      "5": "5 min",
-      "5_title": "Quick review",
-      "10": "10 min",
-      "10_title": "Light",
-      "15": "15 min",
-      "15_title": "Regular",
-      "30": "30 min",
-      "30_title": "Serious",
-      "60": "60+ min",
-      "60_title": "Intensive"
+      "5": "5분",
+      "10": "10분",
+      "15": "15분",
+      "30": "30분",
+      "60": "60분 이상",
+      "5_title": "간략한 리뷰",
+      "10_title": "빛",
+      "15_title": "일반",
+      "30_title": "진지한",
+      "60_title": "집중"
     }
   },
   "level": {
-    "A1": "Beginner",
-    "A2": "Elementary",
-    "B1": "Intermediate",
-    "B2": "Upper-Intermediate",
-    "C1": "Advanced"
+    "A1": "초보자",
+    "A2": "초등",
+    "B1": "중급",
+    "B2": "중상급",
+    "C1": "고급"
   },
   "tabs": {
-    "home": "Home",
-    "learn": "Learn",
-    "practice": "Practice",
-    "league": "League",
-    "profile": "Profile"
+    "home": "홈",
+    "learn": "배워보세요",
+    "practice": "연습",
+    "league": "리그",
+    "profile": "프로필"
   },
   "home": {
-    "greeting": "Welcome, Captain!",
-    "subtitle": "Today's missions and continue from where you left",
-    "yourLevel": "Your level",
-    "dailyGoal": "Daily goal",
-    "streak": "Streak",
-    "xp": "XP"
+    "greeting": "환영합니다, 선장님!",
+    "subtitle": "오늘의 미션과 중단했던 부분부터 이어서 진행하세요",
+    "yourLevel": "귀하의 레벨",
+    "dailyGoal": "오늘의 목표",
+    "streak": "연승",
+    "xp": "경험치"
   },
   "learn": {
-    "title": "Learn",
-    "subtitle": "Lesson tree by your role and level"
+    "title": "배워보세요",
+    "subtitle": "역할 및 레벨별 학습 트리"
   },
   "practice": {
-    "title": "Practice",
-    "subtitle": "AI conversation · Quiz · Exam · Pronunciation · SRS"
+    "title": "연습",
+    "subtitle": "AI 대화 · 퀴즈 · 시험 · 발음 · SRS"
   },
   "league": {
-    "title": "League",
-    "subtitle": "Weekly leaderboard — climb tiers, earn rewards"
+    "title": "리그",
+    "subtitle": "주간 순위표 — 등급을 올리고 보상을 받으세요"
   },
   "profile": {
-    "title": "Profile",
-    "subtitle": "Your stats, badges, settings",
-    "signOut": "Sign out"
+    "title": "프로필",
+    "subtitle": "내 통계, 배지, 설정",
+    "signOut": "로그아웃"
   }
 }

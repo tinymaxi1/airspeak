@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "build:ios": "eas build --platform ios",
     "build:android": "eas build --platform android",
@@ -14,15 +14,18 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "typecheck": "tsc --noEmit",
     "supabase:gen-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/types/database.ts",
-    "translate:wikipedia": "tsx scripts/i18n/translate-wikipedia.ts",
-    "translate:deepl": "tsx scripts/i18n/translate-deepl.ts",
-    "translate:argos": "tsx scripts/i18n/translate-argos.ts",
+    "translate:wikipedia": "tsx --env-file=.env scripts/i18n/translate-wikipedia.ts",
+    "translate:deepl": "tsx --env-file=.env scripts/i18n/translate-deepl.ts",
+    "translate:argos": "tsx --env-file=.env scripts/i18n/translate-argos.ts",
     "translate:argos:install": "python3 scripts/i18n/install-argos-langs.py",
-    "translate:ui": "tsx scripts/i18n/run-pipeline.ts --target ui-strings",
-    "translate:vocab": "tsx scripts/i18n/run-pipeline.ts --target vocab",
-    "translate:all": "tsx scripts/i18n/run-pipeline.ts --target all",
-    "translate:check": "tsx scripts/i18n/quality-check.ts",
-    "translate:usage": "tsx scripts/i18n/translate-deepl.ts --usage"
+    "translate:ui": "tsx --env-file=.env scripts/i18n/run-pipeline.ts --target ui-strings",
+    "translate:vocab": "tsx --env-file=.env scripts/i18n/run-pipeline.ts --target vocab",
+    "translate:placement-long": "tsx --env-file=.env scripts/i18n/run-pipeline.ts --target placement-long",
+    "translate:interview-detailed": "tsx --env-file=.env scripts/i18n/run-pipeline.ts --target interview-detailed",
+    "translate:vocab-rich": "tsx --env-file=.env scripts/i18n/run-pipeline.ts --target vocab-rich",
+    "translate:all": "tsx --env-file=.env scripts/i18n/run-pipeline.ts --target all",
+    "translate:check": "tsx --env-file=.env scripts/i18n/quality-check.ts",
+    "translate:usage": "tsx --env-file=.env scripts/i18n/translate-deepl.ts --usage"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
@@ -73,6 +76,7 @@
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
+    "react-native-url-polyfill": "^3.0.0",
     "react-native-web": "~0.19.13",
     "tamagui": "^1.116.0",
     "zod": "^3.23.0",
@@ -87,6 +91,7 @@
     "eslint-config-expo": "~8.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.0",
+    "tsx": "^4.21.0",
     "typescript": "~5.6.3"
   }
 }

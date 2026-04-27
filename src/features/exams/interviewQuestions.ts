@@ -39,6 +39,20 @@ const CORE_QUESTIONS: InterviewQuestion[] = [
     modelAnswerEn:
       'I genuinely enjoy creating moments of comfort for strangers. During my hospitality internship at a 5-star hotel, I learned that small details — anticipating a tired guest\'s need, calming an anxious one — create deep impact. As a cabin crew member, I would carry that mindset into a high-stakes safety environment. Every flight is a fresh chance to make 200 people feel welcomed.',
     tipsTr: ['STAR formatı kullan', 'Spesifik anekdot anlat', 'Şirket değerlerine bağla'],
+    detailedExplanationTr: `**HR psikoloji perspektifi**: "Why cabin crew?" sorusu mülakatın temel sorularından. HR uzmanı 3 şey ölçer: 1) Motivasyonun gerçek mi yoksa "her iş olur" mu? 2) Sektör hakkında temel bilgi var mı? 3) Uzun dönem retention riski (ilk yıl içinde ayrılma oranı %30-40 sektörde). Cevap belirsiz veya yüzeysel olursa kabin crew "trampoline job" (geçici iş) olarak görüldüğün izlenimi yaratır.
+
+**Bu aşamada neden sorulur**: Genellikle Open Day'in 2. veya 3. dakikasında, ilk eleme aşamasında. Cevabını ezberleyenleri ayırmak için varyasyon: "What attracts you to OUR airline specifically?" Bu sebeple cevabın 2 katmanlı olmalı: (a) genel kabin crew motivasyonu (b) bu havayolunun spesifik çekiciliği.
+
+**3 seviyeli cevap örneği**:
+- **Zayıf**: "Çünkü uçmayı seviyorum ve seyahat etmek istiyorum." → herkes der, 0 ayırt edicilik.
+- **Orta**: "Hospitality deneyimim var, müşteri servisini seviyorum, kabin crew bir sonraki adım." → mantıklı ama kişiselleştirme yok.
+- **Güçlü**: "Marriott'ta 4 yıl konsiyerj olarak çalıştım; en sevdiğim moment yorgun bir Japon misafire 3 saatte ek otel rezervasyonu organize edip teşekkür mektubu almamdı. Cabin crew'da o moment'ler 8-10 saatlik bir uçuşta günde 3-4 kez yaşanıyor — global ölçekte. Emirates/Qatar/THY gibi premium taşıyıcı, çünkü yolcu çeşitliliği ve servis standardı en yüksek." → spesifik anekdot + sektör bilgisi + havayolu uyarlama.
+
+**STAR formatı uygulaması**: Bu sorularda STAR'ı esnek kullan. (S) "Marriott'ta 4 yıl çalıştım" — kısa kontekst. (T) "Yorgun misafirin uçuşunu yenileme görevim vardı" — somut görev. (A) "Otelden ücretsiz shuttle, partner havayolu acentem ile alternatif uçuş" — eylem detayı. (R) "Misafir teşekkür mektubu, oteli 9.8 puanladı" — ölçülebilir sonuç.
+
+**Havayolu uyarlama**: Emirates "Fly Better" felsefesini vurgu — multi-cultural workforce (160 ülke). Qatar — Skytrax #1, detail obsession. THY — Türk misafirperverliği global. Lufthansa — disiplin + premium servis. BA — heritage + "To Fly. To Serve." Her şirket için 2-3 fact bilmen gerekiyor.
+
+**Tipik takip soruları**: "Why now in your career?" "What if you don't get hired here?" "What would you say no to?" Bu cevapla bunlara da hazırlıklı ol.`,
   },
   {
     id: 'q_cabin_diff_pax',
@@ -149,6 +163,24 @@ const CORE_QUESTIONS: InterviewQuestion[] = [
     sampleAnswerTr:
       '(Emirates mülakatı) Emirates\'in 260+ uçaklık fleet\'inde 6 kıtaya ulaşması ve A380 deneyimi benim için ayrım yaratıyor. Qatar muhteşem bir havayolu, ama Emirates Group\'un Dubai içindeki entegrasyonu (DXB + DWC + dnata + Emirates Holidays) bana çok yönlü kariyer açıyor.',
     tipsTr: ['Diplomatik dur', 'Spesifik kıyas yap', 'Long-term plan göster'],
+    detailedExplanationTr: `**HR psikoloji perspektifi**: Bu soruyu "trick question" yapan şey: HR uzmanı "rakibi kötülüyor mu?" "kararsız mı?" "değişken loyalty mi?" değerlendirir. Aynı zamanda "havayolları arasındaki farkları ne kadar iyi biliyor?" da test eder. Cevap diplomatik + spesifik + bilinçli olmalı. Politik durmamak — ama abartılı övgü yapmamak.
+
+**Bu aşamada neden sorulur**: Genelde Final Interview'in son 5 dakikasında. Adayın gerçek motivasyonunu ve emniyet seviyesini ölçer. Eğer aday "ikisi de aynı, hangisi alırsa giderim" derse: HR notu "low loyalty risk = high turnover". Eğer "Qatar her açıdan daha iyi" derse: HR "neden burdasın?" diye sorar.
+
+**3 seviyeli cevap örneği**:
+- **Zayıf**: "İkisi de iyi, fark etmez." → loyalty zero.
+- **Orta**: "Emirates daha büyük olduğu için Emirates'i seçerdim." → yüzeysel.
+- **Güçlü**: "İkisi de Skytrax 5-star ve harika rakip ama Emirates'in Dubai içindeki entegrasyonu (Emirates Group: dnata, Emirates Holidays, EK SkyCargo) kariyer çoklu yönlü açıyor. Q-Suite muhteşem ama A380 onboard atmosphere benim için unique deneyim. Ayrıca Dubai'nin multi-cultural yaşamı (200+ nationality crew) global vatandaş olma fırsatı sunar. Qatar'ı reddetmem ama Emirates'i tercih ederim." → spesifik fark + saygı + dürüstlük.
+
+**STAR formatı uygulaması**: Bu durumsal sorudur, STAR doğrudan uygulanmaz. Yerine "Compare-Contrast-Conclude" yapısı: Compare (iki şirketi mukayese et), Contrast (farkı göster), Conclude (kendi tercihini argümanle).
+
+**Havayolu uyarlama**:
+- Emirates: A380 fleet, Dubai hub, Emirates Group entegrasyonu vurgu
+- Qatar: Skytrax #1 (8 kez), Q-Suite, Hamad International T5
+- Etihad: Boutique premium, "Choose Well", Abu Dhabi sakinliği
+- Mülakatta hangisindeysen, oraya pozitif eğilim göster ama diğerini saygıyla anlat.
+
+**Tipik takip soruları**: "What if Qatar offers you a better salary?" "Have you applied to other airlines?" "Where do you see yourself in 5 years if Emirates doesn't promote you?"`,
   },
 
   {

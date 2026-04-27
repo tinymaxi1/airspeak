@@ -1,142 +1,142 @@
 {
   "common": {
-    "back": "Back",
-    "next": "Next",
-    "skip": "Skip",
-    "continue": "Continue",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "loading": "Loading…",
-    "minutes": "min"
+    "back": "返回",
+    "next": "下一页",
+    "skip": "跳过",
+    "continue": "继续",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "loading": "正在加载……",
+    "minutes": "我有"
   },
   "welcome": {
-    "tagline": "Master Aviation English",
-    "getStarted": "Get started",
-    "haveAccount": "I have an account"
+    "tagline": "精通航空英语",
+    "getStarted": "开始使用",
+    "haveAccount": "我已有账户"
   },
   "auth": {
-    "email": "Email",
-    "password": "Password",
-    "passwordHint": "At least 6 characters",
-    "loading": "Please wait…",
-    "forgotPassword": "Forgot password",
-    "haveAccount": "Already have an account? Log in",
-    "noAccount": "No account? Sign up",
+    "email": "电子邮件",
+    "password": "密码",
+    "passwordHint": "至少6个字符",
+    "loading": "请稍候……",
+    "forgotPassword": "忘记密码",
+    "haveAccount": "已有账户？请登录",
+    "noAccount": "还没有账号？立即注册",
     "login": {
-      "title": "Log in",
-      "subtitle": "Continue your aviation English journey",
-      "cta": "Log in"
+      "title": "登录",
+      "subtitle": "继续您的航空英语学习之旅",
+      "cta": "登录"
     },
     "register": {
-      "title": "Sign up",
-      "subtitle": "First 7 days free",
-      "cta": "Sign up"
+      "title": "注册",
+      "subtitle": "前7天免费",
+      "cta": "注册"
     },
     "forgot": {
-      "title": "Reset password",
-      "subtitle": "We'll send a reset link to your email",
-      "cta": "Send link",
-      "sent": "Check your inbox — reset link sent."
+      "title": "重置密码",
+      "subtitle": "我们将向您的邮箱发送重置链接",
+      "cta": "发送链接",
+      "sent": "请查看您的收件箱——重置链接已发送。"
     }
   },
   "onboarding": {
-    "step": "Step {{current}}/{{total}}",
+    "step": "第 {{current}}/{{total}} 步",
     "roleSelect": {
-      "title": "What's your aviation role?",
-      "subtitle": "We'll build a personalized learning path."
+      "title": "你在航空业担任什么职位？",
+      "subtitle": "我们将为您制定个性化的学习路径。"
     },
     "roles": {
       "pilot": {
-        "title": "Pilot / Trainee",
-        "desc": "ICAO 4, type rating, ATPL prep"
+        "title": "飞行员 / 实习生",
+        "desc": "ICAO 4级、机型等级、ATPL预备课程"
       },
       "cabin": {
-        "title": "Cabin Crew / Candidate",
-        "desc": "Interviews, passenger ops, emergencies"
+        "title": "客舱乘务员 / 应聘者",
+        "desc": "值班、客运运营、应急处理"
       },
       "technician": {
-        "title": "Aircraft Technician / Trainee",
-        "desc": "AMM, RSQM, interviews"
+        "title": "飞机技术员 / 实习生",
+        "desc": "AMM、RSQM、访谈"
       },
       "ground": {
-        "title": "Ground Operations",
-        "desc": "Pilot & passenger communication"
+        "title": "地面行动",
+        "desc": "飞行员与乘客的沟通"
       },
       "student": {
-        "title": "Aviation Student",
-        "desc": "High school / college level"
+        "title": "航空专业学生",
+        "desc": "高中/大学水平"
       }
     },
     "levelTest": {
-      "title": "Let's get to know you",
-      "intro": "10 short questions. About 3 minutes. Focus on accuracy, not speed.",
-      "warning": "Wrong answer = no penalty. This test calibrates your lesson difficulty. There's an \"I don't know\" option — don't stress.",
-      "start": "Start test →",
-      "progress": "Question {{current}} / {{total}}",
-      "answer": "Answer",
-      "skip": "I don't know, skip",
-      "correct": "✓ Correct!",
-      "wrong": "✗ Incorrect",
-      "next": "Next question →",
-      "finish": "See results →"
+      "title": "让我们来了解一下你",
+      "intro": "10个简短问题。大约3分钟。请注重准确性，而非速度。",
+      "warning": "答错不扣分。本次测试旨在调整课程难度。设有“不知道”选项——别担心。",
+      "start": "开始测试 →",
+      "progress": "第 {{current}} 题 / 共 {{total}} 题",
+      "answer": "答案",
+      "skip": "我不知道，跳过",
+      "correct": "✓ 正确！",
+      "wrong": "✗ 错误",
+      "next": "下一题 →",
+      "finish": "查看结果 →"
     },
     "goals": {
-      "title": "How much time per day?",
-      "subtitle": "You can change this anytime.",
-      "yourLevel": "Your level",
-      "cta": "Start AirSpeak 🛫"
+      "title": "每天需要多少时间？",
+      "subtitle": "您可以随时更改此设置。",
+      "yourLevel": "您的等级",
+      "cta": "启动 AirSpeak 🛫"
     },
     "daily": {
-      "5": "5 min",
-      "5_title": "Quick review",
-      "10": "10 min",
-      "10_title": "Light",
-      "15": "15 min",
-      "15_title": "Regular",
-      "30": "30 min",
-      "30_title": "Serious",
-      "60": "60+ min",
-      "60_title": "Intensive"
+      "5": "五分钟",
+      "10": "十分钟",
+      "15": "十五分钟",
+      "30": "三十分钟",
+      "60": "超过60分钟",
+      "5_title": "简要回顾",
+      "10_title": "光",
+      "15_title": "常规",
+      "30_title": "严肃的",
+      "60_title": "强化"
     }
   },
   "level": {
-    "A1": "Beginner",
-    "A2": "Elementary",
-    "B1": "Intermediate",
-    "B2": "Upper-Intermediate",
-    "C1": "Advanced"
+    "A1": "初学者",
+    "A2": "基础",
+    "B1": "中级",
+    "B2": "中高级",
+    "C1": "高级"
   },
   "tabs": {
-    "home": "Home",
-    "learn": "Learn",
-    "practice": "Practice",
-    "league": "League",
-    "profile": "Profile"
+    "home": "首页",
+    "learn": "学习",
+    "practice": "练习",
+    "league": "联赛",
+    "profile": "个人简介"
   },
   "home": {
-    "greeting": "Welcome, Captain!",
-    "subtitle": "Today's missions and continue from where you left",
-    "yourLevel": "Your level",
-    "dailyGoal": "Daily goal",
-    "streak": "Streak",
-    "xp": "XP"
+    "greeting": "欢迎，船长！",
+    "subtitle": "今天的任务，从上次中断的地方继续",
+    "yourLevel": "您的等级",
+    "dailyGoal": "每日目标",
+    "streak": "连胜",
+    "xp": "经验值"
   },
   "learn": {
-    "title": "Learn",
-    "subtitle": "Lesson tree by your role and level"
+    "title": "学习",
+    "subtitle": "按角色和等级划分的技能树"
   },
   "practice": {
-    "title": "Practice",
-    "subtitle": "AI conversation · Quiz · Exam · Pronunciation · SRS"
+    "title": "练习",
+    "subtitle": "AI对话 · 测验 · 考试 · 发音 · 间隔重复法"
   },
   "league": {
-    "title": "League",
-    "subtitle": "Weekly leaderboard — climb tiers, earn rewards"
+    "title": "联赛",
+    "subtitle": "每周排行榜——晋升等级，赢取奖励"
   },
   "profile": {
-    "title": "Profile",
-    "subtitle": "Your stats, badges, settings",
-    "signOut": "Sign out"
+    "title": "个人简介",
+    "subtitle": "您的数据、徽章、设置",
+    "signOut": "退出"
   }
 }

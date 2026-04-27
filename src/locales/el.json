@@ -1,142 +1,142 @@
 {
   "common": {
-    "back": "Back",
-    "next": "Next",
-    "skip": "Skip",
-    "continue": "Continue",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "loading": "Loading…",
-    "minutes": "min"
+    "back": "Πίσω",
+    "next": "Επόμενο",
+    "skip": "Πλοίο",
+    "continue": "Συνέχεια",
+    "cancel": "Ακύρωση",
+    "save": "Αποθήκευση",
+    "delete": "Διαγραφή",
+    "loading": "Φόρτωση…",
+    "minutes": "Έχω"
   },
   "welcome": {
-    "tagline": "Master Aviation English",
-    "getStarted": "Get started",
-    "haveAccount": "I have an account"
+    "tagline": "Αγγλικά για την Αεροπορία",
+    "getStarted": "Ξεκινήστε",
+    "haveAccount": "Έχω λογαριασμό"
   },
   "auth": {
-    "email": "Email",
-    "password": "Password",
-    "passwordHint": "At least 6 characters",
-    "loading": "Please wait…",
-    "forgotPassword": "Forgot password",
-    "haveAccount": "Already have an account? Log in",
-    "noAccount": "No account? Sign up",
+    "email": "Ηλεκτρονικό ταχυδρομείο",
+    "password": "Κωδικός πρόσβασης",
+    "passwordHint": "Τουλάχιστον 6 χαρακτήρες",
+    "loading": "Παρακαλώ περιμένετε…",
+    "forgotPassword": "Ξεχάσατε τον κωδικό πρόσβασης;",
+    "haveAccount": "Έχετε ήδη λογαριασμό; Συνδεθείτε",
+    "noAccount": "Δεν έχετε λογαριασμό; Εγγραφείτε",
     "login": {
-      "title": "Log in",
-      "subtitle": "Continue your aviation English journey",
-      "cta": "Log in"
+      "title": "Σύνδεση",
+      "subtitle": "Συνεχίστε το ταξίδι σας στην αεροπορική αγγλική γλώσσα",
+      "cta": "Σύνδεση"
     },
     "register": {
-      "title": "Sign up",
-      "subtitle": "First 7 days free",
-      "cta": "Sign up"
+      "title": "Εγγραφείτε",
+      "subtitle": "Οι πρώτες 7 ημέρες δωρεάν",
+      "cta": "Εγγραφείτε"
     },
     "forgot": {
-      "title": "Reset password",
-      "subtitle": "We'll send a reset link to your email",
-      "cta": "Send link",
-      "sent": "Check your inbox — reset link sent."
+      "title": "Επαναφορά κωδικού πρόσβασης",
+      "subtitle": "Θα στείλουμε έναν σύνδεσμο επαναφοράς στο email σου",
+      "cta": "Αποστολή συνδέσμου",
+      "sent": "Ελέγξτε τα εισερχόμενά σας — σας έχει σταλεί ο σύνδεσμος επαναφοράς."
     }
   },
   "onboarding": {
-    "step": "Step {{current}}/{{total}}",
+    "step": "Βήμα {{current}}/{{total}}",
     "roleSelect": {
-      "title": "What's your aviation role?",
-      "subtitle": "We'll build a personalized learning path."
+      "title": "Ποιος είναι ο ρόλος σας στον τομέα της αεροπορίας;",
+      "subtitle": "Θα δημιουργήσουμε ένα εξατομικευμένο πρόγραμμα μάθησης."
     },
     "roles": {
       "pilot": {
-        "title": "Pilot / Trainee",
-        "desc": "ICAO 4, type rating, ATPL prep"
+        "title": "Πιλότος / Εκπαιδευόμενος",
+        "desc": "ICAO 4, πιστοποίηση τύπου, προετοιμασία για ATPL"
       },
       "cabin": {
-        "title": "Cabin Crew / Candidate",
-        "desc": "Interviews, passenger ops, emergencies"
+        "title": "Πλήρωμα καμπίνας / Υποψήφιος",
+        "desc": "Συνεντεύξεις, επιβατικές υπηρεσίες, καταστάσεις έκτακτης ανάγκης"
       },
       "technician": {
-        "title": "Aircraft Technician / Trainee",
-        "desc": "AMM, RSQM, interviews"
+        "title": "Τεχνικός αεροσκαφών / Εκπαιδευόμενος",
+        "desc": "AMM, RSQM, συνεντεύξεις"
       },
       "ground": {
-        "title": "Ground Operations",
-        "desc": "Pilot & passenger communication"
+        "title": "Επιχειρήσεις εδάφους",
+        "desc": "Επικοινωνία πιλότου και επιβατών"
       },
       "student": {
-        "title": "Aviation Student",
-        "desc": "High school / college level"
+        "title": "Φοιτητής αεροπορίας",
+        "desc": "Επίπεδο λυκείου / πανεπιστημίου"
       }
     },
     "levelTest": {
-      "title": "Let's get to know you",
-      "intro": "10 short questions. About 3 minutes. Focus on accuracy, not speed.",
-      "warning": "Wrong answer = no penalty. This test calibrates your lesson difficulty. There's an \"I don't know\" option — don't stress.",
-      "start": "Start test →",
-      "progress": "Question {{current}} / {{total}}",
-      "answer": "Answer",
-      "skip": "I don't know, skip",
-      "correct": "✓ Correct!",
-      "wrong": "✗ Incorrect",
-      "next": "Next question →",
-      "finish": "See results →"
+      "title": "Ας σε γνωρίσουμε",
+      "intro": "10 σύντομες ερωτήσεις. Περίπου 3 λεπτά. Εστιάστε στην ακρίβεια, όχι στην ταχύτητα.",
+      "warning": "Λάθος απάντηση = χωρίς ποινή. Αυτό το τεστ ρυθμίζει τη δυσκολία του μαθήματός σου. Υπάρχει η επιλογή «Δεν ξέρω» — μην αγχώνεσαι.",
+      "start": "Έναρξη δοκιμής →",
+      "progress": "Ερώτηση {{current}} / {{total}}",
+      "answer": "Απάντηση",
+      "skip": "Δεν ξέρω, άσ' το",
+      "correct": "✓ Σωστά!",
+      "wrong": "✗ Λάθος",
+      "next": "Επόμενη ερώτηση →",
+      "finish": "Δείτε τα αποτελέσματα →"
     },
     "goals": {
-      "title": "How much time per day?",
-      "subtitle": "You can change this anytime.",
-      "yourLevel": "Your level",
-      "cta": "Start AirSpeak 🛫"
+      "title": "Πόση ώρα την ημέρα;",
+      "subtitle": "Μπορείτε να το αλλάξετε ανά πάσα στιγμή.",
+      "yourLevel": "Το επίπεδό σου",
+      "cta": "Ξεκινήστε το AirSpeak 🛫"
     },
     "daily": {
-      "5": "5 min",
-      "5_title": "Quick review",
-      "10": "10 min",
-      "10_title": "Light",
-      "15": "15 min",
-      "15_title": "Regular",
-      "30": "30 min",
-      "30_title": "Serious",
-      "60": "60+ min",
-      "60_title": "Intensive"
+      "5": "Πέντε λεπτά",
+      "10": "δέκα λεπτά",
+      "15": "δεκαπέντε λεπτά",
+      "30": "Τριάντα λεπτά",
+      "60": "Πάνω από 60 λεπτά",
+      "5_title": "Σύντομη ανασκόπηση",
+      "10_title": "Φως",
+      "15_title": "Κανονικός",
+      "30_title": "Σοβαρό",
+      "60_title": "Εντατική"
     }
   },
   "level": {
-    "A1": "Beginner",
-    "A2": "Elementary",
-    "B1": "Intermediate",
-    "B2": "Upper-Intermediate",
-    "C1": "Advanced"
+    "A1": "Αρχάριος",
+    "A2": "Δημοτικό",
+    "B1": "Ενδιάμεσο",
+    "B2": "Ανώτερο-ενδιάμεσο",
+    "C1": "Για προχωρημένους"
   },
   "tabs": {
-    "home": "Home",
-    "learn": "Learn",
-    "practice": "Practice",
-    "league": "League",
-    "profile": "Profile"
+    "home": "Αρχική σελίδα",
+    "learn": "Μάθετε",
+    "practice": "Πρακτική",
+    "league": "Πρωτάθλημα",
+    "profile": "Προφίλ"
   },
   "home": {
-    "greeting": "Welcome, Captain!",
-    "subtitle": "Today's missions and continue from where you left",
-    "yourLevel": "Your level",
-    "dailyGoal": "Daily goal",
-    "streak": "Streak",
-    "xp": "XP"
+    "greeting": "Καλώς ήρθες, Καπετάνιε!",
+    "subtitle": "Οι αποστολές της ημέρας και συνέχισε από εκεί που σταμάτησες",
+    "yourLevel": "Το επίπεδό σου",
+    "dailyGoal": "Καθημερινός στόχος",
+    "streak": "Σειρά",
+    "xp": "Πόντοι εμπειρίας"
   },
   "learn": {
-    "title": "Learn",
-    "subtitle": "Lesson tree by your role and level"
+    "title": "Μάθετε",
+    "subtitle": "Δέντρο μαθημάτων ανά ρόλο και επίπεδο"
   },
   "practice": {
-    "title": "Practice",
-    "subtitle": "AI conversation · Quiz · Exam · Pronunciation · SRS"
+    "title": "Πρακτική",
+    "subtitle": "Συνομιλία με τεχνητή νοημοσύνη · Κουίζ · Εξετάσεις · Προφορά · SRS"
   },
   "league": {
-    "title": "League",
-    "subtitle": "Weekly leaderboard — climb tiers, earn rewards"
+    "title": "Πρωτάθλημα",
+    "subtitle": "Εβδομαδιαία κατάταξη — ανέβα επίπεδα, κέρδισε ανταμοιβές"
   },
   "profile": {
-    "title": "Profile",
-    "subtitle": "Your stats, badges, settings",
-    "signOut": "Sign out"
+    "title": "Προφίλ",
+    "subtitle": "Τα στατιστικά σου, τα εμβλήματα, οι ρυθμίσεις",
+    "signOut": "Αποσύνδεση"
   }
 }
