@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { PILOT_VOCAB_FAZ1, type VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { useProgressStore } from '@/stores/progressStore';
 import { track } from '@/lib/posthog';
 
 interface VocabExercise {
@@ -43,6 +44,7 @@ function shuffle<T>(arr: T[]): T[] {
 export default function LessonScreen() {
   const params = useLocalSearchParams<{ id: string }>();
   const { addXp, recordDailyActivity, loseHeart, addCoins } = useGamificationStore();
+  const markLessonCompleted = useProgressStore((s) => s.markLessonCompleted);
   const [exercises] = useState<VocabExercise[]>(() => generateExercises(PILOT_VOCAB_FAZ1));
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
@@ -84,8 +86,11 @@ export default function LessonScreen() {
       addXp(50, 'lesson_completed');
       addCoins(10, 'lesson_completed');
       recordDailyActivity();
+      const score = Math.round((correctCount / total) * 100);
+      const lessonId = typeof params.id === 'string' ? params.id : 'unknown';
+      markLessonCompleted(lessonId, score);
       track('lesson_completed', {
-        lesson_id: params.id,
+        lesson_id: lessonId,
         score: correctCount,
         total,
       });

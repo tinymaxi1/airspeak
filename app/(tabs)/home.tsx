@@ -136,10 +136,14 @@ export default function HomeScreen() {
                   10 yeni terim öğren
                 </Text>
                 <Text fontSize="$3" color="$textSecondary">
-                  +30 XP
+                  +30 XP · SRS akıllı hafıza
                 </Text>
               </YStack>
-              <Button size="$3" variant="outlined">
+              <Button
+                size="$3"
+                variant="outlined"
+                onPress={() => router.push('/srs')}
+              >
                 Aç
               </Button>
             </XStack>
