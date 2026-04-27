@@ -145,30 +145,25 @@ export default function ProfileScreen() {
         <YStack gap="$2">
           <H3 color="$text">Ayarlar</H3>
 
-          <Card padding="$3" backgroundColor="$surface" bordered>
-            <YStack gap="$2">
-              <Text fontSize="$3" color="$textSecondary">Dil</Text>
-              <XStack gap="$2">
-                <Button
-                  flex={1}
-                  size="$3"
-                  backgroundColor={lang === 'tr' ? '$primary' : '$surface'}
-                  color={lang === 'tr' ? '$primaryText' : '$text'}
-                  onPress={() => handleLangChange('tr')}
-                >
-                  🇹🇷 Türkçe
-                </Button>
-                <Button
-                  flex={1}
-                  size="$3"
-                  backgroundColor={lang === 'en' ? '$primary' : '$surface'}
-                  color={lang === 'en' ? '$primaryText' : '$text'}
-                  onPress={() => handleLangChange('en')}
-                >
-                  🇬🇧 English
-                </Button>
-              </XStack>
-            </YStack>
+          <Card
+            padding="$3"
+            backgroundColor="$surface"
+            bordered
+            onPress={() => router.push('/settings/language')}
+            pressStyle={{ scale: 0.98 }}
+          >
+            <XStack gap="$2" alignItems="center" justifyContent="space-between">
+              <YStack flex={1}>
+                <Text fontSize="$3" color="$textSecondary">Dil · Language</Text>
+                <Text fontSize="$5" fontWeight="600" color="$text">
+                  {lang === 'tr' ? '🇹🇷 Türkçe' : lang === 'en' ? '🇬🇧 English' : `🌐 ${lang.toUpperCase()}`}
+                </Text>
+                <Text fontSize="$2" color="$textSecondary">
+                  20 dil destekleniyor →
+                </Text>
+              </YStack>
+              <Text fontSize="$5" color="$primary">→</Text>
+            </XStack>
           </Card>
 
           <Card padding="$3" backgroundColor="$surface" bordered>

@@ -4,10 +4,20 @@
  * Sprint 9'da 300'e çıkarılacak.
  */
 
+/**
+ * Multi-language additive layer.
+ * Mevcut term/termTr/definitionEn/definitionTr alanları korundu (geri uyumlu).
+ * Yeni i18n alanı opsiyonel — Sprint 9'da Claude pipeline ile 18 dilde doldurulacak.
+ *
+ * Kullanım:
+ *   const localizedTerm = term.i18n?.term?.[currentLocale] ?? term.term;
+ *   veya: resolveLocalized(term.i18n?.term, currentLocale) ?? term.term
+ */
 export interface VocabularyTerm {
   id: string;
-  term: string;
-  termTr: string;
+  // === Legacy alanlar (korundu) ===
+  term: string;          // EN — temel form
+  termTr: string;        // TR
   pronunciation: string;
   category: string;
   difficulty: 1 | 2 | 3 | 4 | 5;
@@ -16,6 +26,18 @@ export interface VocabularyTerm {
   examples: { en: string; tr: string }[];
   icaoReference?: string;
   relatedTerms: string[];
+  // === 20 dil layer (additif, opsiyonel) ===
+  i18n?: {
+    term?: Partial<Record<string, string>>;       // term in 20 langs
+    definition?: Partial<Record<string, string>>; // definition in 20 langs
+    examples?: Partial<Record<string, { text: string }[]>>; // examples in 20 langs
+  };
+  // === Audio (TTS — Sprint 10) ===
+  audio?: {
+    /** Her dil için TTS-üretilen ses URL'i */
+    pronunciation?: Partial<Record<string, string>>;
+    examples?: Partial<Record<string, string[]>>;
+  };
 }
 
 export const PILOT_VOCAB_FAZ1: VocabularyTerm[] = [
