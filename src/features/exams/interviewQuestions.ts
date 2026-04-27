@@ -1,14 +1,17 @@
 /**
  * Mülakat Soru Bankası — havayolu rol bazlı
  *
- * 60+ soru: kategori (icebreaker, motivation, technical, behavioral, situational,
+ * 180+ soru: kategori (icebreaker, motivation, technical, behavioral, situational,
  * english, company, group, role-play, cv-based, tricky) × rol × havayolu.
  *
- * Sprint 9'da Claude ile 200+ soruya çıkarılacak.
+ * Sprint 9'da Claude ile 500+ soruya çıkarılacak.
  */
 import type { InterviewQuestion } from './airlineTypes';
+import { CABIN_EXTRA_QUESTIONS } from './questionsCabinExtra';
+import { PILOT_EXTRA_QUESTIONS } from './questionsPilotExtra';
+import { ROLES_EXTRA_QUESTIONS } from './questionsRolesExtra';
 
-export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
+const CORE_QUESTIONS: InterviewQuestion[] = [
   // ═══════════════════════════════════════
   // GENEL CABIN — TÜM HAVAYOLLARI
   // ═══════════════════════════════════════
@@ -598,6 +601,16 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
     redFlagsTr: ['Bilmiyorum'],
     tipsTr: ['NAT track ops bil', 'Datalink fail procedures'],
   },
+];
+
+/**
+ * Tüm soru bankası — core + extra dosyaları birleştir.
+ */
+export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
+  ...CORE_QUESTIONS,
+  ...CABIN_EXTRA_QUESTIONS,
+  ...PILOT_EXTRA_QUESTIONS,
+  ...ROLES_EXTRA_QUESTIONS,
 ];
 
 /**
