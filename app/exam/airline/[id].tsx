@@ -14,6 +14,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { getAirlineById } from '@/features/exams/airlines';
 import { getQuestionsForAirline } from '@/features/exams/interviewQuestions';
+import { getKnowledgeForAirline, getRoleKnowledge } from '@/features/exams/airlineKnowledge';
 import type { InterviewQuestion } from '@/features/exams/airlineTypes';
 
 export default function AirlineDetailScreen() {
@@ -36,6 +37,8 @@ export default function AirlineDetailScreen() {
 
   const interview = airline.interviews.find((i) => i.role === role);
   const questions = role ? getQuestionsForAirline(airline.id, role) : [];
+  const kb = getKnowledgeForAirline(airline.id);
+  const roleKb = role ? getRoleKnowledge(airline.id, role as never) : undefined;
 
   if (view === 'mock' && questions.length > 0) {
     return <MockInterview airline={airline.name} questions={questions} onExit={() => setView('overview')} />;
@@ -161,6 +164,219 @@ export default function AirlineDetailScreen() {
               </Text>
             ))}
           </YStack>
+        )}
+
+        {/* Bilinmesi Gerekenler — yapısal knowledge base */}
+        {kb && (
+          <YStack gap="$3">
+            <H3 color="$text">📋 Bilinmesi Gerekenler</H3>
+
+            {/* Key Facts */}
+            <Card padding="$4" backgroundColor="$surface" bordered>
+              <YStack gap="$2">
+                <Text fontSize="$3" color="$primary" textTransform="uppercase">
+                  Kritik fact'ler
+                </Text>
+                {kb.keyFacts.map((f, i) => (
+                  <XStack key={i} gap="$2" alignItems="flex-start">
+                    <Text fontSize="$2" color="$textSecondary" minWidth={140}>
+                      {f.label}:
+                    </Text>
+                    <Text fontSize="$3" color="$text" flex={1} fontWeight="600">
+                      {f.value}
+                    </Text>
+                  </XStack>
+                ))}
+              </YStack>
+            </Card>
+
+            {/* Company DNA */}
+            <Card padding="$4" backgroundColor="$primarySubtle">
+              <YStack gap="$2">
+                <Text fontSize="$3" color="$primary" textTransform="uppercase">
+                  🧬 Şirket DNA
+                </Text>
+                <Paragraph color="$text">{kb.companyDNA}</Paragraph>
+              </YStack>
+            </Card>
+
+            {/* Recent News */}
+            <Card padding="$4" backgroundColor="$surface" bordered>
+              <YStack gap="$2">
+                <Text fontSize="$3" color="$primary" textTransform="uppercase">
+                  📰 Son 12 ay
+                </Text>
+                {kb.recentNews.map((n, i) => (
+                  <Text key={i} fontSize="$3" color="$text">
+                    • {n}
+                  </Text>
+                ))}
+              </YStack>
+            </Card>
+
+            {/* Network + Fleet + Competitive */}
+            <Card padding="$4" backgroundColor="$surface" bordered>
+              <YStack gap="$3">
+                <YStack gap="$1">
+                  <Text fontSize="$2" color="$textSecondary" textTransform="uppercase">
+                    Filo Detayı
+                  </Text>
+                  <Paragraph color="$text">{kb.fleetDetail}</Paragraph>
+                </YStack>
+                <YStack gap="$1">
+                  <Text fontSize="$2" color="$textSecondary" textTransform="uppercase">
+                    Network Stratejisi
+                  </Text>
+                  <Paragraph color="$text">{kb.networkStrategy}</Paragraph>
+                </YStack>
+                <YStack gap="$1">
+                  <Text fontSize="$2" color="$textSecondary" textTransform="uppercase">
+                    Rekabet Pozisyonu
+                  </Text>
+                  <Paragraph color="$text">{kb.competitivePosition}</Paragraph>
+                </YStack>
+              </YStack>
+            </Card>
+
+            {/* ROL ÖZEL — must know + mistakes + tips */}
+            {roleKb && (
+              <YStack gap="$2">
+                <H3 color="$text">🎯 {roleLabel(role!)} İçin Özel</H3>
+
+                <Card padding="$4" backgroundColor="$successSubtle">
+                  <YStack gap="$2">
+                    <Text fontSize="$4" fontWeight="700" color="$success">
+                      ✅ Mutlaka Bilinmesi
+                    </Text>
+                    {roleKb.mustKnow.map((m, i) => (
+                      <Text key={i} fontSize="$3" color="$text">
+                        • {m}
+                      </Text>
+                    ))}
+                  </YStack>
+                </Card>
+
+                <Card padding="$4" backgroundColor="$dangerSubtle">
+                  <YStack gap="$2">
+                    <Text fontSize="$4" fontWeight="700" color="$danger">
+                      ⛔ Sıkça Yapılan Hatalar
+                    </Text>
+                    {roleKb.commonMistakes.map((m, i) => (
+                      <Text key={i} fontSize="$3" color="$text">
+                        • {m}
+                      </Text>
+                    ))}
+                  </YStack>
+                </Card>
+
+                <Card padding="$4" backgroundColor="$accent">
+                  <YStack gap="$2">
+                    <Text fontSize="$4" fontWeight="700" color="$accentText">
+                      💡 Hazırlık İpuçları
+                    </Text>
+                    {roleKb.preparationTips.map((t, i) => (
+                      <Text key={i} fontSize="$3" color="$accentText">
+                        • {t}
+                      </Text>
+                    ))}
+                  </YStack>
+                </Card>
+
+                <Card padding="$4" backgroundColor="$surface" bordered>
+                  <YStack gap="$2">
+                    <Text fontSize="$3" color="$primary" textTransform="uppercase">
+                      🔑 Shibboleth — Şirket Jargonu
+                    </Text>
+                    <Text fontSize="$2" color="$textSecondary">
+                      Bu ifadeleri mülakatta kullan veya tanı — şirket içi olduğunu gösterir.
+                    </Text>
+                    {roleKb.shibboleths.map((s, i) => (
+                      <Text key={i} fontSize="$3" color="$text">
+                        • {s}
+                      </Text>
+                    ))}
+                  </YStack>
+                </Card>
+
+                <Card padding="$4" backgroundColor="$surface" bordered>
+                  <YStack gap="$2">
+                    <Text fontSize="$3" color="$primary" textTransform="uppercase">
+                      👔 Dress Code
+                    </Text>
+                    <Paragraph color="$text">{roleKb.dressCode}</Paragraph>
+                  </YStack>
+                </Card>
+
+                <Card padding="$4" backgroundColor="$primarySubtle">
+                  <YStack gap="$2">
+                    <Text fontSize="$3" color="$primary" textTransform="uppercase">
+                      📅 Mülakat günü öncesi checklist
+                    </Text>
+                    {roleKb.dayBeforeChecklist.map((c, i) => (
+                      <Text key={i} fontSize="$3" color="$text">
+                        ☐ {c}
+                      </Text>
+                    ))}
+                  </YStack>
+                </Card>
+
+                <Card padding="$4" backgroundColor="$surface" bordered>
+                  <YStack gap="$2">
+                    <Text fontSize="$3" color="$primary" textTransform="uppercase">
+                      📞 Mülakat sonrası
+                    </Text>
+                    {roleKb.postInterviewActions.map((a, i) => (
+                      <Text key={i} fontSize="$3" color="$text">
+                        • {a}
+                      </Text>
+                    ))}
+                  </YStack>
+                </Card>
+              </YStack>
+            )}
+
+            {/* Verified Tips */}
+            <Card padding="$4" backgroundColor="$surface" bordered borderColor="$success">
+              <YStack gap="$2">
+                <Text fontSize="$3" color="$success" textTransform="uppercase">
+                  ✓ Doğrulanmış İpuçları
+                </Text>
+                {kb.verifiedTips.map((t, i) => (
+                  <Text key={i} fontSize="$3" color="$text">
+                    {t}
+                  </Text>
+                ))}
+              </YStack>
+            </Card>
+
+            {/* Sources */}
+            <Card padding="$3" backgroundColor="$backgroundHover">
+              <YStack gap="$1">
+                <Text fontSize="$2" color="$textSecondary" textTransform="uppercase">
+                  Kaynaklar · Son güncelleme {kb.lastUpdated}
+                </Text>
+                {kb.sources.map((s, i) => (
+                  <Text key={i} fontSize="$2" color="$textSecondary">
+                    • {s}
+                  </Text>
+                ))}
+              </YStack>
+            </Card>
+          </YStack>
+        )}
+
+        {!kb && (
+          <Card padding="$3" backgroundColor="$warning">
+            <YStack gap="$1">
+              <Text fontSize="$3" color="$primaryText" fontWeight="600">
+                ⚠️ Detaylı bilgi tabanı yakında
+              </Text>
+              <Text fontSize="$2" color="$primaryText">
+                Bu havayolu için MVP\'de yapısal knowledge base yok — Sprint 9\'da eklenecek.
+                Genel mülakat bilgileri yukarıda mevcut.
+              </Text>
+            </YStack>
+          </Card>
         )}
 
         {/* Mock interview CTA */}
@@ -407,5 +623,17 @@ function categoryLabel(cat: string): string {
       cv_based: 'CV bazlı',
       tricky: 'Zor / Tuzak',
     }[cat] ?? cat
+  );
+}
+
+function roleLabel(role: string): string {
+  return (
+    {
+      pilot: 'Pilot',
+      cabin: 'Kabin Memuru',
+      technician: 'Teknisyen',
+      ground: 'Yer Hizmetleri',
+      student: 'Öğrenci',
+    }[role] ?? role
   );
 }
