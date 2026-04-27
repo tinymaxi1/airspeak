@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
-  PLACEMENT_QUESTIONS,
+  getQuestionsForRole,
   calculateLevel,
   calculateScores,
 } from '@/features/placement/questions';
@@ -19,14 +19,17 @@ interface Answer {
 export default function LevelTestScreen() {
   const { t } = useTranslation();
   const setPlacementResult = useOnboardingStore((s) => s.setPlacementResult);
+  const role = useOnboardingStore((s) => s.role);
   const [step, setStep] = useState<'intro' | 'questions' | 'submitting'>('intro');
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [answers, setAnswers] = useState<Answer[]>([]);
 
-  const total = PLACEMENT_QUESTIONS.length;
-  const current = PLACEMENT_QUESTIONS[currentIdx];
+  // Rol bazlı soru seti — kullanıcının rolüne göre 10 soru filtrelenir
+  const [questions] = useState(() => getQuestionsForRole(role));
+  const total = questions.length;
+  const current = questions[currentIdx];
 
   if (step === 'intro') {
     return (
@@ -48,6 +51,18 @@ export default function LevelTestScreen() {
               '10 kısa soru. Yaklaşık 3 dakika. Doğru cevaba odaklan, hızını dert etme.',
             )}
           </Paragraph>
+          {role && (
+            <Card padding="$3" backgroundColor="$primarySubtle">
+              <Text fontSize="$3" color="$primary">
+                ✈️{' '}
+                {role === 'pilot' && 'Pilot rolüne özel 4 soru içeriyor'}
+                {role === 'cabin' && 'Kabin memuru rolüne özel 4 soru içeriyor'}
+                {role === 'technician' && 'Teknisyen rolüne özel 4 soru içeriyor'}
+                {role === 'ground' && 'Yer hizmetleri rolüne özel 4 soru içeriyor'}
+                {role === 'student' && 'Öğrenci rolüne özel 4 soru içeriyor'}
+              </Text>
+            </Card>
+          )}
 
           <Card padding="$4" backgroundColor="$accent" theme="alt2">
             <YStack gap="$2">
@@ -93,9 +108,9 @@ export default function LevelTestScreen() {
     setAnswers(newAnswers);
 
     if (currentIdx + 1 >= total) {
-      // Test bitti — sonuçları hesapla
-      const level = calculateLevel(newAnswers);
-      const scores = calculateScores(newAnswers);
+      // Test bitti — sonuçları rol bazlı set ile hesapla
+      const level = calculateLevel(newAnswers, questions);
+      const scores = calculateScores(newAnswers, questions);
       setPlacementResult({
         level,
         totalScore: scores.total,
