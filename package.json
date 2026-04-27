@@ -13,7 +13,16 @@
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "typecheck": "tsc --noEmit",
-    "supabase:gen-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/types/database.ts"
+    "supabase:gen-types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/types/database.ts",
+    "translate:wikipedia": "tsx scripts/i18n/translate-wikipedia.ts",
+    "translate:deepl": "tsx scripts/i18n/translate-deepl.ts",
+    "translate:argos": "tsx scripts/i18n/translate-argos.ts",
+    "translate:argos:install": "python3 scripts/i18n/install-argos-langs.py",
+    "translate:ui": "tsx scripts/i18n/run-pipeline.ts --target ui-strings",
+    "translate:vocab": "tsx scripts/i18n/run-pipeline.ts --target vocab",
+    "translate:all": "tsx scripts/i18n/run-pipeline.ts --target all",
+    "translate:check": "tsx scripts/i18n/quality-check.ts",
+    "translate:usage": "tsx scripts/i18n/translate-deepl.ts --usage"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",

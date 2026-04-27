@@ -1,0 +1,320 @@
+{
+  "_meta": {
+    "description": "AirSpeak Aviation Glossary — kritik havacılık terimleri 20 dilde",
+    "sources": [
+      "ICAO Doc 9713 (resmi 6 dil)",
+      "IATE — EU terminology DB",
+      "EUROCONTROL Skybrary",
+      "Wikipedia language links (cross-validated)",
+      "ICAO Annex 10 (Communications)"
+    ],
+    "rules": {
+      "preserve_in_all_languages": [
+        "Mayday",
+        "Pan Pan",
+        "Roger",
+        "Wilco",
+        "Affirmative",
+        "Negative",
+        "Mayday Mayday Mayday",
+        "Pan Pan Pan Pan Pan Pan",
+        "Squawk 7700",
+        "Squawk 7600",
+        "Squawk 7500"
+      ],
+      "preserve_callsigns": "Turkish, Speedbird, Lufthansa, Emirates, Qatari — IATA/ICAO callsigns",
+      "preserve_numbers_phonetic": "tree, fife, niner — pilot phonetic numbers"
+    },
+    "lastUpdated": "2025-01"
+  },
+
+  "terms": [
+    {
+      "id": "cockpit",
+      "category": "aircraft",
+      "icaoReference": "ICAO Doc 9713",
+      "translations": {
+        "en": "cockpit",
+        "tr": "kokpit",
+        "ar": "قمرة القيادة",
+        "fa": "کابین خلبان",
+        "de": "Cockpit",
+        "fr": "cockpit",
+        "es": "cabina de mando",
+        "it": "cabina di pilotaggio",
+        "pt": "cabine de pilotagem",
+        "nl": "cockpit",
+        "pl": "kokpit",
+        "el": "πιλοτήριο",
+        "zh": "驾驶舱",
+        "ja": "コックピット",
+        "ko": "조종실",
+        "hi": "कॉकपिट",
+        "id": "kokpit",
+        "th": "ห้องนักบิน",
+        "ms": "kokpit",
+        "ru": "кабина пилота"
+      }
+    },
+    {
+      "id": "runway",
+      "category": "airport",
+      "translations": {
+        "en": "runway", "tr": "pist", "ar": "مدرج", "fa": "باند",
+        "de": "Start- und Landebahn", "fr": "piste", "es": "pista",
+        "it": "pista", "pt": "pista", "nl": "startbaan",
+        "pl": "pas startowy", "el": "διάδρομος",
+        "zh": "跑道", "ja": "滑走路", "ko": "활주로",
+        "hi": "रनवे", "id": "landasan pacu", "th": "ทางวิ่ง", "ms": "landasan",
+        "ru": "взлётно-посадочная полоса"
+      }
+    },
+    {
+      "id": "aircraft",
+      "category": "aircraft",
+      "translations": {
+        "en": "aircraft", "tr": "uçak", "ar": "طائرة", "fa": "هواپیما",
+        "de": "Flugzeug", "fr": "aéronef", "es": "aeronave",
+        "it": "aeromobile", "pt": "aeronave", "nl": "vliegtuig",
+        "pl": "samolot", "el": "αεροσκάφος",
+        "zh": "飞机", "ja": "航空機", "ko": "항공기",
+        "hi": "विमान", "id": "pesawat terbang", "th": "อากาศยาน", "ms": "pesawat",
+        "ru": "воздушное судно"
+      }
+    },
+    {
+      "id": "takeoff",
+      "category": "phase_of_flight",
+      "translations": {
+        "en": "takeoff", "tr": "kalkış", "ar": "الإقلاع", "fa": "برخاستن",
+        "de": "Start", "fr": "décollage", "es": "despegue",
+        "it": "decollo", "pt": "decolagem", "nl": "opstijgen",
+        "pl": "start", "el": "απογείωση",
+        "zh": "起飞", "ja": "離陸", "ko": "이륙",
+        "hi": "उड़ान भरना", "id": "lepas landas", "th": "การบินขึ้น", "ms": "berlepas",
+        "ru": "взлёт"
+      }
+    },
+    {
+      "id": "landing",
+      "category": "phase_of_flight",
+      "translations": {
+        "en": "landing", "tr": "iniş", "ar": "الهبوط", "fa": "فرود",
+        "de": "Landung", "fr": "atterrissage", "es": "aterrizaje",
+        "it": "atterraggio", "pt": "aterragem", "nl": "landing",
+        "pl": "lądowanie", "el": "προσγείωση",
+        "zh": "着陆", "ja": "着陸", "ko": "착륙",
+        "hi": "अवतरण", "id": "pendaratan", "th": "การลงจอด", "ms": "pendaratan",
+        "ru": "посадка"
+      }
+    },
+    {
+      "id": "captain",
+      "category": "crew",
+      "translations": {
+        "en": "captain", "tr": "kaptan", "ar": "قبطان", "fa": "کاپیتان",
+        "de": "Kapitän", "fr": "commandant de bord", "es": "comandante",
+        "it": "comandante", "pt": "comandante", "nl": "gezagvoerder",
+        "pl": "kapitan", "el": "κυβερνήτης",
+        "zh": "机长", "ja": "機長", "ko": "기장",
+        "hi": "कप्तान", "id": "kapten", "th": "กัปตัน", "ms": "kapten",
+        "ru": "командир воздушного судна"
+      }
+    },
+    {
+      "id": "first_officer",
+      "category": "crew",
+      "translations": {
+        "en": "first officer", "tr": "yardımcı pilot", "ar": "ضابط أول", "fa": "خلبان دوم",
+        "de": "Erster Offizier", "fr": "copilote", "es": "primer oficial",
+        "it": "primo ufficiale", "pt": "primeiro oficial", "nl": "eerste officier",
+        "pl": "pierwszy oficer", "el": "συγκυβερνήτης",
+        "zh": "副驾驶", "ja": "副操縦士", "ko": "부기장",
+        "hi": "प्रथम अधिकारी", "id": "kopilot", "th": "นักบินที่สอง", "ms": "pegawai pertama",
+        "ru": "второй пилот"
+      }
+    },
+    {
+      "id": "cabin_crew",
+      "category": "crew",
+      "translations": {
+        "en": "cabin crew", "tr": "kabin ekibi", "ar": "طاقم الطائرة", "fa": "خدمه پرواز",
+        "de": "Kabinenpersonal", "fr": "personnel de cabine", "es": "tripulación de cabina",
+        "it": "equipaggio di cabina", "pt": "tripulação de cabine", "nl": "cabinepersoneel",
+        "pl": "załoga pokładowa", "el": "πλήρωμα καμπίνας",
+        "zh": "客舱机组", "ja": "客室乗務員", "ko": "객실승무원",
+        "hi": "केबिन क्रू", "id": "awak kabin", "th": "ลูกเรือ", "ms": "krew kabin",
+        "ru": "бортпроводники"
+      }
+    },
+    {
+      "id": "passenger",
+      "category": "people",
+      "translations": {
+        "en": "passenger", "tr": "yolcu", "ar": "راكب", "fa": "مسافر",
+        "de": "Passagier", "fr": "passager", "es": "pasajero",
+        "it": "passeggero", "pt": "passageiro", "nl": "passagier",
+        "pl": "pasażer", "el": "επιβάτης",
+        "zh": "乘客", "ja": "乗客", "ko": "승객",
+        "hi": "यात्री", "id": "penumpang", "th": "ผู้โดยสาร", "ms": "penumpang",
+        "ru": "пассажир"
+      }
+    },
+    {
+      "id": "seatbelt",
+      "category": "safety",
+      "translations": {
+        "en": "seatbelt", "tr": "emniyet kemeri", "ar": "حزام الأمان", "fa": "کمربند ایمنی",
+        "de": "Sicherheitsgurt", "fr": "ceinture de sécurité", "es": "cinturón de seguridad",
+        "it": "cintura di sicurezza", "pt": "cinto de segurança", "nl": "veiligheidsgordel",
+        "pl": "pas bezpieczeństwa", "el": "ζώνη ασφαλείας",
+        "zh": "安全带", "ja": "シートベルト", "ko": "안전벨트",
+        "hi": "सीट बेल्ट", "id": "sabuk pengaman", "th": "เข็มขัดนิรภัย", "ms": "tali pinggang keledar",
+        "ru": "ремень безопасности"
+      }
+    },
+    {
+      "id": "emergency",
+      "category": "safety",
+      "translations": {
+        "en": "emergency", "tr": "acil durum", "ar": "حالة طوارئ", "fa": "اضطراری",
+        "de": "Notfall", "fr": "urgence", "es": "emergencia",
+        "it": "emergenza", "pt": "emergência", "nl": "noodgeval",
+        "pl": "nagła sytuacja", "el": "έκτακτη ανάγκη",
+        "zh": "紧急情况", "ja": "緊急事態", "ko": "비상사태",
+        "hi": "आपातकाल", "id": "darurat", "th": "เหตุฉุกเฉิน", "ms": "kecemasan",
+        "ru": "чрезвычайная ситуация"
+      }
+    },
+    {
+      "id": "oxygen_mask",
+      "category": "safety",
+      "translations": {
+        "en": "oxygen mask", "tr": "oksijen maskesi", "ar": "قناع الأكسجين", "fa": "ماسک اکسیژن",
+        "de": "Sauerstoffmaske", "fr": "masque à oxygène", "es": "máscara de oxígeno",
+        "it": "maschera d'ossigeno", "pt": "máscara de oxigênio", "nl": "zuurstofmasker",
+        "pl": "maska tlenowa", "el": "μάσκα οξυγόνου",
+        "zh": "氧气面罩", "ja": "酸素マスク", "ko": "산소마스크",
+        "hi": "ऑक्सीजन मास्क", "id": "masker oksigen", "th": "หน้ากากออกซิเจน", "ms": "topeng oksigen",
+        "ru": "кислородная маска"
+      }
+    },
+    {
+      "id": "life_vest",
+      "category": "safety",
+      "translations": {
+        "en": "life vest", "tr": "can yeleği", "ar": "سترة النجاة", "fa": "جلیقه نجات",
+        "de": "Schwimmweste", "fr": "gilet de sauvetage", "es": "chaleco salvavidas",
+        "it": "giubbotto di salvataggio", "pt": "colete salva-vidas", "nl": "reddingsvest",
+        "pl": "kamizelka ratunkowa", "el": "σωσίβιο",
+        "zh": "救生衣", "ja": "救命胴衣", "ko": "구명조끼",
+        "hi": "जीवन रक्षक जैकेट", "id": "rompi pelampung", "th": "เสื้อชูชีพ", "ms": "jaket keselamatan",
+        "ru": "спасательный жилет"
+      }
+    },
+    {
+      "id": "boarding",
+      "category": "operations",
+      "translations": {
+        "en": "boarding", "tr": "biniş", "ar": "الصعود إلى الطائرة", "fa": "سوار شدن",
+        "de": "Einstieg", "fr": "embarquement", "es": "embarque",
+        "it": "imbarco", "pt": "embarque", "nl": "instappen",
+        "pl": "wsiadanie", "el": "επιβίβαση",
+        "zh": "登机", "ja": "搭乗", "ko": "탑승",
+        "hi": "बोर्डिंग", "id": "naik pesawat", "th": "การขึ้นเครื่อง", "ms": "menaiki pesawat",
+        "ru": "посадка на борт"
+      }
+    },
+    {
+      "id": "gate",
+      "category": "airport",
+      "translations": {
+        "en": "gate", "tr": "kapı", "ar": "بوابة", "fa": "گیت",
+        "de": "Flugsteig", "fr": "porte d'embarquement", "es": "puerta de embarque",
+        "it": "uscita", "pt": "portão", "nl": "gate",
+        "pl": "bramka", "el": "πύλη",
+        "zh": "登机口", "ja": "ゲート", "ko": "탑승구",
+        "hi": "गेट", "id": "gerbang", "th": "ประตูทางออกขึ้นเครื่อง", "ms": "pintu",
+        "ru": "выход на посадку"
+      }
+    },
+    {
+      "id": "luggage",
+      "category": "operations",
+      "translations": {
+        "en": "luggage", "tr": "bagaj", "ar": "الأمتعة", "fa": "بار",
+        "de": "Gepäck", "fr": "bagages", "es": "equipaje",
+        "it": "bagaglio", "pt": "bagagem", "nl": "bagage",
+        "pl": "bagaż", "el": "αποσκευές",
+        "zh": "行李", "ja": "手荷物", "ko": "수하물",
+        "hi": "सामान", "id": "bagasi", "th": "สัมภาระ", "ms": "bagasi",
+        "ru": "багаж"
+      }
+    },
+    {
+      "id": "altitude",
+      "category": "navigation",
+      "translations": {
+        "en": "altitude", "tr": "irtifa", "ar": "الارتفاع", "fa": "ارتفاع",
+        "de": "Höhe", "fr": "altitude", "es": "altitud",
+        "it": "altitudine", "pt": "altitude", "nl": "hoogte",
+        "pl": "wysokość", "el": "υψόμετρο",
+        "zh": "高度", "ja": "高度", "ko": "고도",
+        "hi": "ऊंचाई", "id": "ketinggian", "th": "ระดับความสูง", "ms": "altitud",
+        "ru": "высота"
+      }
+    },
+    {
+      "id": "weather",
+      "category": "operations",
+      "translations": {
+        "en": "weather", "tr": "hava durumu", "ar": "الطقس", "fa": "هوا",
+        "de": "Wetter", "fr": "météo", "es": "clima",
+        "it": "meteo", "pt": "tempo", "nl": "weer",
+        "pl": "pogoda", "el": "καιρός",
+        "zh": "天气", "ja": "天気", "ko": "날씨",
+        "hi": "मौसम", "id": "cuaca", "th": "สภาพอากาศ", "ms": "cuaca",
+        "ru": "погода"
+      }
+    },
+    {
+      "id": "turbulence",
+      "category": "weather",
+      "translations": {
+        "en": "turbulence", "tr": "türbülans", "ar": "اضطراب", "fa": "تلاطم",
+        "de": "Turbulenz", "fr": "turbulence", "es": "turbulencia",
+        "it": "turbolenza", "pt": "turbulência", "nl": "turbulentie",
+        "pl": "turbulencja", "el": "αναταράξεις",
+        "zh": "湍流", "ja": "乱気流", "ko": "난기류",
+        "hi": "अशांति", "id": "turbulensi", "th": "ความปั่นป่วน", "ms": "kegolakan",
+        "ru": "турбулентность"
+      }
+    },
+    {
+      "id": "crew",
+      "category": "crew",
+      "translations": {
+        "en": "crew", "tr": "mürettebat", "ar": "طاقم", "fa": "خدمه",
+        "de": "Besatzung", "fr": "équipage", "es": "tripulación",
+        "it": "equipaggio", "pt": "tripulação", "nl": "bemanning",
+        "pl": "załoga", "el": "πλήρωμα",
+        "zh": "机组", "ja": "乗員", "ko": "승무원",
+        "hi": "चालक दल", "id": "awak", "th": "ลูกเรือ", "ms": "krew",
+        "ru": "экипаж"
+      }
+    },
+    {
+      "id": "flight",
+      "category": "operations",
+      "translations": {
+        "en": "flight", "tr": "uçuş", "ar": "رحلة", "fa": "پرواز",
+        "de": "Flug", "fr": "vol", "es": "vuelo",
+        "it": "volo", "pt": "voo", "nl": "vlucht",
+        "pl": "lot", "el": "πτήση",
+        "zh": "航班", "ja": "便", "ko": "항공편",
+        "hi": "उड़ान", "id": "penerbangan", "th": "เที่ยวบิน", "ms": "penerbangan",
+        "ru": "рейс"
+      }
+    }
+  ]
+}
