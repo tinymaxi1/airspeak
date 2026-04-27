@@ -7,7 +7,8 @@
     "cancel": "İptal",
     "save": "Kaydet",
     "delete": "Sil",
-    "loading": "Yükleniyor…"
+    "loading": "Yükleniyor…",
+    "minutes": "dakika"
   },
   "welcome": {
     "tagline": "Havacılık İngilizcesinde Ustalaş",
@@ -17,7 +18,7 @@
   "auth": {
     "email": "E-posta",
     "password": "Şifre",
-    "passwordHint": "En az 8 karakter",
+    "passwordHint": "En az 6 karakter",
     "loading": "Lütfen bekle…",
     "forgotPassword": "Şifremi unuttum",
     "haveAccount": "Hesabın var mı? Giriş yap",
@@ -39,6 +40,73 @@
       "sent": "E-postanı kontrol et — sıfırlama linki gönderildi."
     }
   },
+  "onboarding": {
+    "step": "Adım {{current}}/{{total}}",
+    "roleSelect": {
+      "title": "Hangi rolde havacılığa bakıyorsun?",
+      "subtitle": "Sana özel ders yolu kuracağız."
+    },
+    "roles": {
+      "pilot": {
+        "title": "Pilot / Pilot adayı",
+        "desc": "ICAO 4, SHGM, ATPL hazırlık"
+      },
+      "cabin": {
+        "title": "Kabin memuru / Aday",
+        "desc": "Mülakat, yolcu iletişimi, acil durum"
+      },
+      "technician": {
+        "title": "Uçak teknisyeni / Aday",
+        "desc": "AMM, RSQM, mülakat"
+      },
+      "ground": {
+        "title": "Yer hizmetleri",
+        "desc": "Pilot/yolcu iletişimi"
+      },
+      "student": {
+        "title": "Havacılık öğrencisi",
+        "desc": "Lise/önlisans/lisans"
+      }
+    },
+    "levelTest": {
+      "title": "Şimdi seni daha iyi tanıyalım",
+      "intro": "10 kısa soru. Yaklaşık 3 dakika. Doğru cevaba odaklan, hızını dert etme.",
+      "warning": "Yanlış cevap = ceza yok. Bu test sana özel ders zorluğunu ayarlamak için. \"Bilmiyorum\" seçeneği var, panik yok.",
+      "start": "Teste başla →",
+      "progress": "Soru {{current}} / {{total}}",
+      "answer": "Cevapla",
+      "skip": "Bilmiyorum, geç",
+      "correct": "✓ Doğru!",
+      "wrong": "✗ Yanlış",
+      "next": "Sonraki soru →",
+      "finish": "Sonuçları gör →"
+    },
+    "goals": {
+      "title": "Günde ne kadar zaman ayırabilirsin?",
+      "subtitle": "Sonra istediğin zaman değiştirebilirsin.",
+      "yourLevel": "Seviyen",
+      "cta": "AirSpeak'e başla 🛫"
+    },
+    "daily": {
+      "5": "5 dk",
+      "5_title": "Hızlı tekrar",
+      "10": "10 dk",
+      "10_title": "Hafif",
+      "15": "15 dk",
+      "15_title": "Düzenli",
+      "30": "30 dk",
+      "30_title": "Ciddi",
+      "60": "60+ dk",
+      "60_title": "Yoğun"
+    }
+  },
+  "level": {
+    "A1": "Başlangıç",
+    "A2": "Temel",
+    "B1": "Orta",
+    "B2": "Orta-üstü",
+    "C1": "İleri"
+  },
   "tabs": {
     "home": "Ana sayfa",
     "learn": "Öğren",
@@ -48,7 +116,11 @@
   },
   "home": {
     "greeting": "Hoş geldin, Kaptan!",
-    "subtitle": "Bugünün görevleri ve kaldığın yerden devam et"
+    "subtitle": "Bugünün görevleri ve kaldığın yerden devam et",
+    "yourLevel": "Seviyen",
+    "dailyGoal": "Günlük hedef",
+    "streak": "Seri",
+    "xp": "XP"
   },
   "learn": {
     "title": "Öğren",
