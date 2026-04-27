@@ -1,82 +1,143 @@
 import { ScrollView } from 'react-native';
-import { YStack, XStack, H2, H3, Paragraph, Card, Text, Progress, Button } from 'tamagui';
+import { YStack, XStack, H2, H3, Paragraph, Card, Text, Progress } from 'tamagui';
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import {
-  PILOT_MODULE_1,
+  getModulesForRole,
   isUnitUnlocked,
+  isModuleUnlocked,
   getUnitProgress,
   type UnitNode,
+  type ModuleNode,
 } from '@/features/lessons/seed/lessonTree';
 import { useProgressStore } from '@/stores/progressStore';
+import { useOnboardingStore } from '@/stores/onboardingStore';
 
 export default function LearnScreen() {
   const { t } = useTranslation();
   const completedSet = useProgressStore((s) => new Set(s.completedLessonIds));
+  const role = useOnboardingStore((s) => s.role);
+  const modules = getModulesForRole(role);
+  const [activeModuleIdx, setActiveModuleIdx] = useState(0);
 
-  const moduleProgress = PILOT_MODULE_1.units.reduce(
-    (acc, u) => {
-      const p = getUnitProgress(u, completedSet);
-      return {
-        completed: acc.completed + p.completed,
-        total: acc.total + p.total,
-      };
-    },
-    { completed: 0, total: 0 },
-  );
+  const activeModule = modules[activeModuleIdx];
 
-  const modulePercent =
-    moduleProgress.total === 0
-      ? 0
-      : Math.round((moduleProgress.completed / moduleProgress.total) * 100);
+  if (!activeModule) return null;
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <YStack padding="$4" gap="$4" backgroundColor="$background" minHeight="100%">
         <YStack gap="$1">
           <H2 color="$text">{t('learn.title', 'Öğren')}</H2>
-          <Paragraph color="$textSecondary">{t('learn.subtitle')}</Paragraph>
+          <Paragraph color="$textSecondary">
+            {modules.length} modül · {modules.length * 50} ders ·{' '}
+            {role === 'pilot' && 'Pilot yolu'}
+            {role === 'cabin' && 'Kabin yolu'}
+            {role === 'technician' && 'Teknisyen yolu'}
+            {role === 'ground' && 'Yer Hizmetleri yolu'}
+            {role === 'student' && 'Öğrenci yolu'}
+          </Paragraph>
         </YStack>
 
-        {/* Module header */}
-        <Card padding="$4" backgroundColor="$primary">
-          <YStack gap="$2">
-            <XStack gap="$2" alignItems="center">
-              <Text fontSize={32}>{PILOT_MODULE_1.badge}</Text>
-              <YStack flex={1}>
-                <Text fontSize="$3" color="$primaryText" textTransform="uppercase">
-                  Modül {PILOT_MODULE_1.number}
-                </Text>
-                <Text fontSize="$5" fontWeight="700" color="$primaryText">
-                  {PILOT_MODULE_1.title}
-                </Text>
-              </YStack>
-            </XStack>
-            <Paragraph color="$primaryText" fontSize="$3">
-              {PILOT_MODULE_1.description}
-            </Paragraph>
-            <Progress value={modulePercent} max={100} backgroundColor="$accentHover">
-              <Progress.Indicator animation="lazy" backgroundColor="$accent" />
-            </Progress>
-            <Text fontSize="$2" color="$primaryText">
-              {moduleProgress.completed} / {moduleProgress.total} ders · {modulePercent}%
-            </Text>
-          </YStack>
-        </Card>
+        {/* Module selector pills */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <XStack gap="$2" paddingVertical="$2">
+            {modules.map((m, idx) => {
+              const unlocked = isModuleUnlocked(modules, idx, completedSet);
+              const isActive = idx === activeModuleIdx;
+              return (
+                <Card
+                  key={m.id}
+                  paddingHorizontal="$3"
+                  paddingVertical="$2"
+                  backgroundColor={isActive ? '$primary' : '$surface'}
+                  borderColor={isActive ? '$primary' : '$border'}
+                  bordered
+                  opacity={unlocked ? 1 : 0.5}
+                  onPress={() => unlocked && setActiveModuleIdx(idx)}
+                  pressStyle={{ scale: 0.98 }}
+                >
+                  <XStack gap="$1" alignItems="center">
+                    <Text fontSize={20}>{unlocked ? m.badge : '🔒'}</Text>
+                    <Text
+                      fontSize="$3"
+                      fontWeight="600"
+                      color={isActive ? '$primaryText' : '$text'}
+                    >
+                      M{m.number}
+                    </Text>
+                  </XStack>
+                </Card>
+              );
+            })}
+          </XStack>
+        </ScrollView>
 
-        {/* Units */}
-        <YStack gap="$3">
-          {PILOT_MODULE_1.units.map((unit, idx) => (
-            <UnitCard
-              key={unit.id}
-              unit={unit}
-              unlocked={isUnitUnlocked(PILOT_MODULE_1, idx, completedSet)}
-              completedSet={completedSet}
-            />
-          ))}
-        </YStack>
+        <ModuleContent module={activeModule} completedSet={completedSet} />
       </YStack>
     </ScrollView>
+  );
+}
+
+function ModuleContent({
+  module,
+  completedSet,
+}: {
+  module: ModuleNode;
+  completedSet: Set<string>;
+}) {
+  const moduleProgress = module.units.reduce(
+    (acc, u) => {
+      const p = getUnitProgress(u, completedSet);
+      return { completed: acc.completed + p.completed, total: acc.total + p.total };
+    },
+    { completed: 0, total: 0 },
+  );
+  const modulePercent =
+    moduleProgress.total === 0
+      ? 0
+      : Math.round((moduleProgress.completed / moduleProgress.total) * 100);
+
+  return (
+    <>
+      {/* Module header */}
+      <Card padding="$4" backgroundColor="$primary">
+        <YStack gap="$2">
+          <XStack gap="$2" alignItems="center">
+            <Text fontSize={32}>{module.badge}</Text>
+            <YStack flex={1}>
+              <Text fontSize="$3" color="$primaryText" textTransform="uppercase">
+                Modül {module.number}
+              </Text>
+              <Text fontSize="$5" fontWeight="700" color="$primaryText">
+                {module.title}
+              </Text>
+            </YStack>
+          </XStack>
+          <Paragraph color="$primaryText" fontSize="$3">
+            {module.description}
+          </Paragraph>
+          <Progress value={modulePercent} max={100} backgroundColor="$accentHover">
+            <Progress.Indicator animation="lazy" backgroundColor="$accent" />
+          </Progress>
+          <Text fontSize="$2" color="$primaryText">
+            {moduleProgress.completed} / {moduleProgress.total} ders · {modulePercent}%
+          </Text>
+        </YStack>
+      </Card>
+
+      <YStack gap="$3">
+        {module.units.map((unit, idx) => (
+          <UnitCard
+            key={unit.id}
+            unit={unit}
+            unlocked={isUnitUnlocked(module, idx, completedSet)}
+            completedSet={completedSet}
+          />
+        ))}
+      </YStack>
+    </>
   );
 }
 
@@ -108,9 +169,6 @@ function UnitCard({
             </Text>
             <Text fontSize="$5" fontWeight="600" color="$text">
               {unit.title}
-            </Text>
-            <Text fontSize="$3" color="$textSecondary">
-              {unit.description}
             </Text>
           </YStack>
           {allPremium && unlocked && (
@@ -168,7 +226,7 @@ function UnitCard({
                         {lesson.title}
                       </Text>
                       <Text fontSize="$2" color="$textSecondary">
-                        +{lesson.xp} XP · {lesson.estimatedMinutes} dk · {lesson.type}
+                        +{lesson.xp} XP · {lesson.estimatedMinutes} dk
                       </Text>
                     </YStack>
                   </XStack>

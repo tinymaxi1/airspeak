@@ -3,47 +3,15 @@ import { YStack, XStack, H2, H3, Paragraph, Card, Button, Text, Progress } from 
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { CelebrationOverlay } from '@/components/ui/CelebrationOverlay';
-import type { VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
+import { generateLesson } from '@/features/lessons/lessonGenerator';
+import type { Exercise } from '@/features/lessons/exerciseTypes';
 import { getVocabForRole } from '@/features/lessons/seed';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useQuestsStore } from '@/stores/questsStore';
+import { useExerciseHistoryStore } from '@/stores/exerciseHistoryStore';
 import { track } from '@/lib/posthog';
-
-interface VocabExercise {
-  type: 'multiple_choice';
-  questionTerm: VocabularyTerm;
-  correctOption: string;
-  options: string[];
-}
-
-/**
- * Sample lesson — ilk 5 vocab terimini quiz formatında gösterir.
- * Sprint 2'de generic LessonRunner'a evrilecek.
- */
-function generateExercises(terms: VocabularyTerm[]): VocabExercise[] {
-  return terms.slice(0, 5).map((term) => {
-    const otherTerms = terms.filter((t) => t.id !== term.id);
-    const distractors = shuffle(otherTerms).slice(0, 3).map((t) => t.termTr);
-    const options = shuffle([term.termTr, ...distractors]);
-    return {
-      type: 'multiple_choice',
-      questionTerm: term,
-      correctOption: term.termTr,
-      options,
-    };
-  });
-}
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j]!, a[i]!];
-  }
-  return a;
-}
 
 export default function LessonScreen() {
   const params = useLocalSearchParams<{ id: string }>();
@@ -51,7 +19,12 @@ export default function LessonScreen() {
   const markLessonCompleted = useProgressStore((s) => s.markLessonCompleted);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
   const role = useOnboardingStore((s) => s.role);
-  const [exercises] = useState<VocabExercise[]>(() => generateExercises(getVocabForRole(role)));
+  const seenSet = useExerciseHistoryStore((s) => new Set(s.seenExerciseIds));
+  const markSeen = useExerciseHistoryStore((s) => s.markSeen);
+
+  const [exercises] = useState<Exercise[]>(() =>
+    generateLesson(getVocabForRole(role), seenSet, 5),
+  );
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -61,11 +34,10 @@ export default function LessonScreen() {
   const exercise = exercises[currentIdx];
 
   if (!exercise) {
-    // Lesson finished
-    return <LessonComplete correctCount={correctCount} total={total} />;
+    return <LessonComplete correctCount={correctCount} total={total} exercises={exercises} markSeen={markSeen} />;
   }
 
-  const isCorrect = selected === exercise.correctOption;
+  const isCorrect = selected === exercise.correctId;
 
   const handleAnswer = () => {
     if (!selected) return;
@@ -74,13 +46,15 @@ export default function LessonScreen() {
       addXp(10, 'lesson_exercise');
       setCorrectCount((c) => c + 1);
       track('exercise_answered', {
-        exercise_id: exercise.questionTerm.id,
+        exercise_id: exercise.id,
+        type: exercise.type,
         is_correct: true,
       });
     } else {
       loseHeart();
       track('exercise_answered', {
-        exercise_id: exercise.questionTerm.id,
+        exercise_id: exercise.id,
+        type: exercise.type,
         is_correct: false,
       });
     }
@@ -88,14 +62,14 @@ export default function LessonScreen() {
 
   const handleNext = () => {
     if (currentIdx + 1 >= total) {
-      // Bonus XP for completing the lesson
       addXp(50, 'lesson_completed');
       addCoins(10, 'lesson_completed');
       recordDailyActivity();
       const score = Math.round((correctCount / total) * 100);
       const lessonId = typeof params.id === 'string' ? params.id : 'unknown';
       markLessonCompleted(lessonId, score);
-      // Daily quest progress
+      // No-repeat: tüm egzersizleri "görüldü" olarak işaretle
+      markSeen(exercises.map((e) => e.id));
       incrementQuest('complete_lessons', 1);
       incrementQuest('streak_check', 1);
       track('lesson_completed', {
@@ -109,14 +83,22 @@ export default function LessonScreen() {
     setShowFeedback(false);
   };
 
+  const exerciseTypeLabel = (type: string) =>
+    ({
+      tr_to_en: 'TR → EN',
+      en_to_tr: 'EN → TR',
+      fill_blank: 'Boşluk doldur',
+      definition_match: 'Tanımdan terim',
+      term_to_definition: 'Terimden tanım',
+      sentence_build: 'Cümle kur',
+      category_match: 'Kategori',
+      true_false: 'Doğru / Yanlış',
+    })[type] ?? type;
+
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <YStack flex={1} padding="$4" gap="$4" backgroundColor="$background">
-        <Progress
-          value={(currentIdx / total) * 100}
-          max={100}
-          backgroundColor="$border"
-        >
+        <Progress value={(currentIdx / total) * 100} max={100} backgroundColor="$border">
           <Progress.Indicator animation="lazy" backgroundColor="$primary" />
         </Progress>
         <Paragraph size="$2" color="$textSecondary">
@@ -125,19 +107,16 @@ export default function LessonScreen() {
 
         <Card padding="$3" backgroundColor="$backgroundHover">
           <Text fontSize="$2" color="$textSecondary" textTransform="uppercase">
-            {exercise.questionTerm.category} · {exercise.questionTerm.pronunciation}
+            {exerciseTypeLabel(exercise.type)}
           </Text>
         </Card>
 
-        <H2 color="$text">"{exercise.questionTerm.term}"</H2>
-        <H3 color="$textSecondary" fontWeight="400">
-          Türkçesi nedir?
-        </H3>
+        <H3 color="$text">{exercise.question}</H3>
 
         <YStack gap="$3">
           {exercise.options.map((opt) => {
-            const isSelected = selected === opt;
-            const showAsCorrect = showFeedback && opt === exercise.correctOption;
+            const isSelected = selected === opt.id;
+            const showAsCorrect = showFeedback && opt.id === exercise.correctId;
             const showAsWrong = showFeedback && isSelected && !showAsCorrect;
 
             let bg: string = '$surface';
@@ -159,17 +138,17 @@ export default function LessonScreen() {
 
             return (
               <Card
-                key={opt}
+                key={opt.id}
                 bordered
                 padding="$4"
                 backgroundColor={bg as any}
                 borderColor={border as any}
-                onPress={() => !showFeedback && setSelected(opt)}
+                onPress={() => !showFeedback && setSelected(opt.id)}
                 disabled={showFeedback}
                 pressStyle={{ scale: 0.98 }}
               >
                 <Text fontSize="$5" fontWeight="500" color={color as any}>
-                  {opt}
+                  {opt.text}
                 </Text>
               </Card>
             );
@@ -183,19 +162,9 @@ export default function LessonScreen() {
           >
             <YStack gap="$2">
               <Text fontSize="$5" fontWeight="600" color={isCorrect ? '$success' : '$danger'}>
-                {isCorrect ? '✓ Doğru! +10 XP' : `✗ Doğru cevap: ${exercise.correctOption}`}
+                {isCorrect ? '✓ Doğru! +10 XP' : '✗ Yanlış'}
               </Text>
-              <Paragraph color="$text">{exercise.questionTerm.definitionTr}</Paragraph>
-              {exercise.questionTerm.examples[0] && (
-                <YStack gap="$1" marginTop="$2">
-                  <Text fontSize="$3" fontStyle="italic" color="$text">
-                    {exercise.questionTerm.examples[0].en}
-                  </Text>
-                  <Text fontSize="$3" color="$textSecondary">
-                    {exercise.questionTerm.examples[0].tr}
-                  </Text>
-                </YStack>
-              )}
+              <Paragraph color="$text">{exercise.explanation}</Paragraph>
             </YStack>
           </Card>
         )}
@@ -220,7 +189,17 @@ export default function LessonScreen() {
   );
 }
 
-function LessonComplete({ correctCount, total }: { correctCount: number; total: number }) {
+function LessonComplete({
+  correctCount,
+  total,
+  exercises,
+  markSeen: _markSeen,
+}: {
+  correctCount: number;
+  total: number;
+  exercises: Exercise[];
+  markSeen: (ids: string[]) => void;
+}) {
   const percent = Math.round((correctCount / total) * 100);
   const xpEarned = correctCount * 10 + 50;
   const isPerfect = correctCount === total;
@@ -251,6 +230,20 @@ function LessonComplete({ correctCount, total }: { correctCount: number; total: 
           </Text>
           <Text fontSize="$3" color="$accentText">
             +10 🪙 coin
+          </Text>
+        </YStack>
+      </Card>
+
+      <Card padding="$3" backgroundColor="$surface" bordered>
+        <YStack gap="$1">
+          <Text fontSize="$3" color="$textSecondary" textTransform="uppercase">
+            Bu derste yeni
+          </Text>
+          <Text fontSize="$4" color="$text">
+            {new Set(exercises.map((e) => e.termId)).size} terim, {exercises.length} egzersiz
+          </Text>
+          <Text fontSize="$2" color="$textSecondary">
+            Bu egzersizler artık "görüldü" işaretlendi — bir daha karşılaşmayacaksın.
           </Text>
         </YStack>
       </Card>
