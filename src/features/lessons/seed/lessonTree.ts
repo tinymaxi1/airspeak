@@ -2490,3 +2490,69 @@ export function isModuleUnlocked(
     u.lessons.every((l) => completedLessons.has(l.id)),
   );
 }
+
+/**
+ * "Kaldığın yerden devam et" — ilk açık ve tamamlanmamış dersi bul.
+ * Premium gating varsa onu atlamaz; sadece kullanıcının erişebildiği derslerden seçer.
+ *
+ * @returns Ders bilgisi + bağlam (modül/ünite); hiç açık ders yoksa null
+ */
+export interface NextLessonInfo {
+  lesson: LessonNode;
+  unit: UnitNode;
+  module: ModuleNode;
+  moduleIdx: number;
+  unitIdx: number;
+  lessonIdx: number;
+  isFirstEver: boolean; // hiç ders yapılmadı mı
+}
+
+export function getNextLesson(
+  role: UserRole | null | undefined,
+  completedLessons: Set<string>,
+  isPremium = false,
+): NextLessonInfo | null {
+  const modules = getModulesForRole(role);
+  const isFirstEver = completedLessons.size === 0;
+
+  for (let mIdx = 0; mIdx < modules.length; mIdx++) {
+    if (!isModuleUnlocked(modules, mIdx, completedLessons)) continue;
+    const module = modules[mIdx]!;
+
+    for (let uIdx = 0; uIdx < module.units.length; uIdx++) {
+      if (!isUnitUnlocked(module, uIdx, completedLessons)) continue;
+      const unit = module.units[uIdx]!;
+
+      for (let lIdx = 0; lIdx < unit.lessons.length; lIdx++) {
+        const lesson = unit.lessons[lIdx]!;
+        if (completedLessons.has(lesson.id)) continue;
+        // Premium dersi free kullanıcıya gösterme — paywall yerine bir sonrakine geç
+        if (lesson.isPremium && !isPremium) continue;
+        return { lesson, unit, module, moduleIdx: mIdx, unitIdx: uIdx, lessonIdx: lIdx, isFirstEver };
+      }
+    }
+  }
+
+  return null; // tüm açık içerik tamamlandı
+}
+
+/**
+ * Toplam ilerleme yüzdesi (rol bazlı, premium dahil).
+ */
+export function getOverallProgress(
+  role: UserRole | null | undefined,
+  completedLessons: Set<string>,
+): { completed: number; total: number; percent: number } {
+  const modules = getModulesForRole(role);
+  let completed = 0;
+  let total = 0;
+  for (const m of modules) {
+    for (const u of m.units) {
+      for (const l of u.lessons) {
+        total++;
+        if (completedLessons.has(l.id)) completed++;
+      }
+    }
+  }
+  return { completed, total, percent: total === 0 ? 0 : Math.round((completed / total) * 100) };
+}
