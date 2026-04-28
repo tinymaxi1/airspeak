@@ -319,7 +319,9 @@
       "tierName": "کاپیتان",
       "tierSubtitle": "10 پیشرفت برتر 28h چپ",
       "safeZone": "↑ SAFE Zone – STAY ABOVE TO ADVANCE",
-      "you": "You You You You"
+      "you": "You You You You",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "PILOTOT",

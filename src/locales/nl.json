@@ -319,7 +319,9 @@
       "tierName": "Kapitein",
       "tierSubtitle": "Top 10 vooruitblik · Nog 28 uur te gaan",
       "safeZone": "↑ VEILIGE ZONE — BLIJF HIERBOVEN OM VERDER TE GAAN ↑",
-      "you": "U"
+      "you": "U",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "VOOR DE PILOOT",

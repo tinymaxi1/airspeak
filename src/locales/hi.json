@@ -319,7 +319,9 @@
       "tierName": "कैप्टन",
       "tierSubtitle": "शीर्ष 10 अग्रिम · 28h बाएं",
       "safeZone": "SAFE ZONE – STAY ABOVE to ADVANCE.",
-      "you": "आप"
+      "you": "आप",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "प्रो पायलट",

@@ -319,7 +319,9 @@
       "tierName": "船長",
       "tierSubtitle": "トップ10進出・残り28時間",
       "safeZone": "↑ 安全地帯 — 先に進むにはこの上にとどまってください ↑",
-      "you": "あなた"
+      "you": "あなた",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "パイロット向け",

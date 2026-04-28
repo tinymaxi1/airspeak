@@ -319,7 +319,9 @@
       "tierName": "Καπετάνιος",
       "tierSubtitle": "Κορυφαία 10 προκριματικά · Απομένουν 28 ώρες",
       "safeZone": "↑ ΑΣΦΑΛΗΣ ΖΩΝΗ — ΜΕΙΝΕ ΠΑΝΩ ΓΙΑ ΝΑ ΠΡΟΧΩΡΗΣΕΙΣ ↑",
-      "you": "Εσύ"
+      "you": "Εσύ",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "ΓΙΑ ΤΟΝ ΠΙΛΟΤΟ",

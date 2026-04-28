@@ -319,7 +319,9 @@
       "tierName": "Kapitän",
       "tierSubtitle": "Top 10 im Voraus · Noch 28 Stunden",
       "safeZone": "↑ SICHERE ZONE – BLEIBEN SIE OBEN, UM WEITERZUKOMMEN ↑",
-      "you": "Sie"
+      "you": "Sie",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "FÜR PILOTEN",

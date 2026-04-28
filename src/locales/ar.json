@@ -319,7 +319,9 @@
       "tierName": "القائد",
       "tierSubtitle": "أفضل 10 متقدمين · تبقى 28 ساعة",
       "safeZone": "↑ المنطقة الآمنة — ابقَ في الأعلى للتقدم ↑",
-      "you": "أنت"
+      "you": "أنت",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "للطيار",

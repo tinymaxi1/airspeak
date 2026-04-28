@@ -319,7 +319,9 @@
       "tierName": "队长",
       "tierSubtitle": "前十名晋级 · 剩余28小时",
       "safeZone": "↑ 安全区 — 留在上方才能前进 ↑",
-      "you": "你"
+      "you": "你",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "PRO PILOT",

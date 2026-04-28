@@ -9,6 +9,7 @@
  * - Safe zone divider
  */
 import { ScrollView, View, Text } from 'react-native';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -18,37 +19,52 @@ import {
   FONTS,
   Avatar,
 } from '@/components/airspeak';
+import { useGamificationStore } from '@/stores/gamificationStore';
+import { useAuthStore } from '@/stores/authStore';
+import {
+  buildLeaderboard,
+  getTierForXp,
+  getTierName,
+  getHoursUntilWeekEnd,
+  getWeekStartTimestamp,
+  type LeaguePlayer,
+} from '@/features/league/simulator';
 
-interface Player {
-  rank: number;
-  name: string;
-  xp: number;
-  country?: string;
-  you?: boolean;
-}
-
-const PLAYERS: Player[] = [
-  { rank: 1, name: 'Captain Sky', xp: 4820, country: '🇩🇪' },
-  { rank: 2, name: 'M. Aydın', xp: 4205, country: '🇹🇷' },
-  { rank: 3, name: 'José L.', xp: 3940, country: '🇪🇸' },
-  { rank: 4, name: 'EK', xp: 3812, country: '🇹🇷', you: true },
-  { rank: 5, name: 'flight_a01', xp: 3502, country: '🇮🇳' },
-  { rank: 6, name: 'Nina V.', xp: 3210, country: '🇳🇱' },
-  { rank: 7, name: 'Ahmed F.', xp: 2980, country: '🇪🇬' },
-];
-
-const TIERS = [
-  { name: 'Cadet', short: 'CADET' },
-  { name: 'First Officer', short: 'FO' },
-  { name: 'Senior FO', short: 'SR FO' },
-  { name: 'Captain', short: 'CAPT', current: true },
-  { name: 'Senior Capt', short: 'SR CP' },
-  { name: 'Check Capt', short: 'CHK' },
-  { name: 'Star Capt', short: 'STAR' },
-];
+const TIER_SHORTS = ['CADET', 'FO', 'SR FO', 'CAPT', 'SR CP', 'CHK', 'STAR'];
 
 export default function LeagueScreen() {
   const { t } = useTranslation();
+  const totalXp = useGamificationStore((s) => s.totalXp);
+  const user = useAuthStore((s) => s.user);
+
+  const userTier = getTierForXp(totalXp);
+  const tierNameLocal = getTierName(userTier);
+  const hoursLeft = getHoursUntilWeekEnd();
+
+  // Bu hafta kazanılan XP — basitleştirme: totalXp'in 1/4'ü (yaklaşık 1 hafta).
+  // Daha doğrusu için weekStart'tan beri kazanılan XP'i tutacak ayrı state gerekir.
+  const userWeekXp = Math.round(totalXp * 0.25);
+  const userName = user?.email?.split('@')[0]?.toUpperCase() ?? 'YOU';
+
+  const leaderboard = useMemo<LeaguePlayer[]>(
+    () =>
+      buildLeaderboard(
+        userWeekXp,
+        userName,
+        '🇹🇷',
+        userTier,
+      ),
+    // userWeekXp değiştikçe leaderboard yeniden hesaplanır
+    [userWeekXp, userName, userTier],
+  );
+
+  // Top 7 leaderboard'da göster
+  const PLAYERS = leaderboard.slice(0, 7);
+  const TIERS = TIER_SHORTS.map((short, i) => ({
+    name: getTierName(i),
+    short,
+    current: i === userTier,
+  }));
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <View style={{ backgroundColor: '#F2C14E' }}>
@@ -72,7 +88,7 @@ export default function LeagueScreen() {
 
               <View style={{ flex: 1 }}>
                 <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(10,20,48,0.7)' }}>
-                  {t('screens.league.tier')}
+                  {t('screens.league.tierDynamic', 'TIER {{n}} / 7', { n: userTier + 1 })}
                 </Mono>
                 <Text
                   style={{
@@ -84,7 +100,7 @@ export default function LeagueScreen() {
                     lineHeight: 28,
                   }}
                 >
-                  {t('screens.league.tierName')}
+                  {tierNameLocal}
                 </Text>
                 <Text
                   style={{
@@ -94,7 +110,7 @@ export default function LeagueScreen() {
                     marginTop: 2,
                   }}
                 >
-                  {t('screens.league.tierSubtitle')}
+                  {t('screens.league.tierSubtitleDynamic', 'İlk 10 ilerleyecek · {{h}}sa kaldı', { h: hoursLeft })}
                 </Text>
               </View>
             </View>

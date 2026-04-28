@@ -319,7 +319,9 @@
       "tierName": "선장",
       "tierSubtitle": "상위 10위권 진입 · 28시간 남음",
       "safeZone": "↑ 안전 구역 — 위로 올라가서 진행하세요 ↑",
-      "you": "당신"
+      "you": "당신",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "파일럿을 위한",

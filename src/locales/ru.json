@@ -319,7 +319,9 @@
       "tierName": "Капитан",
       "tierSubtitle": "Топ-10 предварительных результатов · Осталось 28 часов",
       "safeZone": "↑ БЕЗОПАСНАЯ ЗОНА — ОСТАВАЙТЕСЬ ВЫШЕ, ЧТОБЫ ПРОДВИГАТЬСЯ ДАЛЬШЕ ↑",
-      "you": "Вы"
+      "you": "Вы",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "ДЛЯ ПИЛОТА",

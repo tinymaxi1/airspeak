@@ -319,7 +319,9 @@
       "tierName": "Captain",
       "tierSubtitle": "Top 10 advance · 28h left",
       "safeZone": "↑ SAFE ZONE — STAY ABOVE TO ADVANCE ↑",
-      "you": "You"
+      "you": "You",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "PRO PILOT",

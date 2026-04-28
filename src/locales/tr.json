@@ -319,7 +319,9 @@
       "tierName": "Captain",
       "tierSubtitle": "İlk 10 ilerleyecek · 28sa kaldı",
       "safeZone": "↑ GÜVENLİ BÖLGE — İLERLEMEK İÇİN ÜSTTE KAL ↑",
-      "you": "Sen"
+      "you": "Sen",
+      "tierDynamic": "TIER {{n}} / 7",
+      "tierSubtitleDynamic": "İlk 10 ilerleyecek · {{h}}sa kaldı"
     },
     "paywall": {
       "badge": "PRO PİLOT",

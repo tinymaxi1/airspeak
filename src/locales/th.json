@@ -319,7 +319,9 @@
       "tierName": "กัปตัน",
       "tierSubtitle": "ด้านบน 10 ล่วงหน้า 27h ซ้าย",
       "safeZone": "○ จง อด ทน",
-      "you": "คุณ"
+      "you": "คุณ",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "ศาสตราจารย์",

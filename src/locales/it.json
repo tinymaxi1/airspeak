@@ -319,7 +319,9 @@
       "tierName": "Capitano",
       "tierSubtitle": "Classifica dei primi 10 · Mancano 28 ore",
       "safeZone": "↑ ZONA SICURA — RIMANETE QUI SOPRA PER AVANZARE ↑",
-      "you": "Voi"
+      "you": "Voi",
+      "tierDynamic": "TIER {{n}} OF 7",
+      "tierSubtitleDynamic": "Top 10 advance · {{h}}h left"
     },
     "paywall": {
       "badge": "PER IL PILOTA",
