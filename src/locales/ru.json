@@ -112,7 +112,9 @@
     "yourLevel": "Ваш уровень",
     "dailyGoal": "Ежедневная цель",
     "streak": "Серия",
-    "xp": "Очки опыта"
+    "xp": "Очки опыта",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "Узнать",

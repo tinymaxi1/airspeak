@@ -15,15 +15,25 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { Mono, FONTS, Button3D } from '@/components/airspeak';
+import { useOfflineStore } from '@/stores/offlineStore';
 
-const DOWNLOADED = [
-  { l: 'Holding patterns', s: '12 lessons · 18 MB' },
-  { l: 'Severe weather phraseology', s: '8 lessons · 11 MB' },
-  { l: 'Numbers & altimeter', s: '6 lessons · 6 MB' },
+// Default unit listesi — bundle'a dahil olduğu için "indirilebilir" sayılır
+const ALL_UNITS = [
+  { id: 'holding', l: 'Holding patterns', s: '12 lessons · ~18 MB' },
+  { id: 'severe-weather', l: 'Severe weather phraseology', s: '8 lessons · ~11 MB' },
+  { id: 'numbers', l: 'Numbers & altimeter', s: '6 lessons · ~6 MB' },
+  { id: 'emergency', l: 'Emergency procedures', s: '10 lessons · ~14 MB' },
+  { id: 'taxi', l: 'Taxi & ground ops', s: '9 lessons · ~10 MB' },
 ];
 
 export default function OfflineScreen() {
   const { t } = useTranslation();
+  const downloadedIds = useOfflineStore((s) => s.downloadedUnits);
+  const toggleDownload = useOfflineStore((s) => s.toggleDownload);
+  const downloaded = ALL_UNITS.filter((u) => downloadedIds.includes(u.id));
+  // Hiç indirme yoksa hepsini default göster (kullanıcı önce indirmeli)
+  const display = downloaded.length > 0 ? downloaded : ALL_UNITS;
+
   return (
     <View style={{ flex: 1, backgroundColor: '#06091A' }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#E63946' }}>
@@ -140,53 +150,62 @@ export default function OfflineScreen() {
             paddingVertical: 4,
           }}
         >
-          {DOWNLOADED.map((d, i) => (
-            <View
-              key={i}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                padding: 12,
-                borderBottomWidth: i < DOWNLOADED.length - 1 ? 1 : 0,
-                borderBottomColor: 'rgba(255,255,255,0.08)',
-              }}
-            >
-              <View
+          {display.map((d, i) => {
+            const isDownloaded = downloadedIds.includes(d.id);
+            return (
+              <TouchableOpacity
+                key={d.id}
+                activeOpacity={0.85}
+                onPress={() => toggleDownload(d.id)}
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  backgroundColor: 'rgba(255,255,255,0.08)',
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  gap: 12,
+                  padding: 12,
+                  borderBottomWidth: i < display.length - 1 ? 1 : 0,
+                  borderBottomColor: 'rgba(255,255,255,0.08)',
                 }}
               >
-                <Text style={{ fontSize: 14, color: '#4FD487' }}>✓</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text
+                <View
                   style={{
-                    fontFamily: FONTS.body700,
-                    fontSize: 13,
-                    color: '#FFFFFF',
+                    width: 32,
+                    height: 32,
+                    borderRadius: 8,
+                    backgroundColor: isDownloaded ? 'rgba(45,190,108,0.15)' : 'rgba(255,255,255,0.08)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
-                  {d.l}
+                  <Text style={{ fontSize: 14, color: isDownloaded ? '#4FD487' : 'rgba(255,255,255,0.6)' }}>
+                    {isDownloaded ? '✓' : '↓'}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontFamily: FONTS.body700,
+                      fontSize: 13,
+                      color: '#FFFFFF',
+                    }}
+                  >
+                    {d.l}
+                  </Text>
+                  <Mono
+                    style={{
+                      fontSize: 10,
+                      color: 'rgba(255,255,255,0.6)',
+                      marginTop: 2,
+                    }}
+                  >
+                    {d.s}
+                  </Mono>
+                </View>
+                <Text style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)' }}>
+                  {isDownloaded ? '✓' : '›'}
                 </Text>
-                <Mono
-                  style={{
-                    fontSize: 10,
-                    color: 'rgba(255,255,255,0.6)',
-                    marginTop: 2,
-                  }}
-                >
-                  {d.s}
-                </Mono>
-              </View>
-              <Text style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)' }}>›</Text>
-            </View>
-          ))}
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         <View style={{ marginTop: 22 }}>

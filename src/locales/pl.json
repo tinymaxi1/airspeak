@@ -112,7 +112,9 @@
     "yourLevel": "Pański poziom",
     "dailyGoal": "Cel na dziś",
     "streak": "Seria",
-    "xp": "Punkty doświadczenia"
+    "xp": "Punkty doświadczenia",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "Dowiedz się",

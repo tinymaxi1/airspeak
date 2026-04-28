@@ -112,7 +112,9 @@
     "yourLevel": "Το επίπεδό σου",
     "dailyGoal": "Καθημερινός στόχος",
     "streak": "Σειρά",
-    "xp": "Πόντοι εμπειρίας"
+    "xp": "Πόντοι εμπειρίας",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "Μάθετε",

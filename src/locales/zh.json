@@ -112,7 +112,9 @@
     "yourLevel": "您的等级",
     "dailyGoal": "每日目标",
     "streak": "连胜",
-    "xp": "经验值"
+    "xp": "经验值",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "学习",

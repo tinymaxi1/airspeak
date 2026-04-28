@@ -19,6 +19,7 @@ import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useSrsStore } from '@/stores/srsStore';
+import { useOfflineStore } from '@/stores/offlineStore';
 import { getNextLesson } from '@/features/lessons/seed/lessonTree';
 import {
   HHero,
@@ -46,6 +47,9 @@ export default function HomeScreen() {
     const now = Date.now();
     return Object.values(s.cards).filter((c) => c.nextReviewAt <= now).length;
   });
+
+  // Offline durumu
+  const isOnline = useOfflineStore((s) => s.isOnline);
 
   const streak = 12; // TODO: gamificationStore.streak
   const hearts = 4;
@@ -154,6 +158,30 @@ export default function HomeScreen() {
           </View>
         </SafeAreaView>
       </View>
+
+      {/* Offline banner */}
+      {!isOnline && (
+        <View
+          style={{
+            backgroundColor: '#FF7847',
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <Text style={{ fontSize: 14, color: '#FFFFFF' }}>📡</Text>
+          <Mono style={{ fontSize: 11, color: '#FFFFFF', letterSpacing: 0.99, flex: 1 }}>
+            {t('home.offline', 'ÇEVRİMDIŞI MOD · İNDİRİLMİŞ DERSLER ÇALIŞIR')}
+          </Mono>
+          <TouchableOpacity onPress={() => router.push('/offline')}>
+            <Mono style={{ fontSize: 11, color: '#FFFFFF', letterSpacing: 0.99, textDecorationLine: 'underline' }}>
+              {t('home.viewOffline', 'GÖR')}
+            </Mono>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* ═══════════ SCROLL AREA ═══════════ */}
       <ScrollView

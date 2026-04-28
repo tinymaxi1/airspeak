@@ -36,6 +36,7 @@ import {
   updateStreakDangerNotification,
 } from '@/lib/notifications';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { useOfflineStore } from '@/stores/offlineStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -63,6 +64,13 @@ export default function RootLayout() {
 
   const { t } = useTranslation();
   const lastActivityDate = useGamificationStore((s) => s.lastActivityDate);
+  const startNetInfo = useOfflineStore((s) => s.startNetInfoMonitoring);
+
+  // Network durumu monitoring
+  useEffect(() => {
+    const unsub = startNetInfo();
+    return unsub;
+  }, [startNetInfo]);
 
   // Notifications: izin iste + günlük hatırlatıcıları zamanla + streak danger güncelle
   useEffect(() => {

@@ -112,7 +112,9 @@
     "yourLevel": "Level Anda",
     "dailyGoal": "Tujuan harian",
     "streak": "Rentetan",
-    "xp": "Poin Pengalaman"
+    "xp": "Poin Pengalaman",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "Belajar",

@@ -112,7 +112,9 @@
     "yourLevel": "귀하의 레벨",
     "dailyGoal": "오늘의 목표",
     "streak": "연승",
-    "xp": "경험치"
+    "xp": "경험치",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "배워보세요",

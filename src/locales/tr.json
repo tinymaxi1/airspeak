@@ -112,7 +112,9 @@
     "yourLevel": "Seviyen",
     "dailyGoal": "Günlük hedef",
     "streak": "Seri",
-    "xp": "XP"
+    "xp": "XP",
+    "offline": "ÇEVRİMDIŞI MOD · İNDİRİLMİŞ DERSLER ÇALIŞIR",
+    "viewOffline": "GÖR"
   },
   "learn": {
     "title": "Öğren",

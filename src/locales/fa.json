@@ -112,7 +112,9 @@
     "yourLevel": "سطح شما",
     "dailyGoal": "هدف روزانه",
     "streak": "Streak",
-    "xp": "XP XP"
+    "xp": "XP XP",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "یادگیری Learn Learn Learn",

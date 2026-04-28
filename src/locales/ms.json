@@ -112,7 +112,9 @@
     "yourLevel": "Kehebatanmu",
     "dailyGoal": "Tujuan harian",
     "streak": "Ukir",
-    "xp": "XP"
+    "xp": "XP",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "Belajarlah",

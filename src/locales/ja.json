@@ -112,7 +112,9 @@
     "yourLevel": "あなたのレベル",
     "dailyGoal": "毎日の目標",
     "streak": "連勝",
-    "xp": "経験値"
+    "xp": "経験値",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "学ぶ",

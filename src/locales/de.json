@@ -112,7 +112,9 @@
     "yourLevel": "Ihr Niveau",
     "dailyGoal": "Tagesziel",
     "streak": "Serie",
-    "xp": "Erfahrungspunkte"
+    "xp": "Erfahrungspunkte",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "Erfahren Sie",

@@ -112,7 +112,9 @@
     "yourLevel": "आपका स्तर",
     "dailyGoal": "दैनिक लक्ष्य",
     "streak": "स्ट्रीक",
-    "xp": "XP"
+    "xp": "XP",
+    "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
+    "viewOffline": "VIEW"
   },
   "learn": {
     "title": "सीखिए",
