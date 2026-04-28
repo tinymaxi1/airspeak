@@ -121,6 +121,9 @@ export default function RootLayout() {
             <Stack.Screen name="readback" options={{ headerShown: false }} />
             <Stack.Screen name="pronunciation/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="settings/index" options={{ headerShown: false }} />
+            <Stack.Screen name="settings/profile" options={{ headerShown: false }} />
+            <Stack.Screen name="settings/privacy" options={{ headerShown: false }} />
+            <Stack.Screen name="settings/help" options={{ headerShown: false }} />
             <Stack.Screen name="notifications" options={{ headerShown: false }} />
             <Stack.Screen name="offline" options={{ headerShown: false }} />
             <Stack.Screen name="mic-denied" options={{ headerShown: false }} />

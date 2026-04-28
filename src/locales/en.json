@@ -256,7 +256,11 @@
       ],
       "reviewQueue": "TODAY'S REVIEW",
       "reviewQueueCount": "{{count}} cards ready",
-      "reviewQueueSub": "~3 min · reinforce weak spots"
+      "reviewQueueSub": "~3 min · reinforce weak spots",
+      "firstTimeEyebrow": "GET STARTED",
+      "firstTimeTitle": "Start your first lesson",
+      "firstTimeSub": "~3 min · begin your streak",
+      "firstTimeStart": "START →"
     },
     "learn": {
       "unit": "UNIT",
@@ -288,7 +292,8 @@
       "weeklyTitle": "Diversion under fuel pressure.",
       "weeklyDesc": "5-min ATC sim. 1,200 pilots played. Top 10% = exclusive epaulette badge.",
       "weeklyCta": "Take the challenge →",
-      "fastDrills": "FAST DRILLS"
+      "fastDrills": "FAST DRILLS",
+      "noResults": "No drills in this category"
     },
     "profile": {
       "captain": "CAPTAIN",
@@ -392,7 +397,9 @@
       "signOut": "Sign out",
       "deleteAccount": "Delete account",
       "deleteAccountDesc": "Logbook deleted permanently",
-      "version": "AIRSPEAK v2.4.1 · BUILD 2026.04"
+      "version": "AIRSPEAK v2.4.1 · BUILD 2026.04",
+      "squadron": "Squadron / Cohort",
+      "squadronDesc": "Join cohort with airline / school code"
     },
     "notifications": {
       "eyebrow": "OPS FREQ · {{count}} NEW",

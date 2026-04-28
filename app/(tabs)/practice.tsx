@@ -10,6 +10,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -23,6 +24,8 @@ import {
   Card3D,
 } from '@/components/airspeak';
 
+type DrillCategory = 'all' | 'speaking' | 'listening' | 'vocab' | 'emergency';
+
 interface Drill {
   title: string;
   sub: string;
@@ -32,26 +35,33 @@ interface Drill {
   mins: number;
   stars?: number;
   route?: string;
+  category: Exclude<DrillCategory, 'all'>;
 }
 
 const DRILLS: Drill[] = [
-  { title: 'ATC read-back rapid fire', sub: '60 sec · 12 clearances', icon: '🎙', accent: '#E63946', xp: 80, mins: 2, route: '/readback' },
-  { title: 'Numbers 0–9 (decimals)', sub: 'Pronunciation · 3 stars', icon: '🔊', accent: '#F2C14E', xp: 50, mins: 3, stars: 2, route: '/pronunciation/p1' },
-  { title: 'Garbled radio decode', sub: 'Listening · noise +30%', icon: '🎧', accent: '#2EA8FF', xp: 65, mins: 4 },
-  { title: 'Emergency vocabulary', sub: 'Match · 24 words', icon: '🛡', accent: '#7C5CFF', xp: 60, mins: 3, stars: 3 },
-  { title: 'Weather phenomena', sub: 'Reading · METAR/TAF', icon: '☁', accent: '#2DBE6C', xp: 75, mins: 5 },
-];
-
-const FILTER_CHIPS = [
-  { label: 'All', active: true },
-  { label: '🎙 Speaking' },
-  { label: '🎧 Listening' },
-  { label: '📖 Vocab' },
-  { label: '⚠ Emergency' },
+  { title: 'ATC read-back rapid fire', sub: '60 sec · 12 clearances', icon: '🎙', accent: '#E63946', xp: 80, mins: 2, route: '/readback', category: 'speaking' },
+  { title: 'Numbers 0–9 (decimals)', sub: 'Pronunciation · 3 stars', icon: '🔊', accent: '#F2C14E', xp: 50, mins: 3, stars: 2, route: '/pronunciation/p1', category: 'speaking' },
+  { title: 'Garbled radio decode', sub: 'Listening · noise +30%', icon: '🎧', accent: '#2EA8FF', xp: 65, mins: 4, category: 'listening' },
+  { title: 'Emergency vocabulary', sub: 'Match · 24 words', icon: '🛡', accent: '#7C5CFF', xp: 60, mins: 3, stars: 3, category: 'emergency' },
+  { title: 'Weather phenomena', sub: 'Reading · METAR/TAF', icon: '☁', accent: '#2DBE6C', xp: 75, mins: 5, category: 'vocab' },
+  { title: 'Aviation vocab matching', sub: '300 terim · 5 dakika', icon: '📖', accent: '#7C5CFF', xp: 40, mins: 5, category: 'vocab' },
+  { title: 'ATC tower listening', sub: 'Audio + transcribe', icon: '🎧', accent: '#2EA8FF', xp: 55, mins: 4, category: 'listening' },
 ];
 
 export default function PracticeScreen() {
   const { t } = useTranslation();
+  const [filter, setFilter] = useState<DrillCategory>('all');
+
+  const FILTER_CHIPS: { label: string; value: DrillCategory }[] = [
+    { label: t('screens.practice.filterAll'), value: 'all' },
+    { label: t('screens.practice.filterSpeaking'), value: 'speaking' },
+    { label: t('screens.practice.filterListening'), value: 'listening' },
+    { label: t('screens.practice.filterVocab'), value: 'vocab' },
+    { label: t('screens.practice.filterEmergency'), value: 'emergency' },
+  ];
+
+  const filteredDrills = filter === 'all' ? DRILLS : DRILLS.filter((d) => d.category === filter);
+
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
@@ -78,31 +88,36 @@ export default function PracticeScreen() {
           style={{ marginBottom: 14 }}
           contentContainerStyle={{ gap: 8 }}
         >
-          {FILTER_CHIPS.map((c, i) => (
-            <View
-              key={i}
-              style={{
-                height: 36,
-                paddingHorizontal: 14,
-                borderRadius: 999,
-                backgroundColor: c.active ? '#0F1E47' : '#FFFFFF',
-                borderWidth: 1.5,
-                borderColor: c.active ? '#0F1E47' : '#DCE0E8',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text
+          {FILTER_CHIPS.map((c) => {
+            const active = filter === c.value;
+            return (
+              <TouchableOpacity
+                key={c.value}
+                activeOpacity={0.85}
+                onPress={() => setFilter(c.value)}
                 style={{
-                  fontFamily: FONTS.body700,
-                  fontSize: 13,
-                  color: c.active ? '#FFFFFF' : '#0E1116',
+                  height: 36,
+                  paddingHorizontal: 14,
+                  borderRadius: 999,
+                  backgroundColor: active ? '#0F1E47' : '#FFFFFF',
+                  borderWidth: 1.5,
+                  borderColor: active ? '#0F1E47' : '#DCE0E8',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                {c.label}
-              </Text>
-            </View>
-          ))}
+                <Text
+                  style={{
+                    fontFamily: FONTS.body700,
+                    fontSize: 13,
+                    color: active ? '#FFFFFF' : '#0E1116',
+                  }}
+                >
+                  {c.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
 
         {/* Featured Weekly Challenge */}
@@ -172,7 +187,26 @@ export default function PracticeScreen() {
         {/* Fast drills */}
         <Eyebrow>{t('screens.practice.fastDrills')}</Eyebrow>
         <View style={{ gap: 10, marginTop: 10 }}>
-          {DRILLS.map((d, i) => (
+          {filteredDrills.length === 0 && (
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderStyle: 'dashed',
+                borderColor: '#DCE0E8',
+                padding: 24,
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
+              <Text style={{ fontSize: 36 }}>🔍</Text>
+              <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#5A6478', textAlign: 'center' }}>
+                {t('screens.practice.noResults', 'Bu kategoride drill yok')}
+              </Text>
+            </View>
+          )}
+          {filteredDrills.map((d, i) => (
             <TouchableOpacity
               key={i}
               activeOpacity={0.85}

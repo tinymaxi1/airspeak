@@ -256,7 +256,11 @@
       ],
       "reviewQueue": "BUGÜNKÜ TEKRAR",
       "reviewQueueCount": "{{count}} kart hazır",
-      "reviewQueueSub": "~3 dk · zayıf alanlarını sağlamlaştır"
+      "reviewQueueSub": "~3 dk · zayıf alanlarını sağlamlaştır",
+      "firstTimeEyebrow": "BAŞLANGIÇ",
+      "firstTimeTitle": "İlk dersine başla",
+      "firstTimeSub": "~3 dk · streak'in başlasın",
+      "firstTimeStart": "BAŞLA →"
     },
     "learn": {
       "unit": "BÖLÜM",
@@ -288,7 +292,8 @@
       "weeklyTitle": "Yakıt baskısı altında diversiyon.",
       "weeklyDesc": "5 dk ATC simülasyon. 1.200 pilot oynadı. İlk %10 = özel epoletli rozet.",
       "weeklyCta": "Göreve başla →",
-      "fastDrills": "HIZLI DRILLER"
+      "fastDrills": "HIZLI DRILLER",
+      "noResults": "Bu kategoride drill yok"
     },
     "profile": {
       "captain": "KAPTAN",
@@ -392,7 +397,9 @@
       "signOut": "Çıkış yap",
       "deleteAccount": "Hesabı sil",
       "deleteAccountDesc": "Kayıt defteri kalıcı silinir",
-      "version": "AIRSPEAK v2.4.1 · BUILD 2026.04"
+      "version": "AIRSPEAK v2.4.1 · BUILD 2026.04",
+      "squadron": "Squadron / Kohort",
+      "squadronDesc": "Havayolu / okul kodu ile kohort'a katıl"
     },
     "notifications": {
       "eyebrow": "OPS FREQ · {{count}} YENİ",

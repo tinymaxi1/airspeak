@@ -54,9 +54,24 @@ export default function SettingsScreen() {
     {
       title: t('screens.settings.groupAccount'),
       rows: [
-        { icon: '👤', label: t('screens.settings.profile'), sub: t('screens.settings.profileDesc', { name: username, username }) },
-        { icon: '🎯', label: t('screens.settings.target'), sub: t('screens.settings.targetDesc') },
-        { icon: '✈', label: t('screens.settings.role'), sub: t('screens.settings.roleDesc') },
+        {
+          icon: '👤',
+          label: t('screens.settings.profile'),
+          sub: t('screens.settings.profileDesc', { name: username, username }),
+          onPress: () => router.push('/settings/profile'),
+        },
+        {
+          icon: '🎯',
+          label: t('screens.settings.target'),
+          sub: t('screens.settings.targetDesc'),
+          onPress: () => router.push('/settings/profile'),
+        },
+        {
+          icon: '✈',
+          label: t('screens.settings.role'),
+          sub: t('screens.settings.roleDesc'),
+          onPress: () => router.push('/(auth)/onboarding/role-select'),
+        },
         {
           icon: '🪙',
           label: t('screens.settings.subscription'),
@@ -64,6 +79,12 @@ export default function SettingsScreen() {
           right: t('screens.settings.active'),
           rightTone: 'gold',
           onPress: () => router.push('/paywall'),
+        },
+        {
+          icon: '👥',
+          label: t('screens.settings.squadron', 'Squadron / Kohort'),
+          sub: t('screens.settings.squadronDesc', 'Havayolu / okul kodu ile kohort\'a katıl'),
+          onPress: () => router.push('/squadron-pairing'),
         },
       ],
     },
@@ -92,8 +113,16 @@ export default function SettingsScreen() {
           sub: t('screens.settings.languageDesc'),
           onPress: () => router.push('/settings/language'),
         },
-        { icon: '🔒', label: t('screens.settings.privacy') },
-        { icon: '🤖', label: t('screens.settings.help') },
+        {
+          icon: '🔒',
+          label: t('screens.settings.privacy'),
+          onPress: () => router.push('/settings/privacy'),
+        },
+        {
+          icon: '🤖',
+          label: t('screens.settings.help'),
+          onPress: () => router.push('/settings/help'),
+        },
       ],
     },
     {

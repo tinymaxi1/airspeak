@@ -51,10 +51,13 @@ export default function HomeScreen() {
   // Offline durumu
   const isOnline = useOfflineStore((s) => s.isOnline);
 
-  const streak = 12; // TODO: gamificationStore.streak
-  const hearts = 4;
-  const xp = 2840;
+  const streak = useGamificationStore((s) => s.currentStreak ?? 0);
+  const hearts = useGamificationStore((s) => s.hearts ?? 5);
+  const xp = useGamificationStore((s) => s.totalXp ?? 0);
   const level = placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
+
+  // İlk kullanıcı kontrolü: hiç ders tamamlamadı + XP 0
+  const isFirstTime = completedIds.length === 0 && xp === 0;
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
@@ -189,6 +192,58 @@ export default function HomeScreen() {
         contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* İlk kullanıcı için onboarding banner */}
+        {isFirstTime && (
+          <View
+            style={{
+              backgroundColor: '#E63946',
+              borderRadius: 14,
+              padding: 16,
+              borderBottomWidth: 4,
+              borderBottomColor: '#C8202E',
+              marginBottom: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 14,
+            }}
+          >
+            <Text style={{ fontSize: 36 }}>🎯</Text>
+            <View style={{ flex: 1 }}>
+              <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', letterSpacing: 1.8 }}>
+                {t('screens.home.firstTimeEyebrow', 'BAŞLANGIÇ')}
+              </Mono>
+              <Text
+                style={{
+                  fontFamily: FONTS.display,
+                  fontSize: 20,
+                  fontWeight: '700',
+                  color: '#FFFFFF',
+                  marginTop: 4,
+                  lineHeight: 22,
+                }}
+              >
+                {t('screens.home.firstTimeTitle', 'İlk dersine başla')}
+              </Text>
+              <Mono style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', marginTop: 4 }}>
+                {t('screens.home.firstTimeSub', '~3 dk · streak\'in başlasın')}
+              </Mono>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push('/(tabs)/learn')}
+              style={{
+                backgroundColor: '#FFFFFF',
+                paddingHorizontal: 14,
+                paddingVertical: 10,
+                borderRadius: 999,
+              }}
+            >
+              <Text style={{ fontFamily: FONTS.body800, fontSize: 13, color: '#E63946' }}>
+                {t('screens.home.firstTimeStart', 'BAŞLA →')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Daily Flight Plan card */}
         <Card3D style={{ padding: 0, overflow: 'hidden', marginBottom: 18 }}>
           {/* Header */}
