@@ -260,7 +260,15 @@
       "firstTimeEyebrow": "GET STARTED",
       "firstTimeTitle": "Start your first lesson",
       "firstTimeSub": "~3 min · begin your streak",
-      "firstTimeStart": "START →"
+      "firstTimeStart": "START →",
+      "qReadback": "Read-back drill",
+      "qReadbackSub": "ATC clearances",
+      "qAi": "AI roleplay",
+      "qAiSub": "5 scenarios · free",
+      "qVocab": "Search vocab",
+      "qVocabSub": "1300+ terms",
+      "qPronounce": "Pronounce",
+      "qPronounceSub": "Score ring"
     },
     "learn": {
       "unit": "ΜΟΝΑΔΑ",

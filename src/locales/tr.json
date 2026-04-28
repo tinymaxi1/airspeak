@@ -260,7 +260,15 @@
       "firstTimeEyebrow": "BAŞLANGIÇ",
       "firstTimeTitle": "İlk dersine başla",
       "firstTimeSub": "~3 dk · streak'in başlasın",
-      "firstTimeStart": "BAŞLA →"
+      "firstTimeStart": "BAŞLA →",
+      "qReadback": "Read-back drill",
+      "qReadbackSub": "ATC clearances",
+      "qAi": "AI roleplay",
+      "qAiSub": "5 senaryo · ücretsiz",
+      "qVocab": "Vocab ara",
+      "qVocabSub": "1300+ terim",
+      "qPronounce": "Telaffuz",
+      "qPronounceSub": "Score ring"
     },
     "learn": {
       "unit": "BÖLÜM",

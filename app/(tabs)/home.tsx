@@ -419,31 +419,31 @@ export default function HomeScreen() {
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
           <QuickCard
             icon="🎙"
-            label="Read-back drill"
-            sub="ATC clearances"
+            label={t('screens.home.qReadback', 'Read-back drill')}
+            sub={t('screens.home.qReadbackSub', 'ATC clearances')}
             color="#E63946"
-            onPress={() => router.push('/(tabs)/practice')}
-          />
-          <QuickCard
-            icon="🎧"
-            label="Listen & decode"
-            sub="Garbled radio"
-            color="#2EA8FF"
-            onPress={() => router.push('/(tabs)/practice')}
+            onPress={() => router.push('/readback')}
           />
           <QuickCard
             icon="🤖"
-            label="AI roleplay"
-            sub="Holding pattern"
+            label={t('screens.home.qAi', 'AI roleplay')}
+            sub={t('screens.home.qAiSub', '5 senaryo · ücretsiz')}
             color="#7C5CFF"
-            onPress={() => router.push('/paywall')}
+            onPress={() => router.push('/conversation')}
+          />
+          <QuickCard
+            icon="📖"
+            label={t('screens.home.qVocab', 'Vocab ara')}
+            sub={t('screens.home.qVocabSub', '1300+ terim')}
+            color="#2EA8FF"
+            onPress={() => router.push('/vocab')}
           />
           <QuickCard
             icon="🔊"
-            label="Pronounce"
-            sub="Numbers 0–9"
+            label={t('screens.home.qPronounce', 'Telaffuz')}
+            sub={t('screens.home.qPronounceSub', 'Score ring')}
             color="#F2C14E"
-            onPress={() => router.push('/(tabs)/practice')}
+            onPress={() => router.push('/pronunciation/p1')}
           />
         </View>
 
