@@ -622,5 +622,15 @@
     "eveningBody": "You haven't practiced today. 1 lesson saves the streak.",
     "dangerTitle": "⚠ Final 90 min!",
     "dangerBody": "One quick drill keeps your streak alive."
+  },
+  "pronunciation": {
+    "permTitle": "Microphone permission",
+    "permBody": "Settings > AirSpeak — enable microphone and speech recognition.",
+    "heard": "HEARD",
+    "target": "TARGET",
+    "youSaid": "YOU SAID",
+    "recording": "🔴 Speak — pronounce each word clearly",
+    "analyzing": "⏳ Analyzing...",
+    "tapStart": "\"{{text}}\" — tap to start."
   }
 }

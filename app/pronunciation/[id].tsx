@@ -11,7 +11,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity, Alert, Pressable } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Audio } from 'expo-av';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,9 +21,16 @@ import {
   type PronunciationSentence,
 } from '@/features/pronunciation/sentences';
 import {
-  scorePronunciation,
+  scorePronunciationFromTranscript,
+  heuristicScore,
   type PronunciationResult,
 } from '@/features/pronunciation/scorer';
+// expo-speech-recognition: cihaz native STT (iOS Speech / Android SpeechRecognizer)
+// Expo Go'da çalışmaz — fallback heuristic kullanılır.
+import {
+  ExpoSpeechRecognitionModule,
+  useSpeechRecognitionEvent,
+} from 'expo-speech-recognition';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
 import { track } from '@/lib/posthog';
@@ -54,64 +61,116 @@ export default function PronunciationScreen() {
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
 
   const [stage, setStage] = useState<Stage>('ready');
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [result, setResult] = useState<PronunciationResult | null>(null);
-  const [recordStart, setRecordStart] = useState<number>(0);
+  const [recognizedText, setRecognizedText] = useState<string>('');
+  const recordStartRef = useRef<number>(0);
+  const finalTranscriptRef = useRef<string>('');
+
+  // expo-speech-recognition events: STT sonucu burada toplanır
+  useSpeechRecognitionEvent('result', (event) => {
+    const transcript = event.results?.[0]?.transcript ?? '';
+    setRecognizedText(transcript);
+    if (event.isFinal) {
+      finalTranscriptRef.current = transcript;
+    }
+  });
+
+  useSpeechRecognitionEvent('error', (event) => {
+    console.warn('STT error', event.error, event.message);
+  });
+
+  useSpeechRecognitionEvent('end', async () => {
+    const duration = Date.now() - recordStartRef.current;
+    const transcript = finalTranscriptRef.current;
+    setStage('scoring');
+
+    // Gerçek STT varsa transcript-based scoring, yoksa heuristic
+    const scored = transcript
+      ? scorePronunciationFromTranscript(sentence.text, transcript, duration)
+      : heuristicScore(sentence.text, duration);
+
+    setResult(scored);
+    setStage('result');
+    addXp(scored.overallScore >= 70 ? 30 : 10, 'pronunciation_drill');
+    incrementQuest('practice_pronunciation', 1);
+    incrementQuest('streak_check', 1);
+    recordDailyActivity();
+    track('pronunciation_attempt', {
+      sentence_id: sentence.id,
+      score: scored.overallScore,
+      icao_rubric: scored.icaoRubric,
+      is_heuristic: scored.isHeuristic,
+    });
+  });
 
   useEffect(() => {
     return () => {
-      recording?.stopAndUnloadAsync().catch(() => undefined);
+      try {
+        ExpoSpeechRecognitionModule.stop();
+      } catch {
+        /* ignore */
+      }
     };
-  }, [recording]);
+  }, []);
 
   async function toggleRecording() {
     if (stage === 'ready') {
       try {
-        const { granted } = await Audio.requestPermissionsAsync();
-        if (!granted) {
-          Alert.alert('Mikrofon izni', 'Ayarlar > AirSpeak\'ten aç.');
+        // İzinler: mic + speech recognition (iOS Speech framework)
+        const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+        if (!perm.granted) {
+          Alert.alert(
+            t('pronunciation.permTitle', 'Mikrofon izni'),
+            t('pronunciation.permBody', 'Ayarlar > AirSpeak\'ten mikrofon ve konuşma tanıma iznini aç.'),
+          );
           return;
         }
-        await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
-        const { recording: rec } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY,
-        );
-        setRecording(rec);
-        setRecordStart(Date.now());
+        finalTranscriptRef.current = '';
+        setRecognizedText('');
+        recordStartRef.current = Date.now();
         setStage('recording');
         track('pronunciation_started', { sentence_id: sentence.id });
+
+        ExpoSpeechRecognitionModule.start({
+          lang: 'en-US',
+          interimResults: true,
+          maxAlternatives: 1,
+          continuous: true,
+          requiresOnDeviceRecognition: false,
+          contextualStrings: sentence.text.split(/\s+/).filter(Boolean),
+        });
       } catch (err) {
-        console.warn('Recording start failed', err);
+        console.warn('STT start failed', err);
+        // Fallback: expo-av audio kayıt + heuristic
+        try {
+          const { granted } = await Audio.requestPermissionsAsync();
+          if (!granted) return;
+          recordStartRef.current = Date.now();
+          setStage('recording');
+        } catch {
+          /* ignore */
+        }
       }
     } else if (stage === 'recording') {
-      if (!recording) return;
-      setStage('scoring');
       try {
-        await recording.stopAndUnloadAsync();
-        const uri = recording.getURI() ?? '';
-        const duration = Date.now() - recordStart;
-        const scored = await scorePronunciation(sentence.text, uri, duration);
+        await ExpoSpeechRecognitionModule.stop();
+      } catch {
+        // STT yoksa fallback: doğrudan heuristic
+        const duration = Date.now() - recordStartRef.current;
+        const scored = heuristicScore(sentence.text, duration);
         setResult(scored);
         setStage('result');
         addXp(scored.overallScore >= 70 ? 30 : 10, 'pronunciation_drill');
         incrementQuest('practice_pronunciation', 1);
-        incrementQuest('streak_check', 1);
         recordDailyActivity();
-        track('pronunciation_attempt', {
-          sentence_id: sentence.id,
-          score: scored.overallScore,
-          icao_rubric: scored.icaoRubric,
-        });
-      } catch (err) {
-        console.warn('Scoring failed', err);
-        setStage('ready');
       }
     }
   }
 
   const tryAgain = () => {
     setResult(null);
-    setRecording(null);
+    setRecognizedText('');
+    finalTranscriptRef.current = '';
     setStage('ready');
   };
 
@@ -363,10 +422,70 @@ export default function PronunciationScreen() {
           </View>
         </View>
 
+        {/* Live transcript (recording sırasında) */}
+        {stage === 'recording' && recognizedText && (
+          <View
+            style={{
+              marginTop: 12,
+              backgroundColor: '#EDEFF3',
+              borderRadius: 10,
+              padding: 12,
+              borderWidth: 1,
+              borderStyle: 'dashed',
+              borderColor: '#B8BFCC',
+            }}
+          >
+            <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.1 }}>
+              {t('pronunciation.heard', 'DUYULAN')}
+            </Mono>
+            <Text
+              style={{
+                fontFamily: FONTS.body700,
+                fontSize: 14,
+                color: '#0E1116',
+                marginTop: 4,
+                lineHeight: 20,
+              }}
+            >
+              {recognizedText}
+            </Text>
+          </View>
+        )}
+
+        {/* Recognized vs Target karşılaştırma (sonuç ekranında) */}
+        {stage === 'result' && result && !result.isHeuristic && (
+          <View
+            style={{
+              marginTop: 12,
+              backgroundColor: '#FFFFFF',
+              borderRadius: 10,
+              padding: 12,
+              borderWidth: 1.5,
+              borderColor: '#DCE0E8',
+              gap: 6,
+            }}
+          >
+            <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.1 }}>
+              {t('pronunciation.target', 'HEDEF')}
+            </Mono>
+            <Body color="#0E1116" style={{ fontSize: 13 }}>
+              "{result.targetText}"
+            </Body>
+            <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.1, marginTop: 4 }}>
+              {t('pronunciation.youSaid', 'SÖYLEDİĞİN')}
+            </Mono>
+            <Body color="#0E1116" style={{ fontSize: 13 }}>
+              "{result.recognizedText}"
+            </Body>
+          </View>
+        )}
+
         <Body color="#5A6478" style={{ fontSize: 13, marginTop: 12, textAlign: 'center' }}>
-          {stage === 'recording' ? '🔴 Kayıt sürüyor...' :
-           stage === 'scoring' ? '⏳ Analiz ediliyor...' :
-           result?.feedbackTr ?? `"${sentence.text}" — kayıt başlat.`}
+          {stage === 'recording'
+            ? t('pronunciation.recording', '🔴 Konuş — sözcükleri net söyle')
+            : stage === 'scoring'
+              ? t('pronunciation.analyzing', '⏳ Analiz ediliyor...')
+              : result?.feedbackTr ?? t('pronunciation.tapStart', '"{{text}}" — kayda başla.', { text: sentence.text })}
         </Body>
       </ScrollView>
 

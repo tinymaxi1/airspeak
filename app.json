@@ -73,7 +73,8 @@
           "icon": "./assets/logo/notification-icon.png",
           "color": "#2E7CD6"
         }
-      ]
+      ],
+      "expo-speech-recognition"
     ],
     "experiments": {
       "typedRoutes": true,

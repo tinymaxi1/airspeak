@@ -622,5 +622,15 @@
     "eveningBody": "Bugün hâlâ pratik yapmadın. 1 ders streak'i kurtarır.",
     "dangerTitle": "⚠ Son 90 dk!",
     "dangerBody": "Streak kırılmasın diye 1 hızlı pratik yeter."
+  },
+  "pronunciation": {
+    "permTitle": "Mikrofon izni",
+    "permBody": "Ayarlar > AirSpeak'ten mikrofon ve konuşma tanıma iznini aç.",
+    "heard": "DUYULAN",
+    "target": "HEDEF",
+    "youSaid": "SÖYLEDİĞİN",
+    "recording": "🔴 Konuş — sözcükleri net söyle",
+    "analyzing": "⏳ Analiz ediliyor...",
+    "tapStart": "\"{{text}}\" — kayda başla."
   }
 }
