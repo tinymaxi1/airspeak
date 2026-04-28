@@ -31,11 +31,12 @@ interface Drill {
   xp: number;
   mins: number;
   stars?: number;
+  route?: string;
 }
 
 const DRILLS: Drill[] = [
-  { title: 'ATC read-back rapid fire', sub: '60 sec · 12 clearances', icon: '🎙', accent: '#E63946', xp: 80, mins: 2 },
-  { title: 'Numbers 0–9 (decimals)', sub: 'Pronunciation · 3 stars', icon: '🔊', accent: '#F2C14E', xp: 50, mins: 3, stars: 2 },
+  { title: 'ATC read-back rapid fire', sub: '60 sec · 12 clearances', icon: '🎙', accent: '#E63946', xp: 80, mins: 2, route: '/readback' },
+  { title: 'Numbers 0–9 (decimals)', sub: 'Pronunciation · 3 stars', icon: '🔊', accent: '#F2C14E', xp: 50, mins: 3, stars: 2, route: '/pronunciation/p1' },
   { title: 'Garbled radio decode', sub: 'Listening · noise +30%', icon: '🎧', accent: '#2EA8FF', xp: 65, mins: 4 },
   { title: 'Emergency vocabulary', sub: 'Match · 24 words', icon: '🛡', accent: '#7C5CFF', xp: 60, mins: 3, stars: 3 },
   { title: 'Weather phenomena', sub: 'Reading · METAR/TAF', icon: '☁', accent: '#2DBE6C', xp: 75, mins: 5 },
@@ -172,19 +173,25 @@ export default function PracticeScreen() {
         <Eyebrow>{t('screens.practice.fastDrills')}</Eyebrow>
         <View style={{ gap: 10, marginTop: 10 }}>
           {DRILLS.map((d, i) => (
-            <Card3D key={i} style={{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-              <View
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: 14,
-                  backgroundColor: d.accent,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Text style={{ fontSize: 26, color: '#FFFFFF' }}>{d.icon}</Text>
-              </View>
+            <TouchableOpacity
+              key={i}
+              activeOpacity={0.85}
+              onPress={() => d.route && router.push(d.route as any)}
+              disabled={!d.route}
+            >
+              <Card3D style={{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+                <View
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 14,
+                    backgroundColor: d.accent,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Text style={{ fontSize: 26, color: '#FFFFFF' }}>{d.icon}</Text>
+                </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
                   {d.title}
@@ -221,7 +228,8 @@ export default function PracticeScreen() {
                   +{d.xp} XP
                 </Text>
               </View>
-            </Card3D>
+              </Card3D>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>

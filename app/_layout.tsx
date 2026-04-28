@@ -118,6 +118,7 @@ export default function RootLayout() {
             <Stack.Screen name="lesson/[id]" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="paywall" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="conversation/[scenario]" options={{ headerShown: false }} />
+            <Stack.Screen name="readback" options={{ headerShown: false }} />
             <Stack.Screen name="pronunciation/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="settings/index" options={{ headerShown: false }} />
             <Stack.Screen name="notifications" options={{ headerShown: false }} />
