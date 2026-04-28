@@ -22,13 +22,13 @@ export interface ContentProvider {
 // ═══════════════════════════════════════════════════════════
 
 class GeminiProvider implements ContentProvider {
-  name = 'gemini-2.0-flash';
-  /** 15 RPM = 4s/req güvenli */
-  recommendedDelayMs = 4500;
+  name = 'gemini-flash-latest';
+  /** 6s/req = 10 RPM, free tier ramp-up için güvenli */
+  recommendedDelayMs = 6500;
   private apiKey: string;
   private model: string;
 
-  constructor(apiKey: string, model: string = 'gemini-flash-latest') {
+  constructor(apiKey: string, model: string = 'gemini-2.5-flash-lite') {
     this.apiKey = apiKey;
     this.model = model;
   }
@@ -45,27 +45,49 @@ class GeminiProvider implements ContentProvider {
       },
     };
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    // Exponential backoff on 429/503 — 3 retry: 30s, 60s, 120s
+    const backoffMs = [30000, 60000, 120000];
+    let lastError: Error | null = null;
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Gemini API ${response.status}: ${errText.substring(0, 300)}`);
+    for (let attempt = 0; attempt <= backoffMs.length; attempt++) {
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+
+        if (response.status === 429 || response.status === 503) {
+          const wait = backoffMs[attempt] ?? 0;
+          if (wait > 0) {
+            console.log(`\n     ⏸ ${response.status} rate limit — ${wait / 1000}s bekle...`);
+            await new Promise((r) => setTimeout(r, wait));
+            continue;
+          }
+        }
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`Gemini API ${response.status}: ${errText.substring(0, 200)}`);
+        }
+
+        const data = (await response.json()) as {
+          candidates?: { content: { parts: { text: string }[] } }[];
+          usageMetadata?: { promptTokenCount: number; candidatesTokenCount: number };
+        };
+
+        const text = data.candidates?.[0]?.content.parts.map((p) => p.text).join('') ?? '';
+        const tokensIn = data.usageMetadata?.promptTokenCount ?? 0;
+        const tokensOut = data.usageMetadata?.candidatesTokenCount ?? 0;
+
+        return { text: text.trim(), tokensIn, tokensOut, costUsd: 0 };
+      } catch (e) {
+        lastError = e as Error;
+        if (attempt < backoffMs.length) continue;
+      }
     }
 
-    const data = (await response.json()) as {
-      candidates?: { content: { parts: { text: string }[] } }[];
-      usageMetadata?: { promptTokenCount: number; candidatesTokenCount: number };
-    };
-
-    const text = data.candidates?.[0]?.content.parts.map((p) => p.text).join('') ?? '';
-    const tokensIn = data.usageMetadata?.promptTokenCount ?? 0;
-    const tokensOut = data.usageMetadata?.candidatesTokenCount ?? 0;
-
-    return { text: text.trim(), tokensIn, tokensOut, costUsd: 0 };
+    throw lastError ?? new Error('Gemini API failed after retries');
   }
 }
 
