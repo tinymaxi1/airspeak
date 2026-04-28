@@ -80,6 +80,15 @@ export const PILOT_VOCAB_FAZ1: VocabularyTerm[] = [
       { en: 'A crack on the fuselage was repaired.', tr: 'Gövdedeki çatlak onarıldı.' },
     ],
     relatedTerms: ['airframe', 'skin', 'frame'],
+    richDefinitionTr: `**Etimoloji**: "Fuselage" Fransızca "fuselé" (mil şeklinde, sivri) kelimesinden gelir. WWI döneminde Fransız havacılık mühendisleri uçak gövdesini tanımlamak için kullandı, sonra İngilizceye geçti. Gövdenin "iğ şeklinde" hava direnç optimize formu için bu isim seçildi.
+
+**Operasyonel/teknik bağlam**: Modern jet uçaklarda fuselage 5 ana bölüme ayrılır: (1) Forward fuselage — kokpit + nose gear bay. (2) Mid-fuselage — yolcu kabini, kanat bağlantısı (wing root), yakıt tankları. (3) Aft fuselage — kuyruk, APU, pressurization bulkhead. (4) Tail cone — vertical stabilizer base. (5) Cargo holds — alt kompartman. Yapı: aluminyum alaşım frames + stringers + skin (semi-monocoque). Composite uçaklarda (B787, A350) fuselage karbon fiber ile %50+ ağırlık tasarrufu.
+
+**Yaygın yanlış kullanım**: "Fuselage" tüm uçak gövde anlamında geniş kullanılsa da teknik olarak yalnız orta-merkezi gövdedir. Wings, tail, gear ayrı yapılardır. Diğer hata: "Body" ile karıştırma — "body" otomotiv terimi, havacılıkta "fuselage" doğru.
+
+**İlgili terimler**: Empennage (kuyruk grubu), Airframe (gövde + kanat + kuyruk birlikte), Skin (dış yüzey), Stringer (uzunlamasına takviye), Frame (dik takviye), Pressure bulkhead (basınç duvar), Cabin window, Cargo door, Belly fairing.
+
+**Sektör örneği**: 1988 Aloha 243 — 737 cruise'da 18 feet fuselage skin koptu (cabin decompression). Sebep: pre-existing fatigue cracks + corrosion + tepeleyen pressurization cycles. 1 ölü, 65 yaralı. Olay sonrası FAA "Aging Aircraft Program" başlattı — 20+ yıl yaşı uçaklarda zorunlu fuselage NDT inspeksiyon. Modern AMM'de fuselage skin için her C-check'te eddy current + visual zorunlu. Bu alan teknisyenlerin günlük çalıştığı en kritik bölgedir.`,
   },
   { id: 'voc_pilot_003', term: 'wing', termTr: 'kanat', pronunciation: '/wɪŋ/', category: 'aircraft_parts', difficulty: 1,
     definitionEn: 'The horizontal surfaces extending from the fuselage that generate lift.',

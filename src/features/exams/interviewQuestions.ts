@@ -510,6 +510,26 @@ const CORE_QUESTIONS: InterviewQuestion[] = [
     ],
     redFlagsTr: ['Genel "iyi havayolu"', 'Para odaklı'],
     tipsTr: ['STAR + spesifik fact', 'CEO veya chief pilot adını bil'],
+    detailedExplanationTr: `**HR psikoloji perspektifi**: "Why our airline?" pilot mülakatlarının açılış sorusu. Chief pilot/recruiter 4 şey ölçer: (1) Şirket araştırma derinliği (2) Long-term plan (3) Değer örtüşmesi (4) Diğer havayolu offer'ları arasındaki tercih sebebi. Pilot işe alımları $1M+ yatırım (type rating + line training) — şirket "1-2 yıl sonra ayrılır mı?" riskini kontrol etmek ister.
+
+**Bu aşamada neden sorulur**: Genelde Panel Interview'in ilk 5 dakikasında. Adayın hazırlığını ölçer. Yetersiz cevap → diğer aday ile karşılaştırmada zayıf. Zaten 2-3 senior captain ve HR panel önündesindir; cevap basmakalıp olursa unutulursun.
+
+**3 seviyeli cevap örneği**:
+- **Zayıf**: "Çünkü iyi havayolu, fleet büyük, maaş iyi." → herkes der, 0 ayırt edicilik.
+- **Orta**: "Emirates'in 260+ uçaklık fleet'i ve Dubai hub'ı çekici. A380 deneyimi benzersiz." → fact var ama kişiselleştirme yok.
+- **Güçlü**: "3 spesifik sebep: 1) Tim Clark'ın 2030 vizyonu — 65 yeni route + premium economy genişleme — büyüme dönemine girmek isterim. 2) A380 fleet (119 uçak) endüstride benzersiz, A380 type rating kariyerimde fark yaratır. 3) Dubai multi-cultural workforce (160 ülke) global pilot olma fırsatı. 5 yıl içinde A380 captain hedeflerim arasında. Diğer Gulf 3'üyle (Qatar, Etihad) karşılaştırdım — Emirates Group entegrasyonu (dnata, Emirates Holidays) en geniş kariyer çeşitlendirmesi sağlar." → spesifik vizyon + uzun dönem + rakip karşılaştırma.
+
+**STAR formatı uygulaması**: Bu motivation soru, STAR direkt uygulanmaz. Yerine "SPECIFIC-VISION-ALIGNMENT" yapısı: Specific (spesifik fact'ler), Vision (kendi 5-yıl planın), Alignment (şirket değeri + senin değerin örtüşmesi).
+
+**Havayolu uyarlama**:
+- Emirates: "Fly Better", A380 fleet, Tim Clark vision, multi-cultural
+- Qatar: Skytrax #1, Q-Suite, Al-Meer yönetimi, Doha hub
+- THY: 90. yıl heritage, 350+ destination, Star Alliance, Bilal Ekşi
+- Lufthansa: Group benefits, DLR test geçtim ama LH culture cezbeder
+- BA: oneworld, Speedbird heritage, "To Fly. To Serve."
+- Ryanair: Avrupa pasiif network, hızlı captain upgrade, low-cost rivalry önder
+
+**Tipik takip soruları**: "What if Qatar offers you a better contract?" "Why now, you have 5 years experience already?" "What would make you leave us in 3 years?"`,
   },
   {
     id: 'q_pilot_crm_fail',
@@ -521,6 +541,24 @@ const CORE_QUESTIONS: InterviewQuestion[] = [
     goodAnswerPointsTr: ['STAR formatı', 'Spesifik kokpit/kabin durumu', 'F/O assertiveness örneği', 'Captain decision review'],
     redFlagsTr: ['Genel CRM teorik cevap', 'Hata yok hikayesi'],
     tipsTr: ['Kendi uçuşundan örnek', 'NASA ASRS okuyabilirsin'],
+    detailedExplanationTr: `**HR psikoloji perspektifi**: Bu davranışsal soru chief pilot/recruiter için kritik çünkü pilot CRM'ı sadece teori olarak biliyor mu, yoksa pratikte uygulayan biri mi anlamak ister. Modern havacılığın temel taşı CRM — Tenerife'den Sully'ye geçen disiplin. Pilot "hiç CRM kullanmadım" derse: ya çok az uçuşu var ya self-awareness eksik. "Kendi hatamı F/O kurtardı" diyebilen pilot olgun pilottur.
+
+**Bu aşamada neden sorulur**: Sim check sonrası Panel Interview'in 2. yarısında. CRM örneği ile aynı zamanda 3 şey ölçülür: (1) Self-awareness — kendi hatanı kabul edebiliyor musun? (2) Hierarchy navigation — captain otoritesine saygı + assertiveness dengesi (3) Outcome focus — sonuç yönetimi.
+
+**3 seviyeli cevap örneği**:
+- **Zayıf**: "CRM her uçuşta kullanırız, ekip iletişimi önemlidir." → teorik, hikaye yok.
+- **Orta**: "Bir defasında F/O bir checklist item'i unuttu, ben hatırlattım, geçtik." → küçük, low-stakes.
+- **Güçlü** (STAR): **Situation**: "Bir gece IST-FRA, FL370'te. Türbülans ön-belirti sıfır. APU starter generator EICAS warning geldi." **Task**: "F/O olarak monitor'düm. Captain QRH'ya yönelmek istedi ama autopilot disconnect aşaması yaklaşıyordu." **Action**: "PACE modeli kullandım — Probe (sorgu): 'Captain, autopilot 30 saniye sonra disconnect olabilir, QRH için co-pilot olarak ben okumayı isterdim, siz aviating'e odaklanın'. Captain başta 'ben hallederim' dedi. Alert (alarm) ile 'Düşük yükseklikte değiliz ama emergency descent ihtimali var, distribute task daha güvenli' dedim. Captain kabul etti." **Result**: "Ben QRH okudum, captain manual flying, F/O (eğitimli olduğu için) ATC ile iletişim. APU shutdown bittikten sonra emniyetli düzeltme. Post-flight debriefing'te captain açıkça 'haklıydın, single-pilot mindset'e kaymıştım' dedi." **Lesson**: "PACE escalation modeli pratik."
+
+**STAR formatı uygulaması**: CRM hikayesinde özellikle: Action kısmı en uzun olmalı (ne dedin, ne yaptın detayı). Result ölçülebilir (incident önlendi, debriefing pozitif). Lesson learned kritik — bu öğreti yansıtma kabiliyetini gösterir.
+
+**Havayolu uyarlama**:
+- Emirates/Qatar: PACE modeli + multi-cultural team dinamikleri vurgu
+- Lufthansa: Authority gradient (rütbe farkı navigasyon) Almanca pilot kültürü için kritik
+- Ryanair: Hızlı turnaround baskısı altında CRM korunması
+- THY: Türk hiyerarşi kültüründe junior'ın senior'a "yanlış yapıyorsun" diyebilmesi olgun pilot işareti
+
+**Tipik takip soruları**: "What if the captain refused your input?" "Have you ever been wrong in a CRM challenge?" "How do you balance assertiveness with respect?"`,
   },
   {
     id: 'q_pilot_decision',

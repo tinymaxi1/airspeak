@@ -14,6 +14,15 @@ export const CABIN_VOCAB_FAZ1: VocabularyTerm[] = [
       { en: 'Our cabin crew speaks four languages.', tr: 'Kabin ekibimiz 4 dil konuşuyor.' },
     ],
     relatedTerms: ['flight attendant', 'purser', 'steward'],
+    richDefinitionTr: `**Etimoloji**: "Cabin crew" 1930'larda ABD'de Boeing 247 ve DC-3'lerin yolcu kabini gelişmesiyle ortaya çıktı. İlk başta sadece "stewardess" (tek başına bayan) idi. WWII sonrası uçak kapasitesi arttıkça, "crew" (ekip) terimi kullanılır oldu. Modern terim 1970'lerde 747 ile yerleşti — 14-18 kişilik ekipler için "crew" daha doğru.
+
+**Operasyonel/teknik bağlam**: Cabin crew sadece servis personeli değil, primary safety officer'lardır. Eğitimleri 6-8 hafta sürer, içerik: emergency evacuation, fire fighting, first aid + CPR, decompression management, medical emergencies, security threats, dangerous goods. ICAO Annex 6 ve EASA Part-CC'ye göre minimum cabin crew sayısı: her 50 yolcu koltuğa 1 cabin crew. Hierarchy: Junior FA → Senior FA → Purser → Inflight Service Manager (ISM) → Cabin Manager.
+
+**Yaygın yanlış kullanım**: "Stewardess" eski + cinsiyet bağımlı terim — modern havacılıkta "flight attendant" veya "cabin crew" tercih edilir. "Hostess" Türkçede yaygın ama İngilizce'de düşük status implies eder. Resmi havacılık iletişiminde "cabin crew" en doğru.
+
+**İlgili terimler**: Purser (kıdemli kabin yetkili), Inflight Service Manager (ISM), Lead Flight Attendant, Junior FA, Pre-flight briefing, OPC (Operator Proficiency Check — yıllık), CRM (Crew Resource Management), Cabin secure (kabin hazır raporu).
+
+**Sektör örneği**: Emirates'te tipik A380 uçuşu 18-22 cabin crew (3 sınıf konfigürasyon — 14 first + 76 business + 399 economy). Crew compositionu uluslararası: en az 8 farklı milletten kişi. Eğitim merkezi Dubai'de 6 ay sürer (rookie); senior crew 2-3 yılda bir tip rating recurrent training. Hac sezonunda THY Hac Charter'larında ek mosque-trained crew (Arapça konuşan) görevde — multi-cultural crew gerçek operasyonel zorunluluk.`,
   },
   { id: 'voc_cabin_002', term: 'fasten seatbelt', termTr: 'emniyet kemerini bağla', pronunciation: '/ˈfæs.ən ˈsiːt.belt/', category: 'safety', difficulty: 1,
     definitionEn: 'To secure the seatbelt across the lap before takeoff, landing, or turbulence.',
