@@ -77,8 +77,37 @@ export default function RootLayout() {
           >
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="lesson/[id]" options={{ presentation: 'modal', headerShown: true, headerTitle: 'Ders' }} />
-            <Stack.Screen name="paywall" options={{ presentation: 'modal', headerShown: true, headerTitle: 'Premium' }} />
+            {/* Custom-chrome ekranlar — hepsi kendi SafeArea + top bar'ını yönetiyor */}
+            <Stack.Screen name="lesson/[id]" options={{ presentation: 'modal', headerShown: false }} />
+            <Stack.Screen name="paywall" options={{ presentation: 'modal', headerShown: false }} />
+            <Stack.Screen name="conversation/[scenario]" options={{ headerShown: false }} />
+            <Stack.Screen name="pronunciation/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="settings/index" options={{ headerShown: false }} />
+            <Stack.Screen name="notifications" options={{ headerShown: false }} />
+            <Stack.Screen name="offline" options={{ headerShown: false }} />
+            <Stack.Screen name="mic-denied" options={{ headerShown: false }} />
+            <Stack.Screen name="squadron-pairing" options={{ headerShown: false }} />
+            <Stack.Screen name="exam/icao4-briefing" options={{ presentation: 'modal', headerShown: false }} />
+            <Stack.Screen name="exam/icao4-live" options={{ headerShown: false }} />
+            <Stack.Screen name="exam/icao4-result" options={{ headerShown: false }} />
+            {/* Modals — transparent overlay */}
+            <Stack.Screen
+              name="streak-freeze"
+              options={{
+                presentation: 'transparentModal',
+                headerShown: false,
+                animation: 'fade',
+              }}
+            />
+            <Stack.Screen
+              name="heart-refill"
+              options={{
+                presentation: 'transparentModal',
+                headerShown: false,
+                animation: 'fade',
+              }}
+            />
+            {/* Eski header'lı ekranlar */}
             <Stack.Screen name="shop" options={{ headerShown: true, headerTitle: 'Mağaza' }} />
             <Stack.Screen name="srs/index" options={{ headerShown: true, headerTitle: 'SRS Tekrar' }} />
             <Stack.Screen name="exam/index" options={{ headerShown: true, headerTitle: 'Sınav Hazırlık' }} />
@@ -87,8 +116,6 @@ export default function RootLayout() {
             <Stack.Screen name="exam/icao4" options={{ headerShown: true, headerTitle: 'ICAO 4 Sözlü' }} />
             <Stack.Screen name="settings/language" options={{ headerShown: true, headerTitle: 'Dil Seç' }} />
             <Stack.Screen name="quiz/[id]" options={{ headerShown: true, headerTitle: 'Quiz' }} />
-            <Stack.Screen name="conversation/[scenario]" options={{ headerShown: true, headerTitle: 'AI Konuşma' }} />
-            <Stack.Screen name="pronunciation/[id]" options={{ headerShown: true, headerTitle: 'Telaffuz' }} />
           </Stack>
         </QueryClientProvider>
       </TamaguiProvider>

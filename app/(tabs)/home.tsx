@@ -102,7 +102,37 @@ export default function HomeScreen() {
                   Good morning, Captain.
                 </Text>
               </View>
-              <Avatar initials="EK" color="#E63946" size={44} />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <TouchableOpacity
+                  onPress={() => router.push('/notifications')}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: 'rgba(255,255,255,0.08)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                  }}
+                >
+                  <Text style={{ fontSize: 18, color: '#FFFFFF' }}>🔔</Text>
+                  {/* Unread dot */}
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      width: 8,
+                      height: 8,
+                      borderRadius: 4,
+                      backgroundColor: '#E63946',
+                      borderWidth: 1.5,
+                      borderColor: '#0F1E47',
+                    }}
+                  />
+                </TouchableOpacity>
+                <Avatar initials="EK" color="#E63946" size={44} />
+              </View>
             </View>
 
             {/* Stat pills row */}

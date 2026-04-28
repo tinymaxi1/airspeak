@@ -187,6 +187,18 @@ export default function ProfileScreen() {
         <Eyebrow>ACCOUNT</Eyebrow>
         <View style={{ marginTop: 8, gap: 8, marginBottom: 18 }}>
           <SettingsRow
+            icon="⚙"
+            label="Settings"
+            value="Profile · subscription · audio"
+            onPress={() => router.push('/settings')}
+          />
+          <SettingsRow
+            icon="🔔"
+            label="Notifications"
+            value="3 yeni · ops freq"
+            onPress={() => router.push('/notifications')}
+          />
+          <SettingsRow
             icon="🌐"
             label="Language"
             value={lang === 'tr' ? '🇹🇷 Türkçe' : lang === 'en' ? '🇬🇧 English' : `🌐 ${lang.toUpperCase()}`}

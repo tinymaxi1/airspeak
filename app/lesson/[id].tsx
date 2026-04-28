@@ -24,6 +24,7 @@ import { track } from '@/lib/posthog';
 export default function LessonScreen() {
   const params = useLocalSearchParams<{ id: string }>();
   const { addXp, recordDailyActivity, loseHeart, addCoins } = useGamificationStore();
+  const hearts = useGamificationStore((s) => s.hearts ?? 5);
   const markLessonCompleted = useProgressStore((s) => s.markLessonCompleted);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
   const role = useOnboardingStore((s) => s.role);
@@ -66,6 +67,10 @@ export default function LessonScreen() {
         type: exercise.type,
         is_correct: false,
       });
+      // Hearts tükenince modal aç
+      if (hearts <= 1) {
+        setTimeout(() => router.push('/heart-refill'), 800);
+      }
     }
   };
 
