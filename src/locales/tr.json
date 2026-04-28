@@ -531,6 +531,53 @@
       "privacy": "Eğitmenin haftalık ilerlemeni, mock skorlarını ve zayıf descriptor'larını görür. Pronunciation kayıtların paylaşılmaz.",
       "join": "Cohort'a katıl",
       "solo": "Tek başıma uçuyorum"
+    },
+    "levelTest": {
+      "step": "ADIM 3 / 6",
+      "intro": {
+        "eyebrow": "BRİFİNG NOTU",
+        "hero1": "Uçuş öncesi",
+        "hero2": "kontrol.",
+        "subtitle": "{{count}} soru · ~10 dakika · 4 farklı boyutta seviyen ölçülecek.",
+        "examinerMode": "SINAV MODU",
+        "examinerTitle1": "Not yok. Ceza yok.",
+        "examinerTitle2": "Sadece bir rota haritası.",
+        "begin": "Uçuş öncesi kontrolü başlat",
+        "skip": "[DEV] Atla → Sonuç ekranı"
+      },
+      "segments": {
+        "general": "Genel İngilizce",
+        "generalDesc": "Havacılık DIŞI temel İngilizce yeterliliğin (gramer, kelime, okuma).",
+        "generalShort": "{{count}} soru · CEFR temeli",
+        "aviation": "Havacılık İngilizcesi",
+        "aviationDesc": "Havacılığa özel İngilizce dil yeterliliğin (rolüne özel jargon, frazeoloji).",
+        "aviationShort": "{{count}} soru · rol bazlı jargon",
+        "knowledge": "Havacılık Bilgisi",
+        "knowledgeDesc": "Operasyonel ve prosedürel bilgi seviyen (rolüne özel).",
+        "knowledgeShort": "{{count}} soru · ops & prosedür",
+        "communication": "İletişim & Mülakat",
+        "communicationDesc": "Sözlü iletişim, mülakat senaryosu, kriz yönetimi yetkinliğin.",
+        "communicationShort": "{{count}} senaryo · CRM & mülakat"
+      },
+      "question": {
+        "counter": "{{n}} / {{total}}",
+        "hint": "🎧 Sesli oku — telsizden cevap veriyormuş gibi.",
+        "submit": "Cevapla",
+        "next": "Sonraki soru →",
+        "next4": "{{n}}/4'e geç →",
+        "result": "Sonuçları gör →",
+        "correct": "✓ Doğru!",
+        "wrong": "✗ Yanlış",
+        "more": "📖 Daha fazla oku",
+        "close": "▲ Kapat",
+        "longExp": "DETAYLI AÇIKLAMA"
+      },
+      "break": {
+        "done": "{{n}}/4 tamam!",
+        "score": "{{correct}} / {{total}} doğru",
+        "next": "Sıradaki segment",
+        "continue": "Devam et →"
+      }
     }
   }
 }

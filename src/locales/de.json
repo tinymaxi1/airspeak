@@ -531,6 +531,53 @@
       "privacy": "Your instructor sees weekly progress, mock scores, and weak descriptors. Pronunciation recordings are not shared.",
       "join": "Join cohort",
       "solo": "I'm flying solo"
+    },
+    "levelTest": {
+      "step": "STEP 3 OF 6",
+      "intro": {
+        "eyebrow": "BRIEFING SHEET",
+        "hero1": "Pre-flight",
+        "hero2": "check.",
+        "subtitle": "{{count}} questions · ~10 min · across 4 dimensions.",
+        "examinerMode": "EXAMINER MODE",
+        "examinerTitle1": "No grade. No penalty.",
+        "examinerTitle2": "Just a route map.",
+        "begin": "Begin pre-flight check",
+        "skip": "[DEV] Skip → Result screen"
+      },
+      "segments": {
+        "general": "General English",
+        "generalDesc": "Non-aviation general English proficiency (grammar, vocabulary, reading).",
+        "generalShort": "{{count}} questions · CEFR baseline",
+        "aviation": "Aviation English",
+        "aviationDesc": "Aviation-specific English language proficiency (role-specific jargon, phraseology).",
+        "aviationShort": "{{count}} questions · role-specific jargon",
+        "knowledge": "Aviation Knowledge",
+        "knowledgeDesc": "Operational and procedural knowledge (role-specific).",
+        "knowledgeShort": "{{count}} questions · ops & procedures",
+        "communication": "Communication",
+        "communicationDesc": "Spoken communication, interview scenarios, crisis management.",
+        "communicationShort": "{{count}} scenarios · CRM & interview"
+      },
+      "question": {
+        "counter": "{{n}} / {{total}}",
+        "hint": "🎧 Read aloud — pretend you're replying on the radio.",
+        "submit": "Submit answer",
+        "next": "Next question →",
+        "next4": "Continue to {{n}}/4 →",
+        "result": "See results →",
+        "correct": "✓ Correct!",
+        "wrong": "✗ Wrong",
+        "more": "📖 Read more",
+        "close": "▲ Close",
+        "longExp": "DETAILED EXPLANATION"
+      },
+      "break": {
+        "done": "{{n}}/4 done!",
+        "score": "{{correct}} / {{total}} correct",
+        "next": "Next segment",
+        "continue": "Continue →"
+      }
     }
   }
 }
