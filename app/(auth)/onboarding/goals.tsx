@@ -1,44 +1,50 @@
-import { ScrollView } from 'react-native';
-import { YStack, XStack, H2, H3, Paragraph, Button, Card, Text, Progress } from 'tamagui';
-import { useTranslation } from 'react-i18next';
-import { router } from 'expo-router';
+/**
+ * Goals Screen — Daily flight time pick
+ *
+ * Tasarım birebir (screens-onboarding.jsx GoalsScreen):
+ * - "How long is\nyour daily flight?" HHero + "You can change this any time."
+ * - 5 goal cards (5/10/15/30/60 min) — Steady RECOMMENDED red border + 4px shadow
+ * - "Take off ✈" red CTA
+ */
 import { useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useAuthStore } from '@/stores/authStore';
 import { track } from '@/lib/posthog';
+import {
+  HHero,
+  Body,
+  Mono,
+  FONTS,
+  Button3D,
+} from '@/components/airspeak';
 
-interface DailyGoalOption {
+interface GoalOption {
   mins: 5 | 10 | 15 | 30 | 60;
-  emoji: string;
-  labelKey: string;
-  titleKey: string;
+  label: string;
+  desc: string;
+  icon: string;
   recommended?: boolean;
 }
 
-const DAILY_GOALS: DailyGoalOption[] = [
-  { mins: 5, emoji: '⚡', labelKey: 'onboarding.daily.5', titleKey: 'onboarding.daily.5_title' },
-  { mins: 10, emoji: '☕', labelKey: 'onboarding.daily.10', titleKey: 'onboarding.daily.10_title' },
-  {
-    mins: 15,
-    emoji: '⭐',
-    labelKey: 'onboarding.daily.15',
-    titleKey: 'onboarding.daily.15_title',
-    recommended: true,
-  },
-  { mins: 30, emoji: '🔥', labelKey: 'onboarding.daily.30', titleKey: 'onboarding.daily.30_title' },
-  { mins: 60, emoji: '🚀', labelKey: 'onboarding.daily.60', titleKey: 'onboarding.daily.60_title' },
+const GOALS: GoalOption[] = [
+  { mins: 5, label: 'Casual', desc: '1 lesson · maintain streak', icon: '☁️' },
+  { mins: 10, label: 'Steady', desc: '2 lessons · most popular', icon: '⚡' },
+  { mins: 15, label: 'Serious', desc: '3 lessons · ICAO 4 in 14w', icon: '🎯', recommended: true },
+  { mins: 30, label: 'Intense', desc: '6 lessons · L4 in 7w', icon: '🔥' },
+  { mins: 60, label: 'Captain', desc: 'Full session · L4 in 4w', icon: '👑' },
 ];
 
 export default function GoalsScreen() {
-  const { t } = useTranslation();
   const placement = useOnboardingStore((s) => s.placementResult);
-  const setDailyGoal = useOnboardingStore((s) => s.setDailyGoal);
   const role = useOnboardingStore((s) => s.role);
+  const setDailyGoal = useOnboardingStore((s) => s.setDailyGoal);
   const setOnboardingComplete = useAuthStore((s) => s.setOnboardingComplete);
-  const [selected, setSelected] = useState<5 | 10 | 15 | 30 | 60 | null>(15);
+  const [selected, setSelected] = useState<GoalOption['mins']>(15);
 
   const handleFinish = () => {
-    if (!selected) return;
     setDailyGoal(selected);
     setOnboardingComplete(true);
     track('onboarding_completed', {
@@ -50,110 +56,116 @@ export default function GoalsScreen() {
   };
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <YStack flex={1} padding="$4" gap="$4" backgroundColor="$background">
-        <Progress value={80} max={100} backgroundColor="$border">
-          <Progress.Indicator animation="lazy" backgroundColor="$primary" />
-        </Progress>
-        <Paragraph size="$2" color="$textSecondary">
-          {t('onboarding.step', 'Adım {{current}}/{{total}}', { current: 4, total: 5 })}
-        </Paragraph>
+    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <SafeAreaView edges={['top']}>
+        <View
+          style={{
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Text onPress={() => router.back()} style={{ fontSize: 24, color: '#0E1116' }}>
+            ←
+          </Text>
+          <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
+            STEP 6 OF 6
+          </Mono>
+          <View style={{ width: 24 }} />
+        </View>
+        {/* Progress 95% */}
+        <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
+          <View style={{ height: 4, backgroundColor: '#DCE0E8', borderRadius: 2, overflow: 'hidden' }}>
+            <View style={{ width: '95%', height: '100%', backgroundColor: '#E63946' }} />
+          </View>
+        </View>
+      </SafeAreaView>
 
-        {/* Placement sonucu özeti */}
-        {placement && (
-          <Card padding="$4" backgroundColor="$accent">
-            <YStack gap="$2">
-              <Text fontSize="$3" color="$accentText" textTransform="uppercase">
-                {t('onboarding.goals.yourLevel', 'Seviyen')}
-              </Text>
-              <XStack alignItems="center" gap="$3">
-                <Text fontSize={48} fontWeight="700" color="$accentText">
-                  {placement.level}
-                </Text>
-                <YStack flex={1}>
-                  <Text fontSize="$5" fontWeight="600" color="$accentText">
-                    {placement.level === 'A1' && t('level.A1', 'Başlangıç')}
-                    {placement.level === 'A2' && t('level.A2', 'Temel')}
-                    {placement.level === 'B1' && t('level.B1', 'Orta')}
-                    {placement.level === 'B2' && t('level.B2', 'Orta-üstü')}
-                    {placement.level === 'C1' && t('level.C1', 'İleri')}
-                  </Text>
-                  <Text fontSize="$3" color="$accentText">
-                    {placement.totalScore}/100 puan
-                  </Text>
-                </YStack>
-              </XStack>
-            </YStack>
-          </Card>
-        )}
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24 }}
+      >
+        <HHero>How long is{'\n'}your daily flight?</HHero>
+        <Body color="#5A6478" style={{ fontSize: 15, marginBottom: 20 }}>
+          You can change this any time.
+        </Body>
 
-        <H2 color="$text">
-          {t('onboarding.goals.title', 'Günde ne kadar zaman ayırabilirsin?')}
-        </H2>
-        <Paragraph color="$textSecondary">
-          {t('onboarding.goals.subtitle', 'Sonra istediğin zaman değiştirebilirsin.')}
-        </Paragraph>
-
-        <YStack gap="$3">
-          {DAILY_GOALS.map((option) => {
-            const isSelected = selected === option.mins;
+        <View style={{ gap: 10 }}>
+          {GOALS.map((g) => {
+            const sel = selected === g.mins;
             return (
-              <Card
-                key={option.mins}
-                bordered
-                padding="$4"
-                backgroundColor={isSelected ? '$primary' : '$surface'}
-                borderColor={isSelected ? '$primary' : '$border'}
-                onPress={() => setSelected(option.mins)}
-                pressStyle={{ scale: 0.98 }}
+              <TouchableOpacity
+                key={g.mins}
+                activeOpacity={0.85}
+                onPress={() => setSelected(g.mins)}
+                style={{
+                  backgroundColor: sel ? '#FFE4E7' : '#FFFFFF',
+                  borderRadius: 14,
+                  borderWidth: sel ? 2.5 : 1.5,
+                  borderColor: sel ? '#E63946' : '#DCE0E8',
+                  borderBottomWidth: 4,
+                  borderBottomColor: sel ? '#E63946' : '#DCE0E8',
+                  padding: 14,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 14,
+                }}
               >
-                <XStack gap="$3" alignItems="center">
-                  <Text fontSize={28}>{option.emoji}</Text>
-                  <YStack flex={1}>
-                    <XStack gap="$2" alignItems="center">
-                      <Text
-                        fontSize="$5"
-                        fontWeight="600"
-                        color={isSelected ? '$primaryText' : '$text'}
-                      >
-                        {option.mins} {t('common.minutes', 'dakika')}
-                      </Text>
-                      {option.recommended && (
-                        <Card
-                          backgroundColor="$warning"
-                          paddingHorizontal="$2"
-                          paddingVertical="$1"
-                        >
-                          <Text fontSize="$1" color="$primaryText" fontWeight="600">
-                            ÖNERİLEN
-                          </Text>
-                        </Card>
-                      )}
-                    </XStack>
-                    <Text
-                      fontSize="$3"
-                      color={isSelected ? '$primaryText' : '$textSecondary'}
-                    >
-                      {t(option.titleKey, '...')}
+                <View style={{ width: 56 }}>
+                  <Text
+                    style={{
+                      fontFamily: FONTS.display,
+                      fontSize: 36,
+                      fontWeight: '700',
+                      color: sel ? '#E63946' : '#0E1116',
+                      letterSpacing: -1.44,
+                      lineHeight: 36,
+                    }}
+                  >
+                    {g.mins}
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: '#8A93A6' }}>min</Text>
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Text style={{ fontFamily: FONTS.body800, fontSize: 16, color: '#0E1116' }}>
+                      {g.label}
                     </Text>
-                  </YStack>
-                </XStack>
-              </Card>
+                    {g.recommended && (
+                      <View
+                        style={{
+                          backgroundColor: '#E63946',
+                          paddingHorizontal: 6,
+                          paddingVertical: 2,
+                          borderRadius: 4,
+                        }}
+                      >
+                        <Mono style={{ fontSize: 9, color: '#FFFFFF', letterSpacing: 0.81 }}>
+                          RECOMMENDED
+                        </Mono>
+                      </View>
+                    )}
+                  </View>
+                  <Body color="#5A6478" style={{ fontSize: 13, marginTop: 2 }}>
+                    {g.desc}
+                  </Body>
+                </View>
+                <Text style={{ fontSize: 22 }}>{g.icon}</Text>
+              </TouchableOpacity>
             );
           })}
-        </YStack>
+        </View>
+      </ScrollView>
 
-        <Button
-          size="$5"
-          backgroundColor={selected ? '$primary' : '$border'}
-          color={selected ? '$primaryText' : '$textSecondary'}
-          disabled={!selected}
-          onPress={handleFinish}
-          marginTop="$4"
-        >
-          {t('onboarding.goals.cta', 'AirSpeak\'e başla 🛫')}
-        </Button>
-      </YStack>
-    </ScrollView>
+      <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
+        <View style={{ padding: 16 }}>
+          <Button3D variant="primary" fullWidth onPress={handleFinish}>
+            Take off ✈
+          </Button3D>
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }
