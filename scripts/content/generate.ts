@@ -65,7 +65,7 @@ async function runBatch<T extends { id: string }>(
   provider: ContentProvider,
   options: { delayMs?: number; checkpointEvery?: number } = {},
 ): Promise<void> {
-  const { delayMs = 1300, checkpointEvery = 5 } = options;
+  const { delayMs = provider.recommendedDelayMs, checkpointEvery = 5 } = options;
   const outputFile = path.join(OUTPUT_DIR, `${type}.json`);
 
   const existing = loadExisting(outputFile);

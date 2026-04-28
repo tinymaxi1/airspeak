@@ -8,7 +8,24 @@ Plan'daki Sprint 9 — **Claude batch ile büyük ölçek içerik üretim**.
 - **1297 vocab teriminin `richDefinitionTr`** (200-400 kelime)
 - **5 kalan placement long açıklama** (zaten 22/22 tamam)
 
-## Maliyet tahmini
+## Provider seçenekleri
+
+### 🌟 Seçenek 1 — Gemini Free (TAVSİYE EDİLEN, ücretsiz)
+
+| Limit | Gemini 2.0 Flash Free |
+|---|---|
+| RPM | 15 |
+| Günlük | 1500 req |
+| Maliyet | **$0** |
+| Kart sormuyor mu | ✅ Sadece Google hesap |
+
+```bash
+# 1. https://aistudio.google.com → "Get API Key"
+# 2. .env'e ekle
+echo "GEMINI_API_KEY=AIza..." >> .env
+```
+
+### Seçenek 2 — Anthropic Claude (ücretli)
 
 | İş | Token (~) | Claude Sonnet 4.5 ücreti |
 |---|---|---|
@@ -16,21 +33,13 @@ Plan'daki Sprint 9 — **Claude batch ile büyük ölçek içerik üretim**.
 | 1297 vocab × 800 token | 1M | ~$3 |
 | **Toplam** | **~1.2M** | **~$3.5** |
 
-Anthropic yeni hesaba **$5 free credit** veriyor — yeterli.
-
-## Kurulum
-
 ```bash
-# 1. Anthropic API key al
-# https://console.anthropic.com → Sign up → "API Keys" → Create
-# Yeni hesap: $5 free credit (kart yok)
-
+# 1. https://console.anthropic.com → kart ekle ($5+ kredi)
 # 2. .env'e ekle
 echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env
-
-# 3. Test
-npm run content:test
 ```
+
+**Otomatik seçim**: Provider GEMINI_API_KEY varsa onu, yoksa ANTHROPIC_API_KEY kullanır.
 
 ## Kullanım
 
