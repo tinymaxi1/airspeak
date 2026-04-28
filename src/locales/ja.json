@@ -1,14 +1,6 @@
 {
   "common": {
-    "back": "戻る",
-    "next": "次へ",
-    "skip": "スキップ",
-    "continue": "続きを読む",
-    "cancel": "キャンセル",
-    "save": "保存",
-    "delete": "削除",
-    "loading": "読み込み中…",
-    "minutes": "私には"
+    "back": "Back"
   },
   "welcome": {
     "tagline": "航空英語をマスターする",
@@ -632,5 +624,22 @@
     "recording": "🔴 Speak — pronounce each word clearly",
     "analyzing": "⏳ Analyzing...",
     "tapStart": "\"{{text}}\" — tap to start."
+  },
+  "conversation": {
+    "notFound": "Scenario not found.",
+    "permTitle": "Microphone permission",
+    "permBody": "Speech recognition needs permission.",
+    "live": "AI Co-pilot · LIVE",
+    "briefing": "BRIEFING",
+    "estimated": "~{{sec}}s · {{turns}} turns",
+    "start": "Start scenario ✈",
+    "tapToSpeak": "🎙 Tap to speak",
+    "tapToFinish": "⏹ Finish",
+    "backHome": "Home →",
+    "readBackCorrect": "Read-back correct.",
+    "sayAgain": "Say again, Turkish 1453.",
+    "youSpeaking": "🎙 YOU — SPEAK",
+    "complete": "SCENARIO COMPLETE",
+    "avgScore": "avg match · {{turns}} turns"
   }
 }

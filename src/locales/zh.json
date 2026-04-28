@@ -1,14 +1,6 @@
 {
   "common": {
-    "back": "返回",
-    "next": "下一页",
-    "skip": "跳过",
-    "continue": "继续",
-    "cancel": "取消",
-    "save": "保存",
-    "delete": "删除",
-    "loading": "正在加载……",
-    "minutes": "我有"
+    "back": "Back"
   },
   "welcome": {
     "tagline": "精通航空英语",
@@ -632,5 +624,22 @@
     "recording": "🔴 Speak — pronounce each word clearly",
     "analyzing": "⏳ Analyzing...",
     "tapStart": "\"{{text}}\" — tap to start."
+  },
+  "conversation": {
+    "notFound": "Scenario not found.",
+    "permTitle": "Microphone permission",
+    "permBody": "Speech recognition needs permission.",
+    "live": "AI Co-pilot · LIVE",
+    "briefing": "BRIEFING",
+    "estimated": "~{{sec}}s · {{turns}} turns",
+    "start": "Start scenario ✈",
+    "tapToSpeak": "🎙 Tap to speak",
+    "tapToFinish": "⏹ Finish",
+    "backHome": "Home →",
+    "readBackCorrect": "Read-back correct.",
+    "sayAgain": "Say again, Turkish 1453.",
+    "youSpeaking": "🎙 YOU — SPEAK",
+    "complete": "SCENARIO COMPLETE",
+    "avgScore": "avg match · {{turns}} turns"
   }
 }

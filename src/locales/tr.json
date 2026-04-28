@@ -1,14 +1,6 @@
 {
   "common": {
-    "back": "Geri",
-    "next": "İleri",
-    "skip": "Atla",
-    "continue": "Devam et",
-    "cancel": "İptal",
-    "save": "Kaydet",
-    "delete": "Sil",
-    "loading": "Yükleniyor…",
-    "minutes": "dakika"
+    "back": "Geri"
   },
   "welcome": {
     "tagline": "Havacılık İngilizcesinde Ustalaş",
@@ -632,5 +624,22 @@
     "recording": "🔴 Konuş — sözcükleri net söyle",
     "analyzing": "⏳ Analiz ediliyor...",
     "tapStart": "\"{{text}}\" — kayda başla."
+  },
+  "conversation": {
+    "notFound": "Senaryo bulunamadı.",
+    "permTitle": "Mikrofon izni",
+    "permBody": "Konuşma tanıma için izin gerekli.",
+    "live": "AI Co-pilot · CANLI",
+    "briefing": "BRİFİNG",
+    "estimated": "~{{sec}}sn · {{turns}} turn",
+    "start": "Senaryoya başla ✈",
+    "tapToSpeak": "🎙 Cevap için bas",
+    "tapToFinish": "⏹ Bitir",
+    "backHome": "Ana sayfa →",
+    "readBackCorrect": "Read-back correct.",
+    "sayAgain": "Say again, Turkish 1453.",
+    "youSpeaking": "🎙 SEN — KONUŞ",
+    "complete": "SENARYO TAMAM",
+    "avgScore": "ortalama eşleşme · {{turns}} turn"
   }
 }

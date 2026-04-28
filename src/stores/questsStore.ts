@@ -12,6 +12,7 @@ export type QuestType =
   | 'complete_lessons'
   | 'earn_xp'
   | 'practice_pronunciation'
+  | 'practice_conversation'
   | 'srs_review'
   | 'streak_check';
 

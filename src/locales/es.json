@@ -1,14 +1,6 @@
 {
   "common": {
-    "back": "Atrás",
-    "next": "Siguiente",
-    "skip": "Omitir",
-    "continue": "Continuar",
-    "cancel": "Cancelar",
-    "save": "Guardar",
-    "delete": "Eliminar",
-    "loading": "Cargando…",
-    "minutes": "Tengo"
+    "back": "Back"
   },
   "welcome": {
     "tagline": "Dominar el inglés aeronáutico",
@@ -632,5 +624,22 @@
     "recording": "🔴 Speak — pronounce each word clearly",
     "analyzing": "⏳ Analyzing...",
     "tapStart": "\"{{text}}\" — tap to start."
+  },
+  "conversation": {
+    "notFound": "Scenario not found.",
+    "permTitle": "Microphone permission",
+    "permBody": "Speech recognition needs permission.",
+    "live": "AI Co-pilot · LIVE",
+    "briefing": "BRIEFING",
+    "estimated": "~{{sec}}s · {{turns}} turns",
+    "start": "Start scenario ✈",
+    "tapToSpeak": "🎙 Tap to speak",
+    "tapToFinish": "⏹ Finish",
+    "backHome": "Home →",
+    "readBackCorrect": "Read-back correct.",
+    "sayAgain": "Say again, Turkish 1453.",
+    "youSpeaking": "🎙 YOU — SPEAK",
+    "complete": "SCENARIO COMPLETE",
+    "avgScore": "avg match · {{turns}} turns"
   }
 }
