@@ -673,5 +673,30 @@
     "youSpeaking": "🎙 SEN — KONUŞ",
     "complete": "SENARYO TAMAM",
     "avgScore": "ortalama eşleşme · {{turns}} turn"
+  },
+  "tour": {
+    "skip": "Atla",
+    "next": "Sonraki →",
+    "start": "Başla 🚀",
+    "s1": {
+      "eyebrow": "GERÇEK MİKROFONLA PRATİK",
+      "title": "Konuş, ölç, gelişiş",
+      "body": "Telaffuzun cihaz native STT ile değerlendirilir. Sesin sunucuya gönderilmez, %100 gizli."
+    },
+    "s2": {
+      "eyebrow": "AI CO-PILOT",
+      "title": "Sınırsız ATC roleplay",
+      "body": "5 senaryo · holding, taxi, go-around, MAYDAY · gerçek key phrase eşleşmesi."
+    },
+    "s3": {
+      "eyebrow": "ICAO LEVEL 4",
+      "title": "6 descriptor değerlendirme",
+      "body": "Pronunciation, Structure, Vocabulary, Fluency, Comprehension, Interactions — gerçek puanlama."
+    },
+    "s4": {
+      "eyebrow": "GAMIFICATION",
+      "title": "Streak + lig + günlük plan",
+      "body": "Her gün 15 dk pratik. 14 haftada ICAO 4 hedefli."
+    }
   }
 }

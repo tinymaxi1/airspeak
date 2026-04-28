@@ -54,7 +54,8 @@ export default function GoalsScreen() {
       level: placement?.level ?? null,
       daily_goal: selected,
     });
-    router.replace('/(tabs)/home');
+    // Goals sonra tour'a (ilk kez), sonra home
+    router.replace('/onboarding-tour');
   };
 
   return (

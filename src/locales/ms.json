@@ -673,5 +673,30 @@
     "youSpeaking": "🎙 YOU — SPEAK",
     "complete": "SCENARIO COMPLETE",
     "avgScore": "avg match · {{turns}} turns"
+  },
+  "tour": {
+    "skip": "Skip",
+    "next": "Next →",
+    "start": "Start 🚀",
+    "s1": {
+      "eyebrow": "REAL MIC PRACTICE",
+      "title": "Speak, score, improve",
+      "body": "Pronunciation evaluated by device-native STT. Audio never leaves your device, fully private."
+    },
+    "s2": {
+      "eyebrow": "AI CO-PILOT",
+      "title": "Unlimited ATC roleplay",
+      "body": "5 scenarios · holding, taxi, go-around, MAYDAY · real keyphrase matching."
+    },
+    "s3": {
+      "eyebrow": "ICAO LEVEL 4",
+      "title": "6-descriptor evaluation",
+      "body": "Pronunciation, Structure, Vocabulary, Fluency, Comprehension, Interactions — real scoring."
+    },
+    "s4": {
+      "eyebrow": "GAMIFICATION",
+      "title": "Streak + league + daily plan",
+      "body": "15 min daily practice. ICAO 4 ready in 14 weeks."
+    }
   }
 }

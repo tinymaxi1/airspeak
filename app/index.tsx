@@ -1,17 +1,18 @@
 import { Redirect } from 'expo-router';
 import { useAuthStore } from '@/stores/authStore';
-import { useOfflineStore } from '@/stores/offlineStore';
 
 export default function Index() {
-  const { session, hasCompletedOnboarding } = useAuthStore();
-  const isOnline = useOfflineStore((s) => s.isOnline);
+  const { session, hasCompletedOnboarding, hasSeenTour } = useAuthStore();
 
-  // Offline + oturum yoksa: welcome'a git (welcome cinematic offline çalışır)
-  // Offline + oturum var: home'a git, home offline UI'sini gösterir
-  // Bu app fully offline-capable olduğu için /offline ekranına otomatik yönlendirmiyoruz —
-  // bu ekran sadece kullanıcı manuel offline mode'a geçtiğinde gösterilir.
-
+  // İlk açılış (oturum yok) → Welcome cinematic
   if (!session) return <Redirect href="/(auth)/welcome" />;
+
+  // Onboarding tamamlanmamış → role select
   if (!hasCompletedOnboarding) return <Redirect href="/(auth)/onboarding/role-select" />;
+
+  // Onboarding tamam ama tour görmemiş → tour
+  if (!hasSeenTour) return <Redirect href="/onboarding-tour" />;
+
+  // Hepsi tamam → home
   return <Redirect href="/(tabs)/home" />;
 }

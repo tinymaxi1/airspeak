@@ -9,9 +9,11 @@ interface AuthState {
   user: User | null;
   profile: Profile | null;
   hasCompletedOnboarding: boolean;
+  hasSeenTour: boolean;
   setSession: (session: Session | null) => void;
   setProfile: (profile: Profile | null) => void;
   setOnboardingComplete: (complete: boolean) => void;
+  setHasSeenTour: (seen: boolean) => void;
   reset: () => void;
 }
 
@@ -28,17 +30,20 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       profile: null,
       hasCompletedOnboarding: false,
+      hasSeenTour: false,
       setSession: (session) => set({ session, user: session?.user ?? null }),
       setProfile: (profile) => set({ profile }),
       setOnboardingComplete: (complete) => set({ hasCompletedOnboarding: complete }),
+      setHasSeenTour: (seen) => set({ hasSeenTour: seen }),
       reset: () =>
-        set({ session: null, user: null, profile: null, hasCompletedOnboarding: false }),
+        set({ session: null, user: null, profile: null, hasCompletedOnboarding: false, hasSeenTour: false }),
     }),
     {
       name: 'airspeak-auth',
       storage: createJSONStorage(() => zustandStorage),
       partialize: (state) => ({
         hasCompletedOnboarding: state.hasCompletedOnboarding,
+        hasSeenTour: state.hasSeenTour,
       }),
     },
   ),
