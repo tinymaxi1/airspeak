@@ -9,7 +9,7 @@
  * - 5 drill cards (3D, ATC read-back, Numbers, Garbled, Emergency vocab, Weather)
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -34,13 +34,13 @@ interface Drill {
   xp: number;
   mins: number;
   stars?: number;
-  route?: string;
+  route?: Href;
   category: Exclude<DrillCategory, 'all'>;
 }
 
 const DRILLS: Drill[] = [
   { title: 'ATC read-back rapid fire', sub: '60 sec · 12 clearances', icon: '🎙', accent: '#E63946', xp: 80, mins: 2, route: '/readback', category: 'speaking' },
-  { title: 'Numbers 0–9 (decimals)', sub: 'Pronunciation · 3 stars', icon: '🔊', accent: '#F2C14E', xp: 50, mins: 3, stars: 2, route: '/pronunciation/p1', category: 'speaking' },
+  { title: 'Numbers 0–9 (decimals)', sub: 'Pronunciation · 3 stars', icon: '🔊', accent: '#F2C14E', xp: 50, mins: 3, stars: 2, route: { pathname: '/pronunciation/[id]', params: { id: 'p1' } }, category: 'speaking' },
   { title: 'Garbled radio decode', sub: 'Listening · noise +30%', icon: '🎧', accent: '#2EA8FF', xp: 65, mins: 4, category: 'listening' },
   { title: 'Emergency vocabulary', sub: 'Match · 24 words', icon: '🛡', accent: '#7C5CFF', xp: 60, mins: 3, stars: 3, category: 'emergency' },
   { title: 'Weather phenomena', sub: 'Reading · METAR/TAF', icon: '☁', accent: '#2DBE6C', xp: 75, mins: 5, category: 'vocab' },
@@ -210,7 +210,7 @@ export default function PracticeScreen() {
             <TouchableOpacity
               key={i}
               activeOpacity={0.85}
-              onPress={() => d.route && router.push(d.route as any)}
+              onPress={() => d.route && router.push(d.route)}
               disabled={!d.route}
             >
               <Card3D style={{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 14 }}>

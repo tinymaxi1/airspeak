@@ -1,16 +1,17 @@
 /**
  * Vocab Search & Browse — 1300+ aviation vocabulary search edip incele.
  */
-import { ScrollView, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView, FlatList, View, Text, TouchableOpacity } from 'react-native';
 import { useState, useMemo } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  Eyebrow,
   Mono,
   Body,
   FONTS,
+  SearchBar,
+  EmptyState,
 } from '@/components/airspeak';
 import { getVocabForRole } from '@/features/lessons/seed';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -45,7 +46,7 @@ export default function VocabScreen() {
           v.definitionTr.toLowerCase().includes(q),
       );
     }
-    return list.slice(0, 100); // Performance için limit
+    return list;
   }, [allVocab, query, category]);
 
   return (
@@ -75,39 +76,11 @@ export default function VocabScreen() {
 
         {/* Search bar */}
         <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
-          <View
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderWidth: 1.5,
-              borderColor: '#DCE0E8',
-              borderRadius: 14,
-              paddingHorizontal: 14,
-              paddingVertical: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-            }}
-          >
-            <Text style={{ fontSize: 18 }}>🔍</Text>
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder={t('vocab.searchPlaceholder', 'kelime, anlam, tanım ara...')}
-              placeholderTextColor="#8A93A6"
-              style={{
-                flex: 1,
-                fontFamily: FONTS.body,
-                fontSize: 15,
-                color: '#0E1116',
-              }}
-              autoCapitalize="none"
-            />
-            {query.length > 0 && (
-              <TouchableOpacity onPress={() => setQuery('')}>
-                <Text style={{ fontSize: 18, color: '#8A93A6' }}>✕</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <SearchBar
+            value={query}
+            onChangeText={setQuery}
+            placeholder={t('vocab.searchPlaceholder', 'kelime, anlam, tanım ara...')}
+          />
         </View>
 
         {/* Category filter */}
@@ -147,40 +120,29 @@ export default function VocabScreen() {
         </ScrollView>
       </SafeAreaView>
 
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+      <FlatList
+        data={filtered}
+        keyExtractor={(term) => term.id}
+        renderItem={({ item }) => <VocabCard term={item} />}
         keyboardShouldPersistTaps="handled"
-      >
-        <Mono style={{ fontSize: 11, color: '#5A6478', marginBottom: 8 }}>
-          {t('vocab.results', '{{count}} sonuç', { count: filtered.length })}
-        </Mono>
-
-        {filtered.length === 0 && (
-          <View
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderWidth: 1.5,
-              borderStyle: 'dashed',
-              borderColor: '#DCE0E8',
-              borderRadius: 14,
-              padding: 24,
-              alignItems: 'center',
-              gap: 8,
-              marginTop: 16,
-            }}
-          >
-            <Text style={{ fontSize: 36 }}>🔍</Text>
-            <Body color="#5A6478" style={{ fontSize: 14, textAlign: 'center' }}>
-              {t('vocab.noResults', '"{{q}}" için sonuç bulunamadı', { q: query })}
-            </Body>
+        contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+        ListHeaderComponent={
+          <Mono style={{ fontSize: 11, color: '#5A6478', marginBottom: 8 }}>
+            {t('vocab.results', '{{count}} sonuç', { count: filtered.length })}
+          </Mono>
+        }
+        ListEmptyComponent={
+          <View style={{ marginTop: 16 }}>
+            <EmptyState
+              icon="🔍"
+              message={t('vocab.noResults', '"{{q}}" için sonuç bulunamadı', { q: query })}
+            />
           </View>
-        )}
-
-        {filtered.map((term) => (
-          <VocabCard key={term.id} term={term} />
-        ))}
-      </ScrollView>
+        }
+        windowSize={10}
+        initialNumToRender={12}
+        maxToRenderPerBatch={12}
+      />
     </View>
   );
 }

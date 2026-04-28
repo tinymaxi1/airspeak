@@ -12,6 +12,7 @@ import {
   Body,
   FONTS,
   Button3D,
+  SettingsRow,
 } from '@/components/airspeak';
 
 interface FAQ {
@@ -82,24 +83,25 @@ export default function HelpScreen() {
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
         {/* Contact options */}
         <Eyebrow>{t('settings.help.contact', 'İLETİŞİM')}</Eyebrow>
-        <View style={{ gap: 8, marginTop: 8, marginBottom: 24 }}>
-          <ContactRow
+        <View style={{ marginTop: 8, marginBottom: 16, paddingHorizontal: 4 }}>
+          <SettingsRow
             icon="📧"
             label={t('settings.help.email', 'Email destek')}
             value="ops@airspeak.io"
             onPress={() => Linking.openURL('mailto:ops@airspeak.io')}
           />
-          <ContactRow
+          <SettingsRow
             icon="💬"
             label={t('settings.help.discord', 'Discord topluluk')}
             value="discord.gg/airspeak"
             onPress={() => Linking.openURL('https://discord.gg/airspeak')}
           />
-          <ContactRow
+          <SettingsRow
             icon="📷"
             label={t('settings.help.instagram', 'Instagram')}
             value="@airspeak_app"
             onPress={() => Linking.openURL('https://instagram.com/airspeak_app')}
+            last
           />
         </View>
 
@@ -161,41 +163,3 @@ export default function HelpScreen() {
   );
 }
 
-function ContactRow({
-  icon,
-  label,
-  value,
-  onPress,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-  onPress: () => void;
-}) {
-  return (
-    <TouchableOpacity
-      activeOpacity={0.85}
-      onPress={onPress}
-      style={{
-        backgroundColor: '#FFFFFF',
-        borderWidth: 1.5,
-        borderColor: '#DCE0E8',
-        borderRadius: 14,
-        paddingHorizontal: 14,
-        paddingVertical: 14,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-      }}
-    >
-      <Text style={{ fontSize: 22 }}>{icon}</Text>
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
-          {label}
-        </Text>
-        <Mono style={{ fontSize: 11, color: '#5A6478', marginTop: 2 }}>{value}</Mono>
-      </View>
-      <Text style={{ fontSize: 18, color: '#8A93A6' }}>›</Text>
-    </TouchableOpacity>
-  );
-}

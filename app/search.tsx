@@ -3,16 +3,19 @@
  *
  * Tek search bar, 4 farklı kaynaktan canlı sonuç gösterir.
  */
-import { ScrollView, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { useState, useMemo } from 'react';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  Eyebrow,
   Mono,
   Body,
   FONTS,
+  SearchBar,
+  ScreenHeader,
+  EmptyState,
+  NavCard,
 } from '@/components/airspeak';
 import { getVocabForRole } from '@/features/lessons/seed';
 import { ALL_AIRLINES } from '@/features/exams/airlines';
@@ -27,7 +30,7 @@ interface SearchResult {
   subtitle: string;
   icon: string;
   color: string;
-  route: string;
+  route: Href;
 }
 
 export default function SearchScreen() {
@@ -74,7 +77,7 @@ export default function SearchScreen() {
         subtitle: `${a.countryEmoji} ${a.country} · ${a.iataCode}/${a.icaoCode}`,
         icon: '✈',
         color: '#E63946',
-        route: `/exam/airline/${a.id}`,
+        route: { pathname: '/exam/airline/[id]', params: { id: a.id } },
       });
     }
 
@@ -90,7 +93,7 @@ export default function SearchScreen() {
         subtitle: `🤖 AI Co-pilot · ${s.turns.length} turn`,
         icon: '🤖',
         color: '#7C5CFF',
-        route: `/conversation/${s.id}`,
+        route: { pathname: '/conversation/[scenario]', params: { scenario: s.id } },
       });
     }
 
@@ -128,43 +131,16 @@ export default function SearchScreen() {
             gap: 12,
           }}
         >
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Geri">
             <Text style={{ fontSize: 22, color: '#0E1116' }}>←</Text>
           </TouchableOpacity>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#FFFFFF',
-              borderWidth: 1.5,
-              borderColor: '#DCE0E8',
-              borderRadius: 14,
-              paddingHorizontal: 14,
-              paddingVertical: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-            }}
-          >
-            <Text style={{ fontSize: 18 }}>🔍</Text>
-            <TextInput
+          <View style={{ flex: 1 }}>
+            <SearchBar
               value={query}
               onChangeText={setQuery}
               placeholder={t('search.placeholder', 'vocab, havayolu, senaryo, clearance...')}
-              placeholderTextColor="#8A93A6"
-              style={{
-                flex: 1,
-                fontFamily: FONTS.body,
-                fontSize: 15,
-                color: '#0E1116',
-              }}
-              autoCapitalize="none"
               autoFocus
             />
-            {query.length > 0 && (
-              <TouchableOpacity onPress={() => setQuery('')}>
-                <Text style={{ fontSize: 18, color: '#8A93A6' }}>✕</Text>
-              </TouchableOpacity>
-            )}
           </View>
         </View>
       </SafeAreaView>
@@ -215,23 +191,11 @@ export default function SearchScreen() {
         )}
 
         {query && query.length >= 2 && results.length === 0 && (
-          <View
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderWidth: 1.5,
-              borderStyle: 'dashed',
-              borderColor: '#DCE0E8',
-              borderRadius: 14,
-              padding: 32,
-              alignItems: 'center',
-              gap: 8,
-              marginTop: 16,
-            }}
-          >
-            <Text style={{ fontSize: 48 }}>🔍</Text>
-            <Body color="#5A6478" style={{ fontSize: 14, textAlign: 'center' }}>
-              {t('search.noResults', '"{{q}}" için sonuç yok', { q: query })}
-            </Body>
+          <View style={{ marginTop: 16 }}>
+            <EmptyState
+              icon="🔍"
+              message={t('search.noResults', '"{{q}}" için sonuç yok', { q: query })}
+            />
           </View>
         )}
 
@@ -242,44 +206,16 @@ export default function SearchScreen() {
         )}
 
         {results.map((r) => (
-          <TouchableOpacity
-            key={`${r.type}-${r.id}`}
-            activeOpacity={0.85}
-            onPress={() => router.push(r.route as any)}
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderWidth: 1.5,
-              borderColor: '#DCE0E8',
-              borderRadius: 14,
-              padding: 14,
-              marginBottom: 8,
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 12,
-            }}
-          >
-            <View
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                backgroundColor: r.color + '20',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text style={{ fontSize: 22 }}>{r.icon}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
-                {r.title}
-              </Text>
-              <Body color="#5A6478" style={{ fontSize: 12, marginTop: 2 }}>
-                {r.subtitle}
-              </Body>
-            </View>
-            <Text style={{ fontSize: 18, color: '#8A93A6' }}>›</Text>
-          </TouchableOpacity>
+          <View key={`${r.type}-${r.id}`} style={{ marginBottom: 8 }}>
+            <NavCard
+              icon={r.icon}
+              iconBg={r.color + '20'}
+              iconBoxSize={44}
+              title={r.title}
+              subtitle={r.subtitle}
+              onPress={() => router.push(r.route)}
+            />
+          </View>
         ))}
       </ScrollView>
     </View>

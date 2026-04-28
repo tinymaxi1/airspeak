@@ -5,21 +5,33 @@
  * birini seçip /conversation/[scenario] route'una gider.
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  Eyebrow,
   Mono,
   Body,
   FONTS,
   TopoBackground,
 } from '@/components/airspeak';
-import { SCENARIOS, getScenariosForRole } from '@/features/conversation/scenarios';
-import { useOnboardingStore } from '@/stores/onboardingStore';
+import { SCENARIOS } from '@/features/conversation/scenarios';
 
-const ROLE_FILTERS = [
+const ROLE_ICONS: Record<string, string> = {
+  pilot: '✈',
+  cabin: '🎧',
+  tech: '⚙',
+  ground: '💼',
+  all: '🌐',
+};
+
+const LEVEL_BADGE: Record<string, { bg: string; fg: string }> = {
+  L4: { bg: '#FFD56B', fg: '#0A1430' },
+  B2: { bg: '#2EA8FF', fg: '#FFFFFF' },
+  B1: { bg: '#2DBE6C', fg: '#FFFFFF' },
+};
+
+const ROLE_FILTERS: { value: 'all' | 'pilot' | 'cabin' | 'tech' | 'ground'; label: string }[] = [
   { value: 'all', label: 'Tümü' },
   { value: 'pilot', label: '✈ Pilot' },
   { value: 'cabin', label: '🎧 Kabin' },
@@ -29,10 +41,12 @@ const ROLE_FILTERS = [
 
 export default function ConversationIndexScreen() {
   const { t } = useTranslation();
-  const role = useOnboardingStore((s) => s.role);
   const [filter, setFilter] = useState<string>('all');
 
-  const scenarios = filter === 'all' ? SCENARIOS : SCENARIOS.filter((s) => s.role === filter);
+  const scenarios = useMemo(
+    () => (filter === 'all' ? SCENARIOS : SCENARIOS.filter((s) => s.role === filter)),
+    [filter],
+  );
 
   return (
     <View style={{ flex: 1, backgroundColor: '#06091A' }}>
@@ -151,9 +165,7 @@ export default function ConversationIndexScreen() {
                 justifyContent: 'center',
               }}
             >
-              <Text style={{ fontSize: 26 }}>
-                {s.role === 'pilot' ? '✈' : s.role === 'cabin' ? '🎧' : s.role === 'tech' ? '⚙' : '💼'}
-              </Text>
+              <Text style={{ fontSize: 26 }}>{ROLE_ICONS[s.role] ?? '🌐'}</Text>
             </View>
 
             <View style={{ flex: 1 }}>
@@ -161,18 +173,23 @@ export default function ConversationIndexScreen() {
                 <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#FFFFFF' }}>
                   {s.titleTr}
                 </Text>
-                <View
-                  style={{
-                    backgroundColor: s.level === 'L4' ? '#FFD56B' : s.level === 'B2' ? '#2EA8FF' : '#2DBE6C',
-                    paddingHorizontal: 6,
-                    paddingVertical: 2,
-                    borderRadius: 4,
-                  }}
-                >
-                  <Mono style={{ fontSize: 9, color: s.level === 'L4' ? '#0A1430' : '#FFFFFF', letterSpacing: 0.81 }}>
-                    {s.level}
-                  </Mono>
-                </View>
+                {(() => {
+                  const badge = LEVEL_BADGE[s.level] ?? LEVEL_BADGE.B1!;
+                  return (
+                    <View
+                      style={{
+                        backgroundColor: badge.bg,
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                        borderRadius: 4,
+                      }}
+                    >
+                      <Mono style={{ fontSize: 9, color: badge.fg, letterSpacing: 0.81 }}>
+                        {s.level}
+                      </Mono>
+                    </View>
+                  );
+                })()}
               </View>
               <Body color="rgba(255,255,255,0.7)" style={{ fontSize: 12, marginTop: 4 }}>
                 {s.contextTr}

@@ -5,14 +5,13 @@ import { ScrollView, View, Text, TouchableOpacity, Alert, Linking } from 'react-
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
 import {
   Eyebrow,
   Mono,
   Body,
   FONTS,
-  Button3D,
+  SettingsRow,
 } from '@/components/airspeak';
 
 export default function PrivacySettingsScreen() {
@@ -77,32 +76,33 @@ export default function PrivacySettingsScreen() {
         </Body>
 
         <Eyebrow>{t('settings.privacy.docs', 'BELGELER')}</Eyebrow>
-        <View style={{ gap: 8, marginTop: 8, marginBottom: 24 }}>
-          <Row
+        <View style={{ marginTop: 8, marginBottom: 16, paddingHorizontal: 4 }}>
+          <SettingsRow
             icon="📜"
             label={t('settings.privacy.policy', 'Gizlilik Politikası')}
             onPress={() => Linking.openURL('https://airspeak.io/privacy')}
           />
-          <Row
+          <SettingsRow
             icon="📋"
             label={t('settings.privacy.terms', 'Kullanım Şartları')}
             onPress={() => Linking.openURL('https://airspeak.io/terms')}
           />
-          <Row
+          <SettingsRow
             icon="🇹🇷"
             label={t('settings.privacy.kvkk', 'KVKK Aydınlatma Metni')}
             onPress={() => Linking.openURL('https://airspeak.io/kvkk')}
+            last
           />
         </View>
 
         <Eyebrow>{t('settings.privacy.data', 'VERİLERİN')}</Eyebrow>
-        <View style={{ gap: 8, marginTop: 8, marginBottom: 24 }}>
-          <Row
+        <View style={{ marginTop: 8, marginBottom: 16, paddingHorizontal: 4 }}>
+          <SettingsRow
             icon="📥"
             label={t('settings.privacy.export', 'Verilerimi indir (JSON)')}
             onPress={handleExportData}
           />
-          <Row
+          <SettingsRow
             icon="🔄"
             label={t('settings.privacy.reset', 'İlerlemeyi sıfırla')}
             onPress={() =>
@@ -115,16 +115,18 @@ export default function PrivacySettingsScreen() {
                 ],
               )
             }
+            last
           />
         </View>
 
         <Eyebrow>{t('settings.privacy.danger', 'TEHLİKELİ ALAN')}</Eyebrow>
-        <View style={{ gap: 8, marginTop: 8 }}>
-          <Row
+        <View style={{ marginTop: 8, paddingHorizontal: 4 }}>
+          <SettingsRow
             icon="🗑"
             label={t('settings.privacy.deleteAccount', 'Hesabı kalıcı sil')}
             danger
             onPress={handleDeleteAccount}
+            last
           />
         </View>
 
@@ -144,48 +146,5 @@ export default function PrivacySettingsScreen() {
         </Mono>
       </ScrollView>
     </View>
-  );
-}
-
-function Row({
-  icon,
-  label,
-  onPress,
-  danger,
-}: {
-  icon: string;
-  label: string;
-  onPress: () => void;
-  danger?: boolean;
-}) {
-  return (
-    <TouchableOpacity
-      activeOpacity={0.85}
-      onPress={onPress}
-      style={{
-        backgroundColor: '#FFFFFF',
-        borderWidth: 1.5,
-        borderColor: danger ? '#FFE4E7' : '#DCE0E8',
-        borderRadius: 14,
-        paddingHorizontal: 14,
-        paddingVertical: 14,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-      }}
-    >
-      <Text style={{ fontSize: 22 }}>{icon}</Text>
-      <Text
-        style={{
-          flex: 1,
-          fontFamily: FONTS.body700,
-          fontSize: 14,
-          color: danger ? '#E63946' : '#0E1116',
-        }}
-      >
-        {label}
-      </Text>
-      <Text style={{ fontSize: 18, color: '#8A93A6' }}>›</Text>
-    </TouchableOpacity>
   );
 }

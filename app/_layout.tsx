@@ -72,22 +72,24 @@ export default function RootLayout() {
     return unsub;
   }, [startNetInfo]);
 
-  // Notifications: izin iste + günlük hatırlatıcıları zamanla + streak danger güncelle
+  // Notifications: izin iste + günlük + streak danger paralel
   useEffect(() => {
     if (!fontsLoaded) return;
     (async () => {
       const granted = await requestNotifPermission().catch(() => false);
       if (!granted) return;
-      await scheduleDailyReminders(undefined, {
-        morningTitle: t('notif.morningTitle', 'Günaydın, kaptan ✈'),
-        morningBody: t('notif.morningBody', 'Bugünkü uçuş planın hazır. 15 dk yeter.'),
-        eveningTitle: t('notif.eveningTitle', '🔥 Streak\'in tehlikede'),
-        eveningBody: t('notif.eveningBody', 'Bugün hâlâ pratik yapmadın. 1 ders streak\'i kurtarır.'),
-      }).catch((e) => console.warn('Notif schedule failed', e));
-      await updateStreakDangerNotification(lastActivityDate, {
-        title: t('notif.dangerTitle', '⚠ Son 90 dk!'),
-        body: t('notif.dangerBody', 'Streak kırılmasın diye 1 hızlı pratik yeter.'),
-      }).catch(() => undefined);
+      await Promise.all([
+        scheduleDailyReminders(undefined, {
+          morningTitle: t('notif.morningTitle', 'Günaydın, kaptan ✈'),
+          morningBody: t('notif.morningBody', 'Bugünkü uçuş planın hazır. 15 dk yeter.'),
+          eveningTitle: t('notif.eveningTitle', '🔥 Streak\'in tehlikede'),
+          eveningBody: t('notif.eveningBody', 'Bugün hâlâ pratik yapmadın. 1 ders streak\'i kurtarır.'),
+        }).catch((e) => console.warn('Notif schedule failed', e)),
+        updateStreakDangerNotification(lastActivityDate, {
+          title: t('notif.dangerTitle', '⚠ Son 90 dk!'),
+          body: t('notif.dangerBody', 'Streak kırılmasın diye 1 hızlı pratik yeter.'),
+        }).catch(() => undefined),
+      ]);
     })();
   }, [fontsLoaded, lastActivityDate, t]);
 
