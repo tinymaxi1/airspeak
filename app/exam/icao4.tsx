@@ -12,7 +12,7 @@ import {
   Progress,
 } from 'tamagui';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Audio } from 'expo-av';
 import {
   ICAO4_TASKS,
@@ -21,10 +21,15 @@ import {
 } from '@/features/icao4/tasks';
 import {
   scoreIcaoTask,
+  scoreIcaoFromTranscript,
   feedbackForLevel,
   levelLabel,
   type IcaoResult,
 } from '@/features/icao4/scorer';
+import {
+  ExpoSpeechRecognitionModule,
+  useSpeechRecognitionEvent,
+} from 'expo-speech-recognition';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { track } from '@/lib/posthog';
 
@@ -46,6 +51,15 @@ export default function Icao4Screen() {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recordStart, setRecordStart] = useState(0);
   const [result, setResult] = useState<IcaoResult | null>(null);
+  const [recognizedText, setRecognizedText] = useState('');
+  const finalTranscriptRef = useRef('');
+
+  // STT events
+  useSpeechRecognitionEvent('result', (event) => {
+    const transcript = event.results?.[0]?.transcript ?? '';
+    setRecognizedText(transcript);
+    if (event.isFinal) finalTranscriptRef.current = transcript;
+  });
 
   // Free user'a sadece ilk picture task açık
   const FREE_TASK_ID = ICAO4_TASKS[0]?.id;
@@ -69,31 +83,63 @@ export default function Icao4Screen() {
   async function startRecording() {
     if (!task) return;
     try {
-      const { granted } = await Audio.requestPermissionsAsync();
-      if (!granted) {
-        alert('Mikrofon izni gerekli');
+      const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+      if (!perm.granted) {
+        alert('Mikrofon ve konuşma tanıma izni gerekli');
         return;
       }
-      await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
-      const { recording: rec } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY,
-      );
-      setRecording(rec);
+      finalTranscriptRef.current = '';
+      setRecognizedText('');
       setRecordStart(Date.now());
       setStage('recording');
+      ExpoSpeechRecognitionModule.start({
+        lang: 'en-US',
+        interimResults: true,
+        continuous: true,
+      });
     } catch (err) {
-      console.warn('Recording start failed', err);
+      console.warn('STT start failed', err);
+      // Fallback: Audio.Recording (sadece süre bazlı heuristic)
+      try {
+        const { granted } = await Audio.requestPermissionsAsync();
+        if (!granted) return;
+        await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
+        const { recording: rec } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY,
+        );
+        setRecording(rec);
+        setRecordStart(Date.now());
+        setStage('recording');
+      } catch {
+        /* ignore */
+      }
     }
   }
 
   async function stopAndScore() {
-    if (!recording || !task) return;
+    if (!task) return;
     setStage('scoring');
     try {
-      await recording.stopAndUnloadAsync();
-      const uri = recording.getURI() ?? '';
+      // STT durduruldu — finalTranscriptRef dolmuş olmalı
+      try {
+        await ExpoSpeechRecognitionModule.stop();
+      } catch {
+        /* ignore — fallback */
+      }
+
       const duration = Date.now() - recordStart;
-      const scored = await scoreIcaoTask(task.id, uri, duration);
+      const transcript = finalTranscriptRef.current || recognizedText;
+
+      // Gerçek scoring: STT varsa, yoksa fallback heuristic
+      const scored = transcript
+        ? scoreIcaoFromTranscript(task.id, task.type, transcript, duration)
+        : await scoreIcaoTask(task.id, recording?.getURI() ?? '', duration);
+
+      // Audio recording fallback'i kapat
+      if (recording) {
+        await recording.stopAndUnloadAsync().catch(() => undefined);
+      }
+
       setResult(scored);
       setStage('result');
       addXp(200, 'icao4_task');
@@ -101,6 +147,7 @@ export default function Icao4Screen() {
       track('icao4_task_completed', {
         task_id: task.id,
         overall_level: scored.overallLevel,
+        is_heuristic: scored.isHeuristic,
       });
     } catch (err) {
       console.warn('Scoring failed', err);
