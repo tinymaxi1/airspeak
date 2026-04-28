@@ -25,7 +25,12 @@
     "translate:vocab-rich": "tsx --env-file=.env scripts/i18n/run-pipeline.ts --target vocab-rich",
     "translate:all": "tsx --env-file=.env scripts/i18n/run-pipeline.ts --target all",
     "translate:check": "tsx --env-file=.env scripts/i18n/quality-check.ts",
-    "translate:usage": "tsx --env-file=.env scripts/i18n/translate-deepl.ts --usage"
+    "translate:usage": "tsx --env-file=.env scripts/i18n/translate-deepl.ts --usage",
+    "content:placement-long": "tsx --env-file=.env scripts/content/generate.ts placement-long",
+    "content:interview-detailed": "tsx --env-file=.env scripts/content/generate.ts interview-detailed",
+    "content:vocab-rich": "tsx --env-file=.env scripts/content/generate.ts vocab-rich",
+    "content:all": "tsx --env-file=.env scripts/content/generate.ts all",
+    "content:inject": "tsx --env-file=.env scripts/content/inject.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",

@@ -82,3 +82,5 @@ secrets/
 serviceAccountKey.json
 GoogleService-Info.plist
 google-services.json
+scripts/content/output/
+*.backup-*
