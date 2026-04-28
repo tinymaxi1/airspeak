@@ -698,5 +698,20 @@
       "title": "Streak + league + daily plan",
       "body": "15 min daily practice. ICAO 4 ready in 14 weeks."
     }
+  },
+  "search": {
+    "placeholder": "vocab, airline, scenario, clearance...",
+    "tipsEyebrow": "WHAT YOU CAN SEARCH",
+    "tipVocab": "Vocab term",
+    "tipAirline": "Airline",
+    "tipScenario": "AI scenario",
+    "tipClearance": "ATC clearance",
+    "tooShort": "Type at least 2 characters",
+    "noResults": "No results for \"{{q}}\"",
+    "resultCount": "{{count}} results"
+  },
+  "a11y": {
+    "search": "Search",
+    "notifications": "Notifications"
   }
 }

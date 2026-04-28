@@ -118,9 +118,26 @@ export default function HomeScreen() {
                   {t('screens.home.greeting')}
                 </Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                {/* Search */}
+                <TouchableOpacity
+                  onPress={() => router.push('/search')}
+                  accessibilityLabel={t('a11y.search', 'Ara')}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: 'rgba(255,255,255,0.08)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Text style={{ fontSize: 18, color: '#FFFFFF' }}>🔍</Text>
+                </TouchableOpacity>
+                {/* Notifications */}
                 <TouchableOpacity
                   onPress={() => router.push('/notifications')}
+                  accessibilityLabel={t('a11y.notifications', 'Bildirimler')}
                   style={{
                     width: 40,
                     height: 40,

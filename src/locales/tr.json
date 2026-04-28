@@ -698,5 +698,20 @@
       "title": "Streak + lig + günlük plan",
       "body": "Her gün 15 dk pratik. 14 haftada ICAO 4 hedefli."
     }
+  },
+  "search": {
+    "placeholder": "vocab, havayolu, senaryo, clearance...",
+    "tipsEyebrow": "NE ARAYABILIRSIN",
+    "tipVocab": "Vocab terim",
+    "tipAirline": "Havayolu",
+    "tipScenario": "AI senaryo",
+    "tipClearance": "ATC clearance",
+    "tooShort": "En az 2 karakter yaz",
+    "noResults": "\"{{q}}\" için sonuç yok",
+    "resultCount": "{{count}} sonuç"
+  },
+  "a11y": {
+    "search": "Ara",
+    "notifications": "Bildirimler"
   }
 }

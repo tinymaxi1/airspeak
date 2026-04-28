@@ -123,6 +123,7 @@ export default function RootLayout() {
             <Stack.Screen name="vocab" options={{ headerShown: false }} />
             <Stack.Screen name="career" options={{ headerShown: false }} />
             <Stack.Screen name="onboarding-tour" options={{ headerShown: false, gestureEnabled: false }} />
+            <Stack.Screen name="search" options={{ headerShown: false, presentation: 'modal' }} />
             <Stack.Screen name="pronunciation/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="settings/index" options={{ headerShown: false }} />
             <Stack.Screen name="settings/profile" options={{ headerShown: false }} />
