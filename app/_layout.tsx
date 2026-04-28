@@ -108,7 +108,7 @@ export default function RootLayout() {
               }}
             />
             {/* Eski header'lı ekranlar */}
-            <Stack.Screen name="shop" options={{ headerShown: true, headerTitle: 'Mağaza' }} />
+            <Stack.Screen name="shop" options={{ headerShown: false }} />
             <Stack.Screen name="srs/index" options={{ headerShown: true, headerTitle: 'SRS Tekrar' }} />
             <Stack.Screen name="exam/index" options={{ headerShown: true, headerTitle: 'Sınav Hazırlık' }} />
             <Stack.Screen name="exam/airlines" options={{ headerShown: true, headerTitle: 'Havayolları' }} />

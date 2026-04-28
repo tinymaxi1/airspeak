@@ -26,6 +26,14 @@ interface GamificationState {
 
   coins: number;
 
+  // Mağaza envanter
+  streakFreezes: number;
+  hints: number;
+  /** XP çarpanı (örn 2.0 = 2× boost). Default 1.0 */
+  xpMultiplier: number;
+  /** xpMultiplier'ın bittiği epoch ms. 0 = aktif değil */
+  xpMultiplierExpiresAt: number;
+
   // Aksiyonlar
   addXp: (amount: number, source: string) => void;
   recordDailyActivity: () => void;
@@ -33,6 +41,16 @@ interface GamificationState {
   refillHearts: () => void;
   addCoins: (amount: number, reason: string) => void;
   spendCoins: (amount: number, reason: string) => boolean;
+  /** Tek can ekle (max kapasiteye kadar). Mağaza ürünleri için. */
+  addHeart: (count?: number) => void;
+  /** Tüm canları full doldur. */
+  fillHearts: () => void;
+  /** Streak freeze envantere ekle. */
+  addStreakFreeze: (count?: number) => void;
+  /** Hint ekle. */
+  addHint: (count?: number) => void;
+  /** XP çarpanı aktive et (örn boost x2 1 saat). */
+  activateXpMultiplier: (multiplier: number, durationMinutes: number) => void;
   reset: () => void;
 }
 
@@ -85,6 +103,10 @@ const initialState = {
   maxHearts: 5,
   lastHeartRefill: Date.now(),
   coins: 0,
+  streakFreezes: 0,
+  hints: 0,
+  xpMultiplier: 1.0,
+  xpMultiplierExpiresAt: 0,
 };
 
 const zustandStorage = {
@@ -99,7 +121,12 @@ export const useGamificationStore = create<GamificationState>()(
       ...initialState,
 
       addXp: (amount, source) => {
-        const newTotal = get().totalXp + amount;
+        // XP boost aktif mi kontrol et
+        const now = Date.now();
+        const multiplier = get().xpMultiplierExpiresAt > now ? get().xpMultiplier : 1.0;
+        const finalAmount = Math.round(amount * multiplier);
+
+        const newTotal = get().totalXp + finalAmount;
         const oldLevel = get().currentLevel;
         const calc = calculateLevelFromXp(newTotal);
         set({
@@ -108,8 +135,12 @@ export const useGamificationStore = create<GamificationState>()(
           xpInLevel: calc.xpInLevel,
           xpToNext: calc.xpToNext,
         });
-        track('xp_earned', { amount, source });
-        useQuestsStore.getState().incrementProgress('earn_xp', amount);
+        // Süresi dolan multiplier'ı 1.0'a düşür
+        if (multiplier > 1.0 && get().xpMultiplierExpiresAt <= now) {
+          set({ xpMultiplier: 1.0, xpMultiplierExpiresAt: 0 });
+        }
+        track('xp_earned', { amount: finalAmount, base: amount, multiplier, source });
+        useQuestsStore.getState().incrementProgress('earn_xp', finalAmount);
         if (calc.level > oldLevel) {
           track('level_up', { new_level: calc.level, total_xp: newTotal });
         }
@@ -177,6 +208,38 @@ export const useGamificationStore = create<GamificationState>()(
         set({ coins: current - amount });
         track('coins_spent', { amount, reason });
         return true;
+      },
+
+      addHeart: (count = 1) => {
+        const current = get().hearts;
+        const max = get().maxHearts;
+        const next = Math.min(current + count, max);
+        if (next === current) return; // Zaten dolu
+        set({ hearts: next, lastHeartRefill: Date.now() });
+        track('heart_added', { count, source: 'shop' });
+      },
+
+      fillHearts: () => {
+        const max = get().maxHearts;
+        if (get().hearts === max) return;
+        set({ hearts: max, lastHeartRefill: Date.now() });
+        track('hearts_filled', { source: 'shop' });
+      },
+
+      addStreakFreeze: (count = 1) => {
+        set({ streakFreezes: get().streakFreezes + count });
+        track('streak_freeze_added', { count });
+      },
+
+      addHint: (count = 3) => {
+        set({ hints: get().hints + count });
+        track('hint_added', { count });
+      },
+
+      activateXpMultiplier: (multiplier, durationMinutes) => {
+        const expiresAt = Date.now() + durationMinutes * 60_000;
+        set({ xpMultiplier: multiplier, xpMultiplierExpiresAt: expiresAt });
+        track('xp_multiplier_activated', { multiplier, durationMinutes });
       },
 
       reset: () => set(initialState),

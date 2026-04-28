@@ -578,6 +578,38 @@
         "next": "Sıradaki segment",
         "continue": "Devam et →"
       }
+    },
+    "shop": {
+      "title": "Mağaza",
+      "subtitle": "Coin ile alışveriş yap. Coin kazan: ders tamamla, ligde yarış, günlük görev al.",
+      "back": "Geri",
+      "balance": "COIN BAKİYESİ",
+      "popular": "POPÜLER",
+      "premium": "PRO",
+      "premiumLocked": "Pro Pilot gerekli",
+      "premiumGo": "Pro Pilot'a geç",
+      "cancel": "İptal",
+      "buy": "Satın al",
+      "buyConfirmTitle": "Satın al",
+      "buyConfirmBody": "{{title}} için {{cost}} coin harcanacak. Onaylıyor musun?",
+      "successTitle": "🎉 Başarılı!",
+      "successBody": "{{title}} senin oldu.",
+      "notEnoughTitle": "Yetersiz coin",
+      "notEnoughBody": "Bu ürün için {{cost}} coin gerekiyor. Sende {{coins}} coin var.",
+      "items": {
+        "streakFreeze": "Streak Freeze",
+        "streakFreezeDesc": "1 gün kaçırırsan serini koruyacak",
+        "heartFull": "Tüm canları doldur",
+        "heartFullDesc": "5 cana hemen ulaş",
+        "extraHeart": "1 Ekstra Can",
+        "extraHeartDesc": "Anlık can kazan",
+        "hint": "Hint Pack (3 hint)",
+        "hintDesc": "Quizlerde 50/50 yardımı",
+        "xpBoost": "2× XP Boost (1 saat)",
+        "xpBoostDesc": "1 saat boyunca tüm XP iki katı",
+        "lessonSkip": "Ders Atla",
+        "lessonSkipDesc": "Sıkıştığın bir dersi atla (XP almazsın)"
+      }
     }
   }
 }

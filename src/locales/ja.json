@@ -578,6 +578,38 @@
         "next": "Next segment",
         "continue": "Continue →"
       }
+    },
+    "shop": {
+      "title": "Shop",
+      "subtitle": "Buy with coins. Earn coins: complete lessons, compete in league, daily quests.",
+      "back": "Back",
+      "balance": "COIN BALANCE",
+      "popular": "POPULAR",
+      "premium": "PRO",
+      "premiumLocked": "Pro Pilot required",
+      "premiumGo": "Go Pro Pilot",
+      "cancel": "Cancel",
+      "buy": "Buy",
+      "buyConfirmTitle": "Buy",
+      "buyConfirmBody": "{{title}} costs {{cost}} coins. Confirm?",
+      "successTitle": "🎉 Success!",
+      "successBody": "{{title}} is yours.",
+      "notEnoughTitle": "Not enough coins",
+      "notEnoughBody": "This item costs {{cost}} coins. You have {{coins}}.",
+      "items": {
+        "streakFreeze": "Streak Freeze",
+        "streakFreezeDesc": "Protects your streak if you miss a day",
+        "heartFull": "Refill all hearts",
+        "heartFullDesc": "Get back to 5 hearts instantly",
+        "extraHeart": "1 Extra Heart",
+        "extraHeartDesc": "Instant +1 heart",
+        "hint": "Hint Pack (3 hints)",
+        "hintDesc": "50/50 quiz helper",
+        "xpBoost": "2× XP Boost (1 hour)",
+        "xpBoostDesc": "Double XP for 1 hour",
+        "lessonSkip": "Skip Lesson",
+        "lessonSkipDesc": "Skip a tough lesson (no XP)"
+      }
     }
   }
 }
