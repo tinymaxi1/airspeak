@@ -1,182 +1,280 @@
-import { ScrollView } from 'react-native';
-import { YStack, XStack, H2, H3, Paragraph, Card, Text, Button } from 'tamagui';
-import { useTranslation } from 'react-i18next';
+/**
+ * Practice Screen — Quick Flight drill hub
+ *
+ * Tasarım birebir (screens-other.jsx):
+ * - "QUICK FLIGHT · NO STREAK PENALTY" eyebrow + "Practice" title
+ * - 3 stat cards (Energy 7/10 gold, Today 2 drills red, Bonus +50 XP green)
+ * - Filter chips (All active + Speaking, Listening, Vocab, Emergency)
+ * - Featured weekly challenge card (red bg, mic watermark, "Diversion under fuel pressure")
+ * - 5 drill cards (3D, ATC read-back, Numbers, Garbled, Emergency vocab, Weather)
+ */
+import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
-import { useSrsStore } from '@/stores/srsStore';
-import { PRONUNCIATION_SENTENCES } from '@/features/pronunciation/sentences';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  HHero,
+  H2,
+  Body,
+  Eyebrow,
+  Mono,
+  FONTS,
+  Button3D,
+  Card3D,
+} from '@/components/airspeak';
+
+interface Drill {
+  title: string;
+  sub: string;
+  icon: string;
+  accent: string;
+  xp: number;
+  mins: number;
+  stars?: number;
+}
+
+const DRILLS: Drill[] = [
+  { title: 'ATC read-back rapid fire', sub: '60 sec · 12 clearances', icon: '🎙', accent: '#E63946', xp: 80, mins: 2 },
+  { title: 'Numbers 0–9 (decimals)', sub: 'Pronunciation · 3 stars', icon: '🔊', accent: '#F2C14E', xp: 50, mins: 3, stars: 2 },
+  { title: 'Garbled radio decode', sub: 'Listening · noise +30%', icon: '🎧', accent: '#2EA8FF', xp: 65, mins: 4 },
+  { title: 'Emergency vocabulary', sub: 'Match · 24 words', icon: '🛡', accent: '#7C5CFF', xp: 60, mins: 3, stars: 3 },
+  { title: 'Weather phenomena', sub: 'Reading · METAR/TAF', icon: '☁', accent: '#2DBE6C', xp: 75, mins: 5 },
+];
+
+const FILTER_CHIPS = [
+  { label: 'All', active: true },
+  { label: '🎙 Speaking' },
+  { label: '🎧 Listening' },
+  { label: '📖 Vocab' },
+  { label: '⚠ Emergency' },
+];
 
 export default function PracticeScreen() {
-  const { t } = useTranslation();
-  const dueCount = useSrsStore((s) => s.getDueTerms().length);
-
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <YStack padding="$4" gap="$4" backgroundColor="$background" minHeight="100%">
-        <YStack gap="$1">
-          <H2 color="$text">{t('practice.title', 'Pratik')}</H2>
-          <Paragraph color="$textSecondary">{t('practice.subtitle')}</Paragraph>
-        </YStack>
+    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <SafeAreaView edges={['top']}>
+        <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
+          <Eyebrow>QUICK FLIGHT · NO STREAK PENALTY</Eyebrow>
+          <Text style={{ fontFamily: FONTS.body800, fontSize: 22, color: '#0E1116', marginTop: 4 }}>
+            Practice
+          </Text>
+        </View>
+      </SafeAreaView>
 
-        {/* SRS Review */}
-        <Card
-          padding="$4"
-          backgroundColor="$primary"
-          onPress={() => router.push('/srs')}
-          pressStyle={{ scale: 0.98 }}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }}>
+        {/* Stat row */}
+        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 18 }}>
+          <PracticeStat icon="⚡" label="Energy" value="7/10" color="#F2C14E" />
+          <PracticeStat icon="🎯" label="Today" value="2 drills" color="#E63946" />
+          <PracticeStat icon="⭐" label="Bonus" value="+50 XP" color="#2DBE6C" />
+        </View>
+
+        {/* Filter chips */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginBottom: 14 }}
+          contentContainerStyle={{ gap: 8 }}
         >
-          <XStack gap="$3" alignItems="center">
-            <Text fontSize={36}>🧠</Text>
-            <YStack flex={1}>
-              <Text fontSize="$5" fontWeight="700" color="$primaryText">
-                SRS Tekrar
+          {FILTER_CHIPS.map((c, i) => (
+            <View
+              key={i}
+              style={{
+                height: 36,
+                paddingHorizontal: 14,
+                borderRadius: 999,
+                backgroundColor: c.active ? '#0F1E47' : '#FFFFFF',
+                borderWidth: 1.5,
+                borderColor: c.active ? '#0F1E47' : '#DCE0E8',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: FONTS.body700,
+                  fontSize: 13,
+                  color: c.active ? '#FFFFFF' : '#0E1116',
+                }}
+              >
+                {c.label}
               </Text>
-              <Text fontSize="$3" color="$primaryText">
-                Akıllı hafıza sistemi (SuperMemo)
-              </Text>
-              <Text fontSize="$2" color="$primaryText">
-                {dueCount > 0 ? `${dueCount} kart hazır` : 'Tüm tekrar tamam'}
-              </Text>
-            </YStack>
-            <Text fontSize="$5" color="$primaryText">
-              →
-            </Text>
-          </XStack>
-        </Card>
+            </View>
+          ))}
+        </ScrollView>
 
-        {/* Pronunciation */}
-        <Card
-          padding="$4"
-          backgroundColor="$accent"
-          onPress={() => {
-            const first = PRONUNCIATION_SENTENCES[0];
-            if (first) {
-              router.push({
-                pathname: '/pronunciation/[id]',
-                params: { id: first.id },
-              });
-            }
+        {/* Featured Weekly Challenge */}
+        <View
+          style={{
+            backgroundColor: '#E63946',
+            borderRadius: 14,
+            padding: 16,
+            marginBottom: 18,
+            borderBottomWidth: 4,
+            borderBottomColor: '#C8202E',
+            position: 'relative',
+            overflow: 'hidden',
           }}
-          pressStyle={{ scale: 0.98 }}
         >
-          <XStack gap="$3" alignItems="center">
-            <Text fontSize={36}>🎙️</Text>
-            <YStack flex={1}>
-              <Text fontSize="$5" fontWeight="700" color="$accentText">
-                Telaffuz Drill
-              </Text>
-              <Text fontSize="$3" color="$accentText">
-                ICAO 4 telaffuz analizi
-              </Text>
-              <Text fontSize="$2" color="$accentText">
-                {PRONUNCIATION_SENTENCES.length} cümle hazır
-              </Text>
-            </YStack>
-            <Text fontSize="$5" color="$accentText">
-              →
-            </Text>
-          </XStack>
-        </Card>
+          <Text
+            style={{
+              position: 'absolute',
+              right: -10,
+              bottom: -16,
+              fontSize: 140,
+              opacity: 0.18,
+            }}
+          >
+            🎙
+          </Text>
 
-        {/* AI Conversation - Premium */}
-        <Card
-          padding="$4"
-          backgroundColor="$surface"
-          bordered
-          opacity={0.7}
-          onPress={() => router.push('/paywall')}
-        >
-          <XStack gap="$3" alignItems="center">
-            <Text fontSize={36}>🤖</Text>
-            <YStack flex={1}>
-              <Text fontSize="$5" fontWeight="700" color="$text">
-                AI Konuşma
-              </Text>
-              <Text fontSize="$3" color="$textSecondary">
-                ATC, kaptan, mülakatçı rol oyna
-              </Text>
-              <Text fontSize="$2" color="$warning">
-                🔒 PREMIUM
-              </Text>
-            </YStack>
-          </XStack>
-        </Card>
-
-        {/* Sınav Hazırlık Hub — rol bazlı */}
-        <Card
-          padding="$4"
-          backgroundColor="$primary"
-          onPress={() => router.push('/exam')}
-          pressStyle={{ scale: 0.98 }}
-        >
-          <XStack gap="$3" alignItems="center">
-            <Text fontSize={36}>🎯</Text>
-            <YStack flex={1}>
-              <Text fontSize="$5" fontWeight="700" color="$primaryText">
-                Sınav Hazırlık
-              </Text>
-              <Text fontSize="$3" color="$primaryText">
-                ICAO 4 · SHGM · YDS · Mülakat — rolüne özel
-              </Text>
-              <Text fontSize="$2" color="$primaryText">
-                Pilot 5 sınav · Kabin 4 · Teknisyen 3 · Yer 3 · Öğrenci 3
-              </Text>
-            </YStack>
-            <Text fontSize="$5" color="$primaryText">
-              →
+          <Eyebrow accent color="rgba(255,255,255,0.85)">
+            WEEKLY CHALLENGE · 2D LEFT
+          </Eyebrow>
+          <Text
+            style={{
+              fontFamily: FONTS.display,
+              fontSize: 24,
+              fontWeight: '700',
+              color: '#FFFFFF',
+              marginTop: 6,
+              lineHeight: 26,
+              letterSpacing: -0.48,
+            }}
+          >
+            Diversion under fuel pressure.
+          </Text>
+          <Body color="rgba(255,255,255,0.9)" style={{ fontSize: 13, marginTop: 6 }}>
+            5-min ATC sim. 1,200 pilots played. Top 10% = exclusive epaulette badge.
+          </Body>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => router.push('/(tabs)/practice')}
+            style={{
+              marginTop: 12,
+              backgroundColor: '#FFFFFF',
+              borderRadius: 14,
+              height: 44,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderBottomWidth: 3,
+              borderBottomColor: 'rgba(0,0,0,0.18)',
+            }}
+          >
+            <Text style={{ fontFamily: FONTS.body800, fontSize: 13, color: '#E63946' }}>
+              Take the challenge →
             </Text>
-          </XStack>
-        </Card>
+          </TouchableOpacity>
+        </View>
 
-        {/* ICAO 4 Simulator (hızlı erişim) */}
-        <Card
-          padding="$4"
-          backgroundColor="$surface"
-          bordered
-          onPress={() => router.push('/exam/icao4')}
-          pressStyle={{ scale: 0.98 }}
-        >
-          <XStack gap="$3" alignItems="center">
-            <Text fontSize={36}>🎙️</Text>
-            <YStack flex={1}>
-              <Text fontSize="$5" fontWeight="700" color="$text">
-                ICAO 4 Sözlü Simülatör (Hızlı)
-              </Text>
-              <Text fontSize="$3" color="$textSecondary">
-                4 görev tipi, 6-alan rubric — AI examiner
-              </Text>
-              <Text fontSize="$2" color="$warning">
-                İlk görev ücretsiz
-              </Text>
-            </YStack>
-            <Text fontSize="$5" color="$text">
-              →
-            </Text>
-          </XStack>
-        </Card>
+        {/* Fast drills */}
+        <Eyebrow>FAST DRILLS</Eyebrow>
+        <View style={{ gap: 10, marginTop: 10 }}>
+          {DRILLS.map((d, i) => (
+            <Card3D key={i} style={{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+              <View
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: 14,
+                  backgroundColor: d.accent,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{ fontSize: 26, color: '#FFFFFF' }}>{d.icon}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
+                  {d.title}
+                </Text>
+                <Body style={{ fontSize: 12, marginTop: 2 }}>{d.sub}</Body>
+                {d.stars !== undefined && (
+                  <View style={{ flexDirection: 'row', gap: 2, marginTop: 4 }}>
+                    {[1, 2, 3].map((s) => (
+                      <Text
+                        key={s}
+                        style={{
+                          fontSize: 10,
+                          color: s <= d.stars! ? '#F2C14E' : '#DCE0E8',
+                        }}
+                      >
+                        ★
+                      </Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+              <View style={{ alignItems: 'flex-end' }}>
+                <Mono style={{ fontSize: 11, color: '#8A93A6', letterSpacing: 1 }}>
+                  {d.mins}M
+                </Mono>
+                <Text
+                  style={{
+                    fontFamily: FONTS.body800,
+                    fontSize: 13,
+                    color: '#0E1116',
+                    marginTop: 2,
+                  }}
+                >
+                  +{d.xp} XP
+                </Text>
+              </View>
+            </Card3D>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
 
-        {/* Quiz Practice */}
-        <Card
-          padding="$4"
-          backgroundColor="$surface"
-          bordered
-          onPress={() => router.push('/(tabs)/learn')}
+function PracticeStat({
+  icon,
+  label,
+  value,
+  color,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  color: string;
+}) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 14,
+        borderWidth: 1.5,
+        borderColor: '#DCE0E8',
+        padding: 10,
+      }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+        <Text style={{ fontSize: 14, color }}>{icon}</Text>
+        <Text
+          style={{
+            fontFamily: FONTS.mono,
+            fontSize: 10,
+            letterSpacing: 1,
+            textTransform: 'uppercase',
+            color,
+          }}
         >
-          <XStack gap="$3" alignItems="center">
-            <Text fontSize={36}>🎯</Text>
-            <YStack flex={1}>
-              <Text fontSize="$5" fontWeight="700" color="$text">
-                Quiz Pratiği
-              </Text>
-              <Text fontSize="$3" color="$textSecondary">
-                Ders ağacındaki quiz'leri çöz
-              </Text>
-            </YStack>
-            <Text fontSize="$5" color="$text">
-              →
-            </Text>
-          </XStack>
-        </Card>
-      </YStack>
-    </ScrollView>
+          {label}
+        </Text>
+      </View>
+      <Text
+        style={{
+          fontFamily: FONTS.display,
+          fontSize: 18,
+          fontWeight: '700',
+          color: '#0E1116',
+          marginTop: 2,
+          letterSpacing: -0.18,
+        }}
+      >
+        {value}
+      </Text>
+    </View>
   );
 }

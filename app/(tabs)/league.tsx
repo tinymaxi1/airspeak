@@ -1,196 +1,259 @@
-import { ScrollView } from 'react-native';
-import { YStack, XStack, H2, H3, Paragraph, Card, Text, Separator } from 'tamagui';
-import { useTranslation } from 'react-i18next';
-import { useMemo } from 'react';
+/**
+ * League Screen — Captain tier leaderboard
+ *
+ * Tasarım birebir (screens-other.jsx LeagueScreen):
+ * - Gold tier header (navy ink) + Crown icon + "Captain TIER 4 OF 7"
+ * - 7-tier track bar (Cadet → Star Capt)
+ * - Top 3 podium (gold/silver/bronze)
+ * - Leaderboard rows with country flags + you highlight
+ * - Safe zone divider
+ */
+import { ScrollView, View, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  generateLeagueMembers,
-  tierForRank,
-  timeUntilWeekEnd,
-  TIER_INFO,
-  type LeagueTier,
-  type LeagueMember,
-} from '@/features/league/seed';
-import { useGamificationStore } from '@/stores/gamificationStore';
+  Body,
+  Eyebrow,
+  Mono,
+  FONTS,
+  Avatar,
+} from '@/components/airspeak';
 
-const CURRENT_TIER: LeagueTier = 'bronze'; // MVP'de herkes bronz başlar
+interface Player {
+  rank: number;
+  name: string;
+  xp: number;
+  country?: string;
+  you?: boolean;
+}
+
+const PLAYERS: Player[] = [
+  { rank: 1, name: 'Captain Sky', xp: 4820, country: '🇩🇪' },
+  { rank: 2, name: 'M. Aydın', xp: 4205, country: '🇹🇷' },
+  { rank: 3, name: 'José L.', xp: 3940, country: '🇪🇸' },
+  { rank: 4, name: 'You · EK', xp: 3812, country: '🇹🇷', you: true },
+  { rank: 5, name: 'flight_a01', xp: 3502, country: '🇮🇳' },
+  { rank: 6, name: 'Nina V.', xp: 3210, country: '🇳🇱' },
+  { rank: 7, name: 'Ahmed F.', xp: 2980, country: '🇪🇬' },
+];
+
+const TIERS = [
+  { name: 'Cadet', short: 'CADET' },
+  { name: 'First Officer', short: 'FO' },
+  { name: 'Senior FO', short: 'SR FO' },
+  { name: 'Captain', short: 'CAPT', current: true },
+  { name: 'Senior Capt', short: 'SR CP' },
+  { name: 'Check Capt', short: 'CHK' },
+  { name: 'Star Capt', short: 'STAR' },
+];
 
 export default function LeagueScreen() {
-  const { t } = useTranslation();
-  const totalXp = useGamificationStore((s) => s.totalXp);
-
-  // Mock weekly XP — total XP'nin son ~%20'si gibi simülasyon
-  const weeklyXp = useMemo(() => Math.min(totalXp, Math.round(totalXp * 0.3)), [totalXp]);
-
-  const members = useMemo(() => generateLeagueMembers(weeklyXp), [weeklyXp]);
-  const userIdx = members.findIndex((m) => m.isCurrentUser);
-  const userRank = userIdx + 1;
-  const promotion = tierForRank(userRank);
-  const timeLeft = timeUntilWeekEnd();
-  const tier = TIER_INFO[CURRENT_TIER];
-
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <YStack padding="$4" gap="$4" backgroundColor="$background" minHeight="100%">
-        <YStack gap="$1">
-          <H2 color="$text">{t('league.title', 'Lig')}</H2>
-          <Paragraph color="$textSecondary">{t('league.subtitle')}</Paragraph>
-        </YStack>
+    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <View style={{ backgroundColor: '#F2C14E' }}>
+        <SafeAreaView edges={['top']}>
+          <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 18 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+              <View
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: 14,
+                  backgroundColor: '#0A1430',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderBottomWidth: 4,
+                  borderBottomColor: '#000',
+                }}
+              >
+                <Text style={{ fontSize: 36 }}>👑</Text>
+              </View>
 
-        {/* Tier header */}
-        <Card padding="$4" backgroundColor="$primary">
-          <YStack gap="$2" alignItems="center">
-            <Text fontSize={48}>{tier.emoji}</Text>
-            <Text fontSize="$5" fontWeight="700" color="$primaryText">
-              {tier.name} Lig
-            </Text>
-            <Text fontSize="$3" color="$primaryText">
-              {timeLeft.label} kaldı
-            </Text>
-          </YStack>
-        </Card>
-
-        {/* User position */}
-        <Card
-          padding="$4"
-          backgroundColor={promotion.promoted ? '$success' : promotion.demoted ? '$danger' : '$accent'}
-        >
-          <YStack gap="$1">
-            <Text fontSize="$3" color="$primaryText" textTransform="uppercase">
-              Bu haftaki sıran
-            </Text>
-            <XStack alignItems="center" gap="$3">
-              <Text fontSize={36} fontWeight="700" color="$primaryText">
-                #{userRank}
-              </Text>
-              <YStack flex={1}>
-                <Text fontSize="$5" fontWeight="600" color="$primaryText">
-                  {weeklyXp} XP / hafta
+              <View style={{ flex: 1 }}>
+                <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(10,20,48,0.7)' }}>
+                  TIER 4 OF 7
+                </Mono>
+                <Text
+                  style={{
+                    fontFamily: FONTS.display,
+                    fontSize: 28,
+                    fontWeight: '700',
+                    color: '#0A1430',
+                    letterSpacing: -0.56,
+                    lineHeight: 28,
+                  }}
+                >
+                  Captain
                 </Text>
-                <Text fontSize="$3" color="$primaryText">
-                  {promotion.promoted
-                    ? '⬆️ Top 7 — bir üst lige çıkıyorsun!'
-                    : promotion.demoted
-                      ? '⬇️ Son 10 — alt lige düşüyorsun, dikkat!'
-                      : '— Konumunu koru'}
+                <Text
+                  style={{
+                    fontFamily: FONTS.body700,
+                    fontSize: 13,
+                    color: '#0A1430',
+                    marginTop: 2,
+                  }}
+                >
+                  Top 10 advance · 28h left
                 </Text>
-              </YStack>
-            </XStack>
-          </YStack>
-        </Card>
+              </View>
+            </View>
 
-        {/* Promotion zone */}
-        <Card padding="$3" backgroundColor="$successSubtle">
-          <Text color="$success" fontSize="$3" fontWeight="600">
-            ⬆️ Top 7: Bir üst lige (Gümüş) yükselir, +200 coin bonus
-          </Text>
-        </Card>
-
-        {/* Leaderboard */}
-        <YStack gap="$2">
-          <H3 color="$text">Haftalık Sıralama</H3>
-          <Card backgroundColor="$surface" bordered>
-            <YStack>
-              {members.map((member, idx) => {
-                const rank = idx + 1;
-                const isPromotionZone = rank <= 7;
-                const isDemotionZone = rank > 20;
-                return (
-                  <LeaderboardRow
-                    key={member.id}
-                    rank={rank}
-                    member={member}
-                    isPromotion={isPromotionZone}
-                    isDemotion={isDemotionZone}
-                    showSeparator={idx === 6 || idx === 19}
+            {/* Tier track */}
+            <View style={{ flexDirection: 'row', gap: 4, marginTop: 14 }}>
+              {TIERS.map((t, i) => (
+                <View key={t.name} style={{ flex: 1, alignItems: 'center' }}>
+                  <View
+                    style={{
+                      height: 8,
+                      width: '100%',
+                      backgroundColor: i <= 3 ? '#0A1430' : 'rgba(0,0,0,0.18)',
+                      borderRadius: 4,
+                    }}
                   />
-                );
-              })}
-            </YStack>
-          </Card>
-        </YStack>
+                  <Mono
+                    style={{
+                      fontSize: 8,
+                      color: t.current ? '#0A1430' : 'rgba(0,0,0,0.4)',
+                      marginTop: 4,
+                      letterSpacing: 0.32,
+                    }}
+                  >
+                    {t.short}
+                  </Mono>
+                </View>
+              ))}
+            </View>
+          </View>
+        </SafeAreaView>
+      </View>
 
-        <Card padding="$3" backgroundColor="$dangerSubtle">
-          <Text color="$danger" fontSize="$3" fontWeight="600">
-            ⬇️ Son 10: Alt lige düşer (Bronz hariç)
-          </Text>
-        </Card>
+      <ScrollView style={{ flex: 1 }}>
+        <View
+          style={{
+            backgroundColor: '#FFFFFF',
+            paddingHorizontal: 16,
+            paddingVertical: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: '#DCE0E8',
+          }}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', gap: 8 }}>
+            <Podium rank={2} name="M. Aydın" xp="4,205" color="#B8BFCC" h={64} />
+            <Podium rank={1} name="Captain Sky" xp="4,820" color="#F2C14E" h={88} crown />
+            <Podium rank={3} name="José L." xp="3,940" color="#FF7847" h={48} />
+          </View>
+        </View>
 
-        <Card padding="$4" backgroundColor="$surface" bordered>
-          <YStack gap="$2">
-            <Text fontSize="$5" fontWeight="600" color="$text">
-              💡 Lig nasıl çalışır?
-            </Text>
-            <Text fontSize="$3" color="$textSecondary">
-              • Her hafta Pazartesi 00:00 yeni grup{'\n'}• 30 kişilik gruplar
-              {'\n'}• Top 7 yükselir, son 10 düşer{'\n'}• 5 lig: Bronz → Gümüş → Altın → Elmas → Usta
-              {'\n'}• İlk 3'e bonus coin (200/100/50)
-            </Text>
-          </YStack>
-        </Card>
-      </YStack>
-    </ScrollView>
+        <View style={{ padding: 16 }}>
+          {PLAYERS.map((p) => (
+            <View
+              key={p.rank}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+                paddingVertical: 12,
+                paddingHorizontal: 14,
+                marginBottom: 6,
+                backgroundColor: p.you ? '#FFE4E7' : '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: p.you ? 2 : 1.5,
+                borderColor: p.you ? '#E63946' : '#DCE0E8',
+              }}
+            >
+              <Mono
+                style={{
+                  fontSize: 14,
+                  fontWeight: '700',
+                  color: p.you ? '#E63946' : '#5A6478',
+                  width: 24,
+                }}
+              >
+                {p.rank}
+              </Mono>
+              <Avatar
+                initials={p.name.split(' ')[0]?.[0] ?? '?'}
+                color={p.you ? '#E63946' : '#0F1E47'}
+                size={36}
+              />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
+                  {p.name}
+                </Text>
+                <Mono style={{ fontSize: 11, color: '#8A93A6' }}>
+                  {p.country} · {p.xp.toLocaleString()} XP
+                </Mono>
+              </View>
+              {p.rank <= 3 && (
+                <Text style={{ fontSize: 18 }}>{p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : '🥉'}</Text>
+              )}
+            </View>
+          ))}
+
+          <View
+            style={{
+              marginTop: 12,
+              padding: 8,
+              borderTopWidth: 2,
+              borderTopColor: '#2DBE6C',
+              borderStyle: 'dashed',
+              alignItems: 'center',
+            }}
+          >
+            <Mono style={{ fontSize: 11, color: '#2DBE6C', letterSpacing: 1.1 }}>
+              ↑ SAFE ZONE — STAY ABOVE TO ADVANCE ↑
+            </Mono>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
-function LeaderboardRow({
+function Podium({
   rank,
-  member,
-  isPromotion,
-  isDemotion,
-  showSeparator,
+  name,
+  xp,
+  color,
+  h,
+  crown,
 }: {
   rank: number;
-  member: LeagueMember;
-  isPromotion: boolean;
-  isDemotion: boolean;
-  showSeparator: boolean;
+  name: string;
+  xp: string;
+  color: string;
+  h: number;
+  crown?: boolean;
 }) {
-  const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : null;
-
   return (
-    <>
-      <Card
-        padding="$3"
-        backgroundColor={member.isCurrentUser ? '$accent' : 'transparent'}
-        borderRadius={0}
+    <View style={{ flex: 1, alignItems: 'center', gap: 6 }}>
+      {crown && <Text style={{ fontSize: 24 }}>👑</Text>}
+      <Avatar initials={name.split(' ')[0]?.[0] ?? '?'} color={color} size={48} />
+      <Text
+        style={{
+          fontFamily: FONTS.body700,
+          fontSize: 12,
+          color: '#0E1116',
+          textAlign: 'center',
+        }}
       >
-        <XStack gap="$3" alignItems="center">
-          <Text
-            fontSize="$5"
-            fontWeight="700"
-            color={
-              member.isCurrentUser
-                ? '$accentText'
-                : isPromotion
-                  ? '$success'
-                  : isDemotion
-                    ? '$danger'
-                    : '$text'
-            }
-            width={32}
-          >
-            {medal ?? rank}
-          </Text>
-          <Text fontSize={24}>{member.avatar}</Text>
-          <Text
-            fontSize="$4"
-            fontWeight={member.isCurrentUser ? '700' : '500'}
-            color={member.isCurrentUser ? '$accentText' : '$text'}
-            flex={1}
-          >
-            {member.username}
-            {member.isCurrentUser && ' (sen)'}
-          </Text>
-          <Text
-            fontSize="$3"
-            fontWeight="600"
-            color={member.isCurrentUser ? '$accentText' : '$textSecondary'}
-          >
-            {member.weeklyXp} XP
-          </Text>
-        </XStack>
-      </Card>
-      {showSeparator && <Separator />}
-    </>
+        {name}
+      </Text>
+      <Mono style={{ fontSize: 10, color: '#8A93A6' }}>{xp}</Mono>
+      <View
+        style={{
+          width: '100%',
+          height: h,
+          backgroundColor: color,
+          borderRadius: 8,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: 4,
+        }}
+      >
+        <Text style={{ fontFamily: FONTS.display, fontSize: 24, fontWeight: '700', color: '#0A1430' }}>
+          {rank}
+        </Text>
+      </View>
+    </View>
   );
 }

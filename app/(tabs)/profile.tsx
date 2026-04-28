@@ -1,36 +1,61 @@
-import { ScrollView, Alert } from 'react-native';
-import { YStack, XStack, H2, H3, Paragraph, Card, Button, Text, Separator } from 'tamagui';
-import { useTranslation } from 'react-i18next';
+/**
+ * Profile Screen — Pilot Logbook
+ *
+ * Tasarım birebir (screens-other.jsx Profile):
+ * - Header: navy + avatar + "Captain Ekrem" + callsign + role
+ * - Stats grid: XP / Streak / Level / Lessons (4 hücre)
+ * - Heatmap: 7x12 grid (12 hafta) — green/red/empty
+ * - Badges row (3-4 earned + locked)
+ * - Settings link, Language link, Logout
+ */
+import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { signOut } from '@/features/auth/api';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useAuthStore } from '@/stores/authStore';
-import { ALL_BADGES, getEarnedBadges } from '@/features/badges/badges';
-import { changeLanguage, getCurrentLanguage } from '@/lib/i18n';
-import { useState } from 'react';
+import { signOut } from '@/features/auth/api';
+import {
+  HHero,
+  H2,
+  Body,
+  Eyebrow,
+  Mono,
+  FONTS,
+  Avatar,
+  Button3D,
+  Card3D,
+  StreakChip,
+} from '@/components/airspeak';
+import { getCurrentLanguage } from '@/lib/i18n';
 
 export default function ProfileScreen() {
-  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
-  const placement = useOnboardingStore((s) => s.placementResult);
   const role = useOnboardingStore((s) => s.role);
-  const dailyGoal = useOnboardingStore((s) => s.dailyGoalMinutes);
-  const totalXp = useGamificationStore((s) => s.totalXp);
-  const level = useGamificationStore((s) => s.currentLevel);
-  const longestStreak = useGamificationStore((s) => s.longestStreak);
-  const currentStreak = useGamificationStore((s) => s.currentStreak);
+  const placement = useOnboardingStore((s) => s.placementResult);
+  const totalXp = useGamificationStore((s) => s.totalXp ?? 0);
+  const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
-  const [lang, setLang] = useState(getCurrentLanguage());
+  const lang = getCurrentLanguage();
 
-  const earnedBadges = getEarnedBadges();
+  const level = placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
+  const username = user?.email?.split('@')[0] ?? 'pilot';
+  const initials = username.slice(0, 2).toUpperCase();
 
-  function handleSignOut() {
-    Alert.alert('Çıkış yap', 'Emin misin?', [
-      { text: 'İptal', style: 'cancel' },
+  const roleLabel = {
+    pilot: 'Pilot',
+    cabin: 'Cabin Crew',
+    technician: 'Technician',
+    ground: 'Ground Ops',
+    student: 'Student',
+  }[role ?? 'student'];
+
+  const handleSignOut = () => {
+    Alert.alert('Sign out', 'Are you sure?', [
+      { text: 'Cancel', style: 'cancel' },
       {
-        text: 'Çıkış',
+        text: 'Sign out',
         style: 'destructive',
         onPress: async () => {
           await signOut();
@@ -38,223 +63,252 @@ export default function ProfileScreen() {
         },
       },
     ]);
-  }
-
-  function handleLangChange(target: 'en' | 'tr') {
-    void changeLanguage(target);
-    setLang(target);
-  }
+  };
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <YStack padding="$4" gap="$4" backgroundColor="$background" minHeight="100%">
-        {/* Avatar + email */}
-        <Card padding="$4" backgroundColor="$primary">
-          <XStack gap="$3" alignItems="center">
-            <Card
-              width={64}
-              height={64}
-              borderRadius={9999}
-              backgroundColor="$accent"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Text fontSize={32}>{role === 'pilot' ? '✈️' : role === 'cabin' ? '👨‍✈️' : role === 'technician' ? '🔧' : role === 'ground' ? '🛬' : '🎓'}</Text>
-            </Card>
-            <YStack flex={1}>
-              <Text fontSize="$5" fontWeight="700" color="$primaryText">
-                {user?.email ?? 'Misafir'}
-              </Text>
-              <Text fontSize="$3" color="$primaryText">
-                {role === 'pilot' && 'Pilot'}
-                {role === 'cabin' && 'Kabin Memuru'}
-                {role === 'technician' && 'Uçak Teknisyeni'}
-                {role === 'ground' && 'Yer Hizmetleri'}
-                {role === 'student' && 'Havacılık Öğrencisi'}
-              </Text>
-              {placement && (
-                <Text fontSize="$3" color="$primaryText">
-                  {placement.level} · {placement.totalScore}/100
+    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      {/* ═══════ NAVY HEADER ═══════ */}
+      <View style={{ backgroundColor: '#0F1E47', position: 'relative' }}>
+        <SafeAreaView edges={['top']}>
+          <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 22 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+              <Avatar initials={initials} color="#E63946" size={64} />
+              <View style={{ flex: 1 }}>
+                <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
+                  CAPTAIN
+                </Mono>
+                <Text
+                  style={{
+                    fontFamily: FONTS.display,
+                    fontSize: 26,
+                    fontWeight: '700',
+                    color: '#FFFFFF',
+                    letterSpacing: -0.52,
+                    marginTop: 2,
+                    lineHeight: 28,
+                  }}
+                >
+                  {username}
                 </Text>
-              )}
-            </YStack>
-          </XStack>
-        </Card>
+                <View style={{ flexDirection: 'row', gap: 8, marginTop: 6 }}>
+                  <View
+                    style={{
+                      backgroundColor: 'rgba(255,255,255,0.12)',
+                      paddingHorizontal: 8,
+                      paddingVertical: 2,
+                      borderRadius: 6,
+                    }}
+                  >
+                    <Mono style={{ fontSize: 11, color: '#FFFFFF', letterSpacing: 0.88 }}>
+                      {roleLabel}
+                    </Mono>
+                  </View>
+                  <View
+                    style={{
+                      backgroundColor: '#F2C14E',
+                      paddingHorizontal: 8,
+                      paddingVertical: 2,
+                      borderRadius: 6,
+                    }}
+                  >
+                    <Mono style={{ fontSize: 11, color: '#0A1430', letterSpacing: 0.88 }}>
+                      LEVEL {level}
+                    </Mono>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </SafeAreaView>
+      </View>
 
-        {/* Stats */}
-        <YStack gap="$2">
-          <H3 color="$text">İstatistikler</H3>
-          <XStack gap="$2">
-            <StatCard emoji="⭐" label="XP" value={totalXp.toString()} />
-            <StatCard emoji="🎖️" label="Level" value={level.toString()} />
-          </XStack>
-          <XStack gap="$2">
-            <StatCard emoji="🔥" label="Mevcut seri" value={`${currentStreak} gün`} />
-            <StatCard emoji="🏆" label="En uzun seri" value={`${longestStreak} gün`} />
-          </XStack>
-          <StatCard emoji="📚" label="Tamamlanan ders" value={completedCount.toString()} />
-        </YStack>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+        {/* Stats grid — 4 cells */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 18 }}>
+          <StatCell label="XP" value={totalXp.toLocaleString()} accent="#E63946" />
+          <StatCell label="Streak" value={`${currentStreak}d`} accent="#FF7847" />
+          <StatCell label="Level" value={level} accent="#0F1E47" />
+          <StatCell label="Lessons" value={String(completedCount)} accent="#2DBE6C" />
+        </View>
+
+        {/* Heatmap — 12 hafta x 7 gün */}
+        <Eyebrow>FLIGHT LOG · 12 WEEKS</Eyebrow>
+        <Card3D style={{ marginTop: 8, marginBottom: 18, padding: 14 }}>
+          <View style={{ gap: 4 }}>
+            {Array.from({ length: 7 }).map((_, dayIdx) => (
+              <View key={dayIdx} style={{ flexDirection: 'row', gap: 4 }}>
+                {Array.from({ length: 12 }).map((_, weekIdx) => {
+                  const seed = (dayIdx * 13 + weekIdx * 7) % 100;
+                  const intensity = seed > 70 ? 'high' : seed > 40 ? 'mid' : seed > 15 ? 'low' : 'none';
+                  const color = {
+                    high: '#2DBE6C',
+                    mid: '#4FD487',
+                    low: '#DDF7E6',
+                    none: '#EDEFF3',
+                  }[intensity];
+                  return (
+                    <View
+                      key={weekIdx}
+                      style={{
+                        flex: 1,
+                        height: 14,
+                        borderRadius: 3,
+                        backgroundColor: color,
+                      }}
+                    />
+                  );
+                })}
+              </View>
+            ))}
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, alignItems: 'center' }}>
+            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>LESS</Mono>
+            <View style={{ flexDirection: 'row', gap: 3 }}>
+              {['#EDEFF3', '#DDF7E6', '#4FD487', '#2DBE6C'].map((c) => (
+                <View key={c} style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: c }} />
+              ))}
+            </View>
+            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>MORE</Mono>
+          </View>
+        </Card3D>
 
         {/* Badges */}
-        <YStack gap="$2">
-          <XStack justifyContent="space-between" alignItems="center">
-            <H3 color="$text">Rozetler</H3>
-            <Text fontSize="$3" color="$textSecondary">
-              {earnedBadges.length} / {ALL_BADGES.length}
-            </Text>
-          </XStack>
-          <XStack flexWrap="wrap" gap="$2">
-            {ALL_BADGES.map((badge) => {
-              const earned = earnedBadges.find((b) => b.id === badge.id);
-              return (
-                <Card
-                  key={badge.id}
-                  padding="$3"
-                  backgroundColor={earned ? '$accent' : '$backgroundHover'}
-                  bordered
-                  width="48%"
-                  opacity={earned ? 1 : 0.5}
-                >
-                  <YStack alignItems="center" gap="$1">
-                    <Text fontSize={32}>{badge.emoji}</Text>
-                    <Text
-                      fontSize="$3"
-                      fontWeight="600"
-                      color={earned ? '$accentText' : '$textSecondary'}
-                      textAlign="center"
-                    >
-                      {badge.title}
-                    </Text>
-                    <Text
-                      fontSize="$1"
-                      color={earned ? '$accentText' : '$textSecondary'}
-                      textAlign="center"
-                    >
-                      {badge.description}
-                    </Text>
-                  </YStack>
-                </Card>
-              );
-            })}
-          </XStack>
-        </YStack>
+        <Eyebrow>BADGES · 3 EARNED</Eyebrow>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8, marginBottom: 18 }}>
+          <BadgeCell emoji="🎙" name="Read-back Pro" earned />
+          <BadgeCell emoji="🔥" name="7-day streak" earned />
+          <BadgeCell emoji="✈" name="100 lessons" earned />
+          <BadgeCell emoji="🏆" name="ICAO L4" />
+          <BadgeCell emoji="👑" name="League Capt." />
+          <BadgeCell emoji="⚡" name="Speed run" />
+        </View>
 
-        <Separator />
-
-        {/* Settings */}
-        <YStack gap="$2">
-          <H3 color="$text">Ayarlar</H3>
-
-          <Card
-            padding="$3"
-            backgroundColor="$surface"
-            bordered
+        {/* Settings rows */}
+        <Eyebrow>ACCOUNT</Eyebrow>
+        <View style={{ marginTop: 8, gap: 8, marginBottom: 18 }}>
+          <SettingsRow
+            icon="🌐"
+            label="Language"
+            value={lang === 'tr' ? '🇹🇷 Türkçe' : lang === 'en' ? '🇬🇧 English' : `🌐 ${lang.toUpperCase()}`}
             onPress={() => router.push('/settings/language')}
-            pressStyle={{ scale: 0.98 }}
-          >
-            <XStack gap="$2" alignItems="center" justifyContent="space-between">
-              <YStack flex={1}>
-                <Text fontSize="$3" color="$textSecondary">Dil · Language</Text>
-                <Text fontSize="$5" fontWeight="600" color="$text">
-                  {lang === 'tr' ? '🇹🇷 Türkçe' : lang === 'en' ? '🇬🇧 English' : `🌐 ${lang.toUpperCase()}`}
-                </Text>
-                <Text fontSize="$2" color="$textSecondary">
-                  20 dil destekleniyor →
-                </Text>
-              </YStack>
-              <Text fontSize="$5" color="$primary">→</Text>
-            </XStack>
-          </Card>
+          />
+          <SettingsRow
+            icon="✈"
+            label="Test sınavlarım"
+            value="ICAO 4 · SHGM"
+            onPress={() => router.push('/exam')}
+          />
+          <SettingsRow
+            icon="💼"
+            label="Havayolu mülakatları"
+            value="31 carrier"
+            onPress={() => router.push('/exam/airlines')}
+          />
+        </View>
 
-          <Card padding="$3" backgroundColor="$surface" bordered>
-            <YStack gap="$2">
-              <Text fontSize="$3" color="$textSecondary">Günlük hedef</Text>
-              <Text fontSize="$5" fontWeight="600" color="$text">
-                {dailyGoal ?? 15} dakika
-              </Text>
-              <Button
-                size="$3"
-                variant="outlined"
-                onPress={() => router.push('/(auth)/onboarding/goals')}
-              >
-                Değiştir
-              </Button>
-            </YStack>
-          </Card>
-        </YStack>
-
-        <Separator />
-
-        {/* Shop */}
-        <Card
-          padding="$4"
-          backgroundColor="$accent"
-          onPress={() => router.push('/shop')}
-          pressStyle={{ scale: 0.98 }}
-        >
-          <XStack gap="$3" alignItems="center">
-            <Text fontSize={32}>🪙</Text>
-            <YStack flex={1}>
-              <Text fontSize="$5" fontWeight="700" color="$accentText">
-                Mağaza
-              </Text>
-              <Text fontSize="$3" color="$accentText">
-                Streak freeze, ekstra can, XP boost
-              </Text>
-            </YStack>
-            <Text fontSize="$5" color="$accentText">
-              →
-            </Text>
-          </XStack>
-        </Card>
-
-        {/* Premium */}
-        <Card padding="$4" backgroundColor="$warning">
-          <YStack gap="$2">
-            <Text fontSize="$5" fontWeight="700" color="$primaryText">
-              🚀 Premium'a geç
-            </Text>
-            <Text fontSize="$3" color="$primaryText">
-              Sınırsız ders, AI konuşma, ICAO 4 simülatör
-            </Text>
-            <Button
-              size="$4"
-              backgroundColor="$primaryText"
-              color="$warning"
-              onPress={() => router.push('/paywall')}
-            >
-              Planları gör →
-            </Button>
-          </YStack>
-        </Card>
-
-        <Separator />
-
-        <YStack gap="$2">
-          <Button variant="outlined" onPress={handleSignOut}>
-            {t('profile.signOut', 'Çıkış yap')}
-          </Button>
-          <Text fontSize="$1" color="$textSecondary" textAlign="center">
-            AirSpeak v0.1.0 · KVKK · Üyelik Sözleşmesi
-          </Text>
-        </YStack>
-      </YStack>
-    </ScrollView>
+        {/* Sign out */}
+        <Button3D variant="ghost" fullWidth onPress={handleSignOut}>
+          Sign out
+        </Button3D>
+      </ScrollView>
+    </View>
   );
 }
 
-function StatCard({ emoji, label, value }: { emoji: string; label: string; value: string }) {
+function StatCell({ label, value, accent }: { label: string; value: string; accent: string }) {
   return (
-    <Card flex={1} padding="$3" backgroundColor="$surface" bordered>
-      <YStack alignItems="center" gap="$1">
-        <Text fontSize={28}>{emoji}</Text>
-        <Text fontSize="$5" fontWeight="700" color="$primary">
-          {value}
-        </Text>
-        <Text fontSize="$2" color="$textSecondary">
-          {label}
-        </Text>
-      </YStack>
-    </Card>
+    <View
+      style={{
+        flex: 1,
+        minWidth: '47%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 14,
+        borderWidth: 1.5,
+        borderColor: '#DCE0E8',
+        borderBottomWidth: 4,
+        padding: 14,
+      }}
+    >
+      <Eyebrow>{label}</Eyebrow>
+      <Text
+        style={{
+          fontFamily: FONTS.display,
+          fontSize: 28,
+          fontWeight: '700',
+          color: accent,
+          letterSpacing: -0.56,
+          marginTop: 4,
+          lineHeight: 30,
+        }}
+      >
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+function BadgeCell({
+  emoji,
+  name,
+  earned,
+}: {
+  emoji: string;
+  name: string;
+  earned?: boolean;
+}) {
+  return (
+    <View
+      style={{
+        width: '30%',
+        backgroundColor: earned ? '#FFFFFF' : '#F4F2EC',
+        borderRadius: 14,
+        borderWidth: 1.5,
+        borderColor: earned ? '#DCE0E8' : '#E9E6DD',
+        padding: 12,
+        alignItems: 'center',
+        opacity: earned ? 1 : 0.5,
+      }}
+    >
+      <Text style={{ fontSize: 32, marginBottom: 4 }}>{emoji}</Text>
+      <Mono style={{ fontSize: 10, color: '#5A6478', textAlign: 'center', letterSpacing: 0.8 }}>
+        {name}
+      </Mono>
+    </View>
+  );
+}
+
+function SettingsRow({
+  icon,
+  label,
+  value,
+  onPress,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  onPress: () => void;
+}) {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={onPress}
+      style={{
+        backgroundColor: '#FFFFFF',
+        borderRadius: 14,
+        borderWidth: 1.5,
+        borderColor: '#DCE0E8',
+        padding: 14,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+      }}
+    >
+      <Text style={{ fontSize: 22 }}>{icon}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>{label}</Text>
+        <Body style={{ fontSize: 12, marginTop: 2 }}>{value}</Body>
+      </View>
+      <Text style={{ fontSize: 20, color: '#8A93A6' }}>›</Text>
+    </TouchableOpacity>
   );
 }

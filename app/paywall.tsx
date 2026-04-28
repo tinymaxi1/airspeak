@@ -1,194 +1,346 @@
-import { ScrollView } from 'react-native';
-import { YStack, XStack, H1, H2, H3, Paragraph, Card, Button, Text } from 'tamagui';
-import { router } from 'expo-router';
+/**
+ * Paywall Screen — Pro Pilot (cinematic gold-on-navy)
+ *
+ * Tasarım birebir (screens-other.jsx PaywallScreen):
+ * - Navy-900 bg + gold radial glow
+ * - PRO PILOT badge (gold border + crown)
+ * - "Unlimited flight hours." (44px Space Grotesk + gold "flight hours")
+ * - Feature comparison list (FREE / PRO columns, gold pro values)
+ * - 3 plan cards (Annual selected w/ BEST VALUE, Monthly, Student)
+ * - Sticky CTA "Start 7-day trial"
+ */
 import { useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Defs, RadialGradient, Stop, Circle } from 'react-native-svg';
 import { track } from '@/lib/posthog';
+import {
+  Hero,
+  Body,
+  Eyebrow,
+  Mono,
+  FONTS,
+  Button3D,
+  TopoBackground,
+} from '@/components/airspeak';
 
-type Plan = 'monthly' | 'yearly' | 'student';
+interface PlanData {
+  id: 'annual' | 'monthly' | 'student';
+  name: string;
+  price: string;
+  sub: string;
+  badge?: string;
+}
 
-const PLANS: Record<
-  Plan,
-  { price: string; pricePerMonth: string; label: string; badge?: string; saving?: string }
-> = {
-  yearly: {
-    price: '₺2.499/yıl',
-    pricePerMonth: 'ayda ₺208',
-    label: 'Yıllık',
-    badge: '⭐ EN POPÜLER',
-    saving: '%40 indirim',
-  },
-  monthly: {
-    price: '₺349/ay',
-    pricePerMonth: '',
-    label: 'Aylık',
-  },
-  student: {
-    price: '₺1.499/yıl',
-    pricePerMonth: 'ayda ₺125',
-    label: 'Öğrenci yıllık',
-    badge: '🎓 .edu.tr',
-    saving: '%57 indirim',
-  },
-};
+const PLANS: PlanData[] = [
+  { id: 'annual', name: 'Annual', price: '₺2.499', sub: '₺208 / mo · save 50%', badge: 'BEST VALUE' },
+  { id: 'monthly', name: 'Monthly', price: '₺349', sub: '7-day free trial' },
+  { id: 'student', name: 'Student', price: '₺1.499 / yr', sub: '.edu.tr verify · ₺125 / mo' },
+];
 
 const FEATURES = [
-  { emoji: '🎙️', title: 'AI ile sınırsız konuş', desc: 'Pilot, ATC, mülakat rol oyna' },
-  { emoji: '✈️', title: 'ICAO 4 sözlü sınav', desc: '4 görev tipi, 6 alan rubric' },
-  { emoji: '🎯', title: 'Telaffuz analizi', desc: 'Kelime kelime feedback' },
-  { emoji: '📥', title: 'Offline indirme', desc: 'Uçakta da çalış' },
+  { name: 'AI Co-pilot conversations', free: '5/day', pro: 'Unlimited' },
+  { name: 'Hearts (mistakes)', free: '5/day', pro: 'Unlimited' },
+  { name: 'ICAO 4 mock exams', free: '1/month', pro: 'Unlimited' },
+  { name: 'Examiner-graded recordings', free: '—', pro: '✓' },
+  { name: 'Offline lessons', free: '—', pro: '✓' },
+  { name: 'Adaptive review of mistakes', free: '—', pro: '✓' },
 ];
 
 export default function PaywallScreen() {
-  const [selected, setSelected] = useState<Plan>('yearly');
+  const [selectedPlan, setSelectedPlan] = useState<PlanData['id']>('annual');
 
-  const handleStart = () => {
-    track('trial_started', { product: selected });
-    // Mock: gerçek RevenueCat entegrasyonu Sprint 6'da
-    alert('Trial başladı! (Mock - RevenueCat Sprint 6\'da bağlanacak)');
-    router.back();
-  };
-
-  const handleClose = () => {
-    track('paywall_dismissed', { trigger: 'manual' });
+  const handleSubscribe = () => {
+    track('paywall_subscribe', { plan: selectedPlan });
+    // TODO: RevenueCat purchase flow
     router.back();
   };
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <YStack padding="$4" gap="$4" backgroundColor="$background">
-        <XStack justifyContent="flex-end">
-          <Button size="$2" variant="outlined" onPress={handleClose}>
-            ✕
-          </Button>
-        </XStack>
-
-        <YStack alignItems="center" gap="$2">
-          <Text fontSize={48}>🚀</Text>
-          <H1 color="$text" textAlign="center">
-            Sınırsız öğren
-          </H1>
-          <Paragraph color="$textSecondary" textAlign="center">
-            ICAO 4 sınavına hazır olmak için 5 ay yeter.
-          </Paragraph>
-        </YStack>
-
-        {/* Features */}
-        <YStack gap="$2">
-          {FEATURES.map((f) => (
-            <Card key={f.title} padding="$4" backgroundColor="$surface" bordered>
-              <XStack gap="$3" alignItems="center">
-                <Text fontSize="$7">{f.emoji}</Text>
-                <YStack flex={1}>
-                  <Text fontSize="$5" fontWeight="600" color="$text">
-                    {f.title}
-                  </Text>
-                  <Text fontSize="$3" color="$textSecondary">
-                    {f.desc}
-                  </Text>
-                </YStack>
-              </XStack>
-            </Card>
-          ))}
-        </YStack>
-
-        <H3 color="$text" marginTop="$2">
-          Planını seç:
-        </H3>
-
-        {/* Plans */}
-        <YStack gap="$2">
-          {(['yearly', 'monthly', 'student'] as Plan[]).map((planKey) => {
-            const plan = PLANS[planKey];
-            const isSelected = selected === planKey;
-            return (
-              <Card
-                key={planKey}
-                bordered
-                padding="$4"
-                backgroundColor={isSelected ? '$primary' : '$surface'}
-                borderColor={isSelected ? '$primary' : '$border'}
-                onPress={() => setSelected(planKey)}
-                pressStyle={{ scale: 0.98 }}
-              >
-                <YStack gap="$2">
-                  <XStack justifyContent="space-between" alignItems="center">
-                    <YStack>
-                      <XStack gap="$2" alignItems="center">
-                        <Text
-                          fontSize="$5"
-                          fontWeight="700"
-                          color={isSelected ? '$primaryText' : '$text'}
-                        >
-                          {plan.label}
-                        </Text>
-                        {plan.badge && (
-                          <Card
-                            backgroundColor="$warning"
-                            paddingHorizontal="$2"
-                            paddingVertical="$1"
-                          >
-                            <Text fontSize="$1" color="$primaryText" fontWeight="600">
-                              {plan.badge}
-                            </Text>
-                          </Card>
-                        )}
-                      </XStack>
-                      <Text
-                        fontSize="$6"
-                        fontWeight="700"
-                        color={isSelected ? '$primaryText' : '$primary'}
-                      >
-                        {plan.price}
-                      </Text>
-                      {plan.pricePerMonth && (
-                        <Text
-                          fontSize="$3"
-                          color={isSelected ? '$primaryText' : '$textSecondary'}
-                        >
-                          {plan.pricePerMonth} {plan.saving && `· ${plan.saving}`}
-                        </Text>
-                      )}
-                    </YStack>
-                    {isSelected && (
-                      <Text fontSize="$6" color="$primaryText">
-                        ✓
-                      </Text>
-                    )}
-                  </XStack>
-                </YStack>
-              </Card>
-            );
-          })}
-        </YStack>
-
-        {/* Guarantees */}
-        <Card padding="$3" backgroundColor="$successSubtle">
-          <YStack gap="$1">
-            <Text color="$text" fontSize="$3">
-              ✅ İlk 7 gün ücretsiz
-            </Text>
-            <Text color="$text" fontSize="$3">
-              ✅ Tek dokunuşla iptal
-            </Text>
-            <Text color="$text" fontSize="$3">
-              ✅ Trial bitmeden hatırlatma
-            </Text>
-          </YStack>
-        </Card>
-
-        <Button
-          size="$5"
-          backgroundColor="$warning"
-          color="$primaryText"
-          onPress={handleStart}
+    <View style={{ flex: 1, backgroundColor: '#0F1E47' }}>
+      {/* Bg art */}
+      <View style={{ position: 'absolute', inset: 0 }}>
+        <TopoBackground />
+        <Svg
+          viewBox="0 0 393 850"
+          width="100%"
+          height="100%"
+          preserveAspectRatio="xMidYMid slice"
+          style={{ position: 'absolute', inset: 0 }}
         >
-          🟡 Ücretsiz başla →
-        </Button>
+          <Defs>
+            <RadialGradient id="paywallGlow" cx="50%" cy="22%" r="50%">
+              <Stop offset="0%" stopColor="rgba(255,213,107,0.3)" />
+              <Stop offset="100%" stopColor="rgba(255,213,107,0)" />
+            </RadialGradient>
+          </Defs>
+          <Circle cx={196} cy={180} r={180} fill="url(#paywallGlow)" />
+        </Svg>
+      </View>
 
-        <Text fontSize="$1" color="$textSecondary" textAlign="center">
-          Üyelik şartları · Gizlilik · KVKK
+      <SafeAreaView edges={['top']} style={{ flex: 1 }}>
+        {/* Top bar */}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+          }}
+        >
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={{ fontSize: 24, color: 'rgba(255,255,255,0.7)' }}>✕</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={{ fontFamily: FONTS.body600, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
+              Restore
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+        >
+          {/* HERO */}
+          <View style={{ alignItems: 'center', marginTop: 12, marginBottom: 24 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 8,
+                backgroundColor: 'rgba(255,213,107,0.12)',
+                borderWidth: 1,
+                borderColor: '#FFD56B',
+                paddingHorizontal: 14,
+                paddingVertical: 6,
+                borderRadius: 999,
+                marginBottom: 14,
+              }}
+            >
+              <Text style={{ fontSize: 14, color: '#FFD56B' }}>👑</Text>
+              <Mono style={{ fontSize: 11, letterSpacing: 1.98, color: '#FFD56B' }}>
+                PRO PILOT
+              </Mono>
+            </View>
+
+            <Text
+              style={{
+                fontFamily: FONTS.display,
+                fontSize: 44,
+                fontWeight: '700',
+                color: '#FFFFFF',
+                lineHeight: 43,
+                letterSpacing: -1.32,
+                textAlign: 'center',
+              }}
+            >
+              Unlimited{'\n'}
+              <Text style={{ color: '#FFD56B' }}>flight hours.</Text>
+            </Text>
+
+            <Body
+              color="rgba(255,255,255,0.7)"
+              style={{
+                fontSize: 14,
+                maxWidth: 280,
+                marginTop: 12,
+                textAlign: 'center',
+              }}
+            >
+              The full ICAO 4 path, AI co-pilot 24/7, examiner-graded mock tests.
+            </Body>
+          </View>
+
+          {/* Feature comparison header */}
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 16,
+              paddingHorizontal: 0,
+              paddingBottom: 8,
+              borderBottomWidth: 1,
+              borderBottomColor: 'rgba(255,255,255,0.18)',
+            }}
+          >
+            <View style={{ flex: 1 }} />
+            <View style={{ width: 56, alignItems: 'center' }}>
+              <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', letterSpacing: 0.9 }}>
+                FREE
+              </Mono>
+            </View>
+            <View style={{ width: 56, alignItems: 'center' }}>
+              <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 0.9 }}>
+                PRO
+              </Mono>
+            </View>
+          </View>
+
+          {/* Feature comparison rows */}
+          <View style={{ marginBottom: 20 }}>
+            {FEATURES.map((f, i, arr) => (
+              <View
+                key={i}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 16,
+                  paddingVertical: 12,
+                  borderBottomWidth: i < arr.length - 1 ? 1 : 0,
+                  borderBottomColor: 'rgba(255,255,255,0.08)',
+                }}
+              >
+                <Text style={{ flex: 1, fontFamily: FONTS.body600, fontSize: 14, color: '#FFFFFF' }}>
+                  {f.name}
+                </Text>
+                <Text
+                  style={{
+                    width: 56,
+                    textAlign: 'center',
+                    fontFamily: FONTS.body,
+                    fontSize: 12,
+                    color: 'rgba(255,255,255,0.5)',
+                  }}
+                >
+                  {f.free}
+                </Text>
+                <Text
+                  style={{
+                    width: 56,
+                    textAlign: 'center',
+                    fontFamily: FONTS.body700,
+                    fontSize: 13,
+                    color: '#FFD56B',
+                  }}
+                >
+                  {f.pro}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Plans */}
+          <View style={{ gap: 10, marginBottom: 16 }}>
+            {PLANS.map((p) => (
+              <PlanCard
+                key={p.id}
+                plan={p}
+                selected={selectedPlan === p.id}
+                onPress={() => setSelectedPlan(p.id)}
+              />
+            ))}
+          </View>
+
+          {/* Disclaimer */}
+          <Body
+            color="rgba(255,255,255,0.4)"
+            style={{ fontSize: 11, textAlign: 'center', marginBottom: 8 }}
+          >
+            Cancel anytime. Auto-renew unless canceled 24h before period ends.
+          </Body>
+        </ScrollView>
+
+        {/* Sticky CTA */}
+        <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.12)' }}>
+          <View style={{ padding: 16 }}>
+            <Button3D
+              variant="primary"
+              fullWidth
+              onPress={handleSubscribe}
+              style={{ backgroundColor: '#FFD56B', borderBottomColor: '#F2C14E' }}
+              textStyle={{ color: '#0A1430' }}
+            >
+              Start 7-day free trial
+            </Button3D>
+          </View>
+        </SafeAreaView>
+      </SafeAreaView>
+    </View>
+  );
+}
+
+function PlanCard({
+  plan,
+  selected,
+  onPress,
+}: {
+  plan: PlanData;
+  selected: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={onPress}
+      style={{
+        backgroundColor: selected ? 'rgba(255,213,107,0.12)' : 'rgba(255,255,255,0.06)',
+        borderRadius: 14,
+        borderWidth: selected ? 2 : 1.5,
+        borderColor: selected ? '#FFD56B' : 'rgba(255,255,255,0.18)',
+        padding: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 14,
+        position: 'relative',
+      }}
+    >
+      {plan.badge && (
+        <View
+          style={{
+            position: 'absolute',
+            top: -10,
+            right: 12,
+            backgroundColor: '#FFD56B',
+            paddingHorizontal: 8,
+            paddingVertical: 3,
+            borderRadius: 6,
+          }}
+        >
+          <Mono style={{ fontSize: 9, color: '#0A1430', letterSpacing: 0.81 }}>{plan.badge}</Mono>
+        </View>
+      )}
+
+      <View
+        style={{
+          width: 24,
+          height: 24,
+          borderRadius: 12,
+          borderWidth: 2,
+          borderColor: selected ? '#FFD56B' : 'rgba(255,255,255,0.4)',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {selected && <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#FFD56B' }} />}
+      </View>
+
+      <View style={{ flex: 1 }}>
+        <Text
+          style={{
+            fontFamily: FONTS.body800,
+            fontSize: 17,
+            color: '#FFFFFF',
+          }}
+        >
+          {plan.name}
         </Text>
-      </YStack>
-    </ScrollView>
+        <Body color="rgba(255,255,255,0.6)" style={{ fontSize: 12, marginTop: 2 }}>
+          {plan.sub}
+        </Body>
+      </View>
+
+      <Text
+        style={{
+          fontFamily: FONTS.display,
+          fontSize: 20,
+          fontWeight: '700',
+          color: selected ? '#FFD56B' : '#FFFFFF',
+          letterSpacing: -0.4,
+        }}
+      >
+        {plan.price}
+      </Text>
+    </TouchableOpacity>
   );
 }
