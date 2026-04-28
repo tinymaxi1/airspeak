@@ -24,6 +24,13 @@ import path from 'path';
  * Linux: ~/.local
  * Bu dizinde argostranslate kurulu, subprocess de bulabilir olmalı.
  */
+/**
+ * Argos venv path — `/tmp/argos-venv/bin/python3` ile çağırılır.
+ * Setup: `python3 -m venv /tmp/argos-venv && /tmp/argos-venv/bin/pip install argostranslate`
+ * Sonra `python install-argos-langs.py` veya inline package install.
+ */
+const ARGOS_VENV_PYTHON = '/tmp/argos-venv/bin/python3';
+
 function getPythonEnv(): NodeJS.ProcessEnv {
   const home = os.homedir();
   const pyVersions = ['3.14', '3.13', '3.12', '3.11', '3.10', '3.9', '3.8'];
@@ -45,12 +52,23 @@ function getPythonEnv(): NodeJS.ProcessEnv {
   };
 }
 
+function getPythonExec(): string {
+  // Önce venv'i tercih et
+  try {
+    require('fs').accessSync(ARGOS_VENV_PYTHON);
+    return ARGOS_VENV_PYTHON;
+  } catch {
+    return 'python3';
+  }
+}
+
 export const ARGOS_SUPPORTED = [
   'en', 'tr', 'ar', 'fa', 'de', 'fr', 'es', 'it', 'pt', 'nl',
-  'pl', 'el', 'zh', 'ja', 'ko', 'hi', 'id', 'ru',
+  'pl', 'el', 'zh', 'ja', 'ko', 'hi', 'id', 'ru', 'th', 'ms',
 ];
 
-const ARGOS_UNSUPPORTED = ['th', 'ms'];
+// Tüm 18 dil + th + ms artık Argos'ta destekleniyor (paketler 2026'da eklendi).
+const ARGOS_UNSUPPORTED: string[] = [];
 
 export function isSupportedByArgos(lang: string): boolean {
   return !ARGOS_UNSUPPORTED.includes(lang);
@@ -78,7 +96,7 @@ print(argostranslate.translate.translate(text, '${sourceLang}', '${targetLang}')
 `.trim();
 
   return new Promise((resolve, reject) => {
-    const proc = spawn('python3', ['-c', pythonScript], {
+    const proc = spawn(getPythonExec(), ['-c', pythonScript], {
       env: getPythonEnv(),
       cwd: os.homedir(), // proje dizini Python sys.path'ini kirletmesin
     });
@@ -123,7 +141,7 @@ print(json.dumps(results))
 `.trim();
 
   return new Promise((resolve, reject) => {
-    const proc = spawn('python3', ['-c', pythonScript], {
+    const proc = spawn(getPythonExec(), ['-c', pythonScript], {
       env: getPythonEnv(),
       cwd: os.homedir(), // proje dizini Python sys.path'ini kirletmesin
     });
