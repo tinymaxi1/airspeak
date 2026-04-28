@@ -10,7 +10,8 @@
  * - Sky info banner: privacy notice
  * - Join cohort + I'm flying solo
  */
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,13 +19,48 @@ import {
   Eyebrow,
   Mono,
   FONTS,
+  Body,
   Button3D,
 } from '@/components/airspeak';
-
-const CODE = ['T', 'K', '4', '7', '·', 'O', 'P', 'S'];
+import { useSquadronStore } from '@/stores/squadronStore';
+import { findCohortByCode, normalizeCode, COHORTS } from '@/features/squadron/cohorts';
 
 export default function SquadronPairingScreen() {
   const { t } = useTranslation();
+  const joinCohort = useSquadronStore((s) => s.joinCohort);
+  const [input, setInput] = useState('');
+  const normalized = normalizeCode(input);
+  const cohort = findCohortByCode(normalized);
+  const isValid = cohort !== undefined;
+
+  const handleJoin = () => {
+    if (!isValid || !cohort) {
+      Alert.alert(
+        t('screens.squadron.invalidTitle', 'Kod doğrulanamadı'),
+        t('screens.squadron.invalidBody', 'Bu kod şu an aktif bir squadron ile eşleşmiyor.'),
+      );
+      return;
+    }
+    const success = joinCohort(normalized);
+    if (success) {
+      Alert.alert(
+        t('screens.squadron.joinedTitle', '🎉 Katıldın!'),
+        t('screens.squadron.joinedBody', '{{name}} squadron\'una hoş geldin.', { name: cohort.name }),
+        [{ text: 'OK', onPress: () => router.back() }],
+      );
+    }
+  };
+
+  // Display: girilen kodu 8 kutuya yay, eksik kalanı boş göster
+  const displayChars: string[] = [];
+  for (let i = 0; i < 8; i++) {
+    if (i === 4) {
+      displayChars.push('·');
+    } else {
+      const realIdx = i < 4 ? i : i - 1;
+      displayChars.push(normalized[realIdx] ?? '');
+    }
+  }
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
@@ -97,8 +133,24 @@ export default function SquadronPairingScreen() {
           }}
         >
           <Eyebrow>{t('screens.squadron.code')}</Eyebrow>
+          {/* Hidden TextInput — odaklanan input gerçek karakterleri toplar */}
+          <TextInput
+            value={input}
+            onChangeText={setInput}
+            autoCapitalize="characters"
+            placeholder="TK47OPS"
+            placeholderTextColor="transparent"
+            maxLength={9}
+            style={{
+              position: 'absolute',
+              opacity: 0.01,
+              height: 56,
+              width: '100%',
+              top: 50,
+            }}
+          />
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
-            {CODE.map((c, i) => (
+            {displayChars.map((c, i) => (
               <View
                 key={i}
                 style={{
@@ -106,8 +158,8 @@ export default function SquadronPairingScreen() {
                   height: 56,
                   borderRadius: 10,
                   borderWidth: c === '·' ? 0 : 2,
-                  borderColor: '#B8BFCC',
-                  backgroundColor: c === '·' ? 'transparent' : i < 4 ? '#EDEFF3' : '#FAFAF7',
+                  borderColor: c === '·' ? 'transparent' : isValid ? '#2DBE6C' : c ? '#0F1E47' : '#B8BFCC',
+                  backgroundColor: c === '·' ? 'transparent' : c ? '#EDEFF3' : '#FAFAF7',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
@@ -116,10 +168,10 @@ export default function SquadronPairingScreen() {
                   style={{
                     fontFamily: FONTS.mono700,
                     fontSize: 22,
-                    color: c === '·' ? '#8A93A6' : i < 4 ? '#0E1116' : '#8A93A6',
+                    color: c === '·' ? '#8A93A6' : c ? '#0E1116' : '#8A93A6',
                   }}
                 >
-                  {c === '·' ? '·' : i < 4 ? c : ''}
+                  {c || ''}
                 </Text>
               </View>
             ))}
@@ -132,67 +184,83 @@ export default function SquadronPairingScreen() {
             }}
           >
             <Mono style={{ fontSize: 11, color: '#8A93A6' }}>{t('screens.squadron.codeHint')}</Mono>
-            <Text style={{ fontFamily: FONTS.body700, fontSize: 11, color: '#2DBE6C' }}>
-              {t('screens.squadron.verified')}
-            </Text>
+            {isValid ? (
+              <Text style={{ fontFamily: FONTS.body700, fontSize: 11, color: '#2DBE6C' }}>
+                {t('screens.squadron.verified')}
+              </Text>
+            ) : normalized.length === 8 ? (
+              <Text style={{ fontFamily: FONTS.body700, fontSize: 11, color: '#FB6D78' }}>
+                ● {t('screens.squadron.invalid', 'GEÇERSİZ')}
+              </Text>
+            ) : (
+              <Text style={{ fontFamily: FONTS.body700, fontSize: 11, color: '#8A93A6' }}>
+                {normalized.length}/8
+              </Text>
+            )}
           </View>
         </View>
 
-        {/* Match preview */}
-        <View
-          style={{
-            backgroundColor: '#FFFFFF',
-            borderRadius: 14,
-            borderWidth: 2,
-            borderColor: '#0F1E47',
-            borderBottomWidth: 4,
-            padding: 18,
-            marginTop: 14,
-          }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-            <View
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 14,
-                backgroundColor: '#06091A',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text
+        {/* Match preview — sadece valid cohort bulunduğunda */}
+        {cohort && (
+          <View
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: 14,
+              borderWidth: 2,
+              borderColor: '#2DBE6C',
+              borderBottomWidth: 4,
+              borderBottomColor: '#22A659',
+              padding: 18,
+              marginTop: 14,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+              <View
                 style={{
-                  fontFamily: FONTS.display,
-                  fontSize: 18,
-                  fontWeight: '700',
-                  color: '#FFFFFF',
+                  width: 56,
+                  height: 56,
+                  borderRadius: 14,
+                  backgroundColor: '#06091A',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                TK
-              </Text>
+                <Text
+                  style={{
+                    fontFamily: FONTS.display,
+                    fontSize: 18,
+                    fontWeight: '700',
+                    color: '#FFFFFF',
+                  }}
+                >
+                  {cohort.code.slice(0, 2)}
+                </Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 1.8 }}>
+                  {cohort.shortCode}
+                </Mono>
+                <Text
+                  style={{
+                    fontFamily: FONTS.display,
+                    fontSize: 17,
+                    fontWeight: '700',
+                    color: '#0E1116',
+                    marginTop: 2,
+                    lineHeight: 21,
+                  }}
+                >
+                  {cohort.name}
+                </Text>
+                <Body color="#5A6478" style={{ fontSize: 12, marginTop: 2 }}>
+                  {t('screens.squadron.academyDescDynamic', 'Cohort {{n}} · {{program}} · {{cadets}} öğrenci', {
+                    n: cohort.cohortNumber,
+                    program: cohort.programTr,
+                    cadets: cohort.cadetCount,
+                  })}
+                </Body>
+              </View>
             </View>
-            <View style={{ flex: 1 }}>
-              <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 1.8 }}>
-                TK·47·OPS
-              </Mono>
-              <Text
-                style={{
-                  fontFamily: FONTS.display,
-                  fontSize: 17,
-                  fontWeight: '700',
-                  color: '#0E1116',
-                  marginTop: 2,
-                  lineHeight: 21,
-                }}
-              >
-                {t('screens.squadron.academy')}
-              </Text>
-              <Text style={{ fontSize: 12, color: '#5A6478', marginTop: 2, fontFamily: FONTS.body }}>
-                {t('screens.squadron.academyDesc')}
-              </Text>
-            </View>
-          </View>
 
           <View
             style={{
@@ -203,6 +271,14 @@ export default function SquadronPairingScreen() {
             }}
           />
 
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderStyle: 'dashed',
+              borderColor: '#DCE0E8',
+              marginVertical: 14,
+            }}
+          />
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <View style={{ flex: 1 }}>
               <Eyebrow>{t('screens.squadron.instructor')}</Eyebrow>
@@ -214,7 +290,7 @@ export default function SquadronPairingScreen() {
                   marginTop: 4,
                 }}
               >
-                {t('screens.squadron.instructorName')}
+                {cohort.instructorTr}
               </Text>
             </View>
             <View style={{ flex: 1 }}>
@@ -227,7 +303,7 @@ export default function SquadronPairingScreen() {
                   marginTop: 4,
                 }}
               >
-                {t('screens.squadron.programValue')}
+                {cohort.programLength}
               </Text>
             </View>
             <View style={{ flex: 1 }}>
@@ -240,11 +316,48 @@ export default function SquadronPairingScreen() {
                   marginTop: 4,
                 }}
               >
-                {t('screens.squadron.endsValue')}
+                {cohort.endsOn}
               </Text>
             </View>
           </View>
-        </View>
+          </View>
+        )}
+
+        {/* Geçerli kod yoksa öneriler */}
+        {!cohort && normalized.length > 0 && (
+          <View
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderWidth: 1.5,
+              borderColor: '#DCE0E8',
+              borderRadius: 12,
+              padding: 14,
+              marginTop: 14,
+            }}
+          >
+            <Mono style={{ fontSize: 10, color: '#FB6D78', letterSpacing: 1.2 }}>
+              {t('screens.squadron.notFound', 'KOD BULUNAMADI')}
+            </Mono>
+            <Body color="#5A6478" style={{ fontSize: 13, marginTop: 6, lineHeight: 19 }}>
+              {t('screens.squadron.tryThese', 'Mevcut squadron kodları:')}
+            </Body>
+            <View style={{ marginTop: 8, gap: 4 }}>
+              {COHORTS.map((c) => (
+                <TouchableOpacity key={c.code} onPress={() => setInput(c.code)}>
+                  <Text
+                    style={{
+                      fontFamily: FONTS.mono700,
+                      fontSize: 13,
+                      color: '#0F1E47',
+                    }}
+                  >
+                    • {c.code} — {c.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
 
         {/* Privacy banner */}
         <View
@@ -273,7 +386,7 @@ export default function SquadronPairingScreen() {
         </View>
 
         <View style={{ marginTop: 18 }}>
-          <Button3D variant="primary" fullWidth onPress={() => router.back()}>
+          <Button3D variant="primary" fullWidth disabled={!isValid} onPress={handleJoin}>
             {t('screens.squadron.join')}
           </Button3D>
         </View>

@@ -529,7 +529,15 @@
       "endsValue": "2026-08-22",
       "privacy": "Eğitmenin haftalık ilerlemeni, mock skorlarını ve zayıf descriptor'larını görür. Pronunciation kayıtların paylaşılmaz.",
       "join": "Cohort'a katıl",
-      "solo": "Tek başıma uçuyorum"
+      "solo": "Tek başıma uçuyorum",
+      "academyDescDynamic": "Cohort {{n}} · {{program}} · {{cadets}} öğrenci",
+      "invalidTitle": "Kod doğrulanamadı",
+      "invalidBody": "Bu kod şu an aktif bir squadron ile eşleşmiyor.",
+      "joinedTitle": "🎉 Katıldın!",
+      "joinedBody": "{{name}} squadron'una hoş geldin.",
+      "invalid": "GEÇERSİZ",
+      "notFound": "KOD BULUNAMADI",
+      "tryThese": "Mevcut squadron kodları:"
     },
     "levelTest": {
       "step": "ADIM 3 / 6",
