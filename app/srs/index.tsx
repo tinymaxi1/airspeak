@@ -1,7 +1,18 @@
-import { ScrollView } from 'react-native';
-import { YStack, XStack, H2, H3, Paragraph, Card, Button, Text, Progress } from 'tamagui';
-import { router } from 'expo-router';
+/**
+ * SRS Review Screen — Spaced Repetition flashcard tekrar
+ *
+ * Yeni tasarım (airspeak design system):
+ * - LessonChrome (X + progress + hearts)
+ * - Eyebrow: NEW veya REVIEW
+ * - Term card (büyük, ortalı): kelime + IPA + kategori
+ * - Cevap aç → çeviri + tanım + örnek cümle
+ * - 4 quality buton: Yeniden / Zor / İyi / Kolay
+ */
 import { useEffect, useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
 import { getVocabForRole } from '@/features/lessons/seed';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -10,15 +21,26 @@ import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
 import { isNewCard } from '@/features/srs/algorithm';
 import { track } from '@/lib/posthog';
+import {
+  LessonChrome,
+  Eyebrow,
+  Mono,
+  Body,
+  FONTS,
+  Button3D,
+} from '@/components/airspeak';
 
-const QUALITY_OPTIONS = [
-  { value: 1, label: 'Yeniden', emoji: '😵', color: '$danger' as const },
-  { value: 3, label: 'Zor', emoji: '😬', color: '$warning' as const },
-  { value: 4, label: 'İyi', emoji: '🙂', color: '$accent' as const },
-  { value: 5, label: 'Kolay', emoji: '😎', color: '$success' as const },
-];
+interface QualityOpt {
+  value: 1 | 3 | 4 | 5;
+  label: string;
+  emoji: string;
+  bg: string;
+  fg: string;
+  bottom: string;
+}
 
 export default function SrsReviewScreen() {
+  const { t } = useTranslation();
   const ensureCard = useSrsStore((s) => s.ensureCard);
   const reviewTerm = useSrsStore((s) => s.reviewTerm);
   const cards = useSrsStore((s) => s.cards);
@@ -34,7 +56,6 @@ export default function SrsReviewScreen() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [reviewedCount, setReviewedCount] = useState(0);
 
-  // İlk yüklemede SRS due + yeni kartları topla
   useEffect(() => {
     const due: VocabularyTerm[] = [];
     const newCards: VocabularyTerm[] = [];
@@ -49,75 +70,140 @@ export default function SrsReviewScreen() {
       }
     }
 
-    // Önce due (zaten gördüğü), sonra max 5 yeni (öğrenmek üzere)
     const session = [...due, ...newCards.slice(0, 5)];
-    // Karıştır
     setQueue(session.sort(() => Math.random() - 0.5));
   }, []);
 
   const total = queue.length;
   const term = queue[currentIdx];
 
+  const QUALITY_OPTS: QualityOpt[] = [
+    { value: 1, label: t('screens.srs.again', 'Yeniden'), emoji: '😵', bg: '#E63946', fg: '#FFFFFF', bottom: '#C8202E' },
+    { value: 3, label: t('screens.srs.hard', 'Zor'), emoji: '😬', bg: '#FF7847', fg: '#FFFFFF', bottom: '#E5602F' },
+    { value: 4, label: t('screens.srs.good', 'İyi'), emoji: '🙂', bg: '#2EA8FF', fg: '#FFFFFF', bottom: '#1B8FE0' },
+    { value: 5, label: t('screens.srs.easy', 'Kolay'), emoji: '😎', bg: '#2DBE6C', fg: '#FFFFFF', bottom: '#22A659' },
+  ];
+
+  // ─── EMPTY STATE ───
   if (total === 0) {
     return (
-      <YStack flex={1} padding="$4" gap="$4" backgroundColor="$background" justifyContent="center">
-        <Card padding="$5" backgroundColor="$accent" alignItems="center">
-          <YStack gap="$3" alignItems="center">
-            <Text fontSize={64}>🎉</Text>
-            <H2 color="$accentText" textAlign="center">
-              Tüm tekrar tamam!
-            </H2>
-            <Paragraph color="$accentText" textAlign="center">
-              Bugün için kart kalmadı. Yarın yeni terimler hazır olacak.
-            </Paragraph>
-          </YStack>
-        </Card>
-        <Button
-          size="$5"
-          backgroundColor="$primary"
-          color="$primaryText"
-          onPress={() => router.replace('/(tabs)/home')}
-        >
-          Ana sayfa
-        </Button>
-      </YStack>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#0F1E47',
+          justifyContent: 'center',
+          padding: 24,
+          gap: 24,
+        }}
+      >
+        <View style={{ alignItems: 'center', gap: 12 }}>
+          <Text style={{ fontSize: 80 }}>🎉</Text>
+          <Mono style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', letterSpacing: 2.16 }}>
+            {t('screens.srs.allDoneEyebrow', 'TEKRAR KUYRUĞU BOŞ')}
+          </Mono>
+          <Text
+            style={{
+              fontFamily: FONTS.display,
+              fontSize: 32,
+              fontWeight: '700',
+              color: '#FFFFFF',
+              letterSpacing: -0.96,
+              textAlign: 'center',
+            }}
+          >
+            {t('screens.srs.allDoneTitle', 'Tüm tekrarlar tamam!')}
+          </Text>
+          <Body color="rgba(255,255,255,0.85)" style={{ fontSize: 15, textAlign: 'center' }}>
+            {t('screens.srs.allDoneSub', 'Yarın yeni terimler ve tekrarlar hazır olacak.')}
+          </Body>
+        </View>
+        <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/home')}>
+          {t('screens.srs.backHome', 'Ana sayfa →')}
+        </Button3D>
+      </View>
     );
   }
 
+  // ─── SESSION COMPLETE ───
   if (!term) {
-    // Session bitti
     return (
-      <YStack flex={1} padding="$4" gap="$4" backgroundColor="$background" justifyContent="center">
-        <Card padding="$5" backgroundColor="$success" alignItems="center">
-          <YStack gap="$3" alignItems="center">
-            <Text fontSize={64}>✅</Text>
-            <H2 color="$primaryText" textAlign="center">
-              Süper iş!
-            </H2>
-            <Text fontSize="$5" color="$primaryText">
-              {reviewedCount} terim tekrar edildi
-            </Text>
-            <Text fontSize="$3" color="$primaryText">
-              +{reviewedCount * 4} XP kazandın
-            </Text>
-          </YStack>
-        </Card>
-        <Button
-          size="$5"
-          backgroundColor="$primary"
-          color="$primaryText"
-          onPress={() => router.replace('/(tabs)/home')}
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#0F1E47',
+          justifyContent: 'center',
+          padding: 24,
+          gap: 24,
+        }}
+      >
+        <View style={{ alignItems: 'center', gap: 12 }}>
+          <Text style={{ fontSize: 80 }}>✅</Text>
+          <Mono style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', letterSpacing: 2.16 }}>
+            {t('screens.srs.sessionDoneEyebrow', 'OTURUM TAMAM')}
+          </Mono>
+          <Text
+            style={{
+              fontFamily: FONTS.display,
+              fontSize: 38,
+              fontWeight: '700',
+              color: '#FFFFFF',
+              letterSpacing: -1.14,
+              textAlign: 'center',
+            }}
+          >
+            {t('screens.srs.sessionDoneTitle', 'Süper iş!')}
+          </Text>
+          <Text
+            style={{
+              fontFamily: FONTS.body700,
+              fontSize: 17,
+              color: '#FFD56B',
+            }}
+          >
+            {t('screens.srs.sessionDoneCount', '{{count}} terim tekrar edildi', { count: reviewedCount })}
+          </Text>
+        </View>
+
+        <View
+          style={{
+            backgroundColor: '#E63946',
+            borderRadius: 14,
+            padding: 20,
+            alignItems: 'center',
+            borderBottomWidth: 4,
+            borderBottomColor: '#C8202E',
+          }}
         >
-          Bitir
-        </Button>
-      </YStack>
+          <Mono style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', letterSpacing: 1.8 }}>
+            XP EARNED
+          </Mono>
+          <Text
+            style={{
+              fontFamily: FONTS.display,
+              fontSize: 56,
+              fontWeight: '700',
+              color: '#FFFFFF',
+              letterSpacing: -1.68,
+              lineHeight: 56,
+              marginTop: 4,
+            }}
+          >
+            +{reviewedCount * 4}
+          </Text>
+        </View>
+
+        <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/home')}>
+          {t('screens.srs.finish', 'Bitir →')}
+        </Button3D>
+      </View>
     );
   }
 
+  // ─── NORMAL CARD ───
   const card = cards[term.id];
   const isNew = !card || isNewCard(card);
 
-  function handleQuality(quality: number) {
+  function handleQuality(quality: 1 | 3 | 4 | 5) {
     reviewTerm(term!.id, quality);
     addXp(quality >= 4 ? 5 : 3, 'srs_review');
     incrementQuest('srs_review', 1);
@@ -135,101 +221,158 @@ export default function SrsReviewScreen() {
   }
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <YStack flex={1} padding="$4" gap="$4" backgroundColor="$background">
-        <Progress value={(currentIdx / total) * 100} max={100} backgroundColor="$border">
-          <Progress.Indicator animation="lazy" backgroundColor="$primary" />
-        </Progress>
-        <XStack justifyContent="space-between">
-          <Paragraph size="$2" color="$textSecondary">
-            Kart {currentIdx + 1} / {total}
-          </Paragraph>
-          {isNew ? (
-            <Card backgroundColor="$accent" paddingHorizontal="$2" paddingVertical="$1">
-              <Text fontSize="$1" color="$accentText" fontWeight="700">
-                🌱 YENİ
-              </Text>
-            </Card>
-          ) : (
-            <Card backgroundColor="$warning" paddingHorizontal="$2" paddingVertical="$1">
-              <Text fontSize="$1" color="$primaryText" fontWeight="700">
-                🔄 TEKRAR
-              </Text>
-            </Card>
-          )}
-        </XStack>
+    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <SafeAreaView edges={['top']}>
+        <LessonChrome
+          progress={(currentIdx / total) * 100}
+          hearts={5}
+          onClose={() => router.back()}
+        />
+      </SafeAreaView>
 
-        {/* Card */}
-        <Card padding="$5" backgroundColor="$surface" bordered minHeight={300}>
-          <YStack gap="$4" alignItems="center" justifyContent="center" flex={1}>
-            <Text fontSize="$2" color="$textSecondary" textTransform="uppercase">
-              {term.category} · {term.pronunciation}
-            </Text>
-            <H2 color="$text" textAlign="center">
-              {term.term}
-            </H2>
-
-            {showAnswer && (
-              <YStack gap="$3" alignItems="center" width="100%">
-                <Text fontSize="$5" fontWeight="600" color="$primary" textAlign="center">
-                  {term.termTr}
-                </Text>
-                <Paragraph color="$textSecondary" textAlign="center">
-                  {term.definitionTr}
-                </Paragraph>
-                {term.examples[0] && (
-                  <Card padding="$3" backgroundColor="$backgroundHover" width="100%">
-                    <YStack gap="$1">
-                      <Text fontStyle="italic" color="$text">
-                        {term.examples[0].en}
-                      </Text>
-                      <Text fontSize="$3" color="$textSecondary">
-                        {term.examples[0].tr}
-                      </Text>
-                    </YStack>
-                  </Card>
-                )}
-              </YStack>
-            )}
-          </YStack>
-        </Card>
-
-        {!showAnswer ? (
-          <Button
-            size="$5"
-            backgroundColor="$primary"
-            color="$primaryText"
-            onPress={() => setShowAnswer(true)}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }}>
+        {/* Status pill */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <Mono style={{ fontSize: 11, color: '#5A6478' }}>
+            {t('screens.srs.cardN', 'Kart {{n}} / {{total}}', { n: currentIdx + 1, total })}
+          </Mono>
+          <View
+            style={{
+              backgroundColor: isNew ? '#2DBE6C' : '#FFD56B',
+              paddingHorizontal: 8,
+              paddingVertical: 3,
+              borderRadius: 6,
+            }}
           >
-            Cevabı göster 👀
-          </Button>
-        ) : (
-          <YStack gap="$2">
-            <Text fontSize="$3" color="$textSecondary" textAlign="center">
-              Bu terim ne kadar zordu?
-            </Text>
-            <XStack gap="$2">
-              {QUALITY_OPTIONS.map((opt) => (
-                <Button
-                  key={opt.value}
-                  flex={1}
-                  size="$4"
-                  backgroundColor={opt.color}
-                  color="$primaryText"
-                  onPress={() => handleQuality(opt.value)}
+            <Mono style={{ fontSize: 10, color: isNew ? '#FFFFFF' : '#0A1430', letterSpacing: 0.9 }}>
+              {isNew ? `🌱 ${t('screens.srs.new', 'YENİ')}` : `🔄 ${t('screens.srs.review', 'TEKRAR')}`}
+            </Mono>
+          </View>
+        </View>
+
+        {/* Term card */}
+        <View
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 14,
+            borderWidth: 1.5,
+            borderColor: '#DCE0E8',
+            borderBottomWidth: 4,
+            padding: 24,
+            minHeight: 300,
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 16,
+          }}
+        >
+          <Mono style={{ fontSize: 11, color: '#5A6478', letterSpacing: 1.1 }}>
+            {term.category} · {term.pronunciation}
+          </Mono>
+          <Text
+            style={{
+              fontFamily: FONTS.display,
+              fontSize: 38,
+              fontWeight: '700',
+              color: '#0E1116',
+              letterSpacing: -1.14,
+              textAlign: 'center',
+            }}
+          >
+            {term.term}
+          </Text>
+
+          {showAnswer && (
+            <View style={{ gap: 12, alignItems: 'center', width: '100%' }}>
+              <View
+                style={{
+                  height: 1,
+                  width: '100%',
+                  backgroundColor: '#DCE0E8',
+                }}
+              />
+              <Text
+                style={{
+                  fontFamily: FONTS.body800,
+                  fontSize: 22,
+                  color: '#E63946',
+                  textAlign: 'center',
+                }}
+              >
+                {term.termTr}
+              </Text>
+              <Body color="#5A6478" style={{ fontSize: 14, textAlign: 'center', lineHeight: 21 }}>
+                {term.definitionTr}
+              </Body>
+              {term.examples[0] && (
+                <View
+                  style={{
+                    backgroundColor: '#EDEFF3',
+                    borderRadius: 10,
+                    padding: 12,
+                    width: '100%',
+                  }}
                 >
-                  <YStack alignItems="center" gap="$1">
-                    <Text fontSize={20}>{opt.emoji}</Text>
-                    <Text fontSize="$2" color="$primaryText">
+                  <Text
+                    style={{
+                      fontFamily: FONTS.body,
+                      fontSize: 14,
+                      color: '#0E1116',
+                      fontStyle: 'italic',
+                      marginBottom: 4,
+                    }}
+                  >
+                    "{term.examples[0].en}"
+                  </Text>
+                  <Body color="#5A6478" style={{ fontSize: 12 }}>
+                    {term.examples[0].tr}
+                  </Body>
+                </View>
+              )}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      {/* Action area */}
+      <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
+        <View style={{ padding: 16 }}>
+          {!showAnswer ? (
+            <Button3D variant="primary" fullWidth onPress={() => setShowAnswer(true)}>
+              {t('screens.srs.showAnswer', 'Cevabı göster 👀')}
+            </Button3D>
+          ) : (
+            <View style={{ gap: 8 }}>
+              <Body color="#5A6478" style={{ fontSize: 13, textAlign: 'center', marginBottom: 4 }}>
+                {t('screens.srs.howHard', 'Bu terim ne kadar zordu?')}
+              </Body>
+              <View style={{ flexDirection: 'row', gap: 6 }}>
+                {QUALITY_OPTS.map((opt) => (
+                  <TouchableOpacity
+                    key={opt.value}
+                    activeOpacity={0.85}
+                    onPress={() => handleQuality(opt.value)}
+                    style={{
+                      flex: 1,
+                      backgroundColor: opt.bg,
+                      borderRadius: 12,
+                      paddingVertical: 12,
+                      alignItems: 'center',
+                      borderBottomWidth: 4,
+                      borderBottomColor: opt.bottom,
+                      gap: 4,
+                    }}
+                  >
+                    <Text style={{ fontSize: 20 }}>{opt.emoji}</Text>
+                    <Mono style={{ fontSize: 11, color: opt.fg, letterSpacing: 0.9 }}>
                       {opt.label}
-                    </Text>
-                  </YStack>
-                </Button>
-              ))}
-            </XStack>
-          </YStack>
-        )}
-      </YStack>
-    </ScrollView>
+                    </Mono>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }

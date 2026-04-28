@@ -19,6 +19,7 @@ import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useQuestsStore } from '@/stores/questsStore';
 import { useExerciseHistoryStore } from '@/stores/exerciseHistoryStore';
+import { useSrsStore } from '@/stores/srsStore';
 import { track } from '@/lib/posthog';
 
 export default function LessonScreen() {
@@ -31,6 +32,7 @@ export default function LessonScreen() {
   const seenIds = useExerciseHistoryStore((s) => s.seenExerciseIds);
   const seenSet = useMemo(() => new Set(seenIds), [seenIds]);
   const markSeen = useExerciseHistoryStore((s) => s.markSeen);
+  const reviewTerm = useSrsStore((s) => s.reviewTerm);
 
   const [exercises] = useState<Exercise[]>(() =>
     generateLesson(getVocabForRole(role), seenSet, 5),
@@ -52,6 +54,11 @@ export default function LessonScreen() {
   const handleAnswer = () => {
     if (!selected) return;
     setShowFeedback(true);
+    // SRS: her cevap → ilgili term'in scheduler'ı güncellenir
+    // Quality: yanlış=1, doğru=4 (response time'a göre ileride 5'e çıkar)
+    const quality = isCorrect ? 4 : 1;
+    reviewTerm(exercise.termId, quality);
+
     if (isCorrect) {
       addXp(10, 'lesson_exercise');
       setCorrectCount((c) => c + 1);

@@ -259,7 +259,10 @@
         "4": "एफ",
         "5": "एस",
         "6": "एस"
-      }
+      },
+      "reviewQueue": "TODAY'S REVIEW",
+      "reviewQueueCount": "{{count}} cards ready",
+      "reviewQueueSub": "~3 min · reinforce weak spots"
     },
     "learn": {
       "unit": "यूनिट",

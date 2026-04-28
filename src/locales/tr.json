@@ -259,7 +259,10 @@
         "C",
         "C",
         "P"
-      ]
+      ],
+      "reviewQueue": "BUGÜNKÜ TEKRAR",
+      "reviewQueueCount": "{{count}} kart hazır",
+      "reviewQueueSub": "~3 dk · zayıf alanlarını sağlamlaştır"
     },
     "learn": {
       "unit": "BÖLÜM",

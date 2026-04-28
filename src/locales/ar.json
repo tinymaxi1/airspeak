@@ -259,7 +259,10 @@
         "4": "ف",
         "5": "س",
         "6": "س"
-      }
+      },
+      "reviewQueue": "TODAY'S REVIEW",
+      "reviewQueueCount": "{{count}} cards ready",
+      "reviewQueueSub": "~3 min · reinforce weak spots"
     },
     "learn": {
       "unit": "الوحدة",

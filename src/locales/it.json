@@ -259,7 +259,10 @@
         "4": "F",
         "5": "S",
         "6": "S"
-      }
+      },
+      "reviewQueue": "TODAY'S REVIEW",
+      "reviewQueueCount": "{{count}} cards ready",
+      "reviewQueueSub": "~3 min · reinforce weak spots"
     },
     "learn": {
       "unit": "UNITÀ",

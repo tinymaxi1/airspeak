@@ -18,6 +18,7 @@ import Svg, { Path, Circle, Rect, Defs, RadialGradient, Stop } from 'react-nativ
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
+import { useSrsStore } from '@/stores/srsStore';
 import { getNextLesson } from '@/features/lessons/seed/lessonTree';
 import {
   HHero,
@@ -39,6 +40,12 @@ export default function HomeScreen() {
   const completedIds = useProgressStore((s) => s.completedLessonIds);
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
   const next = useMemo(() => getNextLesson(role, completedSet, false), [role, completedSet]);
+
+  // SRS: bugün tekrar etmesi gereken kart sayısı
+  const dueCount = useSrsStore((s) => {
+    const now = Date.now();
+    return Object.values(s.cards).filter((c) => c.nextReviewAt <= now).length;
+  });
 
   const streak = 12; // TODO: gamificationStore.streak
   const hearts = 4;
@@ -282,8 +289,50 @@ export default function HomeScreen() {
           </View>
         </Card3D>
 
+        {/* SRS Review queue — sadece due > 0 ise görünür */}
+        {dueCount > 0 && (
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => router.push('/srs')}
+            style={{
+              backgroundColor: '#FFD56B',
+              borderRadius: 14,
+              padding: 16,
+              borderBottomWidth: 4,
+              borderBottomColor: '#F2C14E',
+              marginTop: 18,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 14,
+            }}
+          >
+            <Text style={{ fontSize: 36 }}>🧠</Text>
+            <View style={{ flex: 1 }}>
+              <Mono style={{ fontSize: 10, color: '#0A1430', letterSpacing: 1.8 }}>
+                {t('screens.home.reviewQueue', 'BUGÜNKÜ TEKRAR')}
+              </Mono>
+              <Text
+                style={{
+                  fontFamily: FONTS.display,
+                  fontSize: 22,
+                  fontWeight: '700',
+                  color: '#0A1430',
+                  marginTop: 2,
+                  letterSpacing: -0.44,
+                }}
+              >
+                {t('screens.home.reviewQueueCount', '{{count}} kart hazır', { count: dueCount })}
+              </Text>
+              <Mono style={{ fontSize: 11, color: 'rgba(10,20,48,0.7)', marginTop: 4 }}>
+                {t('screens.home.reviewQueueSub', '~3 dk · zayıf alanlarını sağlamlaştır')}
+              </Mono>
+            </View>
+            <Text style={{ fontSize: 22, color: '#0A1430' }}>›</Text>
+          </TouchableOpacity>
+        )}
+
         {/* Quick practice 2x2 */}
-        <Eyebrow>FAST PRACTICE — 90 SEC</Eyebrow>
+        <Eyebrow style={{ marginTop: dueCount > 0 ? 18 : 0 }}>FAST PRACTICE — 90 SEC</Eyebrow>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
           <QuickCard
             icon="🎙"
