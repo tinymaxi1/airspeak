@@ -69,7 +69,11 @@ export interface AirlineProfile {
   destinations: number;
   employeeCount: number;
   /** Şirket dili — mülakat tamamen bu dilde olabilir */
-  primaryLanguage: 'English' | 'Turkish' | 'Arabic' | 'German' | 'French' | 'Italian' | 'Spanish' | 'Portuguese' | 'Dutch' | 'Polish' | 'Greek' | 'Swedish' | 'Finnish' | 'Hungarian';
+  primaryLanguage:
+    | 'English' | 'Turkish' | 'Arabic' | 'German' | 'French' | 'Italian'
+    | 'Spanish' | 'Portuguese' | 'Dutch' | 'Polish' | 'Greek'
+    | 'Swedish' | 'Finnish' | 'Hungarian'
+    | 'Japanese' | 'Korean' | 'Chinese' | 'Indonesian' | 'Thai' | 'Malay' | 'Hindi';
   /** Genel prestij (1-5) */
   prestige: 1 | 2 | 3 | 4 | 5;
   /** Yurtdışı kabin için zorunlu mu (skin color, height, swim test vb.) */

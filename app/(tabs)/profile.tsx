@@ -17,6 +17,7 @@ import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
+import { ALL_AIRLINES } from '@/features/exams/airlines';
 import {
   HHero,
   H2,
@@ -215,7 +216,7 @@ export default function ProfileScreen() {
           <SettingsRow
             icon="💼"
             label={t('screens.profile.interviews')}
-            value={t('screens.profile.interviewsDesc', { count: 31 })}
+            value={t('screens.profile.interviewsDesc', { count: ALL_AIRLINES.length })}
             onPress={() => router.push('/exam/airlines')}
           />
         </View>

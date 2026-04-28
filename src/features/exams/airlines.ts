@@ -4,12 +4,14 @@
 import { MIDDLE_EAST_AIRLINES } from './airlinesMiddleEast';
 import { EUROPE_AIRLINES } from './airlinesEurope';
 import { TURKEY_AIRLINES } from './airlinesTurkey';
+import { ASIA_AIRLINES } from './airlinesAsia';
 import type { AirlineProfile, AirlineRegion } from './airlineTypes';
 
 export const ALL_AIRLINES: AirlineProfile[] = [
   ...TURKEY_AIRLINES,
   ...MIDDLE_EAST_AIRLINES,
   ...EUROPE_AIRLINES,
+  ...ASIA_AIRLINES,
 ];
 
 export const AIRLINE_REGION_LABELS: Record<AirlineRegion, { tr: string; emoji: string }> = {
