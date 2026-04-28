@@ -24,6 +24,7 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.home', 'Ana sayfa'),
           tabBarIcon: ({ color }) => <Home color={color} size={24} />,
+          tabBarAccessibilityLabel: t('tabs.home', 'Ana sayfa'),
         }}
       />
       <Tabs.Screen
@@ -31,6 +32,7 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.learn', 'Öğren'),
           tabBarIcon: ({ color }) => <BookOpen color={color} size={24} />,
+          tabBarAccessibilityLabel: t('tabs.learn', 'Öğren'),
         }}
       />
       <Tabs.Screen
@@ -38,6 +40,7 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.practice', 'Pratik'),
           tabBarIcon: ({ color }) => <Brain color={color} size={24} />,
+          tabBarAccessibilityLabel: t('tabs.practice', 'Pratik'),
         }}
       />
       <Tabs.Screen
@@ -45,6 +48,7 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.league', 'Lig'),
           tabBarIcon: ({ color }) => <Trophy color={color} size={24} />,
+          tabBarAccessibilityLabel: t('tabs.league', 'Lig'),
         }}
       />
       <Tabs.Screen
@@ -52,6 +56,7 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.profile', 'Profil'),
           tabBarIcon: ({ color }) => <User color={color} size={24} />,
+          tabBarAccessibilityLabel: t('tabs.profile', 'Profil'),
         }}
       />
     </Tabs>

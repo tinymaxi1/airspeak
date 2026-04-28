@@ -211,6 +211,7 @@ export function Button3D({
   height = 56,
   style,
   textStyle,
+  accessibilityLabel,
   ...rest
 }: TouchableOpacityProps & {
   variant?: ButtonVariant;
@@ -219,11 +220,17 @@ export function Button3D({
   textStyle?: any;
 }) {
   const c = BTN_STYLES[variant];
+  // Auto a11y label: child string ise onu kullan
+  const autoLabel =
+    accessibilityLabel ?? (typeof children === 'string' ? children : undefined);
   return (
     <TouchableOpacity
       activeOpacity={0.85}
       onPress={onPress}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled }}
+      accessibilityLabel={autoLabel}
       style={[
         {
           height,

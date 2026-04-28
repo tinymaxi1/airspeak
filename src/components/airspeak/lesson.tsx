@@ -35,7 +35,12 @@ export function LessonChrome({
         paddingBottom: 6,
       }}
     >
-      <TouchableOpacity onPress={onClose} hitSlop={8}>
+      <TouchableOpacity
+        onPress={onClose}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel="Dersi kapat"
+      >
         <Text style={{ fontSize: 24, color: '#0E1116', fontWeight: '300' }}>✕</Text>
       </TouchableOpacity>
 
@@ -195,10 +200,15 @@ export function LessonOptionCard({
     },
   }[state];
 
+  // A11y: state'e göre context label
+  const stateLabel = state === 'correct' ? ' (doğru)' : state === 'wrong' ? ' (yanlış)' : selected ? ' (seçili)' : '';
   return (
     <TouchableOpacity
       activeOpacity={0.85}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`Seçenek ${letter}: ${text}${stateLabel}`}
+      accessibilityState={{ selected, disabled: state !== 'idle' }}
       style={{
         backgroundColor: '#FFFFFF',
         borderRadius: 14,
