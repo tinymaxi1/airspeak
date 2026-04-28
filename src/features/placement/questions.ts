@@ -75,6 +75,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctId: 'b',
     explanationTr: 'Runway = pist. Uçakların kalkıp indiği uzun şeritli alan.',
+    explanationLongTr: `**Doğru cevap özeti**: Runway (pist) = uçakların kalkış ve iniş yapması için tasarlanmış sert yüzeyli, ışıklandırılmış, ICAO standartlarına uygun uzun düz alan.
+
+**Neden bu cevap?**: ICAO Annex 14 (Aerodromes) runway'i şöyle tanımlar: "rectangular area on a land aerodrome prepared for the landing and take-off of aircraft." Sertifikalı bir runway için minimum standartlar: yüzey sürtünme katsayısı, eğim limitleri (max 1.5%), runway end safety area (RESA), markings (centerline, threshold, touchdown zone), ışıklandırma (PAPI/VASI, edge lights, threshold lights). Pilotlar runway'i numaralandırma sistemine göre tanır: 09 = 90° heading (doğu), 27 = 270° heading (batı). Aynı pist iki yönde kullanılabilir, isimleri farklıdır (09L/27R aynı pist).
+
+**Arka plan**: 1900'lerin başında "runway" terimi yoktu — uçaklar "flying field" denilen düz çayırlardan kalkardı. İlk paved runway 1928'de Ford Airport (Dearborn, Michigan) — Henry Ford havacılık endüstrisini desteklemek için yaptırdı. WWII sırasında concrete runway'ler standart oldu (jet uçakların ısı + ağırlık yükü için). Modern runway'ler 5-tabakalı yapıdadır: subgrade, subbase, base, asphalt/concrete, friction overlay. En uzun ticari runway Qamdo Bamda (Çin) — 5.5 km, yüksek irtifada (4.334m) thin air için uzun gerekiyor.
+
+**Yaygın hata**: "Runway" ile "taxiway" karıştırılır. Taxiway pistler arası bağlantıdır, kalkış/iniş yapılmaz. Diğer karışıklık: "apron/ramp" — uçakların park ettiği alan, runway değil. Türkçe konuşanlar bazen "uçuş şeridi" der — bu pist anlamında genel ama ICAO standardında "runway" kalır.
+
+**İlgili terimler**: Taxiway (taksi yolu), Apron/Ramp (önalan), Threshold (eşik), Touchdown zone (iniş bölgesi), PAPI (Precision Approach Path Indicator), Centerline lights, Runway incursion (yetkisiz runway girişi).
+
+**Örnek**: İstanbul Havalimanı (IST) 4 paralel runway'a sahip — 16L/34R, 16R/34L, 17L/35R, 17R/35L. "L/R" sol/sağ ayırımı yapar (çünkü ikisi de aynı yönde). Captain'a "cleared to land 35L" dendiğinde tam olarak hangi pist olduğu netleşir.`,
   },
   {
     id: 'p2',
@@ -93,6 +104,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctId: 'b',
     explanationTr: '"Fasten" = bağla, kemerini bağla. Uçaklarda standart anons.',
+    explanationLongTr: `**Doğru cevap özeti**: "Fasten" = bağlamak. "Fasten your seatbelt" = emniyet kemerinizi bağlayın. Bu havacılıkta standart kabin crew anonsu.
+
+**Neden bu cevap?**: Modern İngilizce "fasten" Eski İngilizce "fæstnian" (sıkıca tutturmak) kelimesinden gelir. ICAO standart kabin anonsları (Standard Operating Procedure — SOP) "fasten" fiilini tercih eder çünkü "buckle" veya "tie" yerine daha resmi/profesyonel bir tondur. Tüm büyük havayolları (Emirates, THY, Lufthansa, BA) aynı "Please fasten your seatbelt" kalıbını kullanır — global tutarlılık için.
+
+**Arka plan**: Emniyet kemeri uçaklarda 1950'lerde standart hale geldi. İlk başta sadece kalkış/iniş için zorunluydu; 1970'lerde tüm uçuş boyunca takılı tutma standardı geldi (cruise altitudede türbülans riski için). FAA 14 CFR 91.107 ve ICAO Annex 6 emniyet kemerini yasal zorunluluk olarak tanımlar. PA anonsu kabin crew'un en sık tekrarladığı (her uçuşta 4-6 kez) cümledir: pre-takeoff, türbülans, taxi, descent, landing.
+
+**Yaygın hata**: Türkçe konuşanlar bazen "close" (kapat) veya "tie" (bağla) ile karıştırır — bu yanlıştır. Kemer kapanmaz, bağlanır ama "tie" düğüm atmak gibi anlam taşır. "Fasten" tek doğru fiildir. Ek hata: "fasten on" yanlış; doğru kullanım "fasten" (preposition'sız).
+
+**İlgili terimler**: Unfasten (çöz), Buckle (toka), Seatbelt sign (kemer işareti), Loose item (gevşek eşya), Brace position (acil pozisyon), Cabin secure (kabin hazır).
+
+**Örnek anons (PA)**: "Ladies and gentlemen, the captain has switched on the seatbelt sign. Please return to your seats and fasten your seatbelts. Make sure your seat is in the upright position and your tray table is stowed." Bu standart anons her major havayolunda neredeyse aynıdır — sadece dilde küçük varyasyon olur.`,
   },
   {
     id: 'p3',
@@ -144,6 +166,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctId: 'c',
     explanationTr:
       'ATC frekans değişimi belirtiyor. "Tower 118.1" = kule frekansı 118.1 MHz.',
+    explanationLongTr: `**Doğru cevap özeti**: 118.1 — ATC söylediği "tower 118.1" yeni frekansın 118.1 MHz olduğu anlamına gelir. Pilot bu frekansa geçer ve kuleyle iletişimi sürdürür.
+
+**Neden bu cevap?**: Aviation VHF radio communications 118.000 ile 137.000 MHz arasında çalışır. Frekanslar 25 kHz veya 8.33 kHz aralıklarla atanır (Avrupa'da 8.33 zorunlu, ABD'de hala karışık). "118.1" notasyonu = 118.100 MHz. ICAO standart frazeolojide frekans okuma kuralı: "wun-wun-eight decimal wun" — sayılar tek tek söylenir, "decimal" virgül yerine kullanılır. Pilot okur: "Roger, tower 118.1, Turkish 1234" — readback yapar.
+
+**Arka plan**: AM (Amplitude Modulation) radio 1930'larda havacılığa girdi. WWII sırasında VHF standart oldu. 1950'lerde 760 kanal (50 kHz spacing), 1970'lerde 1360 kanal (25 kHz), 2018'de Avrupa 8.33 kHz spacing geçişi tamamlandı (3040 kanal). Bu kanal artırım ihtiyacı: artan trafik. Modern radyolar dual-watch yeteneği: aktif frekansı dinlerken standby frekansı izlenir. 121.5 MHz (international emergency), 243.0 MHz (military emergency), 406 MHz (ELT — Emergency Locator Transmitter) özel kanallardır.
+
+**Yaygın hata**: "1234" callsign ile karıştırılır — bu pilot/uçağın çağrı kodu, frekans değil. Diğer hata: "12.34" şeklinde okuma — havacılıkta frekanslar her zaman 3 hane + decimal'dir (118.1, 121.5, 134.95). "decimal" yerine "point" demek de yaygın yanlış — ICAO standart "decimal".
+
+**İlgili terimler**: Tower (TWR), Ground (GND), Approach (APP), Departure (DEP), Center (CTR), ATIS (Automatic Terminal Information Service — 119.x range), Standby frequency, Squelch, Transponder code (4 hane, frekans değil).
+
+**Örnek**: TK 1989 inişe doğru. Approach controller: "Turkish 1989, contact Istanbul Tower 118.7." Pilot: "Tower 118.7, Turkish 1989." Pilot frekansı 118.7'ye değiştirir, "Istanbul Tower, Turkish 1989, 5 miles final, runway 35L" der. Tower: "Turkish 1989, runway 35L cleared to land, wind 350 at 8 knots."`,
   },
   {
     id: 'p5',
@@ -163,6 +196,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctId: 'b',
     explanationTr:
       'CLSD = closed (kapalı), WIP = work in progress (çalışma var), UFN = until further notice (yeni bildirime kadar).',
+    explanationLongTr: `**Doğru cevap özeti**: NOTAM "RWY 27 CLSD DUE WIP UFN" = Runway 27 kapalı, çalışma var, yeni bildirime kadar geçerli.
+
+**Neden bu cevap?**: NOTAM (Notice to Airmen) ICAO Annex 15'e göre standartlaştırılmış kısaltmalar kullanır. Yer kazanma + telefax dönemi alışkanlığı + uluslararası anlaşılırlık için. Standart kısaltmalar: RWY (runway), CLSD (closed), DUE (due to), WIP (work in progress), UFN (until further notice), TWY (taxiway), APRON (apron), AVBL (available), NAV AIDS (navigation aids), VOR/NDB/ILS (navigation systems). Her NOTAM'in başında ICAO airport kodu (örneğin LTBA = İstanbul Atatürk, LTFM = İstanbul New).
+
+**Arka plan**: NOTAM sistemi 1947'de ICAO tarafından kuruldu. 1990'lara kadar telex ile dağıtıldı, şimdi internet üzerinden (FAA NOTAM Search, EUROCONTROL EAD). Yıllık 1.5 milyon NOTAM yayımlanır globally. Her uçuş öncesi pilot OFP (Operational Flight Plan) içinde tüm rota üzerindeki NOTAM'ları okumak zorunda. 2017'de NOTAM reform başladı çünkü pilotlar "NOTAM fatigue" yaşıyordu — özellikle önemsiz NOTAM'lar arasında kritik bilgi kaçabilir.
+
+**Yaygın hata**: Pilotlar "RWY 27" sayısını runway uzunluğu ile karıştırır — yanlış, 27 = pist heading (270°). Diğer hata: "UFN" zaman olarak "1 saat" sananlar — yanlış, "until further notice" = belirsiz süre, yeni bilgi gelene kadar. NOTAM'lar pre-flight briefing'de en kritik kontrol noktası — atlanırsa yanıltıcı plan.
+
+**İlgili terimler**: METAR (current weather), TAF (forecast), AIP (Aeronautical Information Publication), AIRAC (publication cycle), ATIS (terminal info), SNOWTAM (özel kar/buz NOTAM'ı), ASHTAM (volkanik kül NOTAM'ı).
+
+**Örnek**: 2010 İzlanda Eyjafjallajökull volkan patlaması — Avrupa hava sahası kapandı. ASHTAM (volkanik kül NOTAM'ı) "BIRD/EU AIRSPACE CLSD DUE ASH UFN" — bu NOTAM 6 gün boyunca aktif kaldı, 100.000+ uçuş iptal oldu, $1.7 milyar kayıp. Pilotlar her uçuştan önce ASHTAM kontrol etmek zorunda — ash ingestion motor felaketi yaratır (BA009 1982).`,
   },
   {
     id: 'p6',
@@ -242,6 +286,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     correctId: 'b',
     explanationTr:
       'ICAO standart frazeolojisinde "ready for departure" doğrudur. Diğerleri günlük İngilizce, ATC iletişiminde kullanılmaz.',
+    explanationLongTr: `**Doğru cevap özeti**: "Ready for departure" — ICAO Doc 9432 standart frazeolojide pilotun kalkış için hazır olduğunu kuleye bildiren tek doğru ifade.
+
+**Neden bu cevap?**: ICAO standart frazeolojisi 1948'de Chicago Convention çerçevesinde standartlaştırıldı. Amaç: dünyanın herhangi bir yerinde, herhangi bir milletten pilot ve kontrolör arasında belirsizlik bırakmadan iletişim. "Standard phraseology" 4 prensip üzerine kurulu: (1) Brevity — kısa, gereksiz kelime yok. (2) Clarity — tek anlam. (3) Unambiguous — belirsizlik yok. (4) Standardization — tüm dünya aynı ifadeleri kullanır. "We're ready to go", "Let's take off", "Send us up" günlük İngilizce — havacılık standardı değil, kafa karışıklığı yaratabilir.
+
+**Arka plan**: ICAO Doc 9432 (Manual of Radiotelephony) tüm standart ifadeleri tanımlar. Tarih: 1976'da ilk yayım, 2007'de major revizyon (Tenerife sonrası). Standart frazeoloji 6 dilde resmi: İngilizce, Fransızca, İspanyolca, Rusça, Arapça, Çince — ICAO'nun resmi 6 BM dili. Pilotlar ICAO Level 4 sertifikası aldıkları zaman bu frazeolojinin pratik uygulamasını kanıtlamış olurlar. 2008'den beri tüm uluslararası uçuş yapan pilot/ATC için ICAO 4 zorunludur.
+
+**Yaygın hata**: "Ready for take-off" yerine "ready for departure" doğrudur — çünkü "take-off" ifadesi sadece kuleye verilen iznin (cleared for takeoff) parçası olarak kullanılır. Tenerife felaketi (1977) tam bu karışıklıktan oldu: KLM kaptanı "we are now at takeoff" dedi, kontrolör onaylama olarak yorumladı, KLM hareket etti, çarpışma 583 ölü. Sonrasında tüm pilot/ATC eğitiminde "departure" ile "takeoff" ayrımı kritik konu.
+
+**İlgili terimler**: Cleared for takeoff (kalkış izni), Line up and wait (sıraya gir bekle), Hold short (eşikte bekle), Position and hold (eski terim, artık "line up and wait"), Pushback approved, Taxi to holding point.
+
+**Örnek**: TK 1989 İstanbul Tower'a: "Turkish 1989, runway 35L, ready for departure." Tower: "Turkish 1989, runway 35L, line up and wait." Pilot: "Line up and wait runway 35L, Turkish 1989." 30 saniye sonra Tower: "Turkish 1989, wind 350 at 12, runway 35L cleared for takeoff." Pilot: "Cleared for takeoff runway 35L, Turkish 1989." Bu standart sıralama dünyanın her yerinde aynıdır — dil farklı olsa da kalıp aynı.`,
     icaoReference: 'ICAO Doc 9432',
   },
   {
@@ -331,6 +386,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctId: 'b',
     explanationTr: '"Expedite through FL200" = FL200\'ü geçerken maksimum dikey hız ile devam et. Trafik ayırma için sık talep.',
+    explanationLongTr: `**Doğru cevap özeti**: "Climb FL 350, expedite through FL 200" = FL 350'ye tırmanmaya devam et, ama FL 200'ü geçerken maksimum tırmanış oranı (vertical speed) kullan.
+
+**Neden bu cevap?**: ICAO Doc 9432'de "expedite" kelimesi acelelik talep eden standart frazeolojidir. Trafik ayırma (traffic separation) gereği — örneğin senin altında veya üstünde başka uçak vardır, kontrolör boşluğu hızla yaratmak ister. "Expedite through FL 200" özellikle: FL 200 seviyesini geçerken normalde 1500-2000 fpm (feet per minute) yerine 3000+ fpm tırmanış. FL 200 geçildikten sonra normal tempoya dönülür. Bu komut spesifik bir yükseklik penceresi için geçerlidir.
+
+**Arka plan**: Modern jet uçaklar tipik olarak takeoff sonrası 2500-3000 fpm tırmanır, sonra cruise yaklaşırken 1000-1500 fpm'e düşer. Maksimum rate normalde sadece "best rate of climb" hızında (Vy) elde edilir. ATC "expedite climb/descent" verirse pilot performans pakedi içinde maksimum rate'i kullanır — autothrottle override edebilir, manual flight gerekebilir. Trafik yoğun terminal area'larda (LHR, CDG, JFK, IST) bu komut günde 100+ kez verilir.
+
+**Yaygın hata**: "Expedite" ile "immediate" karıştırılır. "Immediate" şu an, bekletme yok demektir; "expedite" hızlandır demektir. Diğer hata: "expedite climb" ile "expedite through [altitude]" — birincisi tüm tırmanış için hızlı, ikincisi sadece o yükseklik geçişi için. ATPL eğitiminde bu komutu sıkça unutur — pilot FL 200'ü standart rate ile geçerse trafik separation kaybolur, controller kızar.
+
+**İlgili terimler**: Cleared FL [level], Maintain FL [level], Climb at [vertical speed], Descend at [vertical speed], Stop climb [level], Resume own navigation, Expedite descent, Vy (best rate of climb speed).
+
+**Örnek**: İstanbul Approach Control: "Turkish 1989, climb FL 250, expedite through FL 180, traffic 12 o'clock, FL 190, A320." Bu komut: pilot FL 250'ye tırmanırken FL 180 civarında çatışma trafiği var, FL 180'i hızlıca geçmesi lazım. Pilot autothrottle'ı climb mode'da bırakır, pitch'i yükseltir, 3500+ fpm rate elde eder, FL 180'i 30 saniyede geçer. FL 200 sonrası standart tempoya döner.`,
     icaoReference: 'ICAO Doc 9432',
   },
   {
@@ -405,6 +471,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctId: 'b',
     explanationTr: 'Pushback öncesi tüm kapı modu "armed" (acil durumda slide otomatik açılır). Cross-check = kapı eşleri birbirini doğrular.',
+    explanationLongTr: `**Doğru cevap özeti**: "Doors armed and cross-checked" — pushback öncesi yapılan kabin güvenlik anonsu. "Armed" = kapılar acil durum modunda (açıldığında slide otomatik şişer). "Cross-checked" = her kabin memuru kapı eşinin işlemini doğruladı.
+
+**Neden bu cevap?**: Modern jet uçaklarda kabin kapıları iki modda çalışır: (1) DISARMED — normal mod, kapı açıldığında slide şişmez (gate'te boarding/deboarding için). (2) ARMED — emergency mod, kapı açıldığında slide otomatik şişer (acil tahliye için). Pushback öncesi tüm kapılar ARMED moda geçirilir çünkü uçak hareket etmeye başlar — kapı kazara açılırsa slide şişerek tahliye sağlar. "Cross-check" doğrulama: her kabin memuru kendi kapısını arm eder, sonra karşı taraftaki kabin memuru görsel olarak doğrular. Çift kontrol sistemi insan hatası önler.
+
+**Arka plan**: Slide deployment 1970'lerde standart hale geldi. Bir slide şişmesi 6-10 saniyede tamamlanır, 2-3 ATM basınçlı CO2 cylinder kullanır. Kazara slide deployment maliyetli: $10K-$30K (yeniden paketleme). 2010 JetBlue olayında flight attendant Steven Slater kapıyı ARMED'da açıp slide ile inen ünlü olay var — disarming protokolü ihmal sonucu. Modern uçaklarda "Slide Bar" pozisyonu görsel + interlock sensor ile durumu kokpite ve diğer crew'a bildirir.
+
+**Yaygın hata**: Yeni kabin memuru cross-check protokolünü atlayıp tek başına onaylar — yasal olmaz. Her kapının iki kabin memuru tarafından doğrulanması zorunludur (CRM redundancy). Diğer hata: pre-departure (gate'te) "armed" yerine "disarmed" doğrudur — sıralama: boarding (disarmed) → arm before push → cross-check → push.
+
+**İlgili terimler**: Slide deployment, Slide bar, Disarm doors (iniş öncesi), Door mode lever, Emergency exits, Slide raft (long-haul wide-body), Pneumatic pressure, Crew commands.
+
+**Örnek**: TK 1989 Doha-İstanbul. Pushback'ten 3 dk önce purser anons: "Ladies and gentlemen, in preparation for our departure, please ensure your seatbelt is fastened. Cabin crew, doors to automatic and cross-check please." Her kabin memuru ARM lever'ı çevirir, slide bar görsel onayı yapar, sonra karşı tarafa "cross-checked" diyerek bildirir. Senior crew "All doors armed and cross-checked" diye kapanış raporu verir captain'a.`,
   },
   {
     id: 'p_cabin_3', dimension: 'aviationKnowledge', format: 'scenario', level: 'B1', category: 'critical', roles: ['cabin'],
@@ -454,6 +531,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctId: 'b',
     explanationTr: 'Torque wrench = tork anahtarı. AMM\'de belirtilen tam tork değerinde cıvata sıkmak için kullanılır.',
+    explanationLongTr: `**Doğru cevap özeti**: Torque wrench (tork anahtarı) = AMM'de belirtilen tam dönme momenti (torque) değerinde cıvata/somun sıkmak için kullanılan kalibrasyonlu el aleti.
+
+**Neden bu cevap?**: Havacılık bakımında her cıvata/somun için spesifik tork değeri vardır (örn. 25 ft-lb, 100 in-lb). Bu değer üreticinin (Boeing, Airbus, OEM) yapısal hesaplamalarına dayanır — az sıkılırsa gevşer (vibrasyon), çok sıkılırsa cıvata kırılır veya yapı hasar görür. Torque wrench mekanik bir click veya digital readout ile target değere ulaşıldığını bildirir. Click-type (mekanik), beam-type (görsel), digital, dial type — 4 ana tip vardır. AMM (Aircraft Maintenance Manual) her görev için: cıvata P/N + tork değeri + lubrication + lockwire/torque seal gereksinimi belirtir.
+
+**Arka plan**: Tork standardı 1930'larda otomotiv endüstrisinden gelişti. Havacılığa entegrasyonu WWII sırasında — yüksek vibrasyon ortamında titreşim altında gevşeyen cıvatalar kazaya yol açıyordu. ASME/SAE J429 standardı cıvata gradeleri (Grade 2/5/8) tork değerlerini standartlaştırdı. Modern havacılıkta torque wrench 6 ayda bir (operasyonel kullanım) veya 1 yılda bir (laboratuvar) kalibrasyon ister — kalibrasyon sticker'ı geçerlilik tarihi gösterir. Süresi dolmuş wrench kullanmak Major audit finding.
+
+**Yaygın hata**: Yeni teknisyenler "biraz daha sıkılayım, garanti olsun" eğilimi gösterir — bu yanlıştır, üst-tork (over-torque) yapısal hasarın major sebebi. Diğer hata: torque wrench'i normal anahtar gibi gevşetme için kullanmak — kalibrasyon bozulur. Click-type wrench kullandıktan sonra düşük tork ayarına geri çevrilmelidir (yay yüklü kalmamalı, depolamada kalibrasyon kayıp).
+
+**İlgili terimler**: Torque seal (witness mark — cıvatanın oynamadığının kanıtı), Lockwire (safety wire — gevşeme önleyici), Cotter pin, Tab washer, Self-locking nut, Castle nut, Click-type vs Beam-type, In-lb vs Ft-lb vs Nm.
+
+**Örnek**: TK Technic'te B777 engine pylon attachment cıvatası tork değeri AMM 71-21-04'e göre 950 ± 50 ft-lb. Senior teknisyen "Snap-on Pro 600-S" digital torque wrench kullanır, target değeri set eder, sıkma sırasında "click" + LED green olunca durur. Sonra torque seal (kırmızı boya) işaretler — sonraki inspeksiyonda cıvatanın oynamadığı görülür. Kalibrasyon süresi dolmuş wrench: 720 ft-lb okurken aslında 800 ft-lb sıkıyor olabilir = engine pylon stress = catastrophic.`,
   },
   {
     id: 'p_tech_2', dimension: 'aviationEnglish', format: 'passage', level: 'A2', category: 'reading', roles: ['technician'],
@@ -516,6 +604,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctId: 'a',
     explanationTr: 'GPU = Ground Power Unit. APU yerine yerden 115V 400Hz AC sağlar (gate\'te yakıt tasarrufu).',
+    explanationLongTr: `**Doğru cevap özeti**: GPU (Ground Power Unit) — uçak gate'teyken APU (Auxiliary Power Unit) yerine yerden 115V 400Hz AC + 28V DC elektrik sağlayan mobil veya sabit ekipman.
+
+**Neden bu cevap?**: Uçaklar yerde duruyorken bile elektrik ihtiyacı var: kabin ışıkları, avionics, klima (uzun bekleme süresinde), boarding hazırlık. Bu ihtiyaç ya APU ile (uçağın kuyruğundaki küçük gas turbine generator) ya da GPU ile karşılanır. APU saatte ~150 kg jet fuel yakar; GPU dieselle veya elektrik şebekesinden çalışır — daha ucuz + daha temiz. Modern hub airport'larda her gate'te sabit GPU ve PCA (Pre-Conditioned Air) bulunur — uçak gelir gelmez bağlanır, APU kapatılır.
+
+**Arka plan**: GPU 1950'lerde standart hale geldi. Modern havalimanlarında "eGSE" (Electric Ground Support Equipment) trend — diesel GPU yerine bataryalı veya şebeke kaynaklı GPU. Bu hem yakıt maliyeti azaltır (yıllık $50K+ per gate) hem havalimanı emisyonunu düşürür. ICAO CORSIA programı havalimanlarına eGSE entegrasyonunu zorluyor. Avrupa'da Frankfurt, Schiphol, LHR gate'lerinin %95+'ı sabit GPU + PCA. Türkiye'de IST tüm yeni gate'lerinde standart.
+
+**Yaygın hata**: GPU "Graphics Processing Unit" sananlar var (bilgisayar terminolojisi). Havacılıkta hep "Ground Power Unit". Diğer hata: GPU bağlama sırası — pilot/teknisyen "chock first, then GPU, then AC, then crew" sırasını uygulamadan elektrik bağlanmaz. Yanlış sıra GSE personel için elektrik şoku riski.
+
+**İlgili terimler**: APU (Auxiliary Power Unit), PCA (Pre-Conditioned Air), GSE (Ground Support Equipment), eGSE (Electric GSE), Chock (takoz), Cone (koni), 28V DC, 115V 400Hz AC, Aviation Standard Plug (5-pin connector).
+
+**Örnek**: Atlas Global'de bir TK A321 sabah 06:00 IST gate D-15'e arrive. Marshaller uçağı park ettirir, teknisyen wheel chocks koyar, GPU cable'ı uçağın FCEK (Forward Cargo) altındaki receptacle'a bağlar, "GPU on" butonuna basar. 5 saniye sonra uçağın main bus'ı GPU üzerinden besleniyor. Captain APU'yu kapatır — saatte 150 kg fuel tasarrufu. 90 dakikalık turnaround = 225 kg yakıt + ~$135 maliyet tasarrufu (1 gate, 1 turn).`,
   },
   {
     id: 'p_ground_2', dimension: 'aviationEnglish', format: 'short', level: 'A2', category: 'phraseology', roles: ['ground'],
@@ -614,6 +713,17 @@ export const PLACEMENT_QUESTIONS: PlacementQuestion[] = [
     ],
     correctId: 'b',
     explanationTr: 'CRM = Crew Resource Management. Kokpit/kabin ekibinin etkin liderlik, durum farkındalığı, karar verme ve iletişim becerilerini geliştiren disiplin.',
+    explanationLongTr: `**Doğru cevap özeti**: CRM (Crew Resource Management) — havacılıkta ekip içi liderlik, iletişim, durum farkındalığı, karar verme ve iş yükü yönetimi disiplini. Tüm pilot/kabin/yer hizmetleri eğitiminin temel modülü.
+
+**Neden bu cevap?**: 1979'da NASA workshop'unda doğdu. O dönemde havacılık kazaları teknik arızadan değil "human factors"dan kaynaklanıyordu — pilotlar arası iletişim eksikliği, hiyerarşi sorunu (junior senior'a "yanlış yapıyorsun" diyemez), durum farkındalık kaybı. CRM 6 ana skill setine odaklanır: (1) Communication — net, eksiksiz, doğrulanmış iletişim. (2) Leadership/Followership — ekip liderliği + ekip üyeliği dengesi. (3) Workload Management — görev paylaşımı. (4) Situation Awareness — etrafta ne oluyor anlama. (5) Decision Making — yapılandırılmış karar süreci. (6) Conflict Resolution — anlaşmazlık çözümü.
+
+**Arka plan**: Tenerife (1977, 583 ölü) — kaptan tüm kararları aldı, F/O ve flight engineer şüphelerini iletmedi, "captain authority" kötüye kullanıldı. Sonrasında United Airlines 1981'de ilk CRM kursu açtı. 1990'larda tüm major airline'lar CRM'i zorunlu kıldı. Modern CRM TEM (Threat and Error Management) çerçevesi ile birleşti: pilot uçuşta tehditleri tanımlar, hataları yönetir, etki azaltır. ICAO Annex 6 ve EASA Part-FCL CRM'i pilotlar için yıllık tekrar eğitim olarak zorunlu kıldı.
+
+**Yaygın hata**: CRM "Customer Relationship Management" değildir (İş dünyası IT terimi). Diğer karışıklık: CRM'i sadece pilot eğitimi sananlar — aslında tüm "operational personnel" (kabin, dispatcher, ramp, ATC) için geçerlidir. Bir başka hata: "kaptan her zaman haklı" zihniyeti — modern CRM "any crew member can call go-around" prensibine dayanır.
+
+**İlgili terimler**: TEM (Threat and Error Management), Just Culture, Human Factors, NTS (Non-Technical Skills), Briefing/Debriefing, PACE Model (Probe-Alert-Challenge-Emergency), Sterile Cockpit Rule, Authority Gradient, Cockpit Voice Recorder analysis.
+
+**Örnek**: US Airways 1549 Sully (Hudson, 2009) mükemmel CRM örneği. Captain Sullenberger ve F/O Skiles birds strike'tan sonra: net iletişim ("My aircraft, you check engine restart"), task paylaşımı (Sully = aviate + ATC, Skiles = QRH + restart), durum farkındalığı (LaGuardia geri dönülmez, Hudson tek seçenek), karar verme (90 saniye içinde Hudson kararı), conflict resolution (ATC LaGuardia öneriyordu, Sully nazikçe reddetti). 155 can kurtuldu — 100% CRM zaferi.`,
   },
 
   // ═══════════════════════════════════════════════
