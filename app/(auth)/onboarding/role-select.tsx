@@ -13,6 +13,7 @@
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import type { UserRole } from '@/types/profile';
@@ -35,15 +36,27 @@ interface RoleConfig {
   accent: string;
 }
 
-const ROLES: RoleConfig[] = [
-  { id: 'pilot', icon: '✈', title: 'Pilot', desc: 'Cockpit, ATC, ICAO Level 4', code: 'PIL', accent: '#E63946' },
-  { id: 'cabin', icon: '🎧', title: 'Cabin Crew', desc: 'PA, safety demo, interview prep', code: 'CAB', accent: '#7C5CFF' },
-  { id: 'technician', icon: '⚙', title: 'Aircraft Technician', desc: 'EASA Part-66, AMM reading', code: 'TEC', accent: '#2EA8FF' },
-  { id: 'ground', icon: '💼', title: 'Ground Ops', desc: 'IATA IGOM, ramp, customer service', code: 'GND', accent: '#2DBE6C' },
-  { id: 'student', icon: '📖', title: 'Aviation Student', desc: 'YDS, university, ICAO preview', code: 'STU', accent: '#F2C14E' },
+interface RoleSpec {
+  id: UserRole;
+  icon: string;
+  code: string;
+  accent: string;
+  /** translation key: titleKey */
+  tk: string;
+  /** translation key: descKey */
+  dk: string;
+}
+
+const ROLES: RoleSpec[] = [
+  { id: 'pilot', icon: '✈', code: 'PIL', accent: '#E63946', tk: 'rolePilot', dk: 'rolePilotDesc' },
+  { id: 'cabin', icon: '🎧', code: 'CAB', accent: '#7C5CFF', tk: 'roleCabin', dk: 'roleCabinDesc' },
+  { id: 'technician', icon: '⚙', code: 'TEC', accent: '#2EA8FF', tk: 'roleTech', dk: 'roleTechDesc' },
+  { id: 'ground', icon: '💼', code: 'GND', accent: '#2DBE6C', tk: 'roleGround', dk: 'roleGroundDesc' },
+  { id: 'student', icon: '📖', code: 'STU', accent: '#F2C14E', tk: 'roleStudent', dk: 'roleStudentDesc' },
 ];
 
 export default function RoleSelectScreen() {
+  const { t } = useTranslation();
   const setRole = useOnboardingStore((s) => s.setRole);
   const currentRole = useOnboardingStore((s) => s.role);
   const [selected, setSelected] = useState<UserRole | null>(currentRole);
@@ -71,9 +84,9 @@ export default function RoleSelectScreen() {
           <TouchableOpacity onPress={() => router.back()} style={{ width: 40 }}>
             <Text style={{ fontSize: 24, color: '#0E1116' }}>‹</Text>
           </TouchableOpacity>
-          <Eyebrow style={{ flex: 1, textAlign: 'center' }}>STEP 2 OF 6</Eyebrow>
+          <Eyebrow style={{ flex: 1, textAlign: 'center' }}>{t('screens.roleSelect.step')}</Eyebrow>
           <TouchableOpacity style={{ width: 40, alignItems: 'flex-end' }}>
-            <Text style={{ fontFamily: FONTS.body600, fontSize: 13, color: '#5A6478' }}>Skip</Text>
+            <Text style={{ fontFamily: FONTS.body600, fontSize: 13, color: '#5A6478' }}>{t('common.skip', 'Skip')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -84,9 +97,9 @@ export default function RoleSelectScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
-        <HHero>Pick your{'\n'}callsign.</HHero>
+        <HHero>{t('screens.roleSelect.hero1')}{'\n'}{t('screens.roleSelect.hero2')}</HHero>
         <Body style={{ marginTop: 4, marginBottom: 20 }}>
-          We'll build a learning route just for your role.
+          {t('screens.roleSelect.subtitle')}
         </Body>
 
         <View style={{ gap: 10 }}>
@@ -136,13 +149,13 @@ export default function RoleSelectScreen() {
                         color: '#0E1116',
                       }}
                     >
-                      {r.title}
+                      {t(`screens.roleSelect.${r.tk}`)}
                     </Text>
                     <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 1 }}>
                       {r.code}
                     </Mono>
                   </View>
-                  <Body style={{ fontSize: 13, marginTop: 2 }}>{r.desc}</Body>
+                  <Body style={{ fontSize: 13, marginTop: 2 }}>{t(`screens.roleSelect.${r.dk}`)}</Body>
                 </View>
 
                 {/* Check */}
@@ -170,7 +183,7 @@ export default function RoleSelectScreen() {
       <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
         <View style={{ padding: 16 }}>
           <Button3D variant="primary" fullWidth disabled={!selected} onPress={handleNext}>
-            Continue →
+            {t('screens.roleSelect.continue')} →
           </Button3D>
         </View>
       </SafeAreaView>

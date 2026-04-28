@@ -9,6 +9,7 @@
 import { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -23,21 +24,22 @@ import {
 
 interface GoalOption {
   mins: 5 | 10 | 15 | 30 | 60;
-  label: string;
-  desc: string;
+  /** translation key root: `screens.goals.{key}` (label) + `screens.goals.{key}Desc` */
+  key: string;
   icon: string;
   recommended?: boolean;
 }
 
 const GOALS: GoalOption[] = [
-  { mins: 5, label: 'Casual', desc: '1 lesson · maintain streak', icon: '☁️' },
-  { mins: 10, label: 'Steady', desc: '2 lessons · most popular', icon: '⚡' },
-  { mins: 15, label: 'Serious', desc: '3 lessons · ICAO 4 in 14w', icon: '🎯', recommended: true },
-  { mins: 30, label: 'Intense', desc: '6 lessons · L4 in 7w', icon: '🔥' },
-  { mins: 60, label: 'Captain', desc: 'Full session · L4 in 4w', icon: '👑' },
+  { mins: 5, key: 'casual', icon: '☁️' },
+  { mins: 10, key: 'steady', icon: '⚡' },
+  { mins: 15, key: 'serious', icon: '🎯', recommended: true },
+  { mins: 30, key: 'intense', icon: '🔥' },
+  { mins: 60, key: 'captain', icon: '👑' },
 ];
 
 export default function GoalsScreen() {
+  const { t } = useTranslation();
   const placement = useOnboardingStore((s) => s.placementResult);
   const role = useOnboardingStore((s) => s.role);
   const setDailyGoal = useOnboardingStore((s) => s.setDailyGoal);
@@ -71,7 +73,7 @@ export default function GoalsScreen() {
             ←
           </Text>
           <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-            STEP 6 OF 6
+            {t('screens.goals.step')}
           </Mono>
           <View style={{ width: 24 }} />
         </View>
@@ -87,9 +89,9 @@ export default function GoalsScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24 }}
       >
-        <HHero>How long is{'\n'}your daily flight?</HHero>
+        <HHero>{t('screens.goals.hero1')}{'\n'}{t('screens.goals.hero2')}</HHero>
         <Body color="#5A6478" style={{ fontSize: 15, marginBottom: 20 }}>
-          You can change this any time.
+          {t('screens.goals.subtitle')}
         </Body>
 
         <View style={{ gap: 10 }}>
@@ -131,7 +133,7 @@ export default function GoalsScreen() {
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                     <Text style={{ fontFamily: FONTS.body800, fontSize: 16, color: '#0E1116' }}>
-                      {g.label}
+                      {t(`screens.goals.${g.key}`)}
                     </Text>
                     {g.recommended && (
                       <View
@@ -143,13 +145,13 @@ export default function GoalsScreen() {
                         }}
                       >
                         <Mono style={{ fontSize: 9, color: '#FFFFFF', letterSpacing: 0.81 }}>
-                          RECOMMENDED
+                          {t('screens.goals.recommended')}
                         </Mono>
                       </View>
                     )}
                   </View>
                   <Body color="#5A6478" style={{ fontSize: 13, marginTop: 2 }}>
-                    {g.desc}
+                    {t(`screens.goals.${g.key}Desc`)}
                   </Body>
                 </View>
                 <Text style={{ fontSize: 22 }}>{g.icon}</Text>
@@ -162,7 +164,7 @@ export default function GoalsScreen() {
       <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
         <View style={{ padding: 16 }}>
           <Button3D variant="primary" fullWidth onPress={handleFinish}>
-            Take off ✈
+            {t('screens.goals.takeoff')}
           </Button3D>
         </View>
       </SafeAreaView>

@@ -14,6 +14,7 @@
  */
 import { ScrollView, View, Text } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Line, Path } from 'react-native-svg';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -38,13 +39,14 @@ interface DimRow {
 }
 
 const DIMENSIONS: DimRow[] = [
-  { name: 'General English', code: 'GEN', scoreKey: 'generalEnglish', color: 'navy', accentHex: '#2EA8FF' },
-  { name: 'Aviation English', code: 'AVE', scoreKey: 'aviationEnglish', color: 'red', accentHex: '#E63946' },
-  { name: 'Aviation Knowledge', code: 'KNO', scoreKey: 'aviationKnowledge', color: 'gold', accentHex: '#F2C14E' },
-  { name: 'Communication', code: 'COM', scoreKey: 'communication', color: 'green', accentHex: '#2DBE6C' },
+  { name: 'dimGen', code: 'GEN', scoreKey: 'generalEnglish', color: 'navy', accentHex: '#2EA8FF' },
+  { name: 'dimAve', code: 'AVE', scoreKey: 'aviationEnglish', color: 'red', accentHex: '#E63946' },
+  { name: 'dimKno', code: 'KNO', scoreKey: 'aviationKnowledge', color: 'gold', accentHex: '#F2C14E' },
+  { name: 'dimCom', code: 'COM', scoreKey: 'communication', color: 'green', accentHex: '#2DBE6C' },
 ];
 
 export default function PlacementResultScreen() {
+  const { t } = useTranslation();
   const result = useOnboardingStore((s) => s.placementResult);
   const role = useOnboardingStore((s) => s.role);
 
@@ -76,7 +78,7 @@ export default function PlacementResultScreen() {
             alignItems: 'center',
           }}
         >
-          <Eyebrow>TEST COMPLETE</Eyebrow>
+          <Eyebrow>{t('screens.placementResult.headerEyebrow')}</Eyebrow>
           <Text
             style={{
               fontFamily: FONTS.body800,
@@ -85,7 +87,7 @@ export default function PlacementResultScreen() {
               marginTop: 4,
             }}
           >
-            Your boarding pass
+            {t('screens.placementResult.headerTitle')}
           </Text>
         </View>
       </SafeAreaView>
@@ -116,7 +118,7 @@ export default function PlacementResultScreen() {
           >
             <View>
               <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
-                YOUR LEVEL
+                {t('screens.placementResult.yourLevel')}
               </Mono>
               <Text
                 style={{
@@ -131,7 +133,7 @@ export default function PlacementResultScreen() {
                 {overallLevel}
               </Text>
               <Body color="rgba(255,255,255,0.85)" style={{ fontSize: 13, marginTop: 4 }}>
-                Operational Pre-ICAO 4
+                {t('screens.placementResult.levelDesc')}
               </Body>
             </View>
             <RouteGlobe size={100} />
@@ -149,7 +151,7 @@ export default function PlacementResultScreen() {
             >
               {/* FROM */}
               <View>
-                <Eyebrow>FROM</Eyebrow>
+                <Eyebrow>{t('screens.placementResult.from')}</Eyebrow>
                 <Text
                   style={{
                     fontFamily: FONTS.display,
@@ -162,7 +164,7 @@ export default function PlacementResultScreen() {
                 >
                   {overallLevel}
                 </Text>
-                <Body style={{ fontSize: 12 }}>Pre-Operational</Body>
+                <Body style={{ fontSize: 12 }}>{t('screens.placementResult.fromDesc')}</Body>
               </View>
 
               {/* Plane on dashed line */}
@@ -183,7 +185,7 @@ export default function PlacementResultScreen() {
 
               {/* TARGET */}
               <View style={{ alignItems: 'flex-end' }}>
-                <Eyebrow>TARGET</Eyebrow>
+                <Eyebrow>{t('screens.placementResult.target')}</Eyebrow>
                 <Text
                   style={{
                     fontFamily: FONTS.display,
@@ -196,7 +198,7 @@ export default function PlacementResultScreen() {
                 >
                   L4
                 </Text>
-                <Body style={{ fontSize: 12 }}>ICAO Operational</Body>
+                <Body style={{ fontSize: 12 }}>{t('screens.placementResult.targetDesc')}</Body>
               </View>
             </View>
 
@@ -209,14 +211,14 @@ export default function PlacementResultScreen() {
               }}
             >
               <Body style={{ fontSize: 13 }}>
-                <Text style={{ color: '#0E1116', fontFamily: FONTS.body700 }}>~14 weeks</Text> at 15 min/day → ICAO L4 ready.
+                {t('screens.placementResult.weeksToL4', { weeks: '~14' })}
               </Body>
             </View>
           </View>
         </View>
 
         {/* ═══════════ 4 DIMENSION BARS ═══════════ */}
-        <Eyebrow>YOUR DIMENSIONS</Eyebrow>
+        <Eyebrow>{t('screens.placementResult.breakdown')}</Eyebrow>
         <View style={{ marginTop: 8, gap: 12, marginBottom: 20 }}>
           {DIMENSIONS.map((d) => {
             const dim = result[d.scoreKey];
@@ -243,7 +245,7 @@ export default function PlacementResultScreen() {
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
                     <Text style={{ fontFamily: FONTS.body800, fontSize: 15, color: '#0E1116' }}>
-                      {d.name}
+                      {t(`screens.placementResult.${d.name}`)}
                     </Text>
                     <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 1 }}>
                       {d.code}
@@ -321,7 +323,7 @@ export default function PlacementResultScreen() {
             fullWidth
             onPress={() => router.replace('/(auth)/onboarding/goals')}
           >
-            Set my daily goal →
+            {t('screens.placementResult.lockIn')} →
           </Button3D>
         </View>
       </SafeAreaView>

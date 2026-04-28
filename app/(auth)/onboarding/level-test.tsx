@@ -149,6 +149,35 @@ export default function LevelTestScreen() {
           >
             Teste başla →
           </Button>
+
+          {/* DEV-MODE skip — yeni tasarımları görmek için onboarding'i atla */}
+          {__DEV__ && (
+            <Button
+              size="$4"
+              variant="outlined"
+              onPress={() => {
+                // Mock 4-boyutlu sonuç
+                setPlacementResult({
+                  generalEnglish: { label: 'B1', score: 65, confidence: 'medium', questionsAnswered: 6 },
+                  aviationEnglish: { label: 'intermediate', score: 58, confidence: 'medium', questionsAnswered: 6 },
+                  aviationKnowledge: { label: 'intermediate', score: 70, confidence: 'medium', questionsAnswered: 6 },
+                  communication: { label: 'intermediate', score: 62, confidence: 'medium', questionsAnswered: 6 },
+                  recommendations: {
+                    primaryFocus: 'Aviation English phraseology',
+                    roleAdvice: ['Read-back drill önemli', 'ICAO Doc 9432 oku'],
+                    roadmap: ['Hafta 1: Numbers & callsigns', 'Hafta 2: Read-back patterns'],
+                  },
+                  completedAt: new Date().toISOString(),
+                  level: 'B1',
+                  totalScore: 64,
+                  byCategory: {} as never,
+                });
+                router.replace('/(auth)/onboarding/placement-result');
+              }}
+            >
+              [DEV] Atla → Sonuç ekranı
+            </Button>
+          )}
         </YStack>
       </ScrollView>
     );

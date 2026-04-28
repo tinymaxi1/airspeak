@@ -12,6 +12,7 @@
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle, Rect, Defs, RadialGradient, Stop } from 'react-native-svg';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -31,6 +32,7 @@ import {
 } from '@/components/airspeak';
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const role = useOnboardingStore((s) => s.role);
   const placement = useOnboardingStore((s) => s.placementResult);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
@@ -99,7 +101,7 @@ export default function HomeScreen() {
                     marginTop: 2,
                   }}
                 >
-                  Good morning, Captain.
+                  {t('screens.home.greeting')}
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
@@ -137,10 +139,10 @@ export default function HomeScreen() {
 
             {/* Stat pills row */}
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              <StatPill icon="🔥" value={String(streak)} label="streak" />
-              <StatPill icon="❤" value={String(hearts)} label="hearts" />
-              <StatPill icon="⭐" value={xp.toLocaleString()} label="XP" />
-              <StatPill icon="🌐" value={level} label="level" />
+              <StatPill icon="🔥" value={String(streak)} label={t('screens.home.streak')} />
+              <StatPill icon="❤" value={String(hearts)} label={t('screens.home.hearts')} />
+              <StatPill icon="⭐" value={xp.toLocaleString()} label={t('screens.home.xp')} />
+              <StatPill icon="🌐" value={level} label={t('screens.home.level')} />
             </View>
           </View>
         </SafeAreaView>
@@ -168,7 +170,7 @@ export default function HomeScreen() {
             }}
           >
             <View>
-              <Eyebrow>TODAY'S FLIGHT PLAN</Eyebrow>
+              <Eyebrow>{t('screens.home.today')}</Eyebrow>
               <Mono style={{ fontSize: 12, fontWeight: '700', marginTop: 4 }}>
                 IST <Text style={{ color: '#8A93A6' }}>—————</Text> JFK
               </Mono>
@@ -222,7 +224,7 @@ export default function HomeScreen() {
                 }
               }}
             >
-              Resume ✈
+              {t('screens.home.resume')} ✈
             </Button3D>
           </View>
         </Card3D>
@@ -314,7 +316,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Word of the flight */}
-        <Eyebrow style={{ marginTop: 18 }}>WORD OF THE FLIGHT</Eyebrow>
+        <Eyebrow style={{ marginTop: 18 }}>{t('screens.home.wordOfFlight')}</Eyebrow>
         <Card3D style={{ marginTop: 8 }}>
           <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
             <View style={{ flex: 1 }}>

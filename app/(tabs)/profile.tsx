@@ -10,6 +10,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
@@ -31,6 +32,7 @@ import {
 import { getCurrentLanguage } from '@/lib/i18n';
 
 export default function ProfileScreen() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const role = useOnboardingStore((s) => s.role);
   const placement = useOnboardingStore((s) => s.placementResult);
@@ -52,10 +54,10 @@ export default function ProfileScreen() {
   }[role ?? 'student'];
 
   const handleSignOut = () => {
-    Alert.alert('Sign out', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('screens.profile.signOut'), t('screens.profile.signOutConfirm'), [
+      { text: t('screens.profile.cancel'), style: 'cancel' },
       {
-        text: 'Sign out',
+        text: t('screens.profile.signOut'),
         style: 'destructive',
         onPress: async () => {
           await signOut();
@@ -75,7 +77,7 @@ export default function ProfileScreen() {
               <Avatar initials={initials} color="#E63946" size={64} />
               <View style={{ flex: 1 }}>
                 <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
-                  CAPTAIN
+                  {t('screens.profile.captain')}
                 </Mono>
                 <Text
                   style={{
@@ -125,14 +127,14 @@ export default function ProfileScreen() {
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
         {/* Stats grid — 4 cells */}
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 18 }}>
-          <StatCell label="XP" value={totalXp.toLocaleString()} accent="#E63946" />
-          <StatCell label="Streak" value={`${currentStreak}d`} accent="#FF7847" />
-          <StatCell label="Level" value={level} accent="#0F1E47" />
-          <StatCell label="Lessons" value={String(completedCount)} accent="#2DBE6C" />
+          <StatCell label={t('screens.profile.xp')} value={totalXp.toLocaleString()} accent="#E63946" />
+          <StatCell label={t('screens.profile.streak')} value={`${currentStreak}d`} accent="#FF7847" />
+          <StatCell label={t('screens.profile.level')} value={level} accent="#0F1E47" />
+          <StatCell label={t('screens.profile.lessons')} value={String(completedCount)} accent="#2DBE6C" />
         </View>
 
         {/* Heatmap — 12 hafta x 7 gün */}
-        <Eyebrow>FLIGHT LOG · 12 WEEKS</Eyebrow>
+        <Eyebrow>{t('screens.profile.flightLog')}</Eyebrow>
         <Card3D style={{ marginTop: 8, marginBottom: 18, padding: 14 }}>
           <View style={{ gap: 4 }}>
             {Array.from({ length: 7 }).map((_, dayIdx) => (
@@ -162,18 +164,18 @@ export default function ProfileScreen() {
             ))}
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, alignItems: 'center' }}>
-            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>LESS</Mono>
+            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>{t('screens.profile.less')}</Mono>
             <View style={{ flexDirection: 'row', gap: 3 }}>
               {['#EDEFF3', '#DDF7E6', '#4FD487', '#2DBE6C'].map((c) => (
                 <View key={c} style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: c }} />
               ))}
             </View>
-            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>MORE</Mono>
+            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>{t('screens.profile.more')}</Mono>
           </View>
         </Card3D>
 
         {/* Badges */}
-        <Eyebrow>BADGES · 3 EARNED</Eyebrow>
+        <Eyebrow>{t('screens.profile.badges')}</Eyebrow>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8, marginBottom: 18 }}>
           <BadgeCell emoji="🎙" name="Read-back Pro" earned />
           <BadgeCell emoji="🔥" name="7-day streak" earned />
@@ -184,43 +186,43 @@ export default function ProfileScreen() {
         </View>
 
         {/* Settings rows */}
-        <Eyebrow>ACCOUNT</Eyebrow>
+        <Eyebrow>{t('screens.profile.account')}</Eyebrow>
         <View style={{ marginTop: 8, gap: 8, marginBottom: 18 }}>
           <SettingsRow
             icon="⚙"
-            label="Settings"
-            value="Profile · subscription · audio"
+            label={t('screens.profile.settings')}
+            value={t('screens.profile.settingsDesc')}
             onPress={() => router.push('/settings')}
           />
           <SettingsRow
             icon="🔔"
-            label="Notifications"
-            value="3 yeni · ops freq"
+            label={t('screens.profile.notifications')}
+            value={t('screens.profile.notificationsDesc', { count: 3 })}
             onPress={() => router.push('/notifications')}
           />
           <SettingsRow
             icon="🌐"
-            label="Language"
+            label={t('screens.profile.language')}
             value={lang === 'tr' ? '🇹🇷 Türkçe' : lang === 'en' ? '🇬🇧 English' : `🌐 ${lang.toUpperCase()}`}
             onPress={() => router.push('/settings/language')}
           />
           <SettingsRow
             icon="✈"
-            label="Test sınavlarım"
-            value="ICAO 4 · SHGM"
+            label={t('screens.profile.myExams')}
+            value={t('screens.profile.myExamsDesc')}
             onPress={() => router.push('/exam')}
           />
           <SettingsRow
             icon="💼"
-            label="Havayolu mülakatları"
-            value="31 carrier"
+            label={t('screens.profile.interviews')}
+            value={t('screens.profile.interviewsDesc', { count: 31 })}
             onPress={() => router.push('/exam/airlines')}
           />
         </View>
 
         {/* Sign out */}
         <Button3D variant="ghost" fullWidth onPress={handleSignOut}>
-          Sign out
+          {t('screens.profile.signOut')}
         </Button3D>
       </ScrollView>
     </View>

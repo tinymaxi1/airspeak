@@ -10,6 +10,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   HHero,
@@ -49,13 +50,14 @@ const FILTER_CHIPS = [
 ];
 
 export default function PracticeScreen() {
+  const { t } = useTranslation();
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
         <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
-          <Eyebrow>QUICK FLIGHT · NO STREAK PENALTY</Eyebrow>
+          <Eyebrow>{t('screens.practice.eyebrow')}</Eyebrow>
           <Text style={{ fontFamily: FONTS.body800, fontSize: 22, color: '#0E1116', marginTop: 4 }}>
-            Practice
+            {t('screens.practice.title')}
           </Text>
         </View>
       </SafeAreaView>
@@ -63,9 +65,9 @@ export default function PracticeScreen() {
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }}>
         {/* Stat row */}
         <View style={{ flexDirection: 'row', gap: 8, marginBottom: 18 }}>
-          <PracticeStat icon="⚡" label="Energy" value="7/10" color="#F2C14E" />
-          <PracticeStat icon="🎯" label="Today" value="2 drills" color="#E63946" />
-          <PracticeStat icon="⭐" label="Bonus" value="+50 XP" color="#2DBE6C" />
+          <PracticeStat icon="⚡" label={t('screens.practice.energy')} value="7/10" color="#F2C14E" />
+          <PracticeStat icon="🎯" label={t('screens.practice.todayDrills')} value={t('screens.practice.todayValue', { count: 2 })} color="#E63946" />
+          <PracticeStat icon="⭐" label={t('screens.practice.bonus')} value={t('screens.practice.bonusValue')} color="#2DBE6C" />
         </View>
 
         {/* Filter chips */}
@@ -128,7 +130,7 @@ export default function PracticeScreen() {
           </Text>
 
           <Eyebrow accent color="rgba(255,255,255,0.85)">
-            WEEKLY CHALLENGE · 2D LEFT
+            {t('screens.practice.weeklyChallenge')}
           </Eyebrow>
           <Text
             style={{
@@ -141,10 +143,10 @@ export default function PracticeScreen() {
               letterSpacing: -0.48,
             }}
           >
-            Diversion under fuel pressure.
+            {t('screens.practice.weeklyTitle')}
           </Text>
           <Body color="rgba(255,255,255,0.9)" style={{ fontSize: 13, marginTop: 6 }}>
-            5-min ATC sim. 1,200 pilots played. Top 10% = exclusive epaulette badge.
+            {t('screens.practice.weeklyDesc')}
           </Body>
           <TouchableOpacity
             activeOpacity={0.85}
@@ -161,13 +163,13 @@ export default function PracticeScreen() {
             }}
           >
             <Text style={{ fontFamily: FONTS.body800, fontSize: 13, color: '#E63946' }}>
-              Take the challenge →
+              {t('screens.practice.weeklyCta')}
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Fast drills */}
-        <Eyebrow>FAST DRILLS</Eyebrow>
+        <Eyebrow>{t('screens.practice.fastDrills')}</Eyebrow>
         <View style={{ gap: 10, marginTop: 10 }}>
           {DRILLS.map((d, i) => (
             <Card3D key={i} style={{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 14 }}>

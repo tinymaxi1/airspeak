@@ -11,6 +11,7 @@
 import { useState } from 'react';
 import { ScrollView, View, Text, TextInput, Alert } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signUpWithEmail } from '@/features/auth/api';
 import {
@@ -23,6 +24,7 @@ import {
 } from '@/components/airspeak';
 
 export default function RegisterScreen() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -61,7 +63,7 @@ export default function RegisterScreen() {
             ←
           </Text>
           <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-            STEP 1 OF 6
+            {t('screens.register.step')}
           </Mono>
           <View style={{ width: 24 }} />
         </View>
@@ -72,9 +74,9 @@ export default function RegisterScreen() {
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 32 }}
         keyboardShouldPersistTaps="handled"
       >
-        <HHero style={{ marginBottom: 4 }}>Create your{'\n'}flight log.</HHero>
+        <HHero style={{ marginBottom: 4 }}>{t('screens.register.hero1')}{'\n'}{t('screens.register.hero2')}</HHero>
         <Body color="#5A6478" style={{ fontSize: 15, marginBottom: 24 }}>
-          7 free days. No card needed.
+          {t('screens.register.subtitle')}
         </Body>
 
         {/* Boarding pass form */}
@@ -98,7 +100,7 @@ export default function RegisterScreen() {
             }}
           >
             <View>
-              <Eyebrow>PASSENGER</Eyebrow>
+              <Eyebrow>{t('screens.register.passenger')}</Eyebrow>
               <Text
                 style={{
                   fontFamily: FONTS.display,
@@ -108,7 +110,7 @@ export default function RegisterScreen() {
                   marginTop: 4,
                 }}
               >
-                NEW PILOT
+                {t('screens.register.title')}
               </Text>
             </View>
             <Text style={{ fontSize: 32 }}>🎫</Text>
@@ -117,17 +119,17 @@ export default function RegisterScreen() {
           {/* Inputs */}
           <View style={{ paddingHorizontal: 20, paddingBottom: 16, gap: 14 }}>
             <Field
-              label="EMAIL"
+              label={t('screens.register.email')}
               value={email}
               onChangeText={setEmail}
               placeholder="captain@airspeak.io"
               keyboardType="email-address"
             />
             <Field
-              label="PASSWORD"
+              label={t('screens.register.password')}
               value={password}
               onChangeText={setPassword}
-              placeholder="•••••••• (min 8)"
+              placeholder={t('screens.register.passwordHint')}
               secureTextEntry
               mono
             />
@@ -159,7 +161,7 @@ export default function RegisterScreen() {
 
         <View style={{ marginTop: 24 }}>
           <Button3D variant="primary" fullWidth onPress={handleRegister} disabled={loading}>
-            {loading ? 'Boarding...' : 'Board — start trial →'}
+            {loading ? t('screens.register.loading') : t('screens.register.board')}
           </Button3D>
         </View>
 
@@ -167,7 +169,7 @@ export default function RegisterScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 24 }}>
           <View style={{ flex: 1, height: 1, backgroundColor: '#DCE0E8' }} />
           <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.8 }}>
-            OR CONTINUE WITH
+            {t('screens.register.or')}
           </Mono>
           <View style={{ flex: 1, height: 1, backgroundColor: '#DCE0E8' }} />
         </View>
@@ -189,8 +191,7 @@ export default function RegisterScreen() {
           color="#8A93A6"
           style={{ fontSize: 11, textAlign: 'center', marginTop: 24, lineHeight: 16 }}
         >
-          By continuing, you agree to our Terms and Privacy Policy.{'\n'}
-          Trial automatically ends — we'll remind you.
+          {t('screens.register.terms')}
         </Body>
       </ScrollView>
     </View>

@@ -12,6 +12,7 @@
  */
 import { View, Text, ScrollView } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Hero,
@@ -24,6 +25,7 @@ import {
 } from '@/components/airspeak';
 
 export default function WelcomeScreen() {
+  const { t } = useTranslation();
   return (
     <View style={{ flex: 1, backgroundColor: '#0F1E47' }}>
       {/* Topo Background — globe arcs + red glow */}
@@ -71,13 +73,13 @@ export default function WelcomeScreen() {
 
           {/* HERO BLOCK */}
           <View style={{ marginBottom: 24 }}>
-            <Eyebrow accent>Cleared for takeoff</Eyebrow>
+            <Eyebrow accent>{t('screens.welcome.heroAccent')}</Eyebrow>
             <Hero color="#FFFFFF" style={{ marginTop: 12, marginBottom: 16 }}>
-              Speak{'\n'}like a{'\n'}
-              <Text style={{ color: '#FF5A66' }}>captain.</Text>
+              {t('screens.welcome.hero1')}{'\n'}{t('screens.welcome.hero2')}{'\n'}
+              <Text style={{ color: '#FF5A66' }}>{t('screens.welcome.hero3')}</Text>
             </Hero>
             <Body color="rgba(255,255,255,0.75)" style={{ fontSize: 17, lineHeight: 25, maxWidth: 320 }}>
-              Aviation English for pilots, cabin & ground crew. Built around ICAO Level 4.
+              {t('screens.welcome.subtitle')}
             </Body>
           </View>
 
@@ -88,7 +90,7 @@ export default function WelcomeScreen() {
               fullWidth
               onPress={() => router.push('/(auth)/register')}
             >
-              Start free trial
+              {t('screens.welcome.ctaTrial')}
             </Button3D>
             <Button3D
               variant="ghost"
@@ -101,7 +103,7 @@ export default function WelcomeScreen() {
               }}
               textStyle={{ color: '#FFFFFF', textTransform: 'none', fontWeight: '600' }}
             >
-              I have an account
+              {t('screens.welcome.ctaLogin')}
             </Button3D>
           </View>
 
@@ -115,7 +117,7 @@ export default function WelcomeScreen() {
                 color: 'rgba(255,255,255,0.4)',
               }}
             >
-              7 DAY TRIAL • CANCEL ANYTIME
+              {t('screens.welcome.footer')}
             </Text>
           </View>
         </View>

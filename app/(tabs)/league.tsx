@@ -9,6 +9,7 @@
  * - Safe zone divider
  */
 import { ScrollView, View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Body,
@@ -30,7 +31,7 @@ const PLAYERS: Player[] = [
   { rank: 1, name: 'Captain Sky', xp: 4820, country: '🇩🇪' },
   { rank: 2, name: 'M. Aydın', xp: 4205, country: '🇹🇷' },
   { rank: 3, name: 'José L.', xp: 3940, country: '🇪🇸' },
-  { rank: 4, name: 'You · EK', xp: 3812, country: '🇹🇷', you: true },
+  { rank: 4, name: 'EK', xp: 3812, country: '🇹🇷', you: true },
   { rank: 5, name: 'flight_a01', xp: 3502, country: '🇮🇳' },
   { rank: 6, name: 'Nina V.', xp: 3210, country: '🇳🇱' },
   { rank: 7, name: 'Ahmed F.', xp: 2980, country: '🇪🇬' },
@@ -47,6 +48,7 @@ const TIERS = [
 ];
 
 export default function LeagueScreen() {
+  const { t } = useTranslation();
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <View style={{ backgroundColor: '#F2C14E' }}>
@@ -70,7 +72,7 @@ export default function LeagueScreen() {
 
               <View style={{ flex: 1 }}>
                 <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(10,20,48,0.7)' }}>
-                  TIER 4 OF 7
+                  {t('screens.league.tier')}
                 </Mono>
                 <Text
                   style={{
@@ -82,7 +84,7 @@ export default function LeagueScreen() {
                     lineHeight: 28,
                   }}
                 >
-                  Captain
+                  {t('screens.league.tierName')}
                 </Text>
                 <Text
                   style={{
@@ -92,15 +94,15 @@ export default function LeagueScreen() {
                     marginTop: 2,
                   }}
                 >
-                  Top 10 advance · 28h left
+                  {t('screens.league.tierSubtitle')}
                 </Text>
               </View>
             </View>
 
             {/* Tier track */}
             <View style={{ flexDirection: 'row', gap: 4, marginTop: 14 }}>
-              {TIERS.map((t, i) => (
-                <View key={t.name} style={{ flex: 1, alignItems: 'center' }}>
+              {TIERS.map((tier, i) => (
+                <View key={tier.name} style={{ flex: 1, alignItems: 'center' }}>
                   <View
                     style={{
                       height: 8,
@@ -112,12 +114,12 @@ export default function LeagueScreen() {
                   <Mono
                     style={{
                       fontSize: 8,
-                      color: t.current ? '#0A1430' : 'rgba(0,0,0,0.4)',
+                      color: tier.current ? '#0A1430' : 'rgba(0,0,0,0.4)',
                       marginTop: 4,
                       letterSpacing: 0.32,
                     }}
                   >
-                    {t.short}
+                    {tier.short}
                   </Mono>
                 </View>
               ))}
@@ -177,7 +179,7 @@ export default function LeagueScreen() {
               />
               <View style={{ flex: 1 }}>
                 <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
-                  {p.name}
+                  {p.you ? `${t('screens.league.you')} · ${p.name}` : p.name}
                 </Text>
                 <Mono style={{ fontSize: 11, color: '#8A93A6' }}>
                   {p.country} · {p.xp.toLocaleString()} XP
@@ -200,7 +202,7 @@ export default function LeagueScreen() {
             }}
           >
             <Mono style={{ fontSize: 11, color: '#2DBE6C', letterSpacing: 1.1 }}>
-              ↑ SAFE ZONE — STAY ABOVE TO ADVANCE ↑
+              {t('screens.league.safeZone')}
             </Mono>
           </View>
         </View>
