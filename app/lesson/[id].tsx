@@ -1,8 +1,16 @@
-import { ScrollView } from 'react-native';
-import { YStack, XStack, H2, H3, Paragraph, Card, Button, Text, Progress } from 'tamagui';
+import { ScrollView, View, Text } from 'react-native';
+import { YStack, XStack, H2, H3, Paragraph, Card, Button } from 'tamagui';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState, useMemo } from 'react';
 import { CelebrationOverlay } from '@/components/ui/CelebrationOverlay';
+import {
+  LessonChrome,
+  LessonOptionCard,
+  LessonFeedbackInline,
+  Button3D,
+  Eyebrow as ASEyebrow,
+} from '@/components/airspeak';
 import { generateLesson } from '@/features/lessons/lessonGenerator';
 import type { Exercise } from '@/features/lessons/exerciseTypes';
 import { getVocabForRole } from '@/features/lessons/seed';
@@ -97,96 +105,79 @@ export default function LessonScreen() {
     })[type] ?? type;
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <YStack flex={1} padding="$4" gap="$4" backgroundColor="$background">
-        <Progress value={(currentIdx / total) * 100} max={100} backgroundColor="$border">
-          <Progress.Indicator animation="lazy" backgroundColor="$primary" />
-        </Progress>
-        <Paragraph size="$2" color="$textSecondary">
-          Egzersiz {currentIdx + 1} / {total}
-        </Paragraph>
+    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <SafeAreaView edges={['top']}>
+        <LessonChrome
+          progress={(currentIdx / total) * 100}
+          hearts={5}
+          onClose={() => router.back()}
+        />
+      </SafeAreaView>
 
-        <Card padding="$3" backgroundColor="$backgroundHover">
-          <Text fontSize="$2" color="$textSecondary" textTransform="uppercase">
-            {exerciseTypeLabel(exercise.type)}
-          </Text>
-        </Card>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+        <ASEyebrow>{exerciseTypeLabel(exercise.type)}</ASEyebrow>
+        <Text
+          style={{
+            fontFamily: 'SpaceGrotesk_700Bold',
+            fontSize: 24,
+            fontWeight: '700',
+            color: '#0E1116',
+            marginTop: 6,
+            lineHeight: 29,
+            letterSpacing: -0.48,
+          }}
+        >
+          {exercise.question}
+        </Text>
 
-        <H3 color="$text">{exercise.question}</H3>
-
-        <YStack gap="$3">
+        <View style={{ gap: 10, marginTop: 20 }}>
           {exercise.options.map((opt) => {
             const isSelected = selected === opt.id;
             const showAsCorrect = showFeedback && opt.id === exercise.correctId;
             const showAsWrong = showFeedback && isSelected && !showAsCorrect;
-
-            let bg: string = '$surface';
-            let border: string = '$border';
-            let color: string = '$text';
-            if (showAsCorrect) {
-              bg = '$success';
-              border = '$success';
-              color = '$primaryText';
-            } else if (showAsWrong) {
-              bg = '$danger';
-              border = '$danger';
-              color = '$primaryText';
-            } else if (isSelected) {
-              bg = '$primary';
-              border = '$primary';
-              color = '$primaryText';
-            }
+            const optState: 'idle' | 'correct' | 'wrong' = showAsCorrect
+              ? 'correct'
+              : showAsWrong
+                ? 'wrong'
+                : 'idle';
 
             return (
-              <Card
+              <LessonOptionCard
                 key={opt.id}
-                bordered
-                padding="$4"
-                backgroundColor={bg as any}
-                borderColor={border as any}
+                letter={opt.id}
+                text={opt.text}
+                selected={isSelected}
+                state={optState}
                 onPress={() => !showFeedback && setSelected(opt.id)}
-                disabled={showFeedback}
-                pressStyle={{ scale: 0.98 }}
-              >
-                <Text fontSize="$5" fontWeight="500" color={color as any}>
-                  {opt.text}
-                </Text>
-              </Card>
+              />
             );
           })}
-        </YStack>
+        </View>
 
         {showFeedback && (
-          <Card
-            padding="$4"
-            backgroundColor={isCorrect ? '$successSubtle' : '$dangerSubtle'}
-          >
-            <YStack gap="$2">
-              <Text fontSize="$5" fontWeight="600" color={isCorrect ? '$success' : '$danger'}>
-                {isCorrect ? '✓ Doğru! +10 XP' : '✗ Yanlış'}
-              </Text>
-              <Paragraph color="$text">{exercise.explanation}</Paragraph>
-            </YStack>
-          </Card>
+          <View style={{ marginTop: 16 }}>
+            <LessonFeedbackInline
+              state={isCorrect ? 'correct' : 'wrong'}
+              message={exercise.explanation}
+            />
+          </View>
         )}
+      </ScrollView>
 
-        {!showFeedback ? (
-          <Button
-            size="$5"
-            backgroundColor={selected ? '$primary' : '$border'}
-            color={selected ? '$primaryText' : '$textSecondary'}
-            disabled={!selected}
-            onPress={handleAnswer}
-          >
-            Cevapla
-          </Button>
-        ) : (
-          <Button size="$5" backgroundColor="$primary" color="$primaryText" onPress={handleNext}>
-            {currentIdx + 1 >= total ? 'Dersi bitir →' : 'Sonraki egzersiz →'}
-          </Button>
-        )}
-      </YStack>
-    </ScrollView>
+      <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
+        <View style={{ padding: 16 }}>
+          {!showFeedback ? (
+            <Button3D variant="primary" fullWidth disabled={!selected} onPress={handleAnswer}>
+              Cevapla
+            </Button3D>
+          ) : (
+            <Button3D variant="primary" fullWidth onPress={handleNext}>
+              {currentIdx + 1 >= total ? 'Dersi bitir →' : 'Sonraki egzersiz →'}
+            </Button3D>
+          )}
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -206,57 +197,141 @@ function LessonComplete({
   const isPerfect = correctCount === total;
 
   return (
-    <YStack flex={1} padding="$4" gap="$5" backgroundColor="$background" justifyContent="center">
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#0F1E47',
+        justifyContent: 'center',
+        padding: 24,
+        gap: 24,
+      }}
+    >
       <CelebrationOverlay
         emoji={isPerfect ? '🏆' : '🎉'}
         title={isPerfect ? 'Mükemmel!' : 'Tebrikler!'}
         subtitle={`+${xpEarned} XP`}
         visible={true}
       />
-      <YStack alignItems="center" gap="$3">
-        <Text fontSize={64}>🎉</Text>
-        <H2 color="$text">Ders tamamlandı!</H2>
-        <Text fontSize="$5" color="$textSecondary">
-          {correctCount} / {total} doğru ({percent}%)
+
+      {/* TOUCHDOWN moment */}
+      <View style={{ alignItems: 'center', gap: 12 }}>
+        <Text style={{ fontSize: 80 }}>{isPerfect ? '🏆' : '✈'}</Text>
+        <Text
+          style={{
+            fontFamily: 'JetBrainsMono_500Medium',
+            fontSize: 12,
+            letterSpacing: 2.16,
+            color: 'rgba(255,255,255,0.7)',
+            textTransform: 'uppercase',
+          }}
+        >
+          TOUCHDOWN ✦ LESSON COMPLETE
         </Text>
-      </YStack>
+        <Text
+          style={{
+            fontFamily: 'SpaceGrotesk_700Bold',
+            fontSize: 38,
+            fontWeight: '700',
+            color: '#FFFFFF',
+            letterSpacing: -1.14,
+            textAlign: 'center',
+            lineHeight: 40,
+          }}
+        >
+          {isPerfect ? 'Perfect landing.' : 'Safely on the runway.'}
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'PlusJakartaSans_500Medium',
+            fontSize: 15,
+            color: 'rgba(255,255,255,0.85)',
+            textAlign: 'center',
+          }}
+        >
+          {correctCount} / {total} correct • {percent}%
+        </Text>
+      </View>
 
-      <Card padding="$4" backgroundColor="$accent">
-        <YStack gap="$2" alignItems="center">
-          <Text fontSize="$3" color="$accentText" textTransform="uppercase">
-            Kazandığın
-          </Text>
-          <Text fontSize="$8" fontWeight="700" color="$accentText">
-            +{xpEarned} XP
-          </Text>
-          <Text fontSize="$3" color="$accentText">
-            +10 🪙 coin
-          </Text>
-        </YStack>
-      </Card>
-
-      <Card padding="$3" backgroundColor="$surface" bordered>
-        <YStack gap="$1">
-          <Text fontSize="$3" color="$textSecondary" textTransform="uppercase">
-            Bu derste yeni
-          </Text>
-          <Text fontSize="$4" color="$text">
-            {new Set(exercises.map((e) => e.termId)).size} terim, {exercises.length} egzersiz
-          </Text>
-          <Text fontSize="$2" color="$textSecondary">
-            Bu egzersizler artık "görüldü" işaretlendi — bir daha karşılaşmayacaksın.
-          </Text>
-        </YStack>
-      </Card>
-
-      <Button
-        size="$5"
-        backgroundColor="$primary"
-        color="$primaryText"
-        onPress={() => router.replace('/(tabs)/home')}
+      {/* XP Card */}
+      <View
+        style={{
+          backgroundColor: '#E63946',
+          borderRadius: 14,
+          padding: 20,
+          alignItems: 'center',
+          borderBottomWidth: 4,
+          borderBottomColor: '#C8202E',
+        }}
       >
-        Ana sayfaya dön
-      </Button>
-    </YStack>
+        <Text
+          style={{
+            fontFamily: 'JetBrainsMono_500Medium',
+            fontSize: 11,
+            letterSpacing: 1.8,
+            color: 'rgba(255,255,255,0.85)',
+            textTransform: 'uppercase',
+          }}
+        >
+          XP EARNED
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'SpaceGrotesk_700Bold',
+            fontSize: 56,
+            fontWeight: '700',
+            color: '#FFFFFF',
+            letterSpacing: -1.68,
+            lineHeight: 56,
+            marginTop: 4,
+          }}
+        >
+          +{xpEarned}
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'PlusJakartaSans_700Bold',
+            fontSize: 13,
+            color: 'rgba(255,255,255,0.85)',
+            marginTop: 4,
+          }}
+        >
+          +10 🪙 coins
+        </Text>
+      </View>
+
+      {/* Insight Card */}
+      <View
+        style={{
+          backgroundColor: 'rgba(255,255,255,0.08)',
+          borderRadius: 14,
+          padding: 16,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.12)',
+          gap: 4,
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: 'JetBrainsMono_500Medium',
+            fontSize: 11,
+            letterSpacing: 1.8,
+            color: 'rgba(255,255,255,0.65)',
+            textTransform: 'uppercase',
+          }}
+        >
+          NEW IN THIS FLIGHT
+        </Text>
+        <Text style={{ fontFamily: 'PlusJakartaSans_700Bold', fontSize: 17, color: '#FFFFFF' }}>
+          {new Set(exercises.map((e) => e.termId)).size} terim · {exercises.length} egzersiz
+        </Text>
+        <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
+          Tekrarsız sistemde — bir daha karşılaşmayacaksın.
+        </Text>
+      </View>
+
+      <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/home')}>
+        Back to home →
+      </Button3D>
+    </View>
   );
 }

@@ -10,3 +10,4 @@
 export * from './typography';
 export * from './primitives';
 export * from './brand';
+export * from './lesson';
