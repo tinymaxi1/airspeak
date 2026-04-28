@@ -29,6 +29,13 @@ import { queryClient } from '@/lib/queryClient';
 import { initI18n } from '@/lib/i18n';
 import { initAnalytics } from '@/lib/posthog';
 import { initSentry } from '@/lib/sentry';
+import { useTranslation } from 'react-i18next';
+import {
+  requestPermission as requestNotifPermission,
+  scheduleDailyReminders,
+  updateStreakDangerNotification,
+} from '@/lib/notifications';
+import { useGamificationStore } from '@/stores/gamificationStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -53,6 +60,28 @@ export default function RootLayout() {
     JetBrainsMono_500Medium,
     JetBrainsMono_700Bold,
   });
+
+  const { t } = useTranslation();
+  const lastActivityDate = useGamificationStore((s) => s.lastActivityDate);
+
+  // Notifications: izin iste + günlük hatırlatıcıları zamanla + streak danger güncelle
+  useEffect(() => {
+    if (!fontsLoaded) return;
+    (async () => {
+      const granted = await requestNotifPermission().catch(() => false);
+      if (!granted) return;
+      await scheduleDailyReminders(undefined, {
+        morningTitle: t('notif.morningTitle', 'Günaydın, kaptan ✈'),
+        morningBody: t('notif.morningBody', 'Bugünkü uçuş planın hazır. 15 dk yeter.'),
+        eveningTitle: t('notif.eveningTitle', '🔥 Streak\'in tehlikede'),
+        eveningBody: t('notif.eveningBody', 'Bugün hâlâ pratik yapmadın. 1 ders streak\'i kurtarır.'),
+      }).catch((e) => console.warn('Notif schedule failed', e));
+      await updateStreakDangerNotification(lastActivityDate, {
+        title: t('notif.dangerTitle', '⚠ Son 90 dk!'),
+        body: t('notif.dangerBody', 'Streak kırılmasın diye 1 hızlı pratik yeter.'),
+      }).catch(() => undefined);
+    })();
+  }, [fontsLoaded, lastActivityDate, t]);
 
   useEffect(() => {
     if (fontsLoaded) {

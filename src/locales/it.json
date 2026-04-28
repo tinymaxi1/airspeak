@@ -614,5 +614,13 @@
         "lessonSkipDesc": "Salta una lezione difficile (senza XP)"
       }
     }
+  },
+  "notif": {
+    "morningTitle": "Good morning, captain ✈",
+    "morningBody": "Your flight plan is ready. 15 min is enough.",
+    "eveningTitle": "🔥 Your streak is at risk",
+    "eveningBody": "You haven't practiced today. 1 lesson saves the streak.",
+    "dangerTitle": "⚠ Final 90 min!",
+    "dangerBody": "One quick drill keeps your streak alive."
   }
 }

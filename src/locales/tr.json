@@ -614,5 +614,13 @@
         "lessonSkipDesc": "Sıkıştığın bir dersi atla (XP almazsın)"
       }
     }
+  },
+  "notif": {
+    "morningTitle": "Günaydın, kaptan ✈",
+    "morningBody": "Bugünkü uçuş planın hazır. 15 dk yeter.",
+    "eveningTitle": "🔥 Streak'in tehlikede",
+    "eveningBody": "Bugün hâlâ pratik yapmadın. 1 ders streak'i kurtarır.",
+    "dangerTitle": "⚠ Son 90 dk!",
+    "dangerBody": "Streak kırılmasın diye 1 hızlı pratik yeter."
   }
 }
