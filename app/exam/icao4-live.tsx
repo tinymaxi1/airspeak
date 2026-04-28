@@ -12,6 +12,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, {
   Defs,
@@ -27,6 +28,7 @@ import Svg, {
 import { Mono, FONTS } from '@/components/airspeak';
 
 export default function ICAOLiveScreen() {
+  const { t } = useTranslation();
   const sections = [
     { state: 'done' },
     { state: 'done' },
@@ -53,10 +55,10 @@ export default function ICAOLiveScreen() {
         >
           <View>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.55)' }}>
-              SEC 04 · ATC INTERACTION
+              {t('screens.icao.secEyebrow')}
             </Mono>
             <Text style={{ fontFamily: FONTS.body800, fontSize: 14, color: '#FFFFFF', marginTop: 2 }}>
-              Question 3 / 5
+              {t('screens.icao.questionN', { n: 3, total: 5 })}
             </Text>
           </View>
           <View
@@ -108,7 +110,7 @@ export default function ICAOLiveScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
-        <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 1.8 }}>SCENARIO</Mono>
+        <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 1.8 }}>{t('screens.icao.scenarioEyebrow')}</Mono>
 
         {/* Scenario image */}
         <View
@@ -174,7 +176,7 @@ export default function ICAOLiveScreen() {
             }}
           >
             <Mono style={{ fontSize: 10, color: '#FFFFFF', letterSpacing: 1 }}>
-              RWY 27R · WX: TS APPROACHING
+              {t('screens.icao.scenarioTag')}
             </Mono>
           </View>
         </View>
@@ -190,7 +192,7 @@ export default function ICAOLiveScreen() {
             letterSpacing: -0.44,
           }}
         >
-          Describe the situation{'\n'}and what you would do.
+          {t('screens.icao.questionPrompt1')}{'\n'}{t('screens.icao.questionPrompt2')}
         </Text>
         <Text
           style={{
@@ -201,7 +203,7 @@ export default function ICAOLiveScreen() {
             fontFamily: FONTS.body,
           }}
         >
-          Speak naturally. Take 30 seconds to think, then up to 90 seconds to answer.
+          {t('screens.icao.questionPromptDesc')}
         </Text>
 
         {/* Live transcript */}
@@ -225,7 +227,7 @@ export default function ICAOLiveScreen() {
             }}
           >
             <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', letterSpacing: 1.8 }}>
-              LIVE TRANSCRIPT
+              {t('screens.icao.liveTranscript')}
             </Mono>
             <Mono style={{ fontSize: 10, color: '#4FD487', letterSpacing: 1.2 }}>
               ● 0:34 / 1:30
@@ -293,7 +295,7 @@ export default function ICAOLiveScreen() {
                 letterSpacing: 1,
               }}
             >
-              RECORDING · DO NOT STOP MID-SENTENCE
+              {t('screens.icao.recording')}
             </Mono>
           </View>
           <TouchableOpacity

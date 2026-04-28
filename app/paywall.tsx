@@ -12,6 +12,7 @@
 import { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Defs, RadialGradient, Stop, Circle } from 'react-native-svg';
 import { track } from '@/lib/posthog';
@@ -33,23 +34,23 @@ interface PlanData {
   badge?: string;
 }
 
-const PLANS: PlanData[] = [
-  { id: 'annual', name: 'Annual', price: '₺2.499', sub: '₺208 / mo · save 50%', badge: 'BEST VALUE' },
-  { id: 'monthly', name: 'Monthly', price: '₺349', sub: '7-day free trial' },
-  { id: 'student', name: 'Student', price: '₺1.499 / yr', sub: '.edu.tr verify · ₺125 / mo' },
-];
+// PLANS — translation keys via plan id
+const PLAN_IDS: PlanData['id'][] = ['annual', 'monthly', 'student'];
 
-const FEATURES = [
-  { name: 'AI Co-pilot conversations', free: '5/day', pro: 'Unlimited' },
-  { name: 'Hearts (mistakes)', free: '5/day', pro: 'Unlimited' },
-  { name: 'ICAO 4 mock exams', free: '1/month', pro: 'Unlimited' },
-  { name: 'Examiner-graded recordings', free: '—', pro: '✓' },
-  { name: 'Offline lessons', free: '—', pro: '✓' },
-  { name: 'Adaptive review of mistakes', free: '—', pro: '✓' },
-];
+const FEATURE_KEYS = ['feat1', 'feat2', 'feat3', 'feat4', 'feat5', 'feat6'];
+const FEATURE_HAS_FREE = [true, true, true, false, false, false];
 
 export default function PaywallScreen() {
+  const { t } = useTranslation();
   const [selectedPlan, setSelectedPlan] = useState<PlanData['id']>('annual');
+
+  const plans: PlanData[] = PLAN_IDS.map((id) => ({
+    id,
+    name: t(`screens.paywall.${id}`),
+    price: t(`screens.paywall.${id}Price`),
+    sub: t(`screens.paywall.${id}Sub`),
+    badge: id === 'annual' ? t('screens.paywall.bestValue') : undefined,
+  }));
 
   const handleSubscribe = () => {
     track('paywall_subscribe', { plan: selectedPlan });
@@ -94,7 +95,7 @@ export default function PaywallScreen() {
           </TouchableOpacity>
           <TouchableOpacity>
             <Text style={{ fontFamily: FONTS.body600, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
-              Restore
+              {t('screens.paywall.restore')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -121,7 +122,7 @@ export default function PaywallScreen() {
             >
               <Text style={{ fontSize: 14, color: '#FFD56B' }}>👑</Text>
               <Mono style={{ fontSize: 11, letterSpacing: 1.98, color: '#FFD56B' }}>
-                PRO PILOT
+                {t('screens.paywall.badge')}
               </Mono>
             </View>
 
@@ -136,8 +137,8 @@ export default function PaywallScreen() {
                 textAlign: 'center',
               }}
             >
-              Unlimited{'\n'}
-              <Text style={{ color: '#FFD56B' }}>flight hours.</Text>
+              {t('screens.paywall.hero1')}{'\n'}
+              <Text style={{ color: '#FFD56B' }}>{t('screens.paywall.hero2')}</Text>
             </Text>
 
             <Body
@@ -149,7 +150,7 @@ export default function PaywallScreen() {
                 textAlign: 'center',
               }}
             >
-              The full ICAO 4 path, AI co-pilot 24/7, examiner-graded mock tests.
+              {t('screens.paywall.subtitle')}
             </Body>
           </View>
 
@@ -167,62 +168,65 @@ export default function PaywallScreen() {
             <View style={{ flex: 1 }} />
             <View style={{ width: 56, alignItems: 'center' }}>
               <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', letterSpacing: 0.9 }}>
-                FREE
+                {t('screens.paywall.free')}
               </Mono>
             </View>
             <View style={{ width: 56, alignItems: 'center' }}>
               <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 0.9 }}>
-                PRO
+                {t('screens.paywall.pro')}
               </Mono>
             </View>
           </View>
 
           {/* Feature comparison rows */}
           <View style={{ marginBottom: 20 }}>
-            {FEATURES.map((f, i, arr) => (
-              <View
-                key={i}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 16,
-                  paddingVertical: 12,
-                  borderBottomWidth: i < arr.length - 1 ? 1 : 0,
-                  borderBottomColor: 'rgba(255,255,255,0.08)',
-                }}
-              >
-                <Text style={{ flex: 1, fontFamily: FONTS.body600, fontSize: 14, color: '#FFFFFF' }}>
-                  {f.name}
-                </Text>
-                <Text
+            {FEATURE_KEYS.map((fk, i) => {
+              const hasFree = FEATURE_HAS_FREE[i];
+              return (
+                <View
+                  key={fk}
                   style={{
-                    width: 56,
-                    textAlign: 'center',
-                    fontFamily: FONTS.body,
-                    fontSize: 12,
-                    color: 'rgba(255,255,255,0.5)',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 16,
+                    paddingVertical: 12,
+                    borderBottomWidth: i < FEATURE_KEYS.length - 1 ? 1 : 0,
+                    borderBottomColor: 'rgba(255,255,255,0.08)',
                   }}
                 >
-                  {f.free}
-                </Text>
-                <Text
-                  style={{
-                    width: 56,
-                    textAlign: 'center',
-                    fontFamily: FONTS.body700,
-                    fontSize: 13,
-                    color: '#FFD56B',
-                  }}
-                >
-                  {f.pro}
-                </Text>
-              </View>
-            ))}
+                  <Text style={{ flex: 1, fontFamily: FONTS.body600, fontSize: 14, color: '#FFFFFF' }}>
+                    {t(`screens.paywall.${fk}`)}
+                  </Text>
+                  <Text
+                    style={{
+                      width: 56,
+                      textAlign: 'center',
+                      fontFamily: FONTS.body,
+                      fontSize: 12,
+                      color: 'rgba(255,255,255,0.5)',
+                    }}
+                  >
+                    {hasFree ? t(`screens.paywall.${fk}Free`) : '—'}
+                  </Text>
+                  <Text
+                    style={{
+                      width: 56,
+                      textAlign: 'center',
+                      fontFamily: FONTS.body700,
+                      fontSize: 13,
+                      color: '#FFD56B',
+                    }}
+                  >
+                    {hasFree ? t(`screens.paywall.${fk}Pro`) : '✓'}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
 
           {/* Plans */}
           <View style={{ gap: 10, marginBottom: 16 }}>
-            {PLANS.map((p) => (
+            {plans.map((p) => (
               <PlanCard
                 key={p.id}
                 plan={p}
@@ -237,7 +241,7 @@ export default function PaywallScreen() {
             color="rgba(255,255,255,0.4)"
             style={{ fontSize: 11, textAlign: 'center', marginBottom: 8 }}
           >
-            Cancel anytime. Auto-renew unless canceled 24h before period ends.
+            {t('screens.paywall.disclaimer')}
           </Body>
         </ScrollView>
 
@@ -251,7 +255,7 @@ export default function PaywallScreen() {
               style={{ backgroundColor: '#FFD56B', borderBottomColor: '#F2C14E' }}
               textStyle={{ color: '#0A1430' }}
             >
-              Start 7-day free trial
+              {t('screens.paywall.cta')}
             </Button3D>
           </View>
         </SafeAreaView>

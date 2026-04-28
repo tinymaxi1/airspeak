@@ -10,6 +10,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
@@ -31,14 +32,15 @@ interface RowDef {
 }
 
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const username = user?.email?.split('@')[0] ?? 'pilot';
 
   const handleSignOut = () => {
-    Alert.alert('Sign out', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('screens.settings.signOut'), t('screens.profile.signOutConfirm'), [
+      { text: t('screens.profile.cancel'), style: 'cancel' },
       {
-        text: 'Sign out',
+        text: t('screens.settings.signOut'),
         style: 'destructive',
         onPress: async () => {
           await signOut();
@@ -50,57 +52,57 @@ export default function SettingsScreen() {
 
   const groups: { title?: string; rows: RowDef[] }[] = [
     {
-      title: 'ACCOUNT',
+      title: t('screens.settings.groupAccount'),
       rows: [
-        { icon: '👤', label: 'Profile & callsign', sub: `${username} · @${username} · TK fleet` },
-        { icon: '🎯', label: 'Target & deadline', sub: 'ICAO Level 4 by Aug 2026' },
-        { icon: '✈', label: 'Role', sub: 'First Officer · Narrow-body' },
+        { icon: '👤', label: t('screens.settings.profile'), sub: t('screens.settings.profileDesc', { name: username, username }) },
+        { icon: '🎯', label: t('screens.settings.target'), sub: t('screens.settings.targetDesc') },
+        { icon: '✈', label: t('screens.settings.role'), sub: t('screens.settings.roleDesc') },
         {
           icon: '🪙',
-          label: 'Pro Pilot subscription',
-          sub: 'Renews Mar 14 · ₺249/mo',
-          right: 'ACTIVE',
+          label: t('screens.settings.subscription'),
+          sub: t('screens.settings.subscriptionDesc'),
+          right: t('screens.settings.active'),
           rightTone: 'gold',
           onPress: () => router.push('/paywall'),
         },
       ],
     },
     {
-      title: 'LEARNING',
+      title: t('screens.settings.groupLearning'),
       rows: [
-        { icon: '⚡', label: 'Daily flight plan', sub: '20 min · weekdays + Sat' },
-        { icon: '🔔', label: 'Reminders', sub: '08:30 morning · 21:00 night' },
-        { icon: '🎧', label: 'Audio & accent', sub: 'ICAO neutral · 0.95× speed' },
-        { icon: '🎙', label: 'Microphone', sub: 'Bose A30 · last calibrated 4d ago' },
+        { icon: '⚡', label: t('screens.settings.dailyPlan'), sub: t('screens.settings.dailyPlanDesc') },
+        { icon: '🔔', label: t('screens.settings.reminders'), sub: t('screens.settings.remindersDesc') },
+        { icon: '🎧', label: t('screens.settings.audio'), sub: t('screens.settings.audioDesc') },
+        { icon: '🎙', label: t('screens.settings.microphone'), sub: t('screens.settings.microphoneDesc') },
       ],
     },
     {
-      title: 'APP',
+      title: t('screens.settings.groupApp'),
       rows: [
         {
           icon: '✦',
-          label: 'Appearance',
-          sub: 'Auto · matches cockpit night',
-          right: 'AUTO',
+          label: t('screens.settings.appearance'),
+          sub: t('screens.settings.appearanceDesc'),
+          right: t('screens.settings.auto'),
           rightTone: 'mono',
         },
         {
           icon: '🌐',
-          label: 'Language · Türkçe',
-          sub: 'UI dili',
+          label: t('screens.settings.language'),
+          sub: t('screens.settings.languageDesc'),
           onPress: () => router.push('/settings/language'),
         },
-        { icon: '🔒', label: 'Privacy & data' },
-        { icon: '🤖', label: 'Help & contact ops' },
+        { icon: '🔒', label: t('screens.settings.privacy') },
+        { icon: '🤖', label: t('screens.settings.help') },
       ],
     },
     {
       rows: [
-        { icon: '✕', label: 'Sign out', danger: true, onPress: handleSignOut },
+        { icon: '✕', label: t('screens.settings.signOut'), danger: true, onPress: handleSignOut },
         {
           icon: '✕',
-          label: 'Delete account',
-          sub: 'Logbook deleted permanently',
+          label: t('screens.settings.deleteAccount'),
+          sub: t('screens.settings.deleteAccountDesc'),
           danger: true,
         },
       ],
@@ -124,7 +126,7 @@ export default function SettingsScreen() {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-              ACCOUNT · CALLSIGN MTC-038
+              {t('screens.settings.eyebrow')}
             </Mono>
             <Text
               style={{
@@ -134,7 +136,7 @@ export default function SettingsScreen() {
                 marginTop: 2,
               }}
             >
-              Settings
+              {t('screens.settings.title')}
             </Text>
           </View>
         </View>
@@ -159,7 +161,7 @@ export default function SettingsScreen() {
           <Avatar initials={username.slice(0, 2).toUpperCase()} color="#0F1E47" size={52} />
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 9, color: '#5A6478', letterSpacing: 1.62 }}>
-              FIRST OFFICER · TK
+              {t('screens.settings.firstOfficer')}
             </Mono>
             <Text
               style={{
@@ -174,7 +176,7 @@ export default function SettingsScreen() {
               {username}
             </Text>
             <Mono style={{ fontSize: 11, color: '#8A93A6', marginTop: 4 }}>
-              ICAO L3 · TARGET L4 · DUE 2026-08
+              {t('screens.settings.icaoTarget')}
             </Mono>
           </View>
           <View
@@ -185,7 +187,7 @@ export default function SettingsScreen() {
               borderRadius: 6,
             }}
           >
-            <Mono style={{ fontSize: 10, color: '#0A1430', letterSpacing: 0.9 }}>PRO</Mono>
+            <Mono style={{ fontSize: 10, color: '#0A1430', letterSpacing: 0.9 }}>{t('screens.settings.pro')}</Mono>
           </View>
         </View>
 
@@ -225,7 +227,7 @@ export default function SettingsScreen() {
             fontSize: 11,
           }}
         >
-          AIRSPEAK v2.4.1 · BUILD 2026.04
+          {t('screens.settings.version')}
         </Mono>
       </ScrollView>
     </View>

@@ -12,6 +12,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Mono,
@@ -20,6 +21,8 @@ import {
   TopoBackground,
 } from '@/components/airspeak';
 
+// Descriptor names lokalize edilebilir; fakat ICAO terimleri (PRO/STR/VOC...) standart Pronunciation/Structure/...
+// Şimdilik kalan kısa İng. isimleri tutuyorum (havacılık standardı), sadece sectionN i18n.
 const DESCRIPTORS = [
   { code: 'PRO', name: 'Pronunciation', icon: '🔊' },
   { code: 'STR', name: 'Structure', icon: '🧭' },
@@ -29,16 +32,16 @@ const DESCRIPTORS = [
   { code: 'INT', name: 'Interactions', icon: '💬' },
 ];
 
-const SECTIONS = [
-  { num: '01', name: 'Aviation topics — short answers', mins: 3 },
-  { num: '02', name: 'Picture description', mins: 3 },
-  { num: '03', name: 'Listening — comprehension', mins: 4 },
-  { num: '04', name: 'ATC interaction', mins: 4 },
-  { num: '05', name: 'Unexpected situations', mins: 3 },
-  { num: '06', name: 'Free conversation', mins: 3 },
-];
-
 export default function ICAOBriefingScreen() {
+  const { t } = useTranslation();
+  const SECTIONS = [
+    { num: '01', name: t('screens.icao.section1'), mins: 3 },
+    { num: '02', name: t('screens.icao.section2'), mins: 3 },
+    { num: '03', name: t('screens.icao.section3'), mins: 4 },
+    { num: '04', name: t('screens.icao.section4'), mins: 4 },
+    { num: '05', name: t('screens.icao.section5'), mins: 3 },
+    { num: '06', name: t('screens.icao.section6'), mins: 3 },
+  ];
   return (
     <View style={{ flex: 1, backgroundColor: '#06091A' }}>
       <View
@@ -61,7 +64,7 @@ export default function ICAOBriefingScreen() {
               <Text style={{ fontSize: 22, color: '#FFFFFF' }}>✕</Text>
             </TouchableOpacity>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
-              ICAO L4 ✦ MOCK EXAM
+              {t('screens.icao.exam')}
             </Mono>
             <View style={{ width: 22 }} />
           </View>
@@ -70,7 +73,7 @@ export default function ICAOBriefingScreen() {
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20 }}>
         <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 1.8 }}>
-          BRIEFING SHEET
+          {t('screens.icao.briefingSheet')}
         </Mono>
         <Text
           style={{
@@ -83,7 +86,7 @@ export default function ICAOBriefingScreen() {
             letterSpacing: -0.95,
           }}
         >
-          Pre-flight{'\n'}briefing.
+          {t('screens.icao.briefingHero1')}{'\n'}{t('screens.icao.briefingHero2')}
         </Text>
         <Text
           style={{
@@ -94,7 +97,7 @@ export default function ICAOBriefingScreen() {
             marginTop: 12,
           }}
         >
-          20 minutes · 6 sections · graded across the 6 ICAO descriptors. Headphones recommended.
+          {t('screens.icao.briefingDesc')}
         </Text>
 
         {/* 6 descriptor stamps */}
@@ -130,7 +133,7 @@ export default function ICAOBriefingScreen() {
 
         {/* Sections */}
         <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: 1.8, marginTop: 24 }}>
-          SECTIONS
+          {t('screens.icao.sectionsTitle')}
         </Mono>
         <View style={{ marginTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.12)' }}>
           {SECTIONS.map((s) => (
@@ -188,13 +191,13 @@ export default function ICAOBriefingScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
             <Text style={{ fontSize: 16, color: '#FFD56B' }}>🛡</Text>
             <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 1.8 }}>
-              EXAM CONDITIONS
+              {t('screens.icao.examConditions')}
             </Mono>
           </View>
           {[
-            'Quiet environment, no background voices.',
-            'You can pause once for up to 60 seconds.',
-            'Recording is reviewed by an examiner within 48h.',
+            t('screens.icao.rule1'),
+            t('screens.icao.rule2'),
+            t('screens.icao.rule3'),
           ].map((rule, i) => (
             <Text
               key={i}
@@ -221,7 +224,7 @@ export default function ICAOBriefingScreen() {
       >
         <View style={{ padding: 16 }}>
           <Button3D variant="primary" fullWidth onPress={() => router.push('/exam/icao4-live')}>
-            Begin exam ✈
+            {t('screens.icao.begin')}
           </Button3D>
           <Mono
             style={{
@@ -232,7 +235,7 @@ export default function ICAOBriefingScreen() {
               marginTop: 8,
             }}
           >
-            ESTIMATED · 20:00
+            {t('screens.icao.estimated')}
           </Mono>
         </View>
       </SafeAreaView>

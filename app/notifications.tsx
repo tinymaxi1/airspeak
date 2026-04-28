@@ -10,6 +10,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Mono, FONTS } from '@/components/airspeak';
 
@@ -94,14 +95,14 @@ const EARLIER: Notif[] = [
   },
 ];
 
-const TABS = [
-  { l: 'All', count: 12, active: true },
-  { l: 'Coach', count: 3 },
-  { l: 'League' },
-  { l: 'System' },
-];
-
 export default function NotificationsScreen() {
+  const { t } = useTranslation();
+  const TABS = [
+    { l: t('screens.notifications.tabAll'), count: 12, active: true },
+    { l: t('screens.notifications.tabCoach'), count: 3 },
+    { l: t('screens.notifications.tabLeague') },
+    { l: t('screens.notifications.tabSystem') },
+  ];
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
@@ -119,7 +120,7 @@ export default function NotificationsScreen() {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-              OPS FREQ · 3 NEW
+              {t('screens.notifications.eyebrow', { count: 3 })}
             </Mono>
             <Text
               style={{
@@ -129,7 +130,7 @@ export default function NotificationsScreen() {
                 marginTop: 2,
               }}
             >
-              Notifications
+              {t('screens.notifications.title')}
             </Text>
           </View>
           <TouchableOpacity>
@@ -140,7 +141,7 @@ export default function NotificationsScreen() {
                 color: '#5A6478',
               }}
             >
-              Mark read
+              {t('screens.notifications.markRead')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -202,9 +203,9 @@ export default function NotificationsScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }}>
-        <Section title="TODAY · 04 MAR" notifs={TODAY} />
-        <Section title="DÜN · 03 MAR" notifs={YESTERDAY} />
-        <Section title="DAHA ÖNCE" notifs={EARLIER} />
+        <Section title={t('screens.notifications.today')} notifs={TODAY} />
+        <Section title={t('screens.notifications.yesterday')} notifs={YESTERDAY} />
+        <Section title={t('screens.notifications.earlier')} notifs={EARLIER} />
         <View style={{ height: 24 }} />
       </ScrollView>
     </View>

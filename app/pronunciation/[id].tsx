@@ -13,6 +13,7 @@ import { ScrollView, View, Text, TouchableOpacity, Alert, Pressable } from 'reac
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Audio } from 'expo-av';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 import {
@@ -43,6 +44,7 @@ interface Phoneme {
 }
 
 export default function PronunciationScreen() {
+  const { t } = useTranslation();
   const params = useLocalSearchParams<{ id: string }>();
   const sentence = (PRONUNCIATION_SENTENCES.find((s) => s.id === params.id) ??
     PRONUNCIATION_SENTENCES[0]) as PronunciationSentence;
@@ -148,7 +150,7 @@ export default function PronunciationScreen() {
             <Text style={{ fontSize: 24, color: '#0E1116' }}>←</Text>
           </TouchableOpacity>
           <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-            PRONUNCIATION DRILL
+            {t('screens.pronunciation.eyebrow')}
           </Mono>
           <Text style={{ fontSize: 22 }}>⚙</Text>
         </View>
@@ -196,7 +198,7 @@ export default function PronunciationScreen() {
                 {overall}
               </Text>
               <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 1.8, marginTop: 4 }}>
-                SCORE · /100
+                {t('screens.pronunciation.score')}
               </Mono>
             </View>
           </View>
@@ -241,13 +243,13 @@ export default function PronunciationScreen() {
           >
             <Text style={{ fontSize: 14 }}>🔊</Text>
             <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0F1E47' }}>
-              Native (US)
+              {t('screens.pronunciation.native')}
             </Text>
           </View>
         </View>
 
         {/* Phoneme tiles */}
-        <Eyebrow>PHONEME BREAKDOWN</Eyebrow>
+        <Eyebrow>{t('screens.pronunciation.phonemes')}</Eyebrow>
         <View style={{ flexDirection: 'row', gap: 6, marginTop: 8, marginBottom: 18 }}>
           {phonemes.map((ph, i) => {
             const c = ph.score >= 80 ? '#2DBE6C' : ph.score >= 60 ? '#F2C14E' : '#E63946';
@@ -304,7 +306,7 @@ export default function PronunciationScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <Text style={{ fontSize: 18, color: '#FFFFFF' }}>🎯</Text>
               <Mono style={{ fontSize: 10, color: '#FFFFFF', letterSpacing: 1.8 }}>
-                FOCUS · /{weakPhoneme.p}/
+                {t('screens.pronunciation.focus', { phoneme: weakPhoneme.p })}
               </Mono>
             </View>
             <Text
@@ -315,7 +317,7 @@ export default function PronunciationScreen() {
                 lineHeight: 21,
               }}
             >
-              Tongue tip up. The "i" is short and tense — like "kit", not "key".
+              {t('screens.pronunciation.focusBody')}
             </Text>
             <View
               style={{
@@ -332,14 +334,14 @@ export default function PronunciationScreen() {
             >
               <Text style={{ fontSize: 12, color: '#FFFFFF' }}>▶</Text>
               <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#FFFFFF' }}>
-                Lip sync demo
+                {t('screens.pronunciation.lipSync')}
               </Text>
             </View>
           </View>
         )}
 
         {/* Compare waveform */}
-        <Eyebrow>COMPARE WAVEFORM</Eyebrow>
+        <Eyebrow>{t('screens.pronunciation.compare')}</Eyebrow>
         <View
           style={{
             backgroundColor: '#FFFFFF',
@@ -372,7 +374,7 @@ export default function PronunciationScreen() {
         <View style={{ padding: 16, flexDirection: 'row', gap: 10 }}>
           <View style={{ flex: 1 }}>
             <Button3D variant="secondary" fullWidth onPress={() => router.back()}>
-              Skip
+              {t('screens.pronunciation.skip')}
             </Button3D>
           </View>
           <View style={{ flex: 2 }}>
@@ -384,8 +386,8 @@ export default function PronunciationScreen() {
               >
                 {stage === 'recording' ? '⏹ Bitir' :
                  stage === 'scoring' ? '⏳ ...' :
-                 stage === 'result' ? '🎙 Try again' :
-                 '🎙 Try again'}
+                 stage === 'result' ? t('screens.pronunciation.tryAgain') :
+                 t('screens.pronunciation.tryAgain')}
               </Button3D>
             </Pressable>
           </View>

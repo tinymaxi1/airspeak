@@ -12,6 +12,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Eyebrow,
@@ -31,6 +32,7 @@ const DESCRIPTORS = [
 ];
 
 export default function ICAOResultScreen() {
+  const { t } = useTranslation();
   const overall = Math.min(...DESCRIPTORS.map((d) => d.score));
 
   return (
@@ -49,7 +51,7 @@ export default function ICAOResultScreen() {
             <Text style={{ fontSize: 22, color: '#0E1116' }}>✕</Text>
           </TouchableOpacity>
           <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-            EXAM COMPLETE
+            {t('screens.icao.examComplete')}
           </Mono>
           <Text style={{ fontSize: 22 }}>✦</Text>
         </View>
@@ -93,7 +95,7 @@ export default function ICAOResultScreen() {
             >
               <View>
                 <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', letterSpacing: 1.8 }}>
-                  OVERALL
+                  {t('screens.icao.overall')}
                 </Mono>
                 <Text
                   style={{
@@ -115,7 +117,7 @@ export default function ICAOResultScreen() {
                     fontFamily: FONTS.body,
                   }}
                 >
-                  OPERATIONAL · ICAO Annex 1
+                  {t('screens.icao.operational')}
                 </Text>
               </View>
 
@@ -135,7 +137,7 @@ export default function ICAOResultScreen() {
               >
                 <Text style={{ fontSize: 24, color: '#4FD487' }}>✓</Text>
                 <Mono style={{ fontSize: 9, color: '#4FD487', letterSpacing: 1, marginTop: 2 }}>
-                  PASSED
+                  {t('screens.icao.passed')}
                 </Mono>
                 <Mono style={{ fontSize: 8, color: '#4FD487', opacity: 0.8 }}>26·APR·26</Mono>
               </View>
@@ -154,14 +156,14 @@ export default function ICAOResultScreen() {
 
           {/* 3 stat lights */}
           <View style={{ padding: 16, flexDirection: 'row', gap: 8 }}>
-            <StatLight label="VALID UNTIL" value="04·2029" />
-            <StatLight label="ICAO ID" value="TR-PIL-7421" />
-            <StatLight label="EXAMINER" value="AS-AI-V3" />
+            <StatLight label={t('screens.icao.validUntil')} value="04·2029" />
+            <StatLight label={t('screens.icao.icaoId')} value="TR-PIL-7421" />
+            <StatLight label={t('screens.icao.examiner')} value="AS-AI-V3" />
           </View>
         </View>
 
         {/* 6-descriptor profile */}
-        <Eyebrow>SIX-DESCRIPTOR PROFILE</Eyebrow>
+        <Eyebrow>{t('screens.icao.descriptors')}</Eyebrow>
         <View style={{ marginTop: 8, gap: 8 }}>
           {DESCRIPTORS.map((d) => {
             const isWeakest = d.score === overall;
@@ -258,7 +260,7 @@ export default function ICAOResultScreen() {
             padding: 14,
           }}
         >
-          <Eyebrow>EXAMINER NOTE</Eyebrow>
+          <Eyebrow>{t('screens.icao.examinerNote')}</Eyebrow>
           <Text
             style={{
               fontSize: 14,
@@ -268,10 +270,7 @@ export default function ICAOResultScreen() {
               fontFamily: FONTS.body,
             }}
           >
-            Confident performer, especially in standard phraseology and emergencies. Fluency drops
-            slightly under unexpected scenario load — recommend 2 weeks of{' '}
-            <Text style={{ fontFamily: FONTS.body700 }}>improvisation drills</Text> before re-test
-            for L5.
+            {t('screens.icao.examinerNoteBody')}
           </Text>
         </View>
       </ScrollView>
@@ -280,12 +279,12 @@ export default function ICAOResultScreen() {
         <View style={{ padding: 16, flexDirection: 'row', gap: 10 }}>
           <View style={{ flex: 1 }}>
             <Button3D variant="secondary" fullWidth onPress={() => {}}>
-              Share
+              {t('screens.icao.share')}
             </Button3D>
           </View>
           <View style={{ flex: 1.5 }}>
             <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/home')}>
-              Aim for L5 →
+              {t('screens.icao.aimL5')}
             </Button3D>
           </View>
         </View>

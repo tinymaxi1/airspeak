@@ -11,6 +11,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { Mono, FONTS, Button3D } from '@/components/airspeak';
@@ -22,6 +23,7 @@ const DOWNLOADED = [
 ];
 
 export default function OfflineScreen() {
+  const { t } = useTranslation();
   return (
     <View style={{ flex: 1, backgroundColor: '#06091A' }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#E63946' }}>
@@ -44,7 +46,7 @@ export default function OfflineScreen() {
             }}
           />
           <Mono style={{ fontSize: 12, color: '#FFFFFF', letterSpacing: 0.48 }}>
-            RADIO LOST · NO SIGNAL
+            {t('screens.offline.banner')}
           </Mono>
         </View>
       </SafeAreaView>
@@ -98,7 +100,7 @@ export default function OfflineScreen() {
             textAlign: 'center',
           }}
         >
-          SINYAL YOK · OFFLINE MODE
+          {t('screens.offline.eyebrow')}
         </Mono>
         <Text
           style={{
@@ -111,7 +113,7 @@ export default function OfflineScreen() {
             color: '#FFFFFF',
           }}
         >
-          Frequency clear.{'\n'}Bağlantı koptu.
+          {t('screens.offline.title1')}{'\n'}{t('screens.offline.title2')}
         </Text>
         <Text
           style={{
@@ -123,8 +125,7 @@ export default function OfflineScreen() {
             fontFamily: FONTS.body,
           }}
         >
-          Indirilmiş 4 ders ile devam edebilirsin.{'\n'}
-          AI co-pilot ve ICAO mock için ağ bağlantısı gerekli.
+          {t('screens.offline.body')}
         </Text>
 
         {/* Downloaded list */}
@@ -190,7 +191,7 @@ export default function OfflineScreen() {
 
         <View style={{ marginTop: 22 }}>
           <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/learn')}>
-            Practice offline
+            {t('screens.offline.practiceOffline')}
           </Button3D>
         </View>
         <TouchableOpacity
@@ -206,7 +207,7 @@ export default function OfflineScreen() {
           }}
         >
           <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>
-            Retry connection
+            {t('screens.offline.retry')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

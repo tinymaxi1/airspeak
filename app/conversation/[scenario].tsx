@@ -11,6 +11,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Mono, FONTS } from '@/components/airspeak';
 
@@ -48,6 +49,7 @@ const CHAT: ChatItem[] = [
 ];
 
 export default function ConversationScreen() {
+  const { t } = useTranslation();
   return (
     <View style={{ flex: 1, backgroundColor: '#06091A' }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
@@ -66,7 +68,7 @@ export default function ConversationScreen() {
             </TouchableOpacity>
             <View style={{ flex: 1 }}>
               <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
-                SCENARIO · HOLDING PATTERN
+                {t('screens.conversation.scenario')}
               </Mono>
               <Text
                 style={{
@@ -76,7 +78,7 @@ export default function ConversationScreen() {
                   marginTop: 2,
                 }}
               >
-                AI Co-pilot · LIVE
+                {t('screens.conversation.title')}
               </Text>
             </View>
             {/* REC indicator */}
@@ -101,7 +103,7 @@ export default function ConversationScreen() {
                   backgroundColor: '#4FD487',
                 }}
               />
-              <Mono style={{ fontSize: 11, color: '#FFFFFF' }}>REC 03:24</Mono>
+              <Mono style={{ fontSize: 11, color: '#FFFFFF' }}>{t('screens.conversation.rec', { time: '03:24' })}</Mono>
             </View>
           </View>
 
@@ -154,7 +156,7 @@ export default function ConversationScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
             <Text style={{ fontSize: 14, color: '#FB6D78' }}>🎙</Text>
             <Mono style={{ fontSize: 11, color: '#FB6D78', letterSpacing: 1.32 }}>
-              YOUR TURN · 6S
+              {t('screens.conversation.yourTurn', { seconds: 6 })}
             </Mono>
           </View>
           <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
@@ -252,6 +254,7 @@ function Gauge({ label, value }: { label: string; value: string }) {
 }
 
 function ChatBubble({ item }: { item: ChatItem }) {
+  const { t } = useTranslation();
   const isUser = item.type === 'user';
   return (
     <View
@@ -307,7 +310,7 @@ function ChatBubble({ item }: { item: ChatItem }) {
             }}
           >
             <Mono style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', letterSpacing: 1 }}>
-              ✓ READ-BACK MATCH · {item.confidence}%
+              {t('screens.conversation.readbackMatch', { pct: item.confidence })}
             </Mono>
           </View>
         )}

@@ -11,6 +11,7 @@
  */
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import Svg, { Path, Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import {
   Mono,
@@ -19,6 +20,7 @@ import {
 } from '@/components/airspeak';
 
 export default function StreakFreezeScreen() {
+  const { t } = useTranslation();
   return (
     <Pressable
       onPress={() => router.back()}
@@ -103,7 +105,7 @@ export default function StreakFreezeScreen() {
             textAlign: 'center',
           }}
         >
-          STREAK FREEZE · TK-12 PROTECTED
+          {t('screens.modals.streakFreezeEyebrow', { streak: 12 })}
         </Mono>
         <Text
           style={{
@@ -116,7 +118,7 @@ export default function StreakFreezeScreen() {
             color: '#0E1116',
           }}
         >
-          Hava bozuktu — streak'in donduruldu.
+          {t('screens.modals.streakFreezeTitle')}
         </Text>
         <Text
           style={{
@@ -128,9 +130,7 @@ export default function StreakFreezeScreen() {
             fontFamily: FONTS.body,
           }}
         >
-          12 günlük streak'in korunuyor.{' '}
-          <Text style={{ fontFamily: FONTS.body700 }}>2 freeze daha</Text> kaldı bu ay. Yarın 20
-          dakikalık plana geri dön.
+          {t('screens.modals.streakFreezeBody', { streak: 12, remaining: 2 })}
         </Text>
 
         {/* Inventory */}
@@ -166,10 +166,10 @@ export default function StreakFreezeScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0E1116' }}>
-              2 of 3 freezes left
+              {t('screens.modals.streakFreezeCount', { used: 2, total: 3 })}
             </Text>
             <Text style={{ fontSize: 11, color: '#8A93A6', fontFamily: FONTS.body }}>
-              Aylık reset · 1 Nis
+              {t('screens.modals.streakFreezeReset')}
             </Text>
           </View>
           <TouchableOpacity
@@ -182,18 +182,18 @@ export default function StreakFreezeScreen() {
               justifyContent: 'center',
             }}
           >
-            <Mono style={{ fontSize: 11, color: '#0A1430', letterSpacing: 0.99 }}>+ BUY</Mono>
+            <Mono style={{ fontSize: 11, color: '#0A1430', letterSpacing: 0.99 }}>{t('screens.modals.streakFreezeBuy')}</Mono>
           </TouchableOpacity>
         </View>
 
         <View style={{ marginTop: 16 }}>
           <Button3D variant="primary" fullWidth onPress={() => router.back()}>
-            Got it · plan tomorrow
+            {t('screens.modals.streakFreezeOk')}
           </Button3D>
         </View>
         <View style={{ marginTop: 8 }}>
           <Button3D variant="ghost" fullWidth onPress={() => router.back()}>
-            See streak rules
+            {t('screens.modals.streakFreezeRules')}
           </Button3D>
         </View>
       </Pressable>

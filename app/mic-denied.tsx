@@ -12,13 +12,14 @@
 import { Linking } from 'react-native';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Line } from 'react-native-svg';
 import { Mono, FONTS, Button3D } from '@/components/airspeak';
 
-const STEPS = ['Settings → AirSpeak', 'Microphone toggle → On', 'Bu ekrana geri dön'];
-
 export default function MicDeniedScreen() {
+  const { t } = useTranslation();
+  const STEPS = [t('screens.micDenied.step1'), t('screens.micDenied.step2'), t('screens.micDenied.step3')];
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
@@ -36,7 +37,7 @@ export default function MicDeniedScreen() {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-              LESSON 04 · UNIT 3
+              {t('screens.micDenied.lessonEyebrow')}
             </Mono>
             <Text
               style={{
@@ -46,7 +47,7 @@ export default function MicDeniedScreen() {
                 marginTop: 2,
               }}
             >
-              Read-back drill
+              {t('screens.micDenied.title')}
             </Text>
           </View>
         </View>
@@ -125,7 +126,7 @@ export default function MicDeniedScreen() {
               textAlign: 'center',
             }}
           >
-            RX BLOCKED · MIC DENIED
+            {t('screens.micDenied.errorEyebrow')}
           </Mono>
           <Text
             style={{
@@ -139,7 +140,7 @@ export default function MicDeniedScreen() {
               paddingHorizontal: 8,
             }}
           >
-            Mikrofon erişimi kapalı.
+            {t('screens.micDenied.errorTitle')}
           </Text>
           <Text
             style={{
@@ -152,8 +153,7 @@ export default function MicDeniedScreen() {
               fontFamily: FONTS.body,
             }}
           >
-            Read-back ve AI co-pilot için sesin lazım.{'\n'}
-            iOS ayarlarından AirSpeak'e mikrofon izni ver.
+            {t('screens.micDenied.errorBody')}
           </Text>
 
           {/* Steps */}
@@ -209,10 +209,10 @@ export default function MicDeniedScreen() {
             fullWidth
             onPress={() => Linking.openSettings()}
           >
-            Open settings
+            {t('screens.micDenied.openSettings')}
           </Button3D>
           <Button3D variant="ghost" fullWidth onPress={() => router.back()}>
-            Type my answer instead
+            {t('screens.micDenied.type')}
           </Button3D>
         </View>
       </ScrollView>

@@ -11,6 +11,7 @@
  */
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import Svg, { Path } from 'react-native-svg';
 import {
   Mono,
@@ -19,6 +20,7 @@ import {
 } from '@/components/airspeak';
 
 export default function HeartRefillScreen() {
+  const { t } = useTranslation();
   return (
     <Pressable
       onPress={() => router.back()}
@@ -81,7 +83,7 @@ export default function HeartRefillScreen() {
             textAlign: 'center',
           }}
         >
-          HEARTS DEPLETED · COOLDOWN ACTIVE
+          {t('screens.modals.heartRefillEyebrow')}
         </Mono>
         <Text
           style={{
@@ -94,7 +96,7 @@ export default function HeartRefillScreen() {
             color: '#0E1116',
           }}
         >
-          Tüm canların bitti.
+          {t('screens.modals.heartRefillTitle')}
         </Text>
         <Text
           style={{
@@ -106,8 +108,7 @@ export default function HeartRefillScreen() {
             fontFamily: FONTS.body,
           }}
         >
-          Bir sonraki can <Text style={{ fontFamily: FONTS.body700 }}>23:42</Text> sonra
-          yenilenecek. Ya da hızlıca aşağıdakilerden birini seç.
+          {t('screens.modals.heartRefillBody', { time: '23:42' })}
         </Text>
 
         {/* Options */}
@@ -144,7 +145,7 @@ export default function HeartRefillScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontFamily: FONTS.body800, fontSize: 14, color: '#FFFFFF' }}>
-                Pro Pilot — sınırsız
+                {t('screens.modals.heartRefillPro')}
               </Text>
               <Text
                 style={{
@@ -153,7 +154,7 @@ export default function HeartRefillScreen() {
                   fontFamily: FONTS.body,
                 }}
               >
-                Hearts kaldırılır · 7g free trial
+                {t('screens.modals.heartRefillProDesc')}
               </Text>
             </View>
             <Text style={{ fontSize: 18, color: '#FFFFFF' }}>›</Text>
@@ -191,10 +192,10 @@ export default function HeartRefillScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
-                Practice ile +1 heart
+                {t('screens.modals.heartRefillPractice')}
               </Text>
               <Text style={{ fontSize: 12, color: '#8A93A6', fontFamily: FONTS.body }}>
-                5 doğru read-back · ~3 dk
+                {t('screens.modals.heartRefillPracticeDesc')}
               </Text>
             </View>
             <View
@@ -205,7 +206,7 @@ export default function HeartRefillScreen() {
                 borderRadius: 6,
               }}
             >
-              <Mono style={{ fontSize: 10, color: '#2DBE6C', letterSpacing: 0.9 }}>FREE</Mono>
+              <Mono style={{ fontSize: 10, color: '#2DBE6C', letterSpacing: 0.9 }}>{t('screens.modals.heartRefillFree')}</Mono>
             </View>
           </TouchableOpacity>
 
@@ -237,10 +238,10 @@ export default function HeartRefillScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
-                Coin ile tam doldur
+                {t('screens.modals.heartRefillCoins')}
               </Text>
               <Text style={{ fontSize: 12, color: '#8A93A6', fontFamily: FONTS.body }}>
-                Bakiyen: 340 coin
+                {t('screens.modals.heartRefillCoinsDesc', { coins: 340 })}
               </Text>
             </View>
             <Text style={{ fontFamily: FONTS.mono700, fontSize: 13, color: '#0E1116' }}>
@@ -251,7 +252,7 @@ export default function HeartRefillScreen() {
 
         <View style={{ marginTop: 14 }}>
           <Button3D variant="ghost" fullWidth onPress={() => router.back()}>
-            Wait it out · 23:42
+            {t('screens.modals.heartRefillWait', { time: '23:42' })}
           </Button3D>
         </View>
       </Pressable>

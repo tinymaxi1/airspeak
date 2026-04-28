@@ -12,6 +12,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Eyebrow,
@@ -23,6 +24,7 @@ import {
 const CODE = ['T', 'K', '4', '7', '·', 'O', 'P', 'S'];
 
 export default function SquadronPairingScreen() {
+  const { t } = useTranslation();
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
@@ -40,12 +42,12 @@ export default function SquadronPairingScreen() {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-              STEP 03/06 · OPTIONAL
+              {t('screens.squadron.step')}
             </Mono>
           </View>
           <TouchableOpacity onPress={() => router.back()}>
             <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#8A93A6' }}>
-              Skip
+              {t('screens.squadron.skip')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -56,7 +58,7 @@ export default function SquadronPairingScreen() {
         contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
       >
         <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 1.8 }}>
-          FLEET ENROLLMENT
+          {t('screens.squadron.eyebrow')}
         </Mono>
         <Text
           style={{
@@ -68,7 +70,7 @@ export default function SquadronPairingScreen() {
             color: '#0E1116',
           }}
         >
-          Bir okul ya da{'\n'}filo seninle mi{'\n'}çalışıyor?
+          {t('screens.squadron.hero1')}{'\n'}{t('screens.squadron.hero2')}{'\n'}{t('screens.squadron.hero3')}
         </Text>
         <Text
           style={{
@@ -79,8 +81,7 @@ export default function SquadronPairingScreen() {
             fontFamily: FONTS.body,
           }}
         >
-          Eğer havayolun, okulun veya eğitmenin AirSpeak Squadron kullanıyorsa, kodu girerek
-          müfredatlarına ve takım liderlik tablosuna katıl.
+          {t('screens.squadron.subtitle')}
         </Text>
 
         {/* Code entry */}
@@ -95,7 +96,7 @@ export default function SquadronPairingScreen() {
             marginTop: 20,
           }}
         >
-          <Eyebrow>SQUADRON CODE</Eyebrow>
+          <Eyebrow>{t('screens.squadron.code')}</Eyebrow>
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
             {CODE.map((c, i) => (
               <View
@@ -130,9 +131,9 @@ export default function SquadronPairingScreen() {
               marginTop: 12,
             }}
           >
-            <Mono style={{ fontSize: 11, color: '#8A93A6' }}>8 KARAKTER · BÜYÜK HARF</Mono>
+            <Mono style={{ fontSize: 11, color: '#8A93A6' }}>{t('screens.squadron.codeHint')}</Mono>
             <Text style={{ fontFamily: FONTS.body700, fontSize: 11, color: '#2DBE6C' }}>
-              ● Verified
+              {t('screens.squadron.verified')}
             </Text>
           </View>
         </View>
@@ -185,10 +186,10 @@ export default function SquadronPairingScreen() {
                   lineHeight: 21,
                 }}
               >
-                Turkish Airlines Flight Academy
+                {t('screens.squadron.academy')}
               </Text>
               <Text style={{ fontSize: 12, color: '#5A6478', marginTop: 2, fontFamily: FONTS.body }}>
-                Cohort 47 · ICAO L4 program · 84 cadets
+                {t('screens.squadron.academyDesc')}
               </Text>
             </View>
           </View>
@@ -204,7 +205,7 @@ export default function SquadronPairingScreen() {
 
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <View style={{ flex: 1 }}>
-              <Eyebrow>INSTRUCTOR</Eyebrow>
+              <Eyebrow>{t('screens.squadron.instructor')}</Eyebrow>
               <Text
                 style={{
                   fontFamily: FONTS.body700,
@@ -213,11 +214,11 @@ export default function SquadronPairingScreen() {
                   marginTop: 4,
                 }}
               >
-                Capt. A. Yılmaz
+                {t('screens.squadron.instructorName')}
               </Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Eyebrow>PROGRAM</Eyebrow>
+              <Eyebrow>{t('screens.squadron.program')}</Eyebrow>
               <Text
                 style={{
                   fontFamily: FONTS.body700,
@@ -226,11 +227,11 @@ export default function SquadronPairingScreen() {
                   marginTop: 4,
                 }}
               >
-                L3 → L4 · 14w
+                {t('screens.squadron.programValue')}
               </Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Eyebrow>ENDS</Eyebrow>
+              <Eyebrow>{t('screens.squadron.ends')}</Eyebrow>
               <Text
                 style={{
                   fontFamily: FONTS.mono700,
@@ -239,7 +240,7 @@ export default function SquadronPairingScreen() {
                   marginTop: 4,
                 }}
               >
-                2026-08-22
+                {t('screens.squadron.endsValue')}
               </Text>
             </View>
           </View>
@@ -267,19 +268,18 @@ export default function SquadronPairingScreen() {
               fontFamily: FONTS.body,
             }}
           >
-            Eğitmenin haftalık ilerlemeni, mock skorlarını ve zayıf descriptor'larını görür.
-            Pronunciation kayıtların paylaşılmaz.
+            {t('screens.squadron.privacy')}
           </Text>
         </View>
 
         <View style={{ marginTop: 18 }}>
           <Button3D variant="primary" fullWidth onPress={() => router.back()}>
-            Join cohort
+            {t('screens.squadron.join')}
           </Button3D>
         </View>
         <View style={{ marginTop: 8 }}>
           <Button3D variant="ghost" fullWidth onPress={() => router.back()}>
-            I'm flying solo
+            {t('screens.squadron.solo')}
           </Button3D>
         </View>
       </ScrollView>
