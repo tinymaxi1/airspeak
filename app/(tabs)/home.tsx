@@ -372,6 +372,46 @@ export default function HomeScreen() {
           </View>
         </Card3D>
 
+        {/* Career Hub kartı — kullanıcının kariyer odaklı tüm kaynakları */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => router.push('/career')}
+          style={{
+            backgroundColor: '#0F1E47',
+            borderRadius: 14,
+            padding: 16,
+            borderBottomWidth: 4,
+            borderBottomColor: '#0A1430',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 14,
+            marginBottom: 18,
+          }}
+        >
+          <Text style={{ fontSize: 36 }}>🎯</Text>
+          <View style={{ flex: 1 }}>
+            <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 1.8 }}>
+              {t('screens.home.careerEyebrow', 'KARİYER MERKEZİ')}
+            </Mono>
+            <Text
+              style={{
+                fontFamily: FONTS.display,
+                fontSize: 19,
+                fontWeight: '700',
+                color: '#FFFFFF',
+                marginTop: 4,
+                letterSpacing: -0.38,
+              }}
+            >
+              {t('screens.home.careerTitle', 'ICAO 4 · 41 Havayolu · AI')}
+            </Text>
+            <Mono style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', marginTop: 4 }}>
+              {t('screens.home.careerSub', 'Mülakat + sınav + B2B kohort')}
+            </Mono>
+          </View>
+          <Text style={{ fontSize: 22, color: '#FFD56B' }}>›</Text>
+        </TouchableOpacity>
+
         {/* SRS Review queue — sadece due > 0 ise görünür */}
         {dueCount > 0 && (
           <TouchableOpacity

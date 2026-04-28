@@ -121,6 +121,7 @@ export default function RootLayout() {
             <Stack.Screen name="conversation/[scenario]" options={{ headerShown: false }} />
             <Stack.Screen name="readback" options={{ headerShown: false }} />
             <Stack.Screen name="vocab" options={{ headerShown: false }} />
+            <Stack.Screen name="career" options={{ headerShown: false }} />
             <Stack.Screen name="pronunciation/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="settings/index" options={{ headerShown: false }} />
             <Stack.Screen name="settings/profile" options={{ headerShown: false }} />

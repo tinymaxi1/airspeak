@@ -268,7 +268,10 @@
       "qVocab": "Search vocab",
       "qVocabSub": "1300+ terms",
       "qPronounce": "Pronounce",
-      "qPronounceSub": "Score ring"
+      "qPronounceSub": "Score ring",
+      "careerEyebrow": "CAREER HUB",
+      "careerTitle": "ICAO 4 · 41 Airlines · AI",
+      "careerSub": "Interview + exam + B2B cohort"
     },
     "learn": {
       "unit": "UNIT",
@@ -325,7 +328,9 @@
       "interviewsDesc": "{{count}} carriers",
       "signOut": "Sign out",
       "signOutConfirm": "Are you sure?",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "career": "Career Hub",
+      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron"
     },
     "league": {
       "tier": "TIER 4 OF 7",

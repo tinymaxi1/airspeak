@@ -208,16 +208,10 @@ export default function ProfileScreen() {
             onPress={() => router.push('/settings/language')}
           />
           <SettingsRow
-            icon="✈"
-            label={t('screens.profile.myExams')}
-            value={t('screens.profile.myExamsDesc')}
-            onPress={() => router.push('/exam')}
-          />
-          <SettingsRow
-            icon="💼"
-            label={t('screens.profile.interviews')}
-            value={t('screens.profile.interviewsDesc', { count: ALL_AIRLINES.length })}
-            onPress={() => router.push('/exam/airlines')}
+            icon="🎯"
+            label={t('screens.profile.career', 'Kariyer Merkezi')}
+            value={t('screens.profile.careerDesc', 'ICAO 4 · {{count}} havayolu · Squadron', { count: ALL_AIRLINES.length })}
+            onPress={() => router.push('/career')}
           />
         </View>
 

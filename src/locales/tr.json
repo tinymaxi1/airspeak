@@ -268,7 +268,10 @@
       "qVocab": "Vocab ara",
       "qVocabSub": "1300+ terim",
       "qPronounce": "Telaffuz",
-      "qPronounceSub": "Score ring"
+      "qPronounceSub": "Score ring",
+      "careerEyebrow": "KARİYER MERKEZİ",
+      "careerTitle": "ICAO 4 · 41 Havayolu · AI",
+      "careerSub": "Mülakat + sınav + B2B kohort"
     },
     "learn": {
       "unit": "BÖLÜM",
@@ -325,7 +328,9 @@
       "interviewsDesc": "{{count}} havayolu",
       "signOut": "Çıkış yap",
       "signOutConfirm": "Emin misin?",
-      "cancel": "Vazgeç"
+      "cancel": "Vazgeç",
+      "career": "Kariyer Merkezi",
+      "careerDesc": "ICAO 4 · {{count}} havayolu · Squadron"
     },
     "league": {
       "tier": "TIER 4 / 7",
