@@ -23,5 +23,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ],
-  "exclude": ["node_modules", "ios", "android", ".expo", "scripts/**"]
+  "exclude": ["node_modules", "ios", "android", ".expo", "scripts/**", "supabase/functions/**"]
 }
