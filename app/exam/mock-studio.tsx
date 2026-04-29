@@ -17,12 +17,45 @@ import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { FONTS, Mono } from '@/components/airspeak';
-import { INTERVIEW_QUESTIONS } from '@/features/exams/interviewQuestions';
-import type { InterviewQuestion } from '@/features/exams/airlineTypes';
+import { useInterviewQuestions } from '@/features/content/api';
+import type { InterviewQuestionRow } from '@/features/content/types';
 import { useAuthStore } from '@/stores/authStore';
 import type { UserRole } from '@/types/profile';
 import { FlagContentTrigger } from '@/components/moderation/FlagContentSheet';
 import { track } from '@/lib/posthog';
+
+/** Eski TS shape — ekran içinde böyle kullanılıyor. */
+type InterviewQuestion = {
+  id: string;
+  category: string;
+  roles: UserRole[];
+  airlineIds: string[];
+  question: string;
+  context?: string | null;
+  difficulty: number;
+  goodAnswerPointsTr?: string[] | null;
+  redFlagsTr?: string[] | null;
+  tipsTr?: string[] | null;
+  sampleAnswerTr?: string | null;
+  modelAnswerEn?: string | null;
+  detailedExplanationTr?: string | null;
+};
+
+function rowToQuestion(r: InterviewQuestionRow): InterviewQuestion {
+  return {
+    id: r.slug,
+    category: r.category,
+    roles: [r.role],
+    airlineIds: r.airline_slug ? [r.airline_slug] : [],
+    question: r.question,
+    difficulty: r.difficulty,
+    goodAnswerPointsTr: r.good_answer_points_tr,
+    redFlagsTr: r.red_flags_tr,
+    tipsTr: r.tips_tr,
+    sampleAnswerTr: r.star_template_tr,
+    detailedExplanationTr: r.detailed_explanation_tr,
+  };
+}
 
 type Stage = 'setup' | 'live' | 'done';
 
@@ -34,16 +67,17 @@ const ROLES: { id: UserRole; label: string; emoji: string }[] = [
   { id: 'student', label: 'Öğrenci', emoji: '🎓' },
 ];
 
-type Category = InterviewQuestion['category'];
+type Category = string;
 
+// DB'deki category değerleri (interview_questions check)
 const CATEGORIES: { id: Category; label: string; emoji: string }[] = [
-  { id: 'motivation', label: 'Motivasyon', emoji: '🔥' },
+  { id: 'motivational', label: 'Motivasyon', emoji: '🔥' },
   { id: 'behavioral', label: 'Davranışsal', emoji: '🎯' },
   { id: 'situational', label: 'Senaryo', emoji: '🧩' },
   { id: 'technical', label: 'Teknik', emoji: '⚙️' },
   { id: 'english', label: 'İngilizce', emoji: '🗣' },
-  { id: 'company_knowledge', label: 'Şirket bilgisi', emoji: '🏢' },
-  { id: 'icebreaker', label: 'Buz kırıcı', emoji: '👋' },
+  { id: 'culture_knowledge', label: 'Şirket bilgisi', emoji: '🏢' },
+  { id: 'role_specific', label: 'Role özel', emoji: '👋' },
   { id: 'tricky', label: 'Zor', emoji: '🌶' },
 ];
 
@@ -56,7 +90,7 @@ export default function MockStudioScreen() {
   const [stage, setStage] = useState<Stage>('setup');
   const [role, setRole] = useState<UserRole>(profileRole ?? 'cabin');
   const [categories, setCategories] = useState<Set<Category>>(
-    new Set(['motivation', 'behavioral', 'situational']),
+    new Set(['motivational', 'behavioral', 'situational']),
   );
   const [difficulty, setDifficulty] = useState<1 | 2 | 3 | 4 | 5>(3);
   const [count, setCount] = useState<number>(10);
@@ -64,15 +98,18 @@ export default function MockStudioScreen() {
   const [idx, setIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
 
-  // Pool önizleme
+  // DB'den seçili rol için tüm soruları çek
+  const { data: roleRows = [] } = useInterviewQuestions(role);
+  const allQuestions = useMemo(() => roleRows.map(rowToQuestion), [roleRows]);
+
+  // Pool önizleme — kategori + zorluk filter
   const availablePool = useMemo(() => {
-    return INTERVIEW_QUESTIONS.filter((q) => {
-      if (!q.roles.includes(role)) return false;
+    return allQuestions.filter((q) => {
       if (categories.size > 0 && !categories.has(q.category)) return false;
       if (q.difficulty > difficulty) return false;
       return true;
     });
-  }, [role, categories, difficulty]);
+  }, [allQuestions, categories, difficulty]);
 
   function toggleCategory(c: Category) {
     setCategories((prev) => {
@@ -524,7 +561,7 @@ function LiveQuestion({
         <>
           {/* Good points */}
           <Card title={t('mockStudio.goodPoints', '✓ İyi cevap noktaları')} bg="#E8F8EE" titleColor="#1B7E3A">
-            {q.goodAnswerPointsTr.map((p, i) => (
+            {(q.goodAnswerPointsTr ?? []).map((p, i) => (
               <Text key={i} style={lineStyle('#1B7E3A')}>
                 • {p}
               </Text>
@@ -533,7 +570,7 @@ function LiveQuestion({
 
           {/* Red flags */}
           <Card title={t('mockStudio.redFlags', '✗ Kaçınılacaklar')} bg="#FFEAEC" titleColor="#A62133">
-            {q.redFlagsTr.map((p, i) => (
+            {(q.redFlagsTr ?? []).map((p, i) => (
               <Text key={i} style={lineStyle('#A62133')}>
                 • {p}
               </Text>
@@ -555,7 +592,7 @@ function LiveQuestion({
 
           {/* Tips */}
           <Card title={t('mockStudio.tips', '💡 İpuçları')} bg="#FFF8E1" titleColor="#7A5C00">
-            {q.tipsTr.map((p, i) => (
+            {(q.tipsTr ?? []).map((p, i) => (
               <Text key={i} style={lineStyle('#7A5C00')}>
                 • {p}
               </Text>

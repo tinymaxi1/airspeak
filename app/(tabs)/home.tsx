@@ -21,7 +21,8 @@ import { useProgressStore } from '@/stores/progressStore';
 import { useSrsStore } from '@/stores/srsStore';
 import { useOfflineStore } from '@/stores/offlineStore';
 import { useActivityStore } from '@/stores/activityStore';
-import { getNextLesson } from '@/features/lessons/seed/lessonTree';
+import { useNextLesson } from '@/features/content/api';
+import type { UserRole } from '@/types/profile';
 import {
   HHero,
   H2,
@@ -36,12 +37,13 @@ import {
 
 export default function HomeScreen() {
   const { t } = useTranslation();
-  const role = useOnboardingStore((s) => s.role);
+  const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const placement = useOnboardingStore((s) => s.placementResult);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
   const completedIds = useProgressStore((s) => s.completedLessonIds);
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
-  const next = useMemo(() => getNextLesson(role, completedSet, false), [role, completedSet]);
+  // DB'den bir sonraki tamamlanmamış ders'i getir
+  const { data: nextLesson } = useNextLesson(role, completedSet);
 
   // SRS: bugün tekrar etmesi gereken kart sayısı
   const dueCount = useSrsStore((s) => {
@@ -342,11 +344,15 @@ export default function HomeScreen() {
             )}
             <FlightPlanRow
               state="current"
-              title={next?.lesson.title ?? t('screens.home.allLessonsDone', 'Tüm dersler tamam')}
+              title={
+                nextLesson?.title_tr ??
+                nextLesson?.title ??
+                t('screens.home.allLessonsDone', 'Tüm dersler tamam')
+              }
               meta={
-                next
+                nextLesson
                   ? t('screens.home.lessonMeta', {
-                      min: next.lesson.estimatedMinutes,
+                      min: nextLesson.estimated_minutes,
                       defaultValue: '~{{min}} dk · co-pilot AI ile canlı',
                     })
                   : t('screens.home.continueOther', 'Pratik bölümünden devam et')
@@ -362,8 +368,8 @@ export default function HomeScreen() {
               fullWidth
               onPress={() => {
                 recordDailyActivity();
-                if (next) {
-                  router.push({ pathname: '/lesson/[id]', params: { id: next.lesson.id } });
+                if (nextLesson) {
+                  router.push({ pathname: '/lesson/[id]', params: { id: nextLesson.slug } });
                 } else {
                   router.push('/(tabs)/learn');
                 }

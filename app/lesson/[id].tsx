@@ -1,8 +1,7 @@
-import { ScrollView, View, Text } from 'react-native';
-import { YStack, XStack, H2, H3, Paragraph, Card, Button } from 'tamagui';
+import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CelebrationOverlay } from '@/components/ui/CelebrationOverlay';
 import {
   LessonChrome,
@@ -12,60 +11,125 @@ import {
   Eyebrow as ASEyebrow,
   CoachMark,
 } from '@/components/airspeak';
-import { generateLesson } from '@/features/lessons/lessonGenerator';
-import type { Exercise } from '@/features/lessons/exerciseTypes';
-import { getVocabForRole } from '@/features/lessons/seed';
-import { useOnboardingStore } from '@/stores/onboardingStore';
+import { useLesson } from '@/features/content/api';
+import type { ExerciseRow } from '@/features/content/types';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useQuestsStore } from '@/stores/questsStore';
-import { useExerciseHistoryStore } from '@/stores/exerciseHistoryStore';
 import { useSrsStore } from '@/stores/srsStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useActivityStore } from '@/stores/activityStore';
 import { useCoachMarkStore } from '@/stores/coachMarkStore';
+import { useLessonProgressStore } from '@/stores/lessonProgressStore';
 import { track } from '@/lib/posthog';
 
 export default function LessonScreen() {
   const params = useLocalSearchParams<{ id: string }>();
+  const lessonSlug = typeof params.id === 'string' ? params.id : '';
+
+  // ─────────── Stores ───────────
   const { addXp, recordDailyActivity, loseHeart, addCoins } = useGamificationStore();
   const hearts = useGamificationStore((s) => s.hearts ?? 5);
   const markLessonCompleted = useProgressStore((s) => s.markLessonCompleted);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
-  const role = useOnboardingStore((s) => s.role);
-  const seenIds = useExerciseHistoryStore((s) => s.seenExerciseIds);
-  const seenSet = useMemo(() => new Set(seenIds), [seenIds]);
-  const markSeen = useExerciseHistoryStore((s) => s.markSeen);
   const reviewTerm = useSrsStore((s) => s.reviewTerm);
   const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
   const recordRecentActivity = useActivityStore((s) => s.recordActivity);
   const lessonCoachSeen = useCoachMarkStore((s) => s.isSeen('lesson_first_open'));
   const markCoachSeen = useCoachMarkStore((s) => s.markSeen);
 
-  const [exercises] = useState<Exercise[]>(() =>
-    generateLesson(getVocabForRole(role), seenSet, 5),
-  );
-  const [currentIdx, setCurrentIdx] = useState(0);
+  // Persisted lesson progress (kaldığım yer)
+  const persisted = useLessonProgressStore((s) => s.byLessonSlug[lessonSlug]);
+  const saveProgress = useLessonProgressStore((s) => s.saveProgress);
+  const markLessonProgressCompleted = useLessonProgressStore((s) => s.markCompleted);
+
+  // ─────────── DB lesson ───────────
+  const { data: lesson, isLoading, error } = useLesson(lessonSlug);
+  const exercises: ExerciseRow[] = lesson?.exercises ?? [];
+
+  // ─────────── Local UI state ───────────
+  const initialIdx = persisted?.currentIdx ?? 0;
+  const initialCorrect = persisted?.correctCount ?? 0;
+
+  const [currentIdx, setCurrentIdx] = useState(initialIdx);
   const [selected, setSelected] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0);
+  const [correctCount, setCorrectCount] = useState(initialCorrect);
+
+  // İlk yüklemede persist edilen progress'i hydrate et — sadece ilk render
+  // (exercises geldiğinde currentIdx out-of-range olabilir, clamp)
+  useEffect(() => {
+    if (exercises.length > 0) {
+      const safeIdx = Math.min(currentIdx, exercises.length - 1);
+      if (safeIdx !== currentIdx) setCurrentIdx(safeIdx);
+      // İlk başlama timestamp
+      if (!persisted?.startedAt) {
+        saveProgress(lessonSlug, {
+          startedAt: Date.now(),
+          totalCount: exercises.length,
+        });
+      } else if (persisted.totalCount !== exercises.length) {
+        saveProgress(lessonSlug, { totalCount: exercises.length });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exercises.length]);
 
   const total = exercises.length;
   const exercise = exercises[currentIdx];
 
-  if (!exercise) {
-    return <LessonComplete correctCount={correctCount} total={total} exercises={exercises} markSeen={markSeen} />;
+  // ─────────── Loading / not found ───────────
+  if (isLoading || (!lesson && !error)) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7' }}>
+        <ActivityIndicator size="large" color="#E63946" />
+        <Text style={{ marginTop: 12, color: '#5A6478', fontSize: 13 }}>
+          Ders yükleniyor…
+        </Text>
+      </View>
+    );
   }
 
-  const isCorrect = selected === exercise.correctId;
+  if (error || !lesson || total === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7', padding: 24 }}>
+        <Text style={{ fontSize: 64, marginBottom: 16 }}>✈️</Text>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: '#0E1116', marginBottom: 8 }}>
+          Ders bulunamadı
+        </Text>
+        <Text style={{ fontSize: 13, color: '#5A6478', textAlign: 'center', marginBottom: 20 }}>
+          Bu ders kaldırılmış veya henüz yayınlanmamış olabilir.
+        </Text>
+        <Button3D variant="primary" onPress={() => router.replace('/(tabs)/learn')}>
+          Öğrenme ekranına dön
+        </Button3D>
+      </View>
+    );
+  }
 
+  if (!exercise) {
+    return (
+      <LessonComplete
+        correctCount={correctCount}
+        total={total}
+        exercises={exercises}
+        lessonSlug={lessonSlug}
+      />
+    );
+  }
+
+  const isCorrect = selected === exercise.correct_id;
+  const dbOptions = (exercise.options ?? []) as { id: string; text: string }[];
+
+  // ─────────── Handlers ───────────
   const handleAnswer = () => {
     if (!selected) return;
     setShowFeedback(true);
-    // SRS: her cevap → ilgili term'in scheduler'ı güncellenir
-    // Quality: yanlış=1, doğru=4 (response time'a göre ileride 5'e çıkar)
     const quality = isCorrect ? 4 : 1;
-    reviewTerm(exercise.termId, quality);
+    if (exercise.vocab_term_id) {
+      // SRS update via vocab_term_id (DB row id'si)
+      reviewTerm(exercise.vocab_term_id, quality);
+    }
 
     if (isCorrect) {
       addXp(10, 'lesson_exercise');
@@ -82,7 +146,6 @@ export default function LessonScreen() {
         type: exercise.type,
         is_correct: false,
       });
-      // Hearts tükenince modal aç
       if (hearts <= 1) {
         setTimeout(() => router.push('/heart-refill'), 800);
       }
@@ -90,46 +153,58 @@ export default function LessonScreen() {
   };
 
   const handleNext = () => {
-    if (currentIdx + 1 >= total) {
+    const isLast = currentIdx + 1 >= total;
+    const nextCorrect = isCorrect ? correctCount + 1 : correctCount;
+
+    if (isLast) {
       addXp(50, 'lesson_completed');
       addCoins(10, 'lesson_completed');
       recordDailyActivity();
       recordHistoryActivity('lesson');
-      const score = Math.round((correctCount / total) * 100);
-      const lessonId = typeof params.id === 'string' ? params.id : 'unknown';
-      markLessonCompleted(lessonId, score);
+      const score = Math.round((nextCorrect / total) * 100);
+      markLessonCompleted(lessonSlug, score);
       recordRecentActivity({
         type: 'lesson',
-        refId: lessonId,
-        titleTr: `Ders #${lessonId.slice(0, 6)}`,
-        subtitleTr: `${correctCount}/${total} doğru`,
+        refId: lessonSlug,
+        titleTr: lesson.title_tr ?? lesson.title,
+        subtitleTr: `${nextCorrect}/${total} doğru`,
         score,
       });
-      // No-repeat: tüm egzersizleri "görüldü" olarak işaretle
-      markSeen(exercises.map((e) => e.id));
       incrementQuest('complete_lessons', 1);
       incrementQuest('streak_check', 1);
+      // Lesson progress'i tamamlandı işaretle (currentIdx 0'a sıfırlanır)
+      markLessonProgressCompleted(lessonSlug);
       track('lesson_completed', {
-        lesson_id: lessonId,
-        score: correctCount,
+        lesson_id: lessonSlug,
+        score: nextCorrect,
         total,
       });
+      // currentIdx total'a setlenir → exercise undefined → LessonComplete render
+      setCurrentIdx(currentIdx + 1);
+    } else {
+      const nextIdx = currentIdx + 1;
+      setCurrentIdx(nextIdx);
+      // Persist current state
+      saveProgress(lessonSlug, {
+        currentIdx: nextIdx,
+        correctCount: nextCorrect,
+      });
     }
-    setCurrentIdx(currentIdx + 1);
     setSelected(null);
     setShowFeedback(false);
   };
 
   const exerciseTypeLabel = (type: string) =>
     ({
-      tr_to_en: 'TR → EN',
-      en_to_tr: 'EN → TR',
-      fill_blank: 'Boşluk doldur',
-      definition_match: 'Tanımdan terim',
-      term_to_definition: 'Terimden tanım',
-      sentence_build: 'Cümle kur',
-      category_match: 'Kategori',
-      true_false: 'Doğru / Yanlış',
+      'vocab-mc': 'Çoktan seçmeli',
+      'fill-blank': 'Boşluk doldur',
+      'dialogue-fill': 'Diyalog',
+      'listening-mc': 'Dinleme',
+      'pronunciation-record': 'Telaffuz',
+      match: 'Eşleştir',
+      order: 'Sırala',
+      'drag-drop': 'Sürükle bırak',
+      'open-text': 'Serbest cevap',
     })[type] ?? type;
 
   return (
@@ -137,7 +212,7 @@ export default function LessonScreen() {
       <SafeAreaView edges={['top']}>
         <LessonChrome
           progress={(currentIdx / total) * 100}
-          hearts={5}
+          hearts={hearts}
           onClose={() => router.back()}
         />
       </SafeAreaView>
@@ -155,13 +230,13 @@ export default function LessonScreen() {
             letterSpacing: -0.48,
           }}
         >
-          {exercise.question}
+          {exercise.prompt_tr ?? exercise.prompt ?? ''}
         </Text>
 
         <View style={{ gap: 10, marginTop: 20 }}>
-          {exercise.options.map((opt) => {
+          {dbOptions.map((opt) => {
             const isSelected = selected === opt.id;
-            const showAsCorrect = showFeedback && opt.id === exercise.correctId;
+            const showAsCorrect = showFeedback && opt.id === exercise.correct_id;
             const showAsWrong = showFeedback && isSelected && !showAsCorrect;
             const optState: 'idle' | 'correct' | 'wrong' = showAsCorrect
               ? 'correct'
@@ -186,7 +261,7 @@ export default function LessonScreen() {
           <View style={{ marginTop: 16 }}>
             <LessonFeedbackInline
               state={isCorrect ? 'correct' : 'wrong'}
-              message={exercise.explanation}
+              message={exercise.explanation_tr ?? exercise.explanation ?? ''}
             />
           </View>
         )}
@@ -221,16 +296,20 @@ function LessonComplete({
   correctCount,
   total,
   exercises,
-  markSeen: _markSeen,
+  lessonSlug: _lessonSlug,
 }: {
   correctCount: number;
   total: number;
-  exercises: Exercise[];
-  markSeen: (ids: string[]) => void;
+  exercises: ExerciseRow[];
+  lessonSlug: string;
 }) {
   const percent = Math.round((correctCount / total) * 100);
   const xpEarned = correctCount * 10 + 50;
   const isPerfect = correctCount === total;
+  const uniqueTermCount = useMemo(
+    () => new Set(exercises.map((e) => e.vocab_term_id).filter(Boolean)).size,
+    [exercises],
+  );
 
   return (
     <View
@@ -249,7 +328,6 @@ function LessonComplete({
         visible={true}
       />
 
-      {/* TOUCHDOWN moment */}
       <View style={{ alignItems: 'center', gap: 12 }}>
         <Text style={{ fontSize: 80 }}>{isPerfect ? '🏆' : '✈'}</Text>
         <Text
@@ -261,7 +339,7 @@ function LessonComplete({
             textTransform: 'uppercase',
           }}
         >
-          TOUCHDOWN ✦ LESSON COMPLETE
+          TOUCHDOWN ✦ DERS TAMAM
         </Text>
         <Text
           style={{
@@ -274,7 +352,7 @@ function LessonComplete({
             lineHeight: 40,
           }}
         >
-          {isPerfect ? 'Perfect landing.' : 'Safely on the runway.'}
+          {isPerfect ? 'Mükemmel iniş.' : 'Güvenli iniş.'}
         </Text>
         <Text
           style={{
@@ -284,11 +362,10 @@ function LessonComplete({
             textAlign: 'center',
           }}
         >
-          {correctCount} / {total} correct • {percent}%
+          {correctCount} / {total} doğru • %{percent}
         </Text>
       </View>
 
-      {/* XP Card */}
       <View
         style={{
           backgroundColor: '#E63946',
@@ -308,7 +385,7 @@ function LessonComplete({
             textTransform: 'uppercase',
           }}
         >
-          XP EARNED
+          KAZANILAN XP
         </Text>
         <Text
           style={{
@@ -331,11 +408,10 @@ function LessonComplete({
             marginTop: 4,
           }}
         >
-          +10 🪙 coins
+          +10 🪙 coin
         </Text>
       </View>
 
-      {/* Insight Card */}
       <View
         style={{
           backgroundColor: 'rgba(255,255,255,0.08)',
@@ -355,18 +431,24 @@ function LessonComplete({
             textTransform: 'uppercase',
           }}
         >
-          NEW IN THIS FLIGHT
+          BU UÇUŞTA YENİ
         </Text>
         <Text style={{ fontFamily: 'PlusJakartaSans_700Bold', fontSize: 17, color: '#FFFFFF' }}>
-          {new Set(exercises.map((e) => e.termId)).size} terim · {exercises.length} egzersiz
+          {uniqueTermCount} terim · {exercises.length} egzersiz
         </Text>
-        <Text style={{ fontFamily: 'PlusJakartaSans_400Regular', fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>
-          Tekrarsız sistemde — bir daha karşılaşmayacaksın.
+        <Text
+          style={{
+            fontFamily: 'PlusJakartaSans_400Regular',
+            fontSize: 13,
+            color: 'rgba(255,255,255,0.65)',
+          }}
+        >
+          Tekrar açarsan baştan başlarsın — ders şimdi tamamlanmış sayılır.
         </Text>
       </View>
 
       <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/home')}>
-        Back to home →
+        Ana sayfaya dön →
       </Button3D>
     </View>
   );

@@ -14,15 +14,49 @@ import {
   EmptyState,
   BackButton,
 } from '@/components/airspeak';
-import { getVocabForRole } from '@/features/lessons/seed';
+import { useVocab } from '@/features/content/api';
+import type { VocabTermRow } from '@/features/content/types';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useBookmarkStore } from '@/stores/bookmarkStore';
-import type { VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
+import type { UserRole } from '@/types/profile';
+
+/** Eski TS VocabularyTerm shape'i — VocabCard component'i bunu bekliyor. */
+type VocabularyTerm = {
+  id: string;
+  term: string;
+  termTr: string;
+  pronunciation: string;
+  category: string;
+  difficulty: number;
+  definitionEn: string;
+  definitionTr: string;
+  examples: { en: string; tr: string }[];
+};
+
+function rowToTerm(r: VocabTermRow): VocabularyTerm {
+  return {
+    id: r.slug,
+    term: r.term,
+    termTr: r.term_tr ?? r.term,
+    pronunciation: r.ipa ?? '',
+    category: r.category ?? 'general',
+    difficulty: r.difficulty,
+    definitionEn: r.definition ?? '',
+    definitionTr: r.definition_tr ?? '',
+    examples:
+      r.example && r.example_tr
+        ? [{ en: r.example, tr: r.example_tr }]
+        : r.example
+          ? [{ en: r.example, tr: '' }]
+          : [],
+  };
+}
 
 export default function VocabScreen() {
   const { t } = useTranslation();
-  const role = useOnboardingStore((s) => s.role);
-  const allVocab = useMemo(() => getVocabForRole(role), [role]);
+  const role = useOnboardingStore((s) => s.role) as UserRole | null;
+  const { data: vocabRows = [] } = useVocab(role);
+  const allVocab = useMemo(() => vocabRows.map(rowToTerm), [vocabRows]);
 
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<string>('all');

@@ -8,23 +8,77 @@
  * - Mock interview moduna geç (her sorunun "good answer points"i göster)
  */
 import { useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, ActivityIndicator } from 'react-native';
 import { YStack, XStack, H2, H3, Paragraph, Card, Text, Button, Progress } from 'tamagui';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useOnboardingStore } from '@/stores/onboardingStore';
-import { getAirlineById } from '@/features/exams/airlines';
-import { getQuestionsForAirline } from '@/features/exams/interviewQuestions';
+import { useAirline, useInterviewQuestions } from '@/features/content/api';
+import type { AirlineInterview, InterviewQuestionRow } from '@/features/content/types';
 import { getKnowledgeForAirline, getRoleKnowledge } from '@/features/exams/airlineKnowledge';
-import type { InterviewQuestion } from '@/features/exams/airlineTypes';
 import { FlagContentTrigger } from '@/components/moderation/FlagContentSheet';
+import type { UserRole } from '@/types/profile';
+
+/** Eski TS InterviewQuestion shape'i ekran içinde kullanılıyor — DB row'u dönüştür. */
+type InterviewQuestion = {
+  id: string;
+  category: string;
+  question: string;
+  context?: string | null;
+  difficulty: number;
+  goodAnswerPointsTr?: string[] | null;
+  redFlagsTr?: string[] | null;
+  tipsTr?: string[] | null;
+  sampleAnswerTr?: string | null;
+  modelAnswerEn?: string | null;
+  detailedExplanationTr?: string | null;
+};
+
+function rowToQuestion(r: InterviewQuestionRow): InterviewQuestion {
+  return {
+    id: r.slug,
+    category: r.category,
+    question: r.question,
+    difficulty: r.difficulty,
+    goodAnswerPointsTr: r.good_answer_points_tr,
+    redFlagsTr: r.red_flags_tr,
+    tipsTr: r.tips_tr,
+    sampleAnswerTr: r.star_template_tr,
+    detailedExplanationTr: r.detailed_explanation_tr,
+  };
+}
+
+function pickInterview(
+  airline: any,
+  role: UserRole | null,
+): AirlineInterview | null {
+  if (!role) return null;
+  switch (role) {
+    case 'pilot': return airline.pilot_interview;
+    case 'cabin': return airline.cabin_interview;
+    case 'technician': return airline.technician_interview;
+    case 'ground': return airline.ground_interview;
+    case 'student': return airline.student_interview;
+  }
+}
 
 export default function AirlineDetailScreen() {
   const params = useLocalSearchParams<{ id: string }>();
-  const role = useOnboardingStore((s) => s.role);
+  const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const [view, setView] = useState<'overview' | 'mock'>('overview');
 
-  const airlineId = typeof params.id === 'string' ? params.id : '';
-  const airline = getAirlineById(airlineId);
+  const airlineSlug = typeof params.id === 'string' ? params.id : '';
+  const { data: airline, isLoading } = useAirline(airlineSlug);
+  const { data: questionRows = [] } = useInterviewQuestions(role, airlineSlug);
+  const questions: InterviewQuestion[] = questionRows.map(rowToQuestion);
+
+  if (isLoading) {
+    return (
+      <YStack flex={1} padding="$4" justifyContent="center" alignItems="center" backgroundColor="$background">
+        <ActivityIndicator size="large" color="#E63946" />
+        <Text marginTop="$3">Yükleniyor…</Text>
+      </YStack>
+    );
+  }
 
   if (!airline) {
     return (
@@ -36,10 +90,10 @@ export default function AirlineDetailScreen() {
     );
   }
 
-  const interview = airline.interviews.find((i) => i.role === role);
-  const questions = role ? getQuestionsForAirline(airline.id, role) : [];
-  const kb = getKnowledgeForAirline(airline.id);
-  const roleKb = role ? getRoleKnowledge(airline.id, role as never) : undefined;
+  // DB'den gelen jsonb'de eski TS interface'inin tüm alanları olabilir (loose any).
+  const interview = (pickInterview(airline, role) ?? {}) as any;
+  const kb = getKnowledgeForAirline(airline.slug);
+  const roleKb = role ? getRoleKnowledge(airline.slug, role as never) : undefined;
 
   if (view === 'mock' && questions.length > 0) {
     return <MockInterview airline={airline.name} questions={questions} onExit={() => setView('overview')} />;
@@ -65,42 +119,41 @@ export default function AirlineDetailScreen() {
         <Card padding="$4" backgroundColor="$primary">
           <YStack gap="$2">
             <XStack gap="$2" alignItems="center">
-              <Text fontSize={48}>{airline.countryEmoji}</Text>
+              <Text fontSize={48}>{airline.country_emoji ?? '🌍'}</Text>
               <YStack flex={1}>
                 <Text fontSize="$2" color="$primaryText" textTransform="uppercase">
-                  {airline.iataCode} · {airline.icaoCode} · {airline.country}
+                  {airline.iata_code ?? '—'}
                 </Text>
                 <Text fontSize="$7" fontWeight="700" color="$primaryText">
                   {airline.name}
                 </Text>
                 <Text fontSize="$3" color="$primaryText">
-                  {airline.hub}
+                  {airline.hub ?? '—'}
                 </Text>
               </YStack>
             </XStack>
-            <Paragraph color="$primaryText">{airline.descriptionTr}</Paragraph>
           </YStack>
         </Card>
 
         {/* Quick stats */}
         <XStack gap="$2" flexWrap="wrap">
-          <StatCard label="Filo" value={`${airline.fleetSize}`} />
-          <StatCard label="Destination" value={`${airline.destinations}`} />
-          <StatCard label="Personel" value={`${(airline.employeeCount / 1000).toFixed(0)}K`} />
-          <StatCard label="Prestij" value={'★'.repeat(airline.prestige)} />
-          <StatCard label="Şirket dili" value={airline.primaryLanguage} />
-          <StatCard label="Min İngilizce" value={interview.requiredLevel} />
+          {airline.fleet_size ? <StatCard label="Filo" value={`${airline.fleet_size}`} /> : null}
+          {airline.destinations ? <StatCard label="Destination" value={`${airline.destinations}`} /> : null}
+          {airline.prestige ? <StatCard label="Prestij" value={'★'.repeat(airline.prestige)} /> : null}
+          {interview?.requiredLevel ? <StatCard label="Min İngilizce" value={interview.requiredLevel} /> : null}
         </XStack>
 
         {/* Insider tip */}
-        <Card padding="$4" backgroundColor="$accent">
-          <YStack gap="$1">
-            <Text fontSize="$3" color="$accentText" textTransform="uppercase">
-              💡 İçeriden ipucu
-            </Text>
-            <Paragraph color="$accentText">{airline.insiderTipTr}</Paragraph>
-          </YStack>
-        </Card>
+        {airline.insider_tip_tr ? (
+          <Card padding="$4" backgroundColor="$accent">
+            <YStack gap="$1">
+              <Text fontSize="$3" color="$accentText" textTransform="uppercase">
+                💡 İçeriden ipucu
+              </Text>
+              <Paragraph color="$accentText">{airline.insider_tip_tr}</Paragraph>
+            </YStack>
+          </Card>
+        ) : null}
 
         {/* Interview overview */}
         <YStack gap="$2">
@@ -120,8 +173,8 @@ export default function AirlineDetailScreen() {
 
         {/* Stages */}
         <YStack gap="$2">
-          <H3 color="$text">Aşamalar ({interview.stages.length})</H3>
-          {interview.stages.map((s, idx) => (
+          <H3 color="$text">Aşamalar ({(interview.stages ?? []).length})</H3>
+          {(interview.stages ?? []).map((s: any, idx: number) => (
             <Card key={s.id} padding="$3" backgroundColor="$surface" bordered>
               <YStack gap="$2">
                 <XStack gap="$2" alignItems="center">
@@ -137,19 +190,23 @@ export default function AirlineDetailScreen() {
                     {s.durationMinutes} dk
                   </Text>
                 </XStack>
-                <Paragraph fontSize="$3" color="$textSecondary">
-                  {s.descriptionTr}
-                </Paragraph>
-                <YStack gap="$1">
-                  <Text fontSize="$2" color="$primary" textTransform="uppercase">
-                    Geçme ipuçları
-                  </Text>
-                  {s.passingTipsTr.map((tip, i) => (
-                    <Text key={i} fontSize="$2" color="$text">
-                      ✓ {tip}
+                {s.descriptionTr ? (
+                  <Paragraph fontSize="$3" color="$textSecondary">
+                    {s.descriptionTr}
+                  </Paragraph>
+                ) : null}
+                {s.passingTipsTr && s.passingTipsTr.length > 0 ? (
+                  <YStack gap="$1">
+                    <Text fontSize="$2" color="$primary" textTransform="uppercase">
+                      Geçme ipuçları
                     </Text>
-                  ))}
-                </YStack>
+                    {s.passingTipsTr.map((tip: string, i: number) => (
+                      <Text key={i} fontSize="$2" color="$text">
+                        ✓ {tip}
+                      </Text>
+                    ))}
+                  </YStack>
+                ) : null}
               </YStack>
             </Card>
           ))}
@@ -159,7 +216,7 @@ export default function AirlineDetailScreen() {
         {interview.perks && interview.perks.length > 0 && (
           <YStack gap="$2">
             <H3 color="$text">Avantajlar</H3>
-            {interview.perks.map((p, i) => (
+            {interview.perks.map((p: string, i: number) => (
               <Text key={i} fontSize="$3" color="$text">
                 • {p}
               </Text>
@@ -503,7 +560,7 @@ function MockInterview({
                 <Text fontSize="$4" fontWeight="700" color="$success">
                   ✅ İyi cevapta olması gerekenler
                 </Text>
-                {q.goodAnswerPointsTr.map((p, i) => (
+                {(q.goodAnswerPointsTr ?? []).map((p, i) => (
                   <Text key={i} fontSize="$3" color="$text">
                     • {p}
                   </Text>
@@ -517,7 +574,7 @@ function MockInterview({
                 <Text fontSize="$4" fontWeight="700" color="$danger">
                   ⛔ Yapma — red flag
                 </Text>
-                {q.redFlagsTr.map((p, i) => (
+                {(q.redFlagsTr ?? []).map((p, i) => (
                   <Text key={i} fontSize="$3" color="$text">
                     • {p}
                   </Text>
@@ -555,7 +612,7 @@ function MockInterview({
                 <Text fontSize="$3" color="$accentText" textTransform="uppercase">
                   💡 İpuçları
                 </Text>
-                {q.tipsTr.map((t, i) => (
+                {(q.tipsTr ?? []).map((t, i) => (
                   <Text key={i} fontSize="$3" color="$accentText">
                     • {t}
                   </Text>

@@ -10,14 +10,16 @@
  * - Locked (gray + lock icon), checkpoint (gold), boss (navy + trophy)
  * - Section closer (navy boss card + trophy bg)
  */
-import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useMemo, useState, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useProgressStore } from '@/stores/progressStore';
-import { getModulesForRole } from '@/features/lessons/seed/lessonTree';
+import { useLessonProgressStore } from '@/stores/lessonProgressStore';
+import { useModules } from '@/features/content/api';
+import type { UserRole } from '@/types/profile';
 import {
   HHero,
   H2,
@@ -49,28 +51,33 @@ const LESSON_ICON: Record<string, string> = {
 };
 
 export default function LearnScreen() {
-  const role = useOnboardingStore((s) => s.role);
+  const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const completedIds = useProgressStore((s) => s.completedLessonIds);
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
-  const modules = useMemo(() => getModulesForRole(role), [role]);
+  // DB'den modülleri çek — admin değişikliği realtime yansır
+  const { data: modules = [], isLoading: modulesLoading, refetch } = useModules(role);
   const activeModule = modules[0]; // Şimdilik ilk modül
   const [activeUnitIdx, setActiveUnitIdx] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 600);
-  }, []);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
+
+  // Devam eden lesson'ları (kaldığım yer var) gösterirken işaret koymak için
+  const lessonProgressMap = useLessonProgressStore((s) => s.byLessonSlug);
 
   const activeUnit = activeModule?.units[activeUnitIdx];
 
   // Gerçek lesson listesinden node'lar — ilk locked olmayan ders 'current'
   const nodes: TreeNode[] = useMemo(() => {
     if (!activeUnit) return [];
-    const lessons = activeUnit.lessons;
+    const lessons = activeUnit.lessons ?? [];
     const xs = [0, -40, -20, 30, 50, 20, -20, -50, 0]; // zig-zag
     let firstUndoneFound = false;
-    return lessons.map((l, idx) => {
-      const isDone = completedSet.has(l.id);
+    return lessons.map((l: any, idx: number) => {
+      const isDone = completedSet.has(l.slug);
       const isLast = idx === lessons.length - 1;
       let state: TreeNode['state'];
       if (isDone) {
@@ -82,18 +89,41 @@ export default function LearnScreen() {
         state = 'locked';
       }
       return {
-        id: l.id,
+        id: l.slug,
         type: isLast ? 'boss' : l.type === 'quiz' ? 'checkpoint' : 'lesson',
         state,
         iconLabel: isLast ? '🏆' : LESSON_ICON[l.type] ?? '✈',
         x: xs[idx % xs.length] ?? 0,
         startTag: state === 'current',
-        lessonId: l.id,
+        lessonId: l.slug,
       };
     });
   }, [activeUnit, completedSet]);
 
   const completedCount = nodes.filter((n) => n.state === 'done').length;
+
+  // Loading state
+  if (modulesLoading && modules.length === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7' }}>
+        <ActivityIndicator size="large" color="#E63946" />
+        <Text style={{ marginTop: 12, color: '#5A6478' }}>Modüller yükleniyor…</Text>
+      </View>
+    );
+  }
+  if (!modulesLoading && modules.length === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7', padding: 24 }}>
+        <Text style={{ fontSize: 64, marginBottom: 16 }}>📚</Text>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: '#0E1116', marginBottom: 8 }}>
+          Henüz modül yok
+        </Text>
+        <Text style={{ fontSize: 13, color: '#5A6478', textAlign: 'center' }}>
+          Admin yakında bu role uygun ders ekleyecek.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
@@ -137,7 +167,7 @@ export default function LearnScreen() {
                     letterSpacing: -0.48,
                   }}
                 >
-                  {activeUnit?.title ?? activeModule?.title ?? ''}
+                  {activeUnit?.title_tr ?? activeUnit?.title ?? activeModule?.title_tr ?? activeModule?.title ?? ''}
                 </Text>
                 <Mono style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', marginTop: 6 }}>
                   ICAO descriptors: Comprehension · Vocabulary
@@ -253,7 +283,7 @@ export default function LearnScreen() {
                     color: isActive ? '#FFFFFF' : '#0E1116',
                   }}
                 >
-                  {u.title}
+                  {u.title_tr ?? u.title}
                 </Text>
               </TouchableOpacity>
             );

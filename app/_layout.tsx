@@ -39,6 +39,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useOfflineStore } from '@/stores/offlineStore';
+import { subscribeContentRealtime } from '@/features/content/realtime';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -69,6 +70,12 @@ export default function RootLayout() {
   // Network monitoring — getState() ile al, subscribe etme (döngü önler)
   useEffect(() => {
     const unsub = useOfflineStore.getState().startNetInfoMonitoring();
+    return unsub;
+  }, []);
+
+  // Content realtime — admin değişiklikleri canlı yansır
+  useEffect(() => {
+    const unsub = subscribeContentRealtime(queryClient);
     return unsub;
   }, []);
 

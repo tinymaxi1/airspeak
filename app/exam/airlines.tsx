@@ -10,14 +10,48 @@
  * Bölge filtresi: Tümü / TR / Orta Doğu / Avrupa FSC / Avrupa LCC / Asya.
  */
 import { useMemo, useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useAuthStore } from '@/stores/authStore';
-import { ALL_AIRLINES, AIRLINE_REGION_LABELS } from '@/features/exams/airlines';
-import type { AirlineProfile, AirlineRegion } from '@/features/exams/airlineTypes';
+import { useAirlines } from '@/features/content/api';
+import type { AirlineRow, AirlineInterview } from '@/features/content/types';
 import type { UserRole } from '@/types/profile';
+
+type AirlineRegion = 'turkey' | 'middle-east' | 'europe-fsc' | 'europe-lcc' | 'asia' | 'americas' | 'oceania' | 'africa';
+
+const AIRLINE_REGION_LABELS: Record<AirlineRegion, { tr: string; emoji: string }> = {
+  turkey: { tr: 'Türkiye', emoji: '🇹🇷' },
+  'middle-east': { tr: 'Orta Doğu', emoji: '🕌' },
+  'europe-fsc': { tr: 'Avrupa — Bayrak', emoji: '🏛️' },
+  'europe-lcc': { tr: 'Avrupa — LCC', emoji: '💸' },
+  asia: { tr: 'Asya', emoji: '🏯' },
+  americas: { tr: 'Amerika', emoji: '🗽' },
+  oceania: { tr: 'Okyanusya', emoji: '🦘' },
+  africa: { tr: 'Afrika', emoji: '🦁' },
+};
+
+/** DB row'undan kullanıcının rolüne ait interview'i çek. */
+function getRoleInterview(a: AirlineRow, role: UserRole | null): AirlineInterview | null {
+  if (!role) return null;
+  switch (role) {
+    case 'pilot': return a.pilot_interview;
+    case 'cabin': return a.cabin_interview;
+    case 'technician': return a.technician_interview;
+    case 'ground': return a.ground_interview;
+    case 'student': return a.student_interview;
+  }
+}
+
+/** Kart için kullanılacak interview — rol uygun yoksa pilot/cabin'a düş. */
+function getDisplayInterview(a: AirlineRow, role: UserRole | null): { interview: AirlineInterview; role: UserRole } | null {
+  const own = getRoleInterview(a, role);
+  if (own) return { interview: own, role: role! };
+  if (a.pilot_interview) return { interview: a.pilot_interview, role: 'pilot' };
+  if (a.cabin_interview) return { interview: a.cabin_interview, role: 'cabin' };
+  return null;
+}
 import {
   HHero,
   Body,
@@ -49,18 +83,21 @@ export default function AirlinesHubScreen() {
   const isPremium = useAuthStore((s) => s.isPremium);
   const [activeFilter, setActiveFilter] = useState<AirlineRegion | 'all'>('all');
 
-  // Bölgeye göre filtrele (her havayolu kullanıcının rolüyle eşleşmiyorsa kilitli görünür)
+  // DB'den havayollarını çek
+  const { data: allAirlines = [], isLoading } = useAirlines();
+
+  // Bölgeye göre filtrele
   const filtered = useMemo(() => {
-    if (activeFilter === 'all') return ALL_AIRLINES;
-    return ALL_AIRLINES.filter((a) => a.region === activeFilter);
-  }, [activeFilter]);
+    if (activeFilter === 'all') return allAirlines;
+    return allAirlines.filter((a) => a.region === activeFilter);
+  }, [allAirlines, activeFilter]);
 
   // Kullanıcı rolü için interview olan havayolları (free) vs olmayan (premium)
   const split = useMemo(() => {
-    const own: AirlineProfile[] = [];
-    const others: AirlineProfile[] = [];
+    const own: AirlineRow[] = [];
+    const others: AirlineRow[] = [];
     for (const a of filtered) {
-      const hasOwnRole = role && a.interviews.some((i) => i.role === role);
+      const hasOwnRole = !!getRoleInterview(a, role);
       if (hasOwnRole) own.push(a);
       else others.push(a);
     }
@@ -79,6 +116,15 @@ export default function AirlinesHubScreen() {
         <Body color="#5A6478" style={{ textAlign: 'center', fontSize: 15 }}>
           Sana uygun havayollarını görmek için profilinden rol seç.
         </Body>
+      </View>
+    );
+  }
+
+  if (isLoading && allAirlines.length === 0) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#E63946" />
+        <Text style={{ marginTop: 12, color: '#5A6478' }}>Havayolları yükleniyor…</Text>
       </View>
     );
   }
@@ -326,33 +372,33 @@ function AirlineCard({
   userRole,
   locked,
 }: {
-  airline: AirlineProfile;
+  airline: AirlineRow;
   userRole: UserRole;
   locked: boolean;
 }) {
-  // Kart kullanıcının rolüne uygun interview varsa onu kullan; yoksa ilk interview (genelde pilot)
-  const interview =
-    airline.interviews.find((i) => i.role === userRole) ?? airline.interviews[0];
-  if (!interview) return null;
+  // Kart kullanıcının rolüne uygun interview varsa onu kullan; yoksa ilk available
+  const display = getDisplayInterview(airline, userRole);
+  if (!display) return null;
+  const { interview, role: shownRole } = display;
 
   const handlePress = () => {
     if (locked) {
       router.push('/paywall');
       return;
     }
-    router.push({ pathname: '/exam/airline/[id]', params: { id: airline.id } });
+    router.push({ pathname: '/exam/airline/[id]', params: { id: airline.slug } });
   };
 
-  const stars = '★'.repeat(airline.prestige) + '☆'.repeat(5 - airline.prestige);
-  const hiringBadge = {
+  const prestige = airline.prestige ?? 3;
+  const stars = '★'.repeat(prestige) + '☆'.repeat(5 - prestige);
+  const hiringBadge: { text: string; color: string } = {
     open: { text: '✅ Aktif alım', color: '#2DBE6C' },
     closed: { text: '⏸️ Kapalı', color: '#8A93A6' },
     open_day_only: { text: '📅 Open Day', color: '#F2C14E' },
     experienced_only: { text: '🎯 Tecrübeli', color: '#7C5CFF' },
-  }[interview.hiringStatus];
+  }[interview.hiringStatus ?? 'closed'] ?? { text: '⏸️ Kapalı', color: '#8A93A6' };
 
-  const interviewRoleLabel =
-    interview.role === userRole ? null : ROLE_LABELS[interview.role];
+  const interviewRoleLabel = shownRole === userRole ? null : ROLE_LABELS[shownRole];
 
   return (
     <TouchableOpacity
@@ -363,11 +409,11 @@ function AirlineCard({
     >
       <Card3D style={{ padding: 14, opacity: locked ? 0.7 : 1 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <Text style={{ fontSize: 32 }}>{airline.countryEmoji}</Text>
+          <Text style={{ fontSize: 32 }}>{airline.country_emoji ?? '🌍'}</Text>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <Mono style={{ fontSize: 10, letterSpacing: 1.4, color: '#5A6478' }}>
-                {airline.iataCode} · {airline.tier.toUpperCase()}
+                {airline.iata_code ?? '—'} · {(airline.tier ?? '').toUpperCase()}
               </Mono>
               {interviewRoleLabel && (
                 <View
@@ -396,7 +442,7 @@ function AirlineCard({
               {airline.name}
             </Text>
             <Body color="#5A6478" style={{ fontSize: 12, marginTop: 1 }} numberOfLines={1}>
-              {airline.hub}
+              {airline.hub ?? '—'}
             </Body>
           </View>
           <View style={{ alignItems: 'flex-end', gap: 4 }}>
@@ -426,28 +472,32 @@ function AirlineCard({
         {!locked && (
           <View style={{ marginTop: 10 }}>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-              <Chip text={`${airline.fleetSize} uçak`} />
-              <Chip text={`Min ${interview.requiredLevel}`} />
-              <Chip text={`%${interview.englishWeight} EN`} />
+              {airline.fleet_size ? <Chip text={`${airline.fleet_size} uçak`} /> : null}
+              {interview.requiredLevel ? <Chip text={`Min ${interview.requiredLevel}`} /> : null}
+              {interview.englishWeight !== undefined ? (
+                <Chip text={`%${interview.englishWeight} EN`} />
+              ) : null}
               {interview.averageSalaryTryK ? (
                 <Chip text={`~₺${interview.averageSalaryTryK}K/ay`} />
               ) : null}
             </View>
-            <View style={{ marginTop: 8, gap: 2 }}>
-              <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.4 }}>
-                {interview.stages.length} AŞAMA
-              </Mono>
-              {interview.stages.slice(0, 2).map((s, idx) => (
-                <Body key={s.id} color="#0E1116" style={{ fontSize: 12 }}>
-                  {idx + 1}. {s.titleTr} · {s.durationMinutes} dk
-                </Body>
-              ))}
-              {interview.stages.length > 2 && (
-                <Mono style={{ fontSize: 11, color: '#8A93A6' }}>
-                  + {interview.stages.length - 2} aşama daha
+            {interview.stages && interview.stages.length > 0 && (
+              <View style={{ marginTop: 8, gap: 2 }}>
+                <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.4 }}>
+                  {interview.stages.length} AŞAMA
                 </Mono>
-              )}
-            </View>
+                {interview.stages.slice(0, 2).map((s, idx) => (
+                  <Body key={s.id} color="#0E1116" style={{ fontSize: 12 }}>
+                    {idx + 1}. {s.titleTr} · {s.durationMinutes} dk
+                  </Body>
+                ))}
+                {interview.stages.length > 2 && (
+                  <Mono style={{ fontSize: 11, color: '#8A93A6' }}>
+                    + {interview.stages.length - 2} aşama daha
+                  </Mono>
+                )}
+              </View>
+            )}
           </View>
         )}
 
@@ -480,11 +530,12 @@ function Chip({ text }: { text: string }) {
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
 
-function groupByRegion(list: AirlineProfile[]): Partial<Record<AirlineRegion, AirlineProfile[]>> {
-  const groups: Partial<Record<AirlineRegion, AirlineProfile[]>> = {};
+function groupByRegion(list: AirlineRow[]): Partial<Record<AirlineRegion, AirlineRow[]>> {
+  const groups: Partial<Record<AirlineRegion, AirlineRow[]>> = {};
   for (const a of list) {
-    if (!groups[a.region]) groups[a.region] = [];
-    groups[a.region]!.push(a);
+    const r = (a.region ?? 'asia') as AirlineRegion;
+    if (!groups[r]) groups[r] = [];
+    groups[r]!.push(a);
   }
   return groups;
 }
