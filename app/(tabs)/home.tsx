@@ -52,8 +52,10 @@ export default function HomeScreen() {
   // Offline durumu
   const isOnline = useOfflineStore((s) => s.isOnline);
 
-  // Son aktiviteler (max 3 göster)
-  const recentActivity = useActivityStore((s) => s.recent.slice(0, 3));
+  // Son aktiviteler (max 3 göster) — selector stable referans, slice useMemo'da
+  // (selector içinde slice edersek her render yeni array → sonsuz döngü)
+  const recentList = useActivityStore((s) => s.recent);
+  const recentActivity = useMemo(() => recentList.slice(0, 3), [recentList]);
 
   // Pull-to-refresh: Zustand snapshot'larının fresh okunması için kısa bir bekleme yeter.
   // Persisted store'lar zaten hot-reload, bu sadece kullanıcıya "yenilendi" hissi verir.

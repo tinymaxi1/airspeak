@@ -29,7 +29,16 @@ import { queryClient } from '@/lib/queryClient';
 import { initI18n } from '@/lib/i18n';
 import { initAnalytics } from '@/lib/posthog';
 import { initSentry } from '@/lib/sentry';
-// ❗ DEBUG: i18n/notification/store importları geçici disable
+import { useTranslation } from 'react-i18next';
+import {
+  requestPermission as requestNotifPermission,
+  scheduleDailyReminders,
+  updateStreakDangerNotification,
+  syncPushTokenToSupabase,
+} from '@/lib/notifications';
+import { supabase } from '@/lib/supabase';
+import { useGamificationStore } from '@/stores/gamificationStore';
+import { useOfflineStore } from '@/stores/offlineStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -55,8 +64,51 @@ export default function RootLayout() {
     JetBrainsMono_700Bold,
   });
 
-  // ❗ DEBUG: tüm effect'ler geçici disable edildi (infinite loop izolasyonu)
-  // Sadece SplashScreen.hideAsync kalıyor — fontsLoaded olduğunda
+  const { t } = useTranslation();
+
+  // Network monitoring — getState() ile al, subscribe etme (döngü önler)
+  useEffect(() => {
+    const unsub = useOfflineStore.getState().startNetInfoMonitoring();
+    return unsub;
+  }, []);
+
+  // Notifications: izin iste + günlük + streak danger
+  useEffect(() => {
+    if (!fontsLoaded) return;
+    const lastActivityDate = useGamificationStore.getState().lastActivityDate;
+    (async () => {
+      const granted = await requestNotifPermission().catch(() => false);
+      if (!granted) return;
+      await Promise.all([
+        scheduleDailyReminders(undefined, {
+          morningTitle: t('notif.morningTitle', 'Günaydın ✈'),
+          morningBody: t('notif.morningBody', 'Bugünkü uçuş planın hazır. 15 dk yeter.'),
+          eveningTitle: t('notif.eveningTitle', '🔥 Streak\'in tehlikede'),
+          eveningBody: t('notif.eveningBody', 'Bugün hâlâ pratik yapmadın. 1 ders streak\'i kurtarır.'),
+        }).catch((e) => console.warn('Notif schedule failed', e)),
+        updateStreakDangerNotification(lastActivityDate, {
+          title: t('notif.dangerTitle', '⚠ Son 90 dk!'),
+          body: t('notif.dangerBody', 'Streak kırılmasın diye 1 hızlı pratik yeter.'),
+        }).catch(() => undefined),
+      ]);
+    })();
+    // t intentionally NOT in deps — i18n change listener subscribe'ı ek render tetikler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fontsLoaded]);
+
+  // Push token: Supabase'e sync (login sonrası)
+  useEffect(() => {
+    if (!fontsLoaded) return;
+    const sync = () => {
+      syncPushTokenToSupabase().catch((e) => console.warn('Push token sync failed', e));
+    };
+    sync();
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') sync();
+    });
+    return () => data.subscription.unsubscribe();
+  }, [fontsLoaded]);
+
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
