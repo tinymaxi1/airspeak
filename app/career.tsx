@@ -17,6 +17,7 @@ import {
   Body,
   FONTS,
   TopoBackground,
+  BackButton,
 } from '@/components/airspeak';
 import { ALL_AIRLINES } from '@/features/exams/airlines';
 import { useSquadronStore } from '@/stores/squadronStore';
@@ -37,9 +38,7 @@ export default function CareerHubScreen() {
             gap: 12,
           }}
         >
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={{ fontSize: 22, color: '#0E1116' }}>←</Text>
-          </TouchableOpacity>
+          <BackButton onPress={() => router.back()} label={t('common.back', 'Geri')} />
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
               {t('career.eyebrow', 'KARİYER MERKEZİ')}

@@ -10,6 +10,7 @@
  */
 import { Text } from 'react-native';
 import type { TextProps } from 'react-native';
+import { scaleFont } from '@/lib/a11y';
 
 const FONT_BODY = 'PlusJakartaSans_400Regular';
 const FONT_BODY_500 = 'PlusJakartaSans_500Medium';
@@ -70,10 +71,11 @@ export function HHero({ children, color, style, ...rest }: TypoProps) {
 export function H1({ children, color, style, ...rest }: TypoProps) {
   return (
     <Text
+      maxFontSizeMultiplier={1.3}
       style={[
         {
           fontFamily: FONT_DISPLAY_700,
-          fontSize: 28,
+          fontSize: scaleFont(28, { max: 36 }),
           lineHeight: 31,
           letterSpacing: -0.56,
           color: color ?? '#0E1116',
@@ -91,10 +93,11 @@ export function H1({ children, color, style, ...rest }: TypoProps) {
 export function H2({ children, color, style, ...rest }: TypoProps) {
   return (
     <Text
+      maxFontSizeMultiplier={1.3}
       style={[
         {
           fontFamily: FONT_BODY_800,
-          fontSize: 22,
+          fontSize: scaleFont(22, { max: 28 }),
           lineHeight: 25,
           letterSpacing: -0.33,
           color: color ?? '#0E1116',
@@ -112,10 +115,11 @@ export function H2({ children, color, style, ...rest }: TypoProps) {
 export function H3({ children, color, style, ...rest }: TypoProps) {
   return (
     <Text
+      maxFontSizeMultiplier={1.4}
       style={[
         {
           fontFamily: FONT_BODY_700,
-          fontSize: 17,
+          fontSize: scaleFont(17, { max: 22 }),
           lineHeight: 20,
           color: color ?? '#0E1116',
         },
@@ -132,10 +136,11 @@ export function H3({ children, color, style, ...rest }: TypoProps) {
 export function Body({ children, color, style, ...rest }: TypoProps) {
   return (
     <Text
+      maxFontSizeMultiplier={1.5}
       style={[
         {
           fontFamily: FONT_BODY,
-          fontSize: 15,
+          fontSize: scaleFont(15, { max: 20 }),
           lineHeight: 22,
           color: color ?? '#5A6478',
         },

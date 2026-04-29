@@ -8,8 +8,8 @@
  * - Leaderboard rows with country flags + you highlight
  * - Safe zone divider
  */
-import { ScrollView, View, Text } from 'react-native';
-import { useMemo } from 'react';
+import { ScrollView, View, Text, RefreshControl } from 'react-native';
+import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -18,9 +18,12 @@ import {
   Mono,
   FONTS,
   Avatar,
+  CoachMark,
+  EmptyState,
 } from '@/components/airspeak';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useAuthStore } from '@/stores/authStore';
+import { useCoachMarkStore } from '@/stores/coachMarkStore';
 import {
   buildLeaderboard,
   getTierForXp,
@@ -36,6 +39,13 @@ export default function LeagueScreen() {
   const { t } = useTranslation();
   const totalXp = useGamificationStore((s) => s.totalXp);
   const user = useAuthStore((s) => s.user);
+  const coachSeen = useCoachMarkStore((s) => s.isSeen('league_first_open'));
+  const markCoachSeen = useCoachMarkStore((s) => s.markSeen);
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 600);
+  }, []);
 
   const userTier = getTierForXp(totalXp);
   const tierNameLocal = getTierName(userTier);
@@ -144,7 +154,28 @@ export default function LeagueScreen() {
         </SafeAreaView>
       </View>
 
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#F2C14E"
+            colors={['#F2C14E']}
+          />
+        }
+      >
+        {totalXp === 0 && (
+          <View style={{ padding: 16 }}>
+            <EmptyState
+              icon="🏁"
+              message={t(
+                'screens.league.zeroXpEmpty',
+                'XP kazanmak için ilk dersi tamamla. Lig haftada bir sıfırlanır.',
+              )}
+            />
+          </View>
+        )}
         <View
           style={{
             backgroundColor: '#FFFFFF',
@@ -158,6 +189,35 @@ export default function LeagueScreen() {
             <Podium rank={2} name="M. Aydın" xp="4,205" color="#B8BFCC" h={64} />
             <Podium rank={1} name="Captain Sky" xp="4,820" color="#F2C14E" h={88} crown />
             <Podium rank={3} name="José L." xp="3,940" color="#FF7847" h={48} />
+          </View>
+        </View>
+
+        {/* NPC simulator disclaimer — gerçek kullanıcılarla yarış değil */}
+        <View
+          style={{
+            marginHorizontal: 16,
+            marginTop: 12,
+            backgroundColor: 'rgba(255,213,107,0.18)',
+            borderWidth: 1,
+            borderColor: 'rgba(242,193,78,0.6)',
+            borderRadius: 12,
+            padding: 12,
+            flexDirection: 'row',
+            gap: 8,
+          }}
+          accessibilityRole="alert"
+        >
+          <Text style={{ fontSize: 16 }}>ℹ️</Text>
+          <View style={{ flex: 1 }}>
+            <Mono style={{ fontSize: 10, color: '#7A5400', letterSpacing: 0.9 }}>
+              {t('screens.league.demoEyebrow', 'DEMO LİG')}
+            </Mono>
+            <Body color="#5A4500" style={{ fontSize: 12, marginTop: 2, lineHeight: 17 }}>
+              {t(
+                'screens.league.demoBody',
+                'Rakipler simulator NPC. Gerçek kullanıcılarla yarış Yıl 1 sonu açılır.',
+              )}
+            </Body>
           </View>
         </View>
 
@@ -223,6 +283,14 @@ export default function LeagueScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {!coachSeen && (
+        <CoachMark
+          text="Ligde her hafta XP topla, 7 tier yüksel. Yıl 1 sonu gerçek kullanıcılarla yarışacaksın."
+          onDismiss={() => markCoachSeen('league_first_open')}
+          ctaLabel="Anladım ✈"
+        />
+      )}
     </View>
   );
 }

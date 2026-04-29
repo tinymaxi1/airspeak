@@ -31,6 +31,7 @@ import {
   useSpeechRecognitionEvent,
 } from 'expo-speech-recognition';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { track } from '@/lib/posthog';
 
 const TASK_TYPES: { type: TaskType; emoji: string; titleTr: string; descTr: string }[] = [
@@ -45,6 +46,7 @@ type Stage = 'menu' | 'briefing' | 'recording' | 'scoring' | 'result';
 export default function Icao4Screen() {
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
+  const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
 
   const [stage, setStage] = useState<Stage>('menu');
   const [task, setTask] = useState<IcaoTask | null>(null);
@@ -144,6 +146,7 @@ export default function Icao4Screen() {
       setStage('result');
       addXp(200, 'icao4_task');
       recordDailyActivity();
+      recordHistoryActivity('exam');
       track('icao4_task_completed', {
         task_id: task.id,
         overall_level: scored.overallLevel,

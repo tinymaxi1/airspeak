@@ -9,9 +9,9 @@
  * - Word of the flight ("squawk")
  * - Tab bar 5 sekme (active: home)
  */
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
 import { router } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle, Rect, Defs, RadialGradient, Stop } from 'react-native-svg';
@@ -20,6 +20,7 @@ import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useSrsStore } from '@/stores/srsStore';
 import { useOfflineStore } from '@/stores/offlineStore';
+import { useActivityStore } from '@/stores/activityStore';
 import { getNextLesson } from '@/features/lessons/seed/lessonTree';
 import {
   HHero,
@@ -50,6 +51,17 @@ export default function HomeScreen() {
 
   // Offline durumu
   const isOnline = useOfflineStore((s) => s.isOnline);
+
+  // Son aktiviteler (max 3 göster)
+  const recentActivity = useActivityStore((s) => s.recent.slice(0, 3));
+
+  // Pull-to-refresh: Zustand snapshot'larının fresh okunması için kısa bir bekleme yeter.
+  // Persisted store'lar zaten hot-reload, bu sadece kullanıcıya "yenilendi" hissi verir.
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 600);
+  }, []);
 
   const streak = useGamificationStore((s) => s.currentStreak ?? 0);
   const hearts = useGamificationStore((s) => s.hearts ?? 5);
@@ -208,6 +220,14 @@ export default function HomeScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#E63946"
+            colors={['#E63946']}
+          />
+        }
       >
         {/* İlk kullanıcı için onboarding banner */}
         {isFirstTime && (
@@ -471,8 +491,84 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
 
+        {/* Recents — kaldığın yer */}
+        {recentActivity.length > 0 && (
+          <>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: dueCount > 0 ? 18 : 0,
+              }}
+            >
+              <Eyebrow>{t('screens.home.recentsEyebrow', 'KALDIĞIN YER')}</Eyebrow>
+            </View>
+            <View style={{ marginTop: 8, gap: 6 }}>
+              {recentActivity.map((a) => (
+                <TouchableOpacity
+                  key={a.id}
+                  activeOpacity={0.85}
+                  onPress={() => {
+                    if (a.type === 'lesson') router.push(`/lesson/${a.refId}`);
+                    else if (a.type === 'conversation')
+                      router.push({
+                        pathname: '/conversation/[scenario]',
+                        params: { scenario: a.refId },
+                      });
+                    else if (a.type === 'pronunciation') router.push(`/pronunciation/${a.refId}`);
+                    else if (a.type === 'srs') router.push('/srs');
+                    else if (a.type === 'exam') router.push('/exam/icao4');
+                    else if (a.type === 'readback') router.push('/readback');
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${a.titleTr} ${a.subtitleTr ?? ''}`}
+                  style={{
+                    backgroundColor: '#FFFFFF',
+                    borderWidth: 1.5,
+                    borderColor: '#DCE0E8',
+                    borderRadius: 12,
+                    padding: 12,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 10,
+                  }}
+                >
+                  <Text style={{ fontSize: 22 }}>
+                    {a.type === 'lesson'
+                      ? '📚'
+                      : a.type === 'conversation'
+                      ? '🤖'
+                      : a.type === 'pronunciation'
+                      ? '🔊'
+                      : a.type === 'srs'
+                      ? '🔁'
+                      : a.type === 'exam'
+                      ? '🎯'
+                      : '🎙'}
+                  </Text>
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0E1116' }}
+                      numberOfLines={1}
+                    >
+                      {a.titleTr}
+                    </Text>
+                    {a.subtitleTr && (
+                      <Mono style={{ fontSize: 10, color: '#8A93A6', marginTop: 2 }}>
+                        {a.subtitleTr}
+                      </Mono>
+                    )}
+                  </View>
+                  <Text style={{ fontSize: 18, color: '#8A93A6' }}>›</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </>
+        )}
+
         {/* Quick practice 2x2 */}
-        <Eyebrow style={{ marginTop: dueCount > 0 ? 18 : 0 }}>FAST PRACTICE — 90 SEC</Eyebrow>
+        <Eyebrow style={{ marginTop: dueCount > 0 || recentActivity.length > 0 ? 18 : 0 }}>FAST PRACTICE — 90 SEC</Eyebrow>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
           <QuickCard
             icon="🎙"
@@ -692,6 +788,8 @@ function QuickCard({
     <TouchableOpacity
       activeOpacity={0.85}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${label}, ${sub}`}
       style={{
         flex: 1,
         minWidth: '47%',

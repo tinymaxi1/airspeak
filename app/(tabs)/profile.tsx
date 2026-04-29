@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
+import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
 import { ALL_AIRLINES } from '@/features/exams/airlines';
@@ -40,6 +41,8 @@ export default function ProfileScreen() {
   const totalXp = useGamificationStore((s) => s.totalXp ?? 0);
   const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
+  const heatmapBuckets = useLessonHistoryStore((s) => s.getHeatmapBuckets());
+  const activeDayCount = useLessonHistoryStore((s) => s.getActiveDayCount());
   const lang = getCurrentLanguage();
 
   const level = placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
@@ -73,7 +76,11 @@ export default function ProfileScreen() {
       {/* ═══════ NAVY HEADER ═══════ */}
       <View style={{ backgroundColor: '#0F1E47', position: 'relative' }}>
         <SafeAreaView edges={['top']}>
-          <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 22 }}>
+          <View
+            style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 22 }}
+            accessibilityRole="header"
+            accessibilityLabel={`${roleLabel}, ${username}, Level ${level}`}
+          >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
               <Avatar initials={initials} color="#E63946" size={64} />
               <View style={{ flex: 1 }}>
@@ -134,56 +141,86 @@ export default function ProfileScreen() {
           <StatCell label={t('screens.profile.lessons')} value={String(completedCount)} accent="#2DBE6C" />
         </View>
 
-        {/* Heatmap — 12 hafta x 7 gün */}
-        <Eyebrow>{t('screens.profile.flightLog')}</Eyebrow>
+        {/* Heatmap — 12 hafta x 7 gün, gerçek aktivite */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <Eyebrow>{t('screens.profile.flightLog')}</Eyebrow>
+          {activeDayCount > 0 && (
+            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
+              {t('screens.profile.activeDays', '{{n}} aktif gün · 84', { n: activeDayCount })}
+            </Mono>
+          )}
+        </View>
         <Card3D style={{ marginTop: 8, marginBottom: 18, padding: 14 }}>
-          <View style={{ gap: 4 }}>
-            {Array.from({ length: 7 }).map((_, dayIdx) => (
-              <View key={dayIdx} style={{ flexDirection: 'row', gap: 4 }}>
-                {Array.from({ length: 12 }).map((_, weekIdx) => {
-                  const seed = (dayIdx * 13 + weekIdx * 7) % 100;
-                  const intensity = seed > 70 ? 'high' : seed > 40 ? 'mid' : seed > 15 ? 'low' : 'none';
-                  const color = {
-                    high: '#2DBE6C',
-                    mid: '#4FD487',
-                    low: '#DDF7E6',
-                    none: '#EDEFF3',
-                  }[intensity];
-                  return (
-                    <View
-                      key={weekIdx}
-                      style={{
-                        flex: 1,
-                        height: 14,
-                        borderRadius: 3,
-                        backgroundColor: color,
-                      }}
-                    />
-                  );
-                })}
-              </View>
-            ))}
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, alignItems: 'center' }}>
-            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>{t('screens.profile.less')}</Mono>
-            <View style={{ flexDirection: 'row', gap: 3 }}>
-              {['#EDEFF3', '#DDF7E6', '#4FD487', '#2DBE6C'].map((c) => (
-                <View key={c} style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: c }} />
-              ))}
+          {activeDayCount === 0 ? (
+            <View style={{ alignItems: 'center', paddingVertical: 18, gap: 8 }}>
+              <Text style={{ fontSize: 32 }}>📅</Text>
+              <Body color="#5A6478" style={{ fontSize: 13, textAlign: 'center', maxWidth: 240 }}>
+                {t(
+                  'screens.profile.heatmapEmpty',
+                  'Henüz aktivite yok. İlk dersi tamamla, heatmap dolmaya başlasın.',
+                )}
+              </Body>
             </View>
-            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>{t('screens.profile.more')}</Mono>
-          </View>
+          ) : (
+            <>
+              <View style={{ gap: 4 }}>
+                {Array.from({ length: 7 }).map((_, dayIdx) => (
+                  <View key={dayIdx} style={{ flexDirection: 'row', gap: 4 }}>
+                    {Array.from({ length: 12 }).map((_, weekIdx) => {
+                      // 84 günlük dizi 12 hafta × 7 gün, eski → yeni
+                      // Grid'de satır = haftanın günü (0=Mon), kolon = hafta indexi
+                      const bucketIdx = weekIdx * 7 + dayIdx;
+                      const bucket = heatmapBuckets[bucketIdx];
+                      const count = bucket?.count ?? 0;
+                      const color = countToColor(count);
+                      return (
+                        <View
+                          key={weekIdx}
+                          style={{
+                            flex: 1,
+                            height: 14,
+                            borderRadius: 3,
+                            backgroundColor: color,
+                          }}
+                        />
+                      );
+                    })}
+                  </View>
+                ))}
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 10,
+                  alignItems: 'center',
+                }}
+              >
+                <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
+                  {t('screens.profile.less')}
+                </Mono>
+                <View style={{ flexDirection: 'row', gap: 3 }}>
+                  {['#EDEFF3', '#DDF7E6', '#4FD487', '#2DBE6C'].map((c) => (
+                    <View key={c} style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: c }} />
+                  ))}
+                </View>
+                <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
+                  {t('screens.profile.more')}
+                </Mono>
+              </View>
+            </>
+          )}
         </Card3D>
 
-        {/* Badges */}
+        {/* Badges — gerçek state'ten türetilir */}
         <Eyebrow>{t('screens.profile.badges')}</Eyebrow>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8, marginBottom: 18 }}>
-          <BadgeCell emoji="🎙" name="Read-back Pro" earned />
-          <BadgeCell emoji="🔥" name="7-day streak" earned />
-          <BadgeCell emoji="✈" name="100 lessons" earned />
-          <BadgeCell emoji="🏆" name="ICAO L4" />
-          <BadgeCell emoji="👑" name="League Capt." />
-          <BadgeCell emoji="⚡" name="Speed run" />
+          <BadgeCell emoji="🎙" name={t('screens.profile.badgeReadbackPro', 'Read-back Pro')} earned={completedCount >= 5} />
+          <BadgeCell emoji="🔥" name={t('screens.profile.badgeStreak', '7-gün streak')} earned={currentStreak >= 7} />
+          <BadgeCell emoji="✈" name={t('screens.profile.badgeLessons', '100 ders')} earned={completedCount >= 100} />
+          <BadgeCell emoji="🏆" name={t('screens.profile.badgeIcao', 'ICAO L4')} earned={(placement?.aviationEnglish?.label ?? '') === 'L4'} />
+          <BadgeCell emoji="👑" name={t('screens.profile.badgeLeague', 'Lig Captain')} earned={totalXp >= 4000} />
+          <BadgeCell emoji="⚡" name={t('screens.profile.badgeSpeed', 'XP 1000')} earned={totalXp >= 1000} />
         </View>
 
         {/* Settings rows */}
@@ -213,6 +250,12 @@ export default function ProfileScreen() {
             value={t('screens.profile.careerDesc', 'ICAO 4 · {{count}} havayolu · Squadron', { count: ALL_AIRLINES.length })}
             onPress={() => router.push('/career')}
           />
+          <SettingsRow
+            icon="⭐"
+            label={t('screens.profile.bookmarks', 'Yer İmleri')}
+            value={t('screens.profile.bookmarksDesc', 'Kaydettiğin vocab ve senaryolar')}
+            onPress={() => router.push('/bookmarks')}
+          />
         </View>
 
         {/* Sign out */}
@@ -222,6 +265,13 @@ export default function ProfileScreen() {
       </ScrollView>
     </View>
   );
+}
+
+function countToColor(count: number): string {
+  if (count <= 0) return '#EDEFF3';
+  if (count === 1) return '#DDF7E6';
+  if (count <= 3) return '#4FD487';
+  return '#2DBE6C';
 }
 
 function StatCell({ label, value, accent }: { label: string; value: string; accent: string }) {
@@ -301,6 +351,8 @@ function SettingsRow({
     <TouchableOpacity
       activeOpacity={0.85}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${label}, ${value}`}
       style={{
         backgroundColor: '#FFFFFF',
         borderRadius: 14,

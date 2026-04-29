@@ -32,6 +32,8 @@ import {
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
+import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
+import { useActivityStore } from '@/stores/activityStore';
 import { Mono, FONTS, Button3D, Body } from '@/components/airspeak';
 import { track } from '@/lib/posthog';
 
@@ -52,6 +54,8 @@ export default function ConversationScreen() {
   const role = useOnboardingStore((s) => s.role);
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
+  const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
+  const recordRecentActivity = useActivityStore((s) => s.recordActivity);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
 
   // Senaryo seç
@@ -243,6 +247,14 @@ export default function ConversationScreen() {
     addXp(xp, 'ai_conversation');
     incrementQuest('practice_conversation', 1);
     recordDailyActivity();
+    recordHistoryActivity('conversation');
+    recordRecentActivity({
+      type: 'conversation',
+      refId: scenario.id,
+      titleTr: scenario.titleTr,
+      subtitleTr: `Skor ${avg}`,
+      score: avg,
+    });
     track('conversation_completed', {
       scenario: scenario.id,
       avg_score: avg,

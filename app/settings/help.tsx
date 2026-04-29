@@ -13,6 +13,7 @@ import {
   FONTS,
   Button3D,
   SettingsRow,
+  BackButton,
 } from '@/components/airspeak';
 
 interface FAQ {
@@ -71,10 +72,11 @@ export default function HelpScreen() {
             gap: 12,
           }}
         >
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={{ fontSize: 22, color: '#0E1116' }}>←</Text>
-          </TouchableOpacity>
-          <Text style={{ flex: 1, fontFamily: FONTS.body800, fontSize: 22, color: '#0E1116' }}>
+          <BackButton onPress={() => router.back()} label={t('common.back', 'Geri')} />
+          <Text
+            accessibilityRole="header"
+            style={{ flex: 1, fontFamily: FONTS.body800, fontSize: 22, color: '#0E1116' }}
+          >
             {t('settings.help.title', 'Yardım & İletişim')}
           </Text>
         </View>

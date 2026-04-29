@@ -264,6 +264,30 @@ export function SettingsRow({
   );
 }
 
+interface BackButtonProps {
+  onPress: () => void;
+  color?: string;
+  /** Override default label (TR: "Geri") */
+  label?: string;
+}
+
+/**
+ * Standardize back arrow button with built-in VoiceOver label + 44pt hit slop.
+ * Replaces ad-hoc `<TouchableOpacity><Text>←</Text></TouchableOpacity>` patterns.
+ */
+export function BackButton({ onPress, color = '#0E1116', label = 'Geri' }: BackButtonProps) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+    >
+      <Text style={{ fontSize: 22, color }}>←</Text>
+    </TouchableOpacity>
+  );
+}
+
 interface SearchBarProps {
   value: string;
   onChangeText: (v: string) => void;
@@ -351,6 +375,82 @@ export function ScreenHeader({ onBack, eyebrow, title, right, dark }: ScreenHead
         </Text>
       </View>
       {right}
+    </View>
+  );
+}
+
+interface CoachMarkProps {
+  /** Tooltip metni */
+  text: string;
+  /** "Anladım" tıklandığında çağrılır */
+  onDismiss: () => void;
+  /** Konum (default 'bottom') */
+  position?: 'top' | 'bottom';
+  /** Aksiyon label override (default "Anladım") */
+  ctaLabel?: string;
+}
+
+/**
+ * Coach mark — bir kerelik tooltip. İlk açılışta gösterilir, dismiss edilince
+ * coachMarkStore.markSeen() ile kalıcı kapatılır. Caller `isSeen()` kontrolü yapar.
+ */
+export function CoachMark({ text, onDismiss, position = 'bottom', ctaLabel = 'Anladım' }: CoachMarkProps) {
+  return (
+    <View
+      pointerEvents="box-none"
+      style={{
+        position: 'absolute',
+        left: 16,
+        right: 16,
+        ...(position === 'top' ? { top: 60 } : { bottom: 100 }),
+        zIndex: 999,
+      }}
+      accessibilityRole="alert"
+      accessibilityLiveRegion="polite"
+    >
+      <View
+        style={{
+          backgroundColor: '#0F1E47',
+          borderRadius: 14,
+          padding: 14,
+          borderWidth: 2,
+          borderColor: '#FFD56B',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.3,
+          shadowRadius: 12,
+          elevation: 8,
+        }}
+      >
+        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
+          <Text style={{ fontSize: 18 }}>💡</Text>
+          <Text
+            style={{
+              flex: 1,
+              fontFamily: FONTS.body,
+              fontSize: 13,
+              color: '#FFFFFF',
+              lineHeight: 19,
+            }}
+          >
+            {text}
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={onDismiss}
+          accessibilityRole="button"
+          accessibilityLabel={ctaLabel}
+          style={{
+            marginTop: 10,
+            backgroundColor: '#FFD56B',
+            paddingVertical: 8,
+            borderRadius: 8,
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0A1430' }}>{ctaLabel}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

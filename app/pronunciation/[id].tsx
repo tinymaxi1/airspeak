@@ -33,6 +33,8 @@ import {
 } from 'expo-speech-recognition';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
+import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
+import { useActivityStore } from '@/stores/activityStore';
 import { track } from '@/lib/posthog';
 import {
   Eyebrow,
@@ -58,6 +60,8 @@ export default function PronunciationScreen() {
 
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
+  const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
+  const recordRecentActivity = useActivityStore((s) => s.recordActivity);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
 
   const [stage, setStage] = useState<Stage>('ready');
@@ -95,6 +99,14 @@ export default function PronunciationScreen() {
     incrementQuest('practice_pronunciation', 1);
     incrementQuest('streak_check', 1);
     recordDailyActivity();
+    recordHistoryActivity('lesson');
+    recordRecentActivity({
+      type: 'pronunciation',
+      refId: sentence.id,
+      titleTr: sentence.text.slice(0, 40),
+      subtitleTr: `Skor ${scored.overallScore}`,
+      score: scored.overallScore,
+    });
     track('pronunciation_attempt', {
       sentence_id: sentence.id,
       score: scored.overallScore,
@@ -163,6 +175,7 @@ export default function PronunciationScreen() {
         addXp(scored.overallScore >= 70 ? 30 : 10, 'pronunciation_drill');
         incrementQuest('practice_pronunciation', 1);
         recordDailyActivity();
+        recordHistoryActivity('lesson');
       }
     }
   }

@@ -19,6 +19,7 @@ import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useSrsStore } from '@/stores/srsStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
+import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { isNewCard } from '@/features/srs/algorithm';
 import { track } from '@/lib/posthog';
 import {
@@ -46,6 +47,7 @@ export default function SrsReviewScreen() {
   const cards = useSrsStore((s) => s.cards);
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
+  const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
   const role = useOnboardingStore((s) => s.role);
 
@@ -209,6 +211,7 @@ export default function SrsReviewScreen() {
     incrementQuest('srs_review', 1);
     if (reviewedCount === 0) {
       recordDailyActivity();
+      recordHistoryActivity('srs');
       incrementQuest('streak_check', 1);
     }
     setReviewedCount((c) => c + 1);

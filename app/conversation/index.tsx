@@ -14,8 +14,12 @@ import {
   Body,
   FONTS,
   TopoBackground,
+  CoachMark,
+  BackButton,
 } from '@/components/airspeak';
 import { SCENARIOS } from '@/features/conversation/scenarios';
+import { useBookmarkStore } from '@/stores/bookmarkStore';
+import { useCoachMarkStore } from '@/stores/coachMarkStore';
 
 const ROLE_ICONS: Record<string, string> = {
   pilot: '✈',
@@ -42,6 +46,12 @@ const ROLE_FILTERS: { value: 'all' | 'pilot' | 'cabin' | 'tech' | 'ground'; labe
 export default function ConversationIndexScreen() {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>('all');
+  const bookmarkedSet = useBookmarkStore((s) =>
+    new Set(s.entries.filter((e) => e.kind === 'scenario').map((e) => e.id)),
+  );
+  const toggleBookmark = useBookmarkStore((s) => s.toggle);
+  const coachSeen = useCoachMarkStore((s) => s.isSeen('conversation_first_open'));
+  const markCoachSeen = useCoachMarkStore((s) => s.markSeen);
 
   const scenarios = useMemo(
     () => (filter === 'all' ? SCENARIOS : SCENARIOS.filter((s) => s.role === filter)),
@@ -65,9 +75,7 @@ export default function ConversationIndexScreen() {
             gap: 12,
           }}
         >
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={{ fontSize: 22, color: '#FFFFFF' }}>←</Text>
-          </TouchableOpacity>
+          <BackButton onPress={() => router.back()} color="#FFFFFF" label={t('common.back', 'Geri')} />
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
               {t('conversation.indexEyebrow', 'AI CO-PILOT · 5 SENARYO')}
@@ -199,10 +207,31 @@ export default function ConversationIndexScreen() {
               </Mono>
             </View>
 
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel={bookmarkedSet.has(s.id) ? 'Yer iminden çıkar' : 'Yer imlerine ekle'}
+              onPress={(e) => {
+                e.stopPropagation();
+                toggleBookmark('scenario', s.id);
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              style={{ padding: 4 }}
+            >
+              <Text style={{ fontSize: 20, color: bookmarkedSet.has(s.id) ? '#FFD56B' : 'rgba(255,255,255,0.5)' }}>
+                {bookmarkedSet.has(s.id) ? '⭐' : '☆'}
+              </Text>
+            </TouchableOpacity>
             <Text style={{ fontSize: 22, color: 'rgba(255,255,255,0.5)' }}>›</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
+
+      {!coachSeen && (
+        <CoachMark
+          text="ATC senaryolarında ⭐ ile favorilerini kaydedebilirsin. Her senaryo gerçek frekans + İngilizce konuşma pratiği."
+          onDismiss={() => markCoachSeen('conversation_first_open')}
+        />
+      )}
     </View>
   );
 }

@@ -10,6 +10,7 @@ import {
   LessonFeedbackInline,
   Button3D,
   Eyebrow as ASEyebrow,
+  CoachMark,
 } from '@/components/airspeak';
 import { generateLesson } from '@/features/lessons/lessonGenerator';
 import type { Exercise } from '@/features/lessons/exerciseTypes';
@@ -20,6 +21,9 @@ import { useProgressStore } from '@/stores/progressStore';
 import { useQuestsStore } from '@/stores/questsStore';
 import { useExerciseHistoryStore } from '@/stores/exerciseHistoryStore';
 import { useSrsStore } from '@/stores/srsStore';
+import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
+import { useActivityStore } from '@/stores/activityStore';
+import { useCoachMarkStore } from '@/stores/coachMarkStore';
 import { track } from '@/lib/posthog';
 
 export default function LessonScreen() {
@@ -33,6 +37,10 @@ export default function LessonScreen() {
   const seenSet = useMemo(() => new Set(seenIds), [seenIds]);
   const markSeen = useExerciseHistoryStore((s) => s.markSeen);
   const reviewTerm = useSrsStore((s) => s.reviewTerm);
+  const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
+  const recordRecentActivity = useActivityStore((s) => s.recordActivity);
+  const lessonCoachSeen = useCoachMarkStore((s) => s.isSeen('lesson_first_open'));
+  const markCoachSeen = useCoachMarkStore((s) => s.markSeen);
 
   const [exercises] = useState<Exercise[]>(() =>
     generateLesson(getVocabForRole(role), seenSet, 5),
@@ -86,9 +94,17 @@ export default function LessonScreen() {
       addXp(50, 'lesson_completed');
       addCoins(10, 'lesson_completed');
       recordDailyActivity();
+      recordHistoryActivity('lesson');
       const score = Math.round((correctCount / total) * 100);
       const lessonId = typeof params.id === 'string' ? params.id : 'unknown';
       markLessonCompleted(lessonId, score);
+      recordRecentActivity({
+        type: 'lesson',
+        refId: lessonId,
+        titleTr: `Ders #${lessonId.slice(0, 6)}`,
+        subtitleTr: `${correctCount}/${total} doğru`,
+        score,
+      });
       // No-repeat: tüm egzersizleri "görüldü" olarak işaretle
       markSeen(exercises.map((e) => e.id));
       incrementQuest('complete_lessons', 1);
@@ -189,6 +205,14 @@ export default function LessonScreen() {
           )}
         </View>
       </SafeAreaView>
+
+      {!lessonCoachSeen && (
+        <CoachMark
+          text="Doğru cevabı seç → Cevapla'ya bas. Yanlışsa açıklamayı oku, hatalardan SRS otomatik tekrar üretir."
+          position="top"
+          onDismiss={() => markCoachSeen('lesson_first_open')}
+        />
+      )}
     </View>
   );
 }

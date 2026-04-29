@@ -12,9 +12,11 @@ import {
   FONTS,
   SearchBar,
   EmptyState,
+  BackButton,
 } from '@/components/airspeak';
 import { getVocabForRole } from '@/features/lessons/seed';
 import { useOnboardingStore } from '@/stores/onboardingStore';
+import { useBookmarkStore } from '@/stores/bookmarkStore';
 import type { VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
 
 export default function VocabScreen() {
@@ -61,9 +63,7 @@ export default function VocabScreen() {
             gap: 12,
           }}
         >
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={{ fontSize: 22, color: '#0E1116' }}>←</Text>
-          </TouchableOpacity>
+          <BackButton onPress={() => router.back()} label={t('common.back', 'Geri')} />
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
               {t('vocab.eyebrow', '{{count}} TERIM', { count: allVocab.length })}
@@ -149,6 +149,8 @@ export default function VocabScreen() {
 
 function VocabCard({ term }: { term: VocabularyTerm }) {
   const [expanded, setExpanded] = useState(false);
+  const isBookmarked = useBookmarkStore((s) => s.isBookmarked('vocab', term.id));
+  const toggleBookmark = useBookmarkStore((s) => s.toggle);
   return (
     <TouchableOpacity
       activeOpacity={0.85}
@@ -184,6 +186,18 @@ function VocabCard({ term }: { term: VocabularyTerm }) {
             {term.category.toUpperCase()}
           </Mono>
         </View>
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel={isBookmarked ? 'Yer iminden çıkar' : 'Yer imlerine ekle'}
+          onPress={(e) => {
+            e.stopPropagation();
+            toggleBookmark('vocab', term.id);
+          }}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          style={{ padding: 4 }}
+        >
+          <Text style={{ fontSize: 18 }}>{isBookmarked ? '⭐' : '☆'}</Text>
+        </TouchableOpacity>
         <Text style={{ fontSize: 16, color: '#8A93A6' }}>{expanded ? '−' : '+'}</Text>
       </View>
 

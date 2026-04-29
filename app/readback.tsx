@@ -25,6 +25,7 @@ import { getRandomClearances, type AtcClearance } from '@/features/readback/clea
 import { matchTranscript } from '@/features/conversation/scenarios';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
+import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import {
   Mono,
   FONTS,
@@ -40,6 +41,7 @@ export default function ReadbackDrillScreen() {
   const { t } = useTranslation();
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
+  const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
 
   const [clearances] = useState<AtcClearance[]>(() => getRandomClearances(8));
@@ -151,6 +153,7 @@ export default function ReadbackDrillScreen() {
     incrementQuest('practice_pronunciation', 1);
     incrementQuest('streak_check', 1);
     recordDailyActivity();
+    recordHistoryActivity('lesson');
     track('readback_drill_completed', {
       avg_score: avg,
       total: total,

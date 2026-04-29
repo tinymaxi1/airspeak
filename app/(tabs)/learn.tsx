@@ -10,9 +10,9 @@
  * - Locked (gray + lock icon), checkpoint (gold), boss (navy + trophy)
  * - Section closer (navy boss card + trophy bg)
  */
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
 import { router } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -44,6 +44,11 @@ export default function LearnScreen() {
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
   const modules = useMemo(() => getModulesForRole(role), [role]);
   const activeModule = modules[0]; // Şimdilik ilk modül
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 600);
+  }, []);
 
   const nodes: TreeNode[] = [
     { id: 1, type: 'lesson', state: 'done', iconLabel: '🎙', x: 0 },
@@ -169,7 +174,18 @@ export default function LearnScreen() {
         </SafeAreaView>
       </View>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 24 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 24 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#E63946"
+            colors={['#E63946']}
+          />
+        }
+      >
         {/* Section unit chips */}
         <ScrollView
           horizontal
