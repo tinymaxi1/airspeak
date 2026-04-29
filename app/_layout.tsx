@@ -5,7 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_500Medium,
@@ -29,17 +29,7 @@ import { queryClient } from '@/lib/queryClient';
 import { initI18n } from '@/lib/i18n';
 import { initAnalytics } from '@/lib/posthog';
 import { initSentry } from '@/lib/sentry';
-import { useTranslation } from 'react-i18next';
-import {
-  requestPermission as requestNotifPermission,
-  scheduleDailyReminders,
-  updateStreakDangerNotification,
-  syncPushTokenToSupabase,
-} from '@/lib/notifications';
-import { supabase } from '@/lib/supabase';
-import { useGamificationStore } from '@/stores/gamificationStore';
-import { useOfflineStore } from '@/stores/offlineStore';
-// Not: useOfflineStore.getState() kullanıyoruz — hook subscribe etmek döngüye girer
+// ❗ DEBUG: i18n/notification/store importları geçici disable
 
 SplashScreen.preventAutoHideAsync();
 
@@ -65,53 +55,8 @@ export default function RootLayout() {
     JetBrainsMono_700Bold,
   });
 
-  const { t } = useTranslation();
-  // Ref ile alıyoruz — subscribe etmek sonsuz döngüye neden olur
-  const tRef = useRef(t);
-  useEffect(() => { tRef.current = t; });
-
-  // Network durumu monitoring — getState() ile al, subscribe etme
-  useEffect(() => {
-    const unsub = useOfflineStore.getState().startNetInfoMonitoring();
-    return unsub;
-  }, []);
-
-  // Notifications: izin iste + günlük + streak danger (sadece fontsLoaded'da çalışır)
-  useEffect(() => {
-    if (!fontsLoaded) return;
-    const lastActivityDate = useGamificationStore.getState().lastActivityDate;
-    const tr = tRef.current;
-    (async () => {
-      const granted = await requestNotifPermission().catch(() => false);
-      if (!granted) return;
-      await Promise.all([
-        scheduleDailyReminders(undefined, {
-          morningTitle: tr('notif.morningTitle', 'Günaydın, kaptan ✈'),
-          morningBody: tr('notif.morningBody', 'Bugünkü uçuş planın hazır. 15 dk yeter.'),
-          eveningTitle: tr('notif.eveningTitle', '🔥 Streak\'in tehlikede'),
-          eveningBody: tr('notif.eveningBody', 'Bugün hâlâ pratik yapmadın. 1 ders streak\'i kurtarır.'),
-        }).catch((e) => console.warn('Notif schedule failed', e)),
-        updateStreakDangerNotification(lastActivityDate, {
-          title: tr('notif.dangerTitle', '⚠ Son 90 dk!'),
-          body: tr('notif.dangerBody', 'Streak kırılmasın diye 1 hızlı pratik yeter.'),
-        }).catch(() => undefined),
-      ]);
-    })();
-  }, [fontsLoaded]);
-
-  // Push token: kullanıcı login olduğunda Supabase'e sync et
-  useEffect(() => {
-    if (!fontsLoaded) return;
-    const sync = () => {
-      syncPushTokenToSupabase().catch((e) => console.warn('Push token sync failed', e));
-    };
-    sync();
-    const { data } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') sync();
-    });
-    return () => data.subscription.unsubscribe();
-  }, [fontsLoaded]);
-
+  // ❗ DEBUG: tüm effect'ler geçici disable edildi (infinite loop izolasyonu)
+  // Sadece SplashScreen.hideAsync kalıyor — fontsLoaded olduğunda
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
