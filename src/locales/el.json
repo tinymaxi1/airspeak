@@ -271,7 +271,24 @@
       "qPronounceSub": "Score ring",
       "careerEyebrow": "CAREER HUB",
       "careerTitle": "ICAO 4 · 41 Airlines · AI",
-      "careerSub": "Interview + exam + B2B cohort"
+      "careerSub": "Interview + exam + B2B cohort",
+      "fltDay": "ΠΤΗΣΗ 12 ✦ ΗΜΕΡΑ {{day}}",
+      "noActivityYet": "Δεν υπάρχει δραστηριότητα",
+      "startFirstLesson": "Ξεκίνα το πρώτο μάθημα",
+      "allLessonsDone": "Όλα τα μαθήματα ολοκληρώθηκαν",
+      "lessonMeta": "~{{min}} λεπτά · ζωντανά με συγκυβερνήτη AI",
+      "continueOther": "Συνέχισε από την Εξάσκηση",
+      "weekRoute": "ΕΒΔΟΜΑΔΑ {{week}} · ΣΕ ΠΟΡΕΙΑ",
+      "weekDays": [
+        "Δ",
+        "Τ",
+        "Τ",
+        "Π",
+        "Π",
+        "Σ",
+        "Κ"
+      ],
+      "perfectWeek": "{{days}} μέρες ακόμα για το νέο εβδομαδιαίο σήμα."
     },
     "learn": {
       "unit": "ΜΟΝΑΔΑ",

@@ -271,7 +271,24 @@
       "qPronounceSub": "Score ring",
       "careerEyebrow": "KARİYER MERKEZİ",
       "careerTitle": "ICAO 4 · 41 Havayolu · AI",
-      "careerSub": "Mülakat + sınav + B2B kohort"
+      "careerSub": "Mülakat + sınav + B2B kohort",
+      "fltDay": "UÇUŞ 12 ✦ GÜN {{day}}",
+      "noActivityYet": "Henüz aktivite yok",
+      "startFirstLesson": "İlk dersini aç",
+      "allLessonsDone": "Tüm dersler tamam",
+      "lessonMeta": "~{{min}} dk · co-pilot AI ile canlı",
+      "continueOther": "Pratik bölümünden devam et",
+      "weekRoute": "HAFTA {{week}} · YOLDA",
+      "weekDays": [
+        "P",
+        "S",
+        "Ç",
+        "P",
+        "C",
+        "C",
+        "P"
+      ],
+      "perfectWeek": "Mükemmel hafta rozetine {{days}} gün kaldı."
     },
     "learn": {
       "unit": "BÖLÜM",

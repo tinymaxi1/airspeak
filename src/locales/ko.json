@@ -271,7 +271,24 @@
       "qPronounceSub": "Score ring",
       "careerEyebrow": "CAREER HUB",
       "careerTitle": "ICAO 4 · 41 Airlines · AI",
-      "careerSub": "Interview + exam + B2B cohort"
+      "careerSub": "Interview + exam + B2B cohort",
+      "fltDay": "비행 12 ✦ {{day}}일차",
+      "noActivityYet": "활동 없음",
+      "startFirstLesson": "첫 레슨 시작",
+      "allLessonsDone": "모든 레슨 완료",
+      "lessonMeta": "~{{min}}분 · 부조종사 AI 라이브",
+      "continueOther": "연습에서 계속",
+      "weekRoute": "{{week}}주차 · 항로",
+      "weekDays": [
+        "월",
+        "화",
+        "수",
+        "목",
+        "금",
+        "토",
+        "일"
+      ],
+      "perfectWeek": "완벽한 주 배지까지 {{days}}일."
     },
     "learn": {
       "unit": "단위",

@@ -120,7 +120,7 @@ export default function HomeScreen() {
                     textTransform: 'uppercase',
                   }}
                 >
-                  {`FLT 12 ✦ DAY ${streak}`}
+                  {t('screens.home.fltDay', { day: streak })}
                 </Text>
                 <Text
                   numberOfLines={1}
@@ -321,26 +321,37 @@ export default function HomeScreen() {
             </Text>
           </View>
 
-          {/* Lesson list */}
+          {/* Lesson list — gerçek son aktiviteler + bir sonraki ders */}
           <View style={{ padding: 16 }}>
-            <FlightPlanRow
-              state="done"
-              title="Read-back: Taxi clearance"
-              meta="+45 XP · 2 perfect"
-              time="9:12"
-            />
-            <FlightPlanRow
-              state="done"
-              title="Vocab: Approach phase"
-              meta="+38 XP · 1 mistake"
-              time="9:18"
-              hasBorder
-            />
+            {recentActivity.length > 0 ? (
+              recentActivity.map((a, idx) => (
+                <FlightPlanRow
+                  key={a.id}
+                  state="done"
+                  title={a.titleTr}
+                  meta={a.subtitleTr ?? ''}
+                  hasBorder={idx > 0}
+                />
+              ))
+            ) : (
+              <FlightPlanRow
+                state="done"
+                title={t('screens.home.noActivityYet', 'Henüz aktivite yok')}
+                meta={t('screens.home.startFirstLesson', 'İlk dersini aç')}
+              />
+            )}
             <FlightPlanRow
               state="current"
-              title={next?.lesson.title ?? 'AI Conversation: Holding pattern'}
-              meta="~5 min · live with co-pilot AI"
-              hasBorder
+              title={next?.lesson.title ?? t('screens.home.allLessonsDone', 'Tüm dersler tamam')}
+              meta={
+                next
+                  ? t('screens.home.lessonMeta', {
+                      min: next.lesson.estimatedMinutes,
+                      defaultValue: '~{{min}} dk · co-pilot AI ile canlı',
+                    })
+                  : t('screens.home.continueOther', 'Pratik bölümünden devam et')
+              }
+              hasBorder={recentActivity.length > 0}
             />
           </View>
 
@@ -364,10 +375,10 @@ export default function HomeScreen() {
         </Card3D>
 
         {/* Week strip */}
-        <Eyebrow>WEEK 6 · ON ROUTE</Eyebrow>
+        <Eyebrow>{t('screens.home.weekRoute', { week: 6, defaultValue: 'HAFTA {{week}} · YOLDA' })}</Eyebrow>
         <Card3D style={{ padding: 14, marginTop: 8, marginBottom: 18 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-            {(['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const).map((d, i) => {
+            {((t('screens.home.weekDays', { returnObjects: true, defaultValue: ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'] }) as string[])).map((d, i) => {
               const states = ['done', 'done', 'done', 'done', 'current', 'future', 'future'] as const;
               const s = states[i];
               return (
@@ -411,7 +422,10 @@ export default function HomeScreen() {
           </View>
           <View style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8', paddingTop: 10 }}>
             <Body style={{ fontSize: 13, color: '#5A6478', textAlign: 'center' }}>
-              <Text style={{ color: '#0E1116', fontFamily: FONTS.body700 }}>4 days</Text> till new perfect week badge.
+              {t('screens.home.perfectWeek', {
+                days: 4,
+                defaultValue: 'Mükemmel hafta rozetine {{days}} gün kaldı.',
+              })}
             </Body>
           </View>
         </Card3D>

@@ -271,7 +271,24 @@
       "qPronounceSub": "Score ring",
       "careerEyebrow": "CAREER HUB",
       "careerTitle": "ICAO 4 · 41 Airlines · AI",
-      "careerSub": "Interview + exam + B2B cohort"
+      "careerSub": "Interview + exam + B2B cohort",
+      "fltDay": "LOT 12 ✦ DZIEŃ {{day}}",
+      "noActivityYet": "Brak aktywności",
+      "startFirstLesson": "Zacznij pierwszą lekcję",
+      "allLessonsDone": "Wszystkie lekcje ukończone",
+      "lessonMeta": "~{{min}} min · live z drugim pilotem AI",
+      "continueOther": "Kontynuuj w Praktyce",
+      "weekRoute": "TYDZIEŃ {{week}} · W TRASIE",
+      "weekDays": [
+        "P",
+        "W",
+        "Ś",
+        "C",
+        "P",
+        "S",
+        "N"
+      ],
+      "perfectWeek": "{{days}} dni do nowej odznaki tygodnia."
     },
     "learn": {
       "unit": "JEDNOSTKA",

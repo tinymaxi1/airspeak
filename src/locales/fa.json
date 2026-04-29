@@ -271,7 +271,24 @@
       "qPronounceSub": "Score ring",
       "careerEyebrow": "CAREER HUB",
       "careerTitle": "ICAO 4 · 41 Airlines · AI",
-      "careerSub": "Interview + exam + B2B cohort"
+      "careerSub": "Interview + exam + B2B cohort",
+      "fltDay": "پرواز 12 ✦ روز {{day}}",
+      "noActivityYet": "هنوز فعالیتی نیست",
+      "startFirstLesson": "اولین درس را شروع کن",
+      "allLessonsDone": "همه درس‌ها تمام",
+      "lessonMeta": "~{{min}} دقیقه · زنده با کمک‌خلبان AI",
+      "continueOther": "از بخش تمرین ادامه بده",
+      "weekRoute": "هفته {{week}} · در مسیر",
+      "weekDays": [
+        "ش",
+        "ی",
+        "د",
+        "س",
+        "چ",
+        "پ",
+        "ج"
+      ],
+      "perfectWeek": "{{days}} روز تا نشان هفته کامل."
     },
     "learn": {
       "unit": "ایالات متحده آمریکا",

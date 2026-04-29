@@ -271,7 +271,24 @@
       "qPronounceSub": "Score ring",
       "careerEyebrow": "CAREER HUB",
       "careerTitle": "ICAO 4 · 41 Airlines · AI",
-      "careerSub": "Interview + exam + B2B cohort"
+      "careerSub": "Interview + exam + B2B cohort",
+      "fltDay": "フライト 12 ✦ {{day}}日目",
+      "noActivityYet": "まだ活動なし",
+      "startFirstLesson": "最初のレッスンを開始",
+      "allLessonsDone": "すべてのレッスン完了",
+      "lessonMeta": "~{{min}}分 · 副操縦士 AI とライブ",
+      "continueOther": "プラクティスから続ける",
+      "weekRoute": "第{{week}}週 · 飛行中",
+      "weekDays": [
+        "月",
+        "火",
+        "水",
+        "木",
+        "金",
+        "土",
+        "日"
+      ],
+      "perfectWeek": "完璧な週バッジまで残り{{days}}日。"
     },
     "learn": {
       "unit": "ユニット",
