@@ -159,6 +159,60 @@ export default function CareerHubScreen() {
           <Text style={{ fontSize: 22, color: '#8A93A6' }}>›</Text>
         </TouchableOpacity>
 
+        {/* Mock Studio — cross-airline pratik */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => router.push('/exam/mock-studio')}
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 14,
+            borderWidth: 1.5,
+            borderColor: '#DCE0E8',
+            borderBottomWidth: 4,
+            padding: 16,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 14,
+            marginBottom: 14,
+          }}
+        >
+          <View
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 14,
+              backgroundColor: '#EAF1FF',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 28 }}>🎬</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.8 }}>
+              {t('career.mockStudioEyebrow', 'STÜDYO')}
+            </Mono>
+            <Text
+              style={{
+                fontFamily: FONTS.body800,
+                fontSize: 17,
+                color: '#0E1116',
+                marginTop: 4,
+                lineHeight: 21,
+              }}
+            >
+              {t('career.mockStudioTitle', 'Mock mülakat stüdyosu')}
+            </Text>
+            <Body color="#5A6478" style={{ fontSize: 12, marginTop: 4 }}>
+              {t(
+                'career.mockStudioSub',
+                'Rol + kategori + zorluk filtre · 5/10/20 soru · cross-airline',
+              )}
+            </Body>
+          </View>
+          <Text style={{ fontSize: 22, color: '#8A93A6' }}>›</Text>
+        </TouchableOpacity>
+
         {/* Squadron / Cohort */}
         <TouchableOpacity
           activeOpacity={0.85}
