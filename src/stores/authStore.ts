@@ -10,10 +10,13 @@ interface AuthState {
   profile: Profile | null;
   hasCompletedOnboarding: boolean;
   hasSeenTour: boolean;
+  /** Premium üyelik. Trial/abonelik aktifse true. Default false. */
+  isPremium: boolean;
   setSession: (session: Session | null) => void;
   setProfile: (profile: Profile | null) => void;
   setOnboardingComplete: (complete: boolean) => void;
   setHasSeenTour: (seen: boolean) => void;
+  setPremium: (premium: boolean) => void;
   reset: () => void;
 }
 
@@ -31,12 +34,14 @@ export const useAuthStore = create<AuthState>()(
       profile: null,
       hasCompletedOnboarding: false,
       hasSeenTour: false,
+      isPremium: false,
       setSession: (session) => set({ session, user: session?.user ?? null }),
       setProfile: (profile) => set({ profile }),
       setOnboardingComplete: (complete) => set({ hasCompletedOnboarding: complete }),
       setHasSeenTour: (seen) => set({ hasSeenTour: seen }),
+      setPremium: (premium) => set({ isPremium: premium }),
       reset: () =>
-        set({ session: null, user: null, profile: null, hasCompletedOnboarding: false, hasSeenTour: false }),
+        set({ session: null, user: null, profile: null, hasCompletedOnboarding: false, hasSeenTour: false, isPremium: false }),
     }),
     {
       name: 'airspeak-auth',
@@ -44,6 +49,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         hasCompletedOnboarding: state.hasCompletedOnboarding,
         hasSeenTour: state.hasSeenTour,
+        isPremium: state.isPremium,
       }),
     },
   ),

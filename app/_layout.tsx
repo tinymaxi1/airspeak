@@ -177,7 +177,7 @@ export default function RootLayout() {
             <Stack.Screen name="shop" options={{ headerShown: false }} />
             <Stack.Screen name="srs/index" options={{ headerShown: false }} />
             <Stack.Screen name="exam/index" options={{ headerShown: true, headerTitle: 'Sınav Hazırlık' }} />
-            <Stack.Screen name="exam/airlines" options={{ headerShown: true, headerTitle: 'Havayolları' }} />
+            <Stack.Screen name="exam/airlines" options={{ headerShown: false }} />
             <Stack.Screen name="exam/airline/[id]" options={{ headerShown: true, headerTitle: 'Havayolu Detay' }} />
             <Stack.Screen name="exam/icao4" options={{ headerShown: true, headerTitle: 'ICAO 4 Sözlü' }} />
             <Stack.Screen name="settings/language" options={{ headerShown: true, headerTitle: 'Dil Seç' }} />
