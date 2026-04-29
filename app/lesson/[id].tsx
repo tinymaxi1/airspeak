@@ -21,6 +21,9 @@ import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useActivityStore } from '@/stores/activityStore';
 import { useCoachMarkStore } from '@/stores/coachMarkStore';
 import { useLessonProgressStore } from '@/stores/lessonProgressStore';
+import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
+import { useLessonLimit, bumpServerUsage } from '@/features/config/limits';
+import { PaywallSheet } from '@/components/paywall/PaywallSheet';
 import { track } from '@/lib/posthog';
 
 export default function LessonScreen() {
@@ -42,6 +45,11 @@ export default function LessonScreen() {
   const persisted = useLessonProgressStore((s) => s.byLessonSlug[lessonSlug]);
   const saveProgress = useLessonProgressStore((s) => s.saveProgress);
   const markLessonProgressCompleted = useLessonProgressStore((s) => s.markCompleted);
+
+  // Freemium günlük limit kontrolü
+  const lessonLimit = useLessonLimit();
+  const bumpDaily = useDailyLimitsStore((s) => s.bump);
+  const [paywallOpen, setPaywallOpen] = useState(false);
 
   // ─────────── DB lesson ───────────
   const { data: lesson, isLoading, error } = useLesson(lessonSlug);
@@ -118,6 +126,32 @@ export default function LessonScreen() {
     );
   }
 
+  // Freemium limit aşıldıysa paywall göster (ders ortasında değil, başlangıçta)
+  if (!lessonLimit.allowed && currentIdx === 0 && !persisted?.startedAt) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7', padding: 24 }}>
+        <Text style={{ fontSize: 64, marginBottom: 16 }}>👑</Text>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: '#0E1116', marginBottom: 8, textAlign: 'center' }}>
+          Bugünkü ücretsiz dersleri tamamladın
+        </Text>
+        <Text style={{ fontSize: 13, color: '#5A6478', textAlign: 'center', marginBottom: 24, maxWidth: 320 }}>
+          Bugün {lessonLimit.used}/{lessonLimit.limit} ders. Pro'ya geç → sınırsız ders.
+        </Text>
+        <Button3D variant="primary" onPress={() => setPaywallOpen(true)}>
+          Pro'ya geç →
+        </Button3D>
+        <Button3D variant="ghost" onPress={() => router.back()}>
+          Yarın geleceğim
+        </Button3D>
+        <PaywallSheet
+          visible={paywallOpen}
+          onClose={() => setPaywallOpen(false)}
+          reason="lesson_limit"
+        />
+      </View>
+    );
+  }
+
   const isCorrect = selected === exercise.correct_id;
   const dbOptions = (exercise.options ?? []) as { id: string; text: string }[];
 
@@ -161,6 +195,8 @@ export default function LessonScreen() {
       addCoins(10, 'lesson_completed');
       recordDailyActivity();
       recordHistoryActivity('lesson');
+      bumpDaily('lessons_completed');
+      void bumpServerUsage('lessons_completed');
       const score = Math.round((nextCorrect / total) * 100);
       markLessonCompleted(lessonSlug, score);
       recordRecentActivity({

@@ -22,6 +22,7 @@ const CONTENT_TABLES = [
   'placement_questions',
   'airlines',
   'scenarios',
+  'app_config', // Faz 8: admin'den config değişince mobile cache bust
 ] as const;
 
 export function subscribeContentRealtime(queryClient: QueryClient): () => void {

@@ -1,16 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 
 export default function LoginPage() {
   const router = useRouter();
+  const sp = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [magicMode, setMagicMode] = useState(false);
+  const [showPwd, setShowPwd] = useState(false);
+
+  useEffect(() => {
+    const err = sp.get('error');
+    if (err) {
+      toast.error(decodeURIComponent(err), { duration: 5000 });
+    }
+  }, [sp]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -75,14 +84,30 @@ export default function LoginPage() {
               <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                 Şifre
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required={!magicMode}
-                className="w-full border-b-2 border-border focus:border-airspeak-red outline-none py-2 text-base"
-                placeholder="••••••••"
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={showPwd ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required={!magicMode}
+                  className="w-full border-b-2 border-border focus:border-airspeak-red outline-none py-2 pr-10 text-base"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPwd((v) => !v)}
+                  className="absolute right-2 text-muted-foreground hover:text-foreground p-1"
+                  title={showPwd ? 'Gizle' : 'Göster'}
+                >
+                  {showPwd ? '🙈' : '👁️'}
+                </button>
+              </div>
+              {password && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {password.length} karakter
+                </p>
+              )}
             </div>
           )}
 

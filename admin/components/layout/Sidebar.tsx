@@ -17,6 +17,10 @@ import {
   BarChart3,
   Settings,
   Volume2,
+  Crown,
+  Megaphone,
+  Lock,
+  TrendingUp,
 } from 'lucide-react';
 
 interface NavItem {
@@ -39,6 +43,10 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/placement', label: 'Placement Test', icon: ClipboardList, minRole: 'reviewer' },
   { href: '/audio', label: 'Ses Kütüphanesi', icon: Volume2, minRole: 'editor' },
   { href: '/users', label: 'Kullanıcılar', icon: Users, minRole: 'editor' },
+  { href: '/revenue', label: 'Revenue / Premium', icon: TrendingUp, minRole: 'editor' },
+  { href: '/freemium', label: 'Freemium / Limitler', icon: Lock, minRole: 'editor' },
+  { href: '/ads', label: 'Reklamlar', icon: Megaphone, minRole: 'editor' },
+  { href: '/paywall', label: 'Paywall / Fiyat', icon: Crown, minRole: 'editor' },
   { href: '/audit', label: 'Audit Log', icon: History, minRole: 'reviewer' },
   { href: '/analytics', label: 'Analitik', icon: BarChart3, minRole: 'reviewer' },
 ];
