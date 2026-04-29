@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { ArrowLeft, ChevronRight, Plus } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { StatusBadge } from '@/components/shared/StatusBadge';
+import { CreateUnitButton } from '@/components/forms/UnitActions';
+import { EditModuleButton } from '@/components/forms/ModuleActions';
+import { StatusActions } from '@/components/forms/StatusActions';
 
 export default async function UnitsPage({
   params,
@@ -47,13 +50,20 @@ export default async function UnitsPage({
               <p className="text-muted-foreground mt-1">{module.description}</p>
             )}
           </div>
-          <button
-            disabled
-            className="flex items-center gap-2 bg-airspeak-navy/40 text-white px-4 py-2 rounded-lg text-sm font-semibold opacity-50 cursor-not-allowed"
-            title="Faz 4'te aktif olacak"
-          >
-            <Plus className="w-4 h-4" /> Yeni ünite
-          </button>
+          <div className="flex items-center gap-2">
+            <EditModuleButton role={role} module={module} />
+            <CreateUnitButton moduleId={module.id} moduleSlug={moduleSlug} role={role} />
+          </div>
+        </div>
+        <div className="mt-3">
+          <StatusActions
+            table="modules"
+            id={module.id}
+            status={module.status}
+            revalidate={[`/tree/${role}`, `/tree/${role}/${moduleSlug}`]}
+            label={module.title_tr ?? module.title}
+            canDelete
+          />
         </div>
       </div>
 

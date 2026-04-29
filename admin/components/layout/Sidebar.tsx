@@ -16,6 +16,7 @@ import {
   History,
   BarChart3,
   Settings,
+  Volume2,
 } from 'lucide-react';
 
 interface NavItem {
@@ -36,6 +37,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/airlines', label: 'Havayolları', icon: Plane, minRole: 'reviewer' },
   { href: '/scenarios', label: 'AI Senaryolar', icon: MessageSquare, minRole: 'reviewer' },
   { href: '/placement', label: 'Placement Test', icon: ClipboardList, minRole: 'reviewer' },
+  { href: '/audio', label: 'Ses Kütüphanesi', icon: Volume2, minRole: 'editor' },
   { href: '/users', label: 'Kullanıcılar', icon: Users, minRole: 'editor' },
   { href: '/audit', label: 'Audit Log', icon: History, minRole: 'reviewer' },
   { href: '/analytics', label: 'Analitik', icon: BarChart3, minRole: 'reviewer' },

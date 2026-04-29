@@ -1,6 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { Plus } from 'lucide-react';
+import {
+  CreateGenericButton,
+  EditGenericButton,
+} from '@/components/forms/GenericTableForm';
+import { StatusActions } from '@/components/forms/StatusActions';
+import { SCENARIO_SCHEMA } from '@/lib/content/schemas';
 
 export default async function ScenariosPage() {
   const supabase = await createClient();
@@ -17,12 +22,7 @@ export default async function ScenariosPage() {
           <h1 className="text-3xl font-bold text-airspeak-navy">AI Senaryolar</h1>
           <p className="text-muted-foreground mt-1">{(data ?? []).length} senaryo</p>
         </div>
-        <button
-          disabled
-          className="flex items-center gap-2 bg-airspeak-navy/40 text-white px-4 py-2 rounded-lg text-sm font-semibold opacity-50 cursor-not-allowed"
-        >
-          <Plus className="w-4 h-4" /> Yeni senaryo
-        </button>
+        <CreateGenericButton schema={SCENARIO_SCHEMA} label="Yeni senaryo" />
       </div>
 
       <div className="bg-white border border-border rounded-xl overflow-hidden">
@@ -34,6 +34,7 @@ export default async function ScenariosPage() {
               <th className="px-4 py-3 text-left font-semibold">Başlık</th>
               <th className="px-4 py-3 text-left font-semibold w-16">Zor</th>
               <th className="px-4 py-3 text-left font-semibold w-24">Durum</th>
+              <th className="px-4 py-3 text-right font-semibold w-72">Aksiyon</th>
             </tr>
           </thead>
           <tbody>
@@ -48,11 +49,24 @@ export default async function ScenariosPage() {
                 <td className="px-4 py-3">
                   <StatusBadge status={s.status} />
                 </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-1">
+                    <EditGenericButton schema={SCENARIO_SCHEMA} row={s} />
+                    <StatusActions
+                      table="scenarios"
+                      id={s.id}
+                      status={s.status}
+                      revalidate="/scenarios"
+                      label={s.title_tr ?? s.title}
+                      canDelete
+                    />
+                  </div>
+                </td>
               </tr>
             ))}
             {(data ?? []).length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
+                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
                   Henüz senaryo yok.
                 </td>
               </tr>

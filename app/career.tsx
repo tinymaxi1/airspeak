@@ -19,12 +19,13 @@ import {
   TopoBackground,
   BackButton,
 } from '@/components/airspeak';
-import { ALL_AIRLINES } from '@/features/exams/airlines';
+import { useAirlines } from '@/features/content/api';
 import { useSquadronStore } from '@/stores/squadronStore';
 
 export default function CareerHubScreen() {
   const { t } = useTranslation();
   const cohort = useSquadronStore((s) => s.getCurrentCohort());
+  const { data: airlines = [] } = useAirlines();
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
@@ -136,7 +137,7 @@ export default function CareerHubScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.8 }}>
-              {t('career.airlinesEyebrow', '{{count}} HAVAYOLU', { count: ALL_AIRLINES.length })}
+              {t('career.airlinesEyebrow', '{{count}} HAVAYOLU', { count: airlines.length })}
             </Mono>
             <Text
               style={{

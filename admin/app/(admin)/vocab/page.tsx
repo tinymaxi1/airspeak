@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { Plus } from 'lucide-react';
+import { CreateVocabButton, EditVocabButton } from '@/components/forms/VocabForm';
+import { StatusActions } from '@/components/forms/StatusActions';
 
 export default async function VocabPage({
   searchParams,
@@ -23,12 +24,7 @@ export default async function VocabPage({
           <h1 className="text-3xl font-bold text-airspeak-navy">Kelime Hazinesi</h1>
           <p className="text-muted-foreground mt-1">{(terms ?? []).length} terim listeleniyor (max 200)</p>
         </div>
-        <button
-          disabled
-          className="flex items-center gap-2 bg-airspeak-navy/40 text-white px-4 py-2 rounded-lg text-sm font-semibold opacity-50 cursor-not-allowed"
-        >
-          <Plus className="w-4 h-4" /> Yeni terim
-        </button>
+        <CreateVocabButton />
       </div>
 
       <div className="bg-white border border-border rounded-xl overflow-hidden">
@@ -37,10 +33,11 @@ export default async function VocabPage({
             <tr>
               <th className="px-4 py-3 text-left font-semibold">EN</th>
               <th className="px-4 py-3 text-left font-semibold">TR</th>
-              <th className="px-4 py-3 text-left font-semibold">Rol</th>
-              <th className="px-4 py-3 text-left font-semibold">Kategori</th>
-              <th className="px-4 py-3 text-left font-semibold">Zor</th>
-              <th className="px-4 py-3 text-left font-semibold">Durum</th>
+              <th className="px-4 py-3 text-left font-semibold w-20">Rol</th>
+              <th className="px-4 py-3 text-left font-semibold w-28">Kategori</th>
+              <th className="px-4 py-3 text-left font-semibold w-16">Zor</th>
+              <th className="px-4 py-3 text-left font-semibold w-24">Durum</th>
+              <th className="px-4 py-3 text-right font-semibold w-72">Aksiyon</th>
             </tr>
           </thead>
           <tbody>
@@ -54,11 +51,24 @@ export default async function VocabPage({
                 <td className="px-4 py-3">
                   <StatusBadge status={t.status} />
                 </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-1">
+                    <EditVocabButton term={t} />
+                    <StatusActions
+                      table="vocab_terms"
+                      id={t.id}
+                      status={t.status}
+                      revalidate="/vocab"
+                      label={t.term_tr ?? t.term}
+                      canDelete
+                    />
+                  </div>
+                </td>
               </tr>
             ))}
             {(terms ?? []).length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
+                <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
                   Sonuç yok.
                 </td>
               </tr>

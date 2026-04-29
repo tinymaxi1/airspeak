@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { requireAdminRole } from '@/lib/auth/guard';
 import { formatDate } from '@/lib/utils';
 import { Crown, Ban, ShieldCheck } from 'lucide-react';
+import { UserRowActions } from '@/components/forms/UserActions';
 
 const ROLE_BADGE: Record<string, string> = {
   pilot: 'bg-airspeak-red/10 text-airspeak-red',
@@ -40,6 +41,7 @@ export default async function UsersPage() {
               <th className="px-4 py-3 text-left font-semibold w-28">Admin</th>
               <th className="px-4 py-3 text-left font-semibold w-24">Kayıt</th>
               <th className="px-4 py-3 text-left font-semibold w-20">Durum</th>
+              <th className="px-4 py-3 text-right font-semibold w-44">Aksiyon</th>
             </tr>
           </thead>
           <tbody>
@@ -86,6 +88,11 @@ export default async function UsersPage() {
                     ) : (
                       <span className="text-xs text-emerald-700">Aktif</span>
                     )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end">
+                      <UserRowActions user={u} />
+                    </div>
                   </td>
                 </tr>
               );

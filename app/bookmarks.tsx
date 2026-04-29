@@ -17,22 +17,24 @@ import {
 } from '@/components/airspeak';
 import { useBookmarkStore } from '@/stores/bookmarkStore';
 import { useOnboardingStore } from '@/stores/onboardingStore';
-import { getVocabForRole } from '@/features/lessons/seed';
+import { useVocab } from '@/features/content/api';
 import { SCENARIOS } from '@/features/conversation/scenarios';
+import type { UserRole } from '@/types/profile';
 
 type Tab = 'vocab' | 'scenario';
 
 export default function BookmarksScreen() {
   const { t } = useTranslation();
-  const role = useOnboardingStore((s) => s.role);
+  const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const [tab, setTab] = useState<Tab>('vocab');
   const entries = useBookmarkStore((s) => s.entries);
   const toggleBookmark = useBookmarkStore((s) => s.toggle);
+  const { data: vocabRows = [] } = useVocab(role);
 
   const vocabBookmarks = useMemo(() => {
     const ids = new Set(entries.filter((e) => e.kind === 'vocab').map((e) => e.id));
-    return getVocabForRole(role).filter((v) => ids.has(v.id));
-  }, [entries, role]);
+    return vocabRows.filter((v) => ids.has(v.slug));
+  }, [entries, vocabRows]);
 
   const scenarioBookmarks = useMemo(() => {
     const ids = new Set(entries.filter((e) => e.kind === 'scenario').map((e) => e.id));
@@ -97,7 +99,7 @@ export default function BookmarksScreen() {
           ) : (
             vocabBookmarks.map((v) => (
               <View
-                key={v.id}
+                key={v.slug}
                 style={{
                   backgroundColor: '#FFFFFF',
                   borderWidth: 1.5,
@@ -122,13 +124,13 @@ export default function BookmarksScreen() {
                       marginTop: 2,
                     }}
                   >
-                    {v.termTr}
+                    {v.term_tr ?? ''}
                   </Text>
                 </View>
                 <TouchableOpacity
                   accessibilityRole="button"
                   accessibilityLabel={t('common.removeBookmark', 'Yer iminden çıkar')}
-                  onPress={() => toggleBookmark('vocab', v.id)}
+                  onPress={() => toggleBookmark('vocab', v.slug)}
                   hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
                   <Text style={{ fontSize: 18 }}>⭐</Text>

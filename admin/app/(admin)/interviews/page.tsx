@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { Plus } from 'lucide-react';
+import { CreateInterviewButton, EditInterviewButton } from '@/components/forms/InterviewForm';
+import { StatusActions } from '@/components/forms/StatusActions';
 
 export default async function InterviewsPage() {
   const supabase = await createClient();
@@ -17,12 +18,7 @@ export default async function InterviewsPage() {
           <h1 className="text-3xl font-bold text-airspeak-navy">Mülakat Soruları</h1>
           <p className="text-muted-foreground mt-1">{(questions ?? []).length} soru</p>
         </div>
-        <button
-          disabled
-          className="flex items-center gap-2 bg-airspeak-navy/40 text-white px-4 py-2 rounded-lg text-sm font-semibold opacity-50 cursor-not-allowed"
-        >
-          <Plus className="w-4 h-4" /> Yeni soru
-        </button>
+        <CreateInterviewButton />
       </div>
 
       <div className="bg-white border border-border rounded-xl overflow-hidden">
@@ -34,6 +30,7 @@ export default async function InterviewsPage() {
               <th className="px-4 py-3 text-left font-semibold">Soru</th>
               <th className="px-4 py-3 text-left font-semibold w-16">Zor</th>
               <th className="px-4 py-3 text-left font-semibold w-24">Durum</th>
+              <th className="px-4 py-3 text-right font-semibold w-72">Aksiyon</th>
             </tr>
           </thead>
           <tbody>
@@ -50,6 +47,19 @@ export default async function InterviewsPage() {
                 <td className="px-4 py-3 text-xs">{q.difficulty}/5</td>
                 <td className="px-4 py-3">
                   <StatusBadge status={q.status} />
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-1">
+                    <EditInterviewButton q={q} />
+                    <StatusActions
+                      table="interview_questions"
+                      id={q.id}
+                      status={q.status}
+                      revalidate="/interviews"
+                      label={q.question.slice(0, 40)}
+                      canDelete
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

@@ -13,9 +13,16 @@ import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { VocabularyTerm } from '@/features/lessons/seed/pilotVocab';
-import { getVocabForRole } from '@/features/lessons/seed';
+import { useVocab } from '@/features/content/api';
+import type { VocabTermRow } from '@/features/content/types';
 import { useOnboardingStore } from '@/stores/onboardingStore';
+import type { UserRole } from '@/types/profile';
+
+/** Eski TS shape'i ile uyumluluk için tip alias */
+type VocabularyTerm = VocabTermRow & {
+  termTr?: string | null;
+  definitionTr?: string | null;
+};
 import { useSrsStore } from '@/stores/srsStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
@@ -49,23 +56,23 @@ export default function SrsReviewScreen() {
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
   const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
-  const role = useOnboardingStore((s) => s.role);
+  const role = useOnboardingStore((s) => s.role) as UserRole | null;
+  const { data: vocabRows = [] } = useVocab(role);
 
-  const vocabSet = getVocabForRole(role);
-
-  const [queue, setQueue] = useState<VocabularyTerm[]>([]);
+  const [queue, setQueue] = useState<VocabTermRow[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [reviewedCount, setReviewedCount] = useState(0);
 
   useEffect(() => {
-    const due: VocabularyTerm[] = [];
-    const newCards: VocabularyTerm[] = [];
+    if (vocabRows.length === 0) return;
+    const due: VocabTermRow[] = [];
+    const newCards: VocabTermRow[] = [];
 
-    for (const term of vocabSet) {
-      const card = cards[term.id];
+    for (const term of vocabRows) {
+      const card = cards[term.slug];
       if (!card) {
-        ensureCard(term.id);
+        ensureCard(term.slug);
         newCards.push(term);
       } else if (card.nextReviewAt <= Date.now()) {
         due.push(term);
@@ -74,7 +81,8 @@ export default function SrsReviewScreen() {
 
     const session = [...due, ...newCards.slice(0, 5)];
     setQueue(session.sort(() => Math.random() - 0.5));
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vocabRows.length]);
 
   const total = queue.length;
   const term = queue[currentIdx];
@@ -202,11 +210,11 @@ export default function SrsReviewScreen() {
   }
 
   // ─── NORMAL CARD ───
-  const card = cards[term.id];
+  const card = cards[term.slug];
   const isNew = !card || isNewCard(card);
 
   function handleQuality(quality: 1 | 3 | 4 | 5) {
-    reviewTerm(term!.id, quality);
+    reviewTerm(term!.slug, quality);
     addXp(quality >= 4 ? 5 : 3, 'srs_review');
     incrementQuest('srs_review', 1);
     if (reviewedCount === 0) {
@@ -216,7 +224,7 @@ export default function SrsReviewScreen() {
     }
     setReviewedCount((c) => c + 1);
     track('srs_review_completed', {
-      term_id: term!.id,
+      term_id: term!.slug,
       quality,
     });
     setShowAnswer(false);
@@ -269,7 +277,7 @@ export default function SrsReviewScreen() {
           }}
         >
           <Mono style={{ fontSize: 11, color: '#5A6478', letterSpacing: 1.1 }}>
-            {term.category} · {term.pronunciation}
+            {term.category ?? ''} · {term.ipa ?? ''}
           </Mono>
           <Text
             style={{
@@ -301,12 +309,12 @@ export default function SrsReviewScreen() {
                   textAlign: 'center',
                 }}
               >
-                {term.termTr}
+                {term.term_tr ?? ''}
               </Text>
               <Body color="#5A6478" style={{ fontSize: 14, textAlign: 'center', lineHeight: 21 }}>
-                {term.definitionTr}
+                {term.definition_tr ?? ''}
               </Body>
-              {term.examples[0] && (
+              {term.example && (
                 <View
                   style={{
                     backgroundColor: '#EDEFF3',
@@ -324,11 +332,13 @@ export default function SrsReviewScreen() {
                       marginBottom: 4,
                     }}
                   >
-                    "{term.examples[0].en}"
+                    "{term.example}"
                   </Text>
-                  <Body color="#5A6478" style={{ fontSize: 12 }}>
-                    {term.examples[0].tr}
-                  </Body>
+                  {term.example_tr && (
+                    <Body color="#5A6478" style={{ fontSize: 12 }}>
+                      {term.example_tr}
+                    </Body>
+                  )}
                 </View>
               )}
             </View>

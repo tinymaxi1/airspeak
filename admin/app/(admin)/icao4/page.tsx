@@ -1,6 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { Plus } from 'lucide-react';
+import {
+  CreateGenericButton,
+  EditGenericButton,
+} from '@/components/forms/GenericTableForm';
+import { StatusActions } from '@/components/forms/StatusActions';
+import { ICAO4_SCHEMA } from '@/lib/content/schemas';
 
 export default async function Icao4Page() {
   const supabase = await createClient();
@@ -17,12 +22,7 @@ export default async function Icao4Page() {
           <h1 className="text-3xl font-bold text-airspeak-navy">ICAO 4 Sınav Soruları</h1>
           <p className="text-muted-foreground mt-1">{(data ?? []).length} soru</p>
         </div>
-        <button
-          disabled
-          className="flex items-center gap-2 bg-airspeak-navy/40 text-white px-4 py-2 rounded-lg text-sm font-semibold opacity-50 cursor-not-allowed"
-        >
-          <Plus className="w-4 h-4" /> Yeni soru
-        </button>
+        <CreateGenericButton schema={ICAO4_SCHEMA} label="Yeni soru" />
       </div>
 
       <div className="bg-white border border-border rounded-xl overflow-hidden">
@@ -34,6 +34,7 @@ export default async function Icao4Page() {
               <th className="px-4 py-3 text-left font-semibold w-16">Sev.</th>
               <th className="px-4 py-3 text-left font-semibold">Soru</th>
               <th className="px-4 py-3 text-left font-semibold w-24">Durum</th>
+              <th className="px-4 py-3 text-right font-semibold w-72">Aksiyon</th>
             </tr>
           </thead>
           <tbody>
@@ -47,6 +48,19 @@ export default async function Icao4Page() {
                 </td>
                 <td className="px-4 py-3">
                   <StatusBadge status={q.status} />
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-1">
+                    <EditGenericButton schema={ICAO4_SCHEMA} row={q} />
+                    <StatusActions
+                      table="icao4_questions"
+                      id={q.id}
+                      status={q.status}
+                      revalidate="/icao4"
+                      label={q.question.slice(0, 40)}
+                      canDelete
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

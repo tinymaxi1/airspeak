@@ -17,11 +17,11 @@ import {
   EmptyState,
   NavCard,
 } from '@/components/airspeak';
-import { getVocabForRole } from '@/features/lessons/seed';
-import { ALL_AIRLINES } from '@/features/exams/airlines';
+import { useVocab, useAirlines } from '@/features/content/api';
 import { SCENARIOS } from '@/features/conversation/scenarios';
 import { CLEARANCES } from '@/features/readback/clearances';
 import { useOnboardingStore } from '@/stores/onboardingStore';
+import type { UserRole } from '@/types/profile';
 
 interface SearchResult {
   type: 'vocab' | 'airline' | 'scenario' | 'clearance';
@@ -35,7 +35,9 @@ interface SearchResult {
 
 export default function SearchScreen() {
   const { t } = useTranslation();
-  const role = useOnboardingStore((s) => s.role);
+  const role = useOnboardingStore((s) => s.role) as UserRole | null;
+  const { data: vocabRows = [] } = useVocab(role);
+  const { data: airlineRows = [] } = useAirlines();
   const [query, setQuery] = useState('');
 
   const results = useMemo<SearchResult[]>(() => {
@@ -44,21 +46,20 @@ export default function SearchScreen() {
     const out: SearchResult[] = [];
 
     // Vocab (max 10)
-    const vocab = getVocabForRole(role);
-    const vocabHits = vocab
+    const vocabHits = vocabRows
       .filter(
         (v) =>
           v.term.toLowerCase().includes(q) ||
-          v.termTr.toLowerCase().includes(q) ||
-          v.definitionTr.toLowerCase().includes(q),
+          (v.term_tr ?? '').toLowerCase().includes(q) ||
+          (v.definition_tr ?? '').toLowerCase().includes(q),
       )
       .slice(0, 10);
     for (const v of vocabHits) {
       out.push({
         type: 'vocab',
-        id: v.id,
+        id: v.slug,
         title: v.term,
-        subtitle: `${v.termTr} · ${v.category}`,
+        subtitle: `${v.term_tr ?? ''} · ${v.category ?? ''}`,
         icon: '📖',
         color: '#2EA8FF',
         route: '/vocab',
@@ -66,18 +67,22 @@ export default function SearchScreen() {
     }
 
     // Airlines (max 8)
-    const airlineHits = ALL_AIRLINES.filter(
-      (a) => a.name.toLowerCase().includes(q) || a.iataCode.toLowerCase() === q || a.icaoCode.toLowerCase() === q,
-    ).slice(0, 8);
+    const airlineHits = airlineRows
+      .filter(
+        (a) =>
+          a.name.toLowerCase().includes(q) ||
+          (a.iata_code ?? '').toLowerCase() === q,
+      )
+      .slice(0, 8);
     for (const a of airlineHits) {
       out.push({
         type: 'airline',
-        id: a.id,
+        id: a.slug,
         title: a.name,
-        subtitle: `${a.countryEmoji} ${a.country} · ${a.iataCode}/${a.icaoCode}`,
+        subtitle: `${a.country_emoji ?? '🌍'} · ${a.iata_code ?? ''}`,
         icon: '✈',
         color: '#E63946',
-        route: { pathname: '/exam/airline/[id]', params: { id: a.id } },
+        route: { pathname: '/exam/airline/[id]', params: { id: a.slug } },
       });
     }
 
@@ -117,7 +122,7 @@ export default function SearchScreen() {
     }
 
     return out;
-  }, [query, role]);
+  }, [query, vocabRows, airlineRows]);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>

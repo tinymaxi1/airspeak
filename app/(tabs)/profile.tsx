@@ -19,7 +19,7 @@ import { useProgressStore } from '@/stores/progressStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
-import { ALL_AIRLINES } from '@/features/exams/airlines';
+import { useAirlines } from '@/features/content/api';
 import {
   HHero,
   H2,
@@ -38,6 +38,7 @@ export default function ProfileScreen() {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const role = useOnboardingStore((s) => s.role);
+  const { data: airlines = [] } = useAirlines();
   const placement = useOnboardingStore((s) => s.placementResult);
   const totalXp = useGamificationStore((s) => s.totalXp ?? 0);
   const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
@@ -269,7 +270,7 @@ export default function ProfileScreen() {
           <SettingsRow
             icon="🎯"
             label={t('screens.profile.career', 'Kariyer Merkezi')}
-            value={t('screens.profile.careerDesc', 'ICAO 4 · {{count}} havayolu · Squadron', { count: ALL_AIRLINES.length })}
+            value={t('screens.profile.careerDesc', 'ICAO 4 · {{count}} havayolu · Squadron', { count: airlines.length })}
             onPress={() => router.push('/career')}
           />
           <SettingsRow

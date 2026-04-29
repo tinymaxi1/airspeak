@@ -1,8 +1,14 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { ArrowLeft, Plus, Edit3, Volume2, Image } from 'lucide-react';
+import { ArrowLeft, Volume2, Image } from 'lucide-react';
 import { StatusBadge } from '@/components/shared/StatusBadge';
+import {
+  CreateExerciseButton,
+  EditExerciseButton,
+  EditLessonButton,
+} from '@/components/forms/LessonActions';
+import { StatusActions } from '@/components/forms/StatusActions';
 
 const EX_TYPE_LABEL: Record<string, string> = {
   'vocab-mc': '📝 Çoktan seçmeli',
@@ -26,11 +32,12 @@ export default async function LessonExercisesPage({
 
   const { data: lesson } = await (supabase as any)
     .from('lessons')
-    .select('id, slug, number, title, title_tr, type, xp, estimated_minutes, is_premium, status')
+    .select('id, slug, unit_id, number, title, title_tr, type, xp, estimated_minutes, is_premium, status')
     .eq('slug', lessonSlug)
     .single();
 
   if (!lesson) notFound();
+  const treePath = `/tree/${role}/${moduleSlug}/${unitSlug}/${lessonSlug}`;
 
   const { data: exercises } = await (supabase as any)
     .from('exercises')
@@ -59,21 +66,30 @@ export default async function LessonExercisesPage({
             </p>
           </div>
           <div className="flex gap-2">
-            <button
-              disabled
-              className="flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg text-sm font-semibold opacity-50 cursor-not-allowed"
-              title="Faz 4"
-            >
-              <Edit3 className="w-4 h-4" /> Düzenle
-            </button>
-            <button
-              disabled
-              className="flex items-center gap-2 bg-airspeak-navy/40 text-white px-4 py-2 rounded-lg text-sm font-semibold opacity-50 cursor-not-allowed"
-              title="Faz 4"
-            >
-              <Plus className="w-4 h-4" /> Egzersiz
-            </button>
+            <EditLessonButton
+              lesson={lesson}
+              unitId={lesson.unit_id}
+              unitSlug={unitSlug}
+              role={role}
+              moduleSlug={moduleSlug}
+            />
+            <CreateExerciseButton
+              lessonId={lesson.id}
+              lessonSlug={lessonSlug}
+              treePath={treePath}
+              nextSort={(exercises ?? []).length}
+            />
           </div>
+        </div>
+        <div className="mt-3">
+          <StatusActions
+            table="lessons"
+            id={lesson.id}
+            status={lesson.status}
+            revalidate={[treePath, `/tree/${role}/${moduleSlug}/${unitSlug}`]}
+            label={lesson.title_tr ?? lesson.title}
+            canDelete
+          />
         </div>
       </div>
 
@@ -121,6 +137,22 @@ export default async function LessonExercisesPage({
                     ))}
                   </div>
                 )}
+                <div className="mt-3 flex items-center gap-2 flex-wrap">
+                  <EditExerciseButton
+                    exercise={ex}
+                    lessonId={lesson.id}
+                    lessonSlug={lessonSlug}
+                    treePath={treePath}
+                  />
+                  <StatusActions
+                    table="exercises"
+                    id={ex.id}
+                    status={ex.status}
+                    revalidate={[treePath]}
+                    label={ex.prompt_tr ?? ex.prompt ?? `Egzersiz #${idx + 1}`}
+                    canDelete
+                  />
+                </div>
               </div>
             </div>
           </div>
