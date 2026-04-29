@@ -1,0 +1,56 @@
+name: ✨ Feature request
+description: Yeni bir özellik öner
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Hangi sorunu çözüyor?
+      description: Bu özelliğe neden ihtiyaç var? Hangi kullanıcı ihtiyacını karşılıyor?
+      placeholder: "Şu an kullanıcı ... yapamıyor, çünkü ..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Önerilen çözüm
+      description: İdeal olarak nasıl çalışmalı?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatifler
+      description: Düşündüğün başka çözümler var mı?
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Öncelik
+      options:
+        - "Critical (lansman blocker)"
+        - "High (1-3 ay)"
+        - "Medium (3-6 ay)"
+        - "Low (6+ ay)"
+        - "Nice-to-have"
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Hangi modülü etkiler?
+      multiple: true
+      options:
+        - Onboarding
+        - Lesson engine
+        - AI Co-pilot
+        - ICAO 4 mock
+        - Airline interview
+        - Pronunciation
+        - SRS
+        - Gamification (XP/streak/league)
+        - Squadron
+        - Settings
+        - i18n
+        - Accessibility
+        - Other

@@ -1,0 +1,60 @@
+name: 🐛 Bug report
+description: Bir hata bildir
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Hata bildirimine teşekkürler. Mümkün olduğunca detay ver, daha hızlı çözebilelim.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Ne oldu?
+      description: Beklenen davranış vs olan davranış.
+      placeholder: "Tıkladığımda... ama bunun yerine..."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Adım adım yeniden üretim
+      description: Hatayı yeniden üretmek için minimum adımlar.
+      placeholder: |
+        1. Home ekranında ...
+        2. ... butonuna bas
+        3. ... görmeli ama ...
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - iOS
+        - Android
+        - Both
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Cihaz / OS
+      placeholder: "iPhone 15 · iOS 18.2 · Expo Go"
+  - type: input
+    id: app-version
+    attributes:
+      label: AirSpeak versiyonu
+      placeholder: "0.1.0"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console / crash log (varsa)
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Doğrulama
+      options:
+        - label: Mevcut issue'larda aynı hatayı aramayı denedim
+          required: true

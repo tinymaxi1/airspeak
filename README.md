@@ -1,72 +1,178 @@
 # AirSpeak
 
-> Aviation English Tutor — havacılık İngilizcesi mobil öğrenme uygulaması.
+> Aviation English mobile app — ICAO Level 4 prep · 41 airline interviews · AI co-pilot · 1300+ vocab · 20 languages.
 
-**Domain:** [airspeak.app](https://airspeak.app) (satın alınacak)
-**Hedef pazar:** Türkiye + global (EN-ana UI, TR tam destek)
-**Hedef kullanıcı:** Pilot adayı, kabin memuru, teknisyen, yer hizmetleri, havacılık öğrencisi
-**Fiyat:** ₺349/ay standart, ₺199/ay öğrenci, ₺2.499/yıl
+**Hedef kullanıcı:** Türk pilot adayları, kabin memurları, uçak teknisyenleri, yer hizmetleri operatörleri, havacılık öğrencileri.
+**Pazar:** Türkiye odaklı, 20 dilde lokalize, global pazara açık.
+**Fiyat:** ₺349/ay · ₺199/ay (öğrenci) · ₺2.499/yıl (Pro Pilot)
 
-## Mevcut Durum
+---
 
-- ✅ Plan onaylandı — bkz. [PROJECT_PLAN.md](./PROJECT_PLAN.md)
-- ✅ Logo tasarlandı (vektörleştirilecek)
-- ✅ **Sprint 0 kod iskeleti hazır** — Expo + TS + Tamagui + Supabase + i18n + auth + onboarding + tabs
-- ⏳ Sprint -1: Figma tasarım + wireframe (paralel, kullanıcı tarafı)
-- ⏳ Sprint 0 geri kalan: hesaplar, domain, npm install, ilk run
-- ⏳ Sprint 1-9: MVP geliştirme
+## ✈ Özellikler
 
-## Proje Yapısı (Sprint 0'da Oluşacak)
+| Modül | Detay |
+|---|---|
+| **AI Co-pilot** | 5+ scripted ATC senaryosu (holding, taxi, go-around, MAYDAY). Pattern matching + on-device STT — sıfır API maliyeti. |
+| **ICAO Level 4 Mock** | 4 task tipi (picture, story, problem, topic) · 6-descriptor rule-based scoring · ICAO Doc 9835 uyumlu. |
+| **41 Havayolu Mülakat** | THY · Pegasus · Emirates · Qatar · Lufthansa · Singapore + 35 daha. STAR formatlı detaylı cevap rehberleri. |
+| **1300+ Vocab** | Rol bazlı havacılık terminolojisi. Kategori filtre + tam metin arama + bookmark + SRS (SuperMemo SM-2). |
+| **Pronunciation Drills** | On-device STT (iOS Speech / Android SpeechRecognizer) + Levenshtein scoring. Sesin internete hiç çıkmaz. |
+| **Read-back Drills** | 20+ ATC clearance. Anlama + tekrarlama + skor. |
+| **Gamification** | XP · Streak · Hearts · Coins · 7-tier League · Squadron cohort · Quests. |
+| **Offline-first** | Tüm dersler + vocab + senaryolar offline çalışır. NetInfo monitoring. |
+| **20 Dil** | EN/TR ana dil, 18 dil DeepL Free + Argos. ICAO frazeoloji (Mayday, Squawk) tüm dillerde standart İngilizce. |
+
+---
+
+## 🛠 Stack
+
+| Katman | Teknoloji |
+|---|---|
+| Mobile | **React Native + Expo SDK 52** + TypeScript |
+| State | **Zustand** + persist (MMKV storage) |
+| Routing | **expo-router** (file-based) |
+| Speech | `expo-speech-recognition` (STT) + `expo-speech` (TTS) |
+| Audio | `expo-av` |
+| Notifications | `expo-notifications` (local push, sunucusuz) |
+| Network | `@react-native-community/netinfo` |
+| i18n | `i18next` + `react-i18next` |
+| UI | Custom design system (`@/components/airspeak`) — Plus Jakarta Sans + Space Grotesk + JetBrains Mono |
+| Analytics | PostHog (anonim) |
+| Errors | Sentry |
+| Translation | DeepL Free (16 lang) + Argos (offline fallback) |
+
+**Backend:** Şu an offline-first, sunucusuz. Tüm state cihazda persisted (`MMKV`). İleride Supabase'e senkronize edilecek.
+
+---
+
+## 🚀 Hızlı Başlangıç
+
+```bash
+# 1. Bağımlılıklar
+npm install
+
+# 2. Geliştirme sunucusu
+npx expo start
+
+# 3. Type check
+npx tsc --noEmit
+
+# 4. iOS simulator
+npx expo run:ios
+
+# 5. Android
+npx expo run:android
+```
+
+---
+
+## 📁 Proje Yapısı
 
 ```
 airspeak/
-├── PROJECT_PLAN.md          # Ana plan dokümanı
-├── README.md                # Bu dosya
-├── app/                     # Expo Router ekranları
-├── src/                     # Komponent, feature, lib, hook
-├── supabase/                # Migration, edge function, seed
-├── content-pipeline/        # AI içerik üretim + doğrulama
-├── assets/                  # Logo, ikon, lottie, ses
-└── docs/                    # Tasarım, architecture, runbook
+├── app/                          # Expo Router ekranları (file-based)
+│   ├── (auth)/                   # Welcome → Register → Onboarding
+│   ├── (tabs)/                   # Home, Learn, Practice, League, Profile
+│   ├── conversation/             # AI Co-pilot scenario screens
+│   ├── exam/                     # ICAO 4 mock + 41 havayolu
+│   ├── lesson/[id].tsx           # Dynamic lesson runner
+│   ├── settings/                 # Profile, language, privacy, help
+│   └── _layout.tsx               # Stack navigator + i18n init
+├── src/
+│   ├── components/airspeak/      # Design system (typography, primitives, composites, lesson)
+│   ├── stores/                   # Zustand stores (12+ persisted)
+│   │   ├── authStore.ts
+│   │   ├── gamificationStore.ts
+│   │   ├── progressStore.ts
+│   │   ├── srsStore.ts
+│   │   ├── lessonHistoryStore.ts
+│   │   ├── activityStore.ts
+│   │   ├── bookmarkStore.ts
+│   │   ├── coachMarkStore.ts
+│   │   └── ...
+│   ├── features/
+│   │   ├── lessons/              # Generator + 1300+ vocab seed
+│   │   ├── conversation/         # Scripted dialog tree + pattern matching
+│   │   ├── exams/                # 41 airlines + interview Q bank (155 sorular)
+│   │   ├── icao4/                # 6-descriptor scorer
+│   │   ├── league/               # NPC simulator (deterministic Mulberry32 PRNG)
+│   │   └── readback/             # Clearance drills
+│   ├── lib/                      # i18n, posthog, sentry, storage, a11y, notifications
+│   └── locales/                  # 20 dil JSON (en, tr, de, fr, es, it, pt, nl, pl, el, zh, ja, ko, id, ru, ar, fa, hi, th, ms)
+├── scripts/
+│   └── i18n/                     # Translation pipeline (DeepL + Argos + glossary + quality)
+├── docs/
+│   └── aso/                      # 16-doc App Store Optimization plan
+└── assets/                       # Icons, fonts, sounds
 ```
 
-## Hızlı Başlangıç
+---
 
-Henüz kod kurulumu yapılmadı. Sırayla:
+## 🌍 i18n Pipeline
 
-1. [`SETUP.md`](./SETUP.md) — Hesaplar, domain, Figma ön hazırlık
-2. [`SPRINTS.md`](./SPRINTS.md) — Sprint sprint görev listesi
-3. PROJECT_PLAN.md — Kapsamlı teknik plan
+20 dilde tam çeviri:
+- **EN/TR**: Manuel orijinal
+- **13 dil DeepL Free**: DE/FR/ES/IT/PT/NL/PL/EL/ZH/JA/KO/ID/RU/AR
+- **5 dil Argos**: FA/HI/TH/MS (offline)
 
-## Stack Özet
+```bash
+npm run translate:check      # Quality skoru
+npm run translate:usage      # DeepL kota
+```
 
-- **Mobile:** React Native + Expo (SDK 52+) + TypeScript
-- **Backend:** Supabase (Postgres + Auth + Storage + Realtime + Edge Functions)
-- **State:** Zustand + TanStack Query
-- **Ödeme:** RevenueCat
-- **AI:** Claude (Haiku 4.5 + Sonnet 4.6) + Whisper STT + ElevenLabs TTS
-- **Analitik:** PostHog
-- **Hata izleme:** Sentry
-- **UI:** Tamagui + NativeWind + react-native-reanimated + Lottie
-- **i18n:** i18next (EN ana, TR tam destek)
+ICAO frazeolojisi (`Mayday`, `Squawk 7700`) tüm dillerde standart İngilizce kalır — uluslararası havacılık standardı.
 
-## Sprint Durumu
+---
 
-| Sprint | Hafta | Durum |
+## ♿ Accessibility
+
+- **VoiceOver / TalkBack**: Tüm ana ekranlarda label + role
+- **Dynamic Type**: iOS Larger Text desteği (H1/H2/H3/Body için scaleFont)
+- **Reduce Motion**: AccessibilityInfo desteği
+- **Color contrast**: WCAG AA (4.5:1 minimum)
+- **44pt hit slop**: Tüm dokunma hedefleri
+
+---
+
+## 🔒 Gizlilik
+
+- **Mikrofon kayıtları cihazda işlenir** — sunucuya gitmez (on-device STT).
+- **KVKK + GDPR uyumlu**: Hesap silme + veri export + 30 gün grace period.
+- **Anonim analitik**: PostHog opt-in.
+- **Hata izleme**: Sentry (PII'siz).
+
+---
+
+## 📊 Sprint Durumu
+
+| Sprint | Konu | Durum |
 |---|---|---|
-| -1: Tasarım reference + wireframe | -1 | ⏳ Hazır |
-| 0: Hesaplar + iskelet | 0 | ⏳ |
-| 1: Auth + onboarding | 1-2 | ⏳ |
-| 2: İçerik motoru | 3-4 | ⏳ |
-| 3: Gamification | 5-6 | ⏳ |
-| 4: SRS + lig + görev | 7-8 | ⏳ |
-| 5: AI konuşma | 9-10 | ⏳ |
-| 6: Telaffuz + premium | 11-12 | ⏳ |
-| 7: Sınav + ICAO 4 sözlü | 13-14 | ⏳ |
-| 8: Frazeoloji + offline + referral | 15-16 | ⏳ |
-| 9: İçerik + cila + yayın | 17-18 | ⏳ |
+| 0 | Auth + onboarding | ✅ Tamamlandı |
+| 1 | Lesson engine + 1300 vocab | ✅ Tamamlandı |
+| 2 | Gamification (XP, streak, hearts) | ✅ Tamamlandı |
+| 3 | SRS + League + Quests | ✅ Tamamlandı |
+| 4 | AI Co-pilot (5 senaryo) | ✅ Tamamlandı |
+| 5 | Pronunciation + ICAO 4 | ✅ Tamamlandı |
+| 6 | 41 Airline + interview bank | ✅ Tamamlandı |
+| 7 | Squadron + offline + referral | ✅ Tamamlandı |
+| UX-1..7 | Accessibility + bookmarks + recents + coach marks | ✅ Tamamlandı |
+| 8 | 4-boyutlu placement test | ⏳ Planlandı |
+| 9 | İçerik üretim + cila + yayın | ⏳ |
 
-## İletişim
+---
 
-Proje sahibi: Özlem Akçın
-Geliştirme ortağı: Claude (Anthropic)
+## 📜 Disclaimer
+
+AirSpeak resmi ICAO sertifikası **vermez** — pratik aracıdır. Resmi ICAO Level 4 sınavı SHGM yetkili merkezlerinde yapılır. AI değerlendirme kural-tabanlıdır, gerçek examiner sonucu değildir.
+
+---
+
+## 📧 İletişim
+
+- Email: ops@airspeak.io
+- Discord: discord.gg/airspeak
+- Privacy: privacy@airspeak.io · KVKK: kvkk@airspeak.io
+
+---
+
+🤖 Geliştirme ortağı: [Claude](https://claude.com/claude-code) (Anthropic)

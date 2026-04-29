@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📧 Email destek
+    url: mailto:ops@airspeak.io
+    about: Genel soru veya destek için
+  - name: 💬 Discord topluluk
+    url: https://discord.gg/airspeak
+    about: Hızlı sorular ve sohbet
+  - name: 🔒 Güvenlik açığı
+    url: mailto:security@airspeak.io
+    about: Güvenlik açığı bildirimi (PUBLIC issue açma)
