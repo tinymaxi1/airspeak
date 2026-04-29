@@ -79,21 +79,24 @@ export default function HomeScreen() {
       <View style={{ backgroundColor: '#0F1E47', position: 'relative', overflow: 'hidden' }}>
         <SafeAreaView edges={['top']}>
           <View style={{ paddingTop: 8, paddingHorizontal: 16, paddingBottom: 18 }}>
-            {/* Topo glow background */}
-            <View style={{ position: 'absolute', inset: 0, opacity: 0.5 }}>
-              <Svg width="100%" height="100%" viewBox="0 0 393 200">
+            {/* Topo glow background — sadece cyan, kırmızı RN-svg'da kare render oluyordu */}
+            <View
+              style={{ position: 'absolute', inset: 0, opacity: 0.5 }}
+              pointerEvents="none"
+            >
+              <Svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 393 200"
+                preserveAspectRatio="xMidYMid slice"
+              >
                 <Defs>
-                  <RadialGradient id="topoGlow" cx="0%" cy="0%">
+                  <RadialGradient id="topoGlow" cx="0%" cy="0%" r="100%">
                     <Stop offset="0%" stopColor="rgba(91,192,255,0.18)" />
                     <Stop offset="100%" stopColor="rgba(91,192,255,0)" />
                   </RadialGradient>
-                  <RadialGradient id="redGlow" cx="100%" cy="100%">
-                    <Stop offset="0%" stopColor="rgba(230,57,70,0.18)" />
-                    <Stop offset="100%" stopColor="rgba(230,57,70,0)" />
-                  </RadialGradient>
                 </Defs>
-                <Rect width="393" height="200" fill="url(#topoGlow)" />
-                <Rect width="393" height="200" fill="url(#redGlow)" />
+                <Rect x="0" y="0" width="393" height="200" fill="url(#topoGlow)" />
               </Svg>
             </View>
 
