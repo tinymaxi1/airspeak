@@ -597,7 +597,12 @@
         "wrong": "✗ Incorrecto",
         "more": "🖏️ Leer más",
         "close": "▲ Cerrar",
-        "longExp": "EXPLICACIÓN DETALLADA"
+        "longExp": "EXPLICACIÓN DETALLADA",
+        "hintAtc": "🎧 Imagina escucharlo por radio — fraseología ATC.",
+        "hintGrammar": "📚 Gramática: forma y estructura correctas.",
+        "hintVocab": "📖 Vocabulario — la mejor coincidencia.",
+        "hintReading": "👁 Lee con atención, las pistas están en la oración.",
+        "hintGeneral": "💡 Tómate tu tiempo, elige la opción más precisa."
       },
       "break": {
         "done": "¡Ya he hecho {{n}}/4!",

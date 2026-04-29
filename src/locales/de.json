@@ -597,7 +597,12 @@
         "wrong": "✗ Falsch",
         "more": "📖 Weiterlesen",
         "close": "▲ Schließen",
-        "longExp": "AUSFÜHRLICHE ERLÄUTERUNG"
+        "longExp": "AUSFÜHRLICHE ERLÄUTERUNG",
+        "hintAtc": "🎧 Stell dir vor, du hörst es im Funk — ATC-Phraseologie.",
+        "hintGrammar": "📚 Grammatik: richtige Form und Struktur.",
+        "hintVocab": "📖 Wortschatz — wähle die beste Übereinstimmung.",
+        "hintReading": "👁 Sorgfältig lesen, Hinweise stehen im Satz.",
+        "hintGeneral": "💡 Lass dir Zeit, wähle die genaueste Option."
       },
       "break": {
         "done": "{{n}}/4 geschafft!",

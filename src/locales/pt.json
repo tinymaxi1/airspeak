@@ -597,7 +597,12 @@
         "wrong": "✗ Errado",
         "more": "📖 Ler mais",
         "close": "▲ Fechar",
-        "longExp": "EXPLICAÇÃO DETALHADA"
+        "longExp": "EXPLICAÇÃO DETALHADA",
+        "hintAtc": "🎧 Imagine ouvir pelo rádio — fraseologia ATC.",
+        "hintGrammar": "📚 Gramática: forma e estrutura corretas.",
+        "hintVocab": "📖 Vocabulário — a melhor correspondência.",
+        "hintReading": "👁 Leia com atenção, as pistas estão na frase.",
+        "hintGeneral": "💡 Tome seu tempo, escolha a opção mais precisa."
       },
       "break": {
         "done": "{{n}}/4 concluído!",

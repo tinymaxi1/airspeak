@@ -597,7 +597,12 @@
         "wrong": "✗ Incorrect",
         "more": "📖 En savoir plus",
         "close": "▲ Fermer",
-        "longExp": "EXPLICATION DÉTAILLÉE"
+        "longExp": "EXPLICATION DÉTAILLÉE",
+        "hintAtc": "🎧 Imagine entendre ça à la radio — phraséologie ATC.",
+        "hintGrammar": "📚 Grammaire : forme et structure correctes.",
+        "hintVocab": "📖 Vocabulaire — choisis la meilleure correspondance.",
+        "hintReading": "👁 Lis attentivement, les indices sont dans la phrase.",
+        "hintGeneral": "💡 Prends ton temps, choisis l'option la plus précise."
       },
       "break": {
         "done": "{{n}}/4 terminé !",

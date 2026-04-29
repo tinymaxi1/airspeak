@@ -597,7 +597,12 @@
         "wrong": "✗ Błędnie",
         "more": "📖 Dowiedz się więcej",
         "close": "▲ Zamknij",
-        "longExp": "SZCZEGÓŁOWE WYJAŚNIENIE"
+        "longExp": "SZCZEGÓŁOWE WYJAŚNIENIE",
+        "hintAtc": "🎧 Wyobraź sobie, że słyszysz to przez radio — frazeologia ATC.",
+        "hintGrammar": "📚 Gramatyka: poprawna forma i struktura.",
+        "hintVocab": "📖 Słownictwo — najlepsze dopasowanie.",
+        "hintReading": "👁 Czytaj uważnie, wskazówki są w zdaniu.",
+        "hintGeneral": "💡 Nie spiesz się, wybierz najtrafniejszą opcję."
       },
       "break": {
         "done": "{{n}}/4 gotowe!",

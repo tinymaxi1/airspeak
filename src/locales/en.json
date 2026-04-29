@@ -597,7 +597,12 @@
         "wrong": "✗ Wrong",
         "more": "📖 Read more",
         "close": "▲ Close",
-        "longExp": "DETAILED EXPLANATION"
+        "longExp": "DETAILED EXPLANATION",
+        "hintAtc": "🎧 Imagine you hear it on the radio — ATC phraseology.",
+        "hintGrammar": "📚 Grammar: correct form and structure.",
+        "hintVocab": "📖 Vocabulary — pick the best match.",
+        "hintReading": "👁 Read carefully, the clues are in the sentence.",
+        "hintGeneral": "💡 Take your time, pick the most accurate option."
       },
       "break": {
         "done": "{{n}}/4 done!",

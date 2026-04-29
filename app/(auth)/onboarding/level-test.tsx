@@ -57,7 +57,7 @@ const SEGMENTS: SegmentSpec[] = [
 type Step = 'intro' | 'segment' | 'segmentBreak';
 
 export default function LevelTestScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const setPlacementResult = useOnboardingStore((s) => s.setPlacementResult);
   const role = useOnboardingStore((s) => s.role);
 
@@ -512,43 +512,76 @@ export default function LevelTestScreen() {
         </View>
 
         {/* Question */}
-        <Text
-          style={{
-            fontFamily: FONTS.display,
-            fontSize: 24,
-            fontWeight: '700',
-            color: '#0E1116',
-            lineHeight: 30,
-            letterSpacing: -0.48,
-            marginBottom: 8,
-          }}
-        >
-          {currentQuestion.question}
-        </Text>
-
-        {currentQuestion.questionTr && (
-          <Body color="#5A6478" style={{ fontSize: 13, marginBottom: 12, fontStyle: 'italic' }}>
-            💡 {currentQuestion.questionTr}
-          </Body>
+        {/* Soru metni: TR locale + questionTr varsa BÜYÜK Türkçe, İngilizce küçük referans.
+            Diğer dillerde İngilizce büyük (henüz çevirisi yok). Yanıt şıkları İngilizce kalır
+            (test edilen dil). */}
+        {i18n.language === 'tr' && currentQuestion.questionTr ? (
+          <>
+            <Text
+              style={{
+                fontFamily: FONTS.display,
+                fontSize: 24,
+                fontWeight: '700',
+                color: '#0E1116',
+                lineHeight: 30,
+                letterSpacing: -0.48,
+                marginBottom: 6,
+              }}
+            >
+              {currentQuestion.questionTr.replace(/^[\p{Emoji}\s]+/u, '').trim()}
+            </Text>
+            <Body color="#8A93A6" style={{ fontSize: 12, marginBottom: 14 }}>
+              EN: {currentQuestion.question}
+            </Body>
+          </>
+        ) : (
+          <Text
+            style={{
+              fontFamily: FONTS.display,
+              fontSize: 24,
+              fontWeight: '700',
+              color: '#0E1116',
+              lineHeight: 30,
+              letterSpacing: -0.48,
+              marginBottom: 12,
+            }}
+          >
+            {currentQuestion.question}
+          </Text>
         )}
 
-        {/* Hint banner (gray) */}
-        <View
-          style={{
-            backgroundColor: '#EDEFF3',
-            paddingHorizontal: 14,
-            paddingVertical: 10,
-            borderRadius: 10,
-            marginBottom: 20,
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 8,
-          }}
-        >
-          <Body style={{ fontSize: 13, color: '#5A6478' }}>
-            {t('screens.levelTest.question.hint')}
-          </Body>
-        </View>
+        {/* Hint banner — kategoriye göre değişir (ATC mesajı sadece phraseology/listening için) */}
+        {(() => {
+          const cat = currentQuestion.category;
+          const hintKey =
+            cat === 'phraseology' || cat === 'listening'
+              ? 'screens.levelTest.question.hintAtc'
+              : cat === 'grammar'
+                ? 'screens.levelTest.question.hintGrammar'
+                : cat === 'vocabulary'
+                  ? 'screens.levelTest.question.hintVocab'
+                  : cat === 'reading'
+                    ? 'screens.levelTest.question.hintReading'
+                    : 'screens.levelTest.question.hintGeneral';
+          return (
+            <View
+              style={{
+                backgroundColor: '#EDEFF3',
+                paddingHorizontal: 14,
+                paddingVertical: 10,
+                borderRadius: 10,
+                marginBottom: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
+              <Body style={{ fontSize: 13, color: '#5A6478' }}>
+                {t(hintKey, t('screens.levelTest.question.hint'))}
+              </Body>
+            </View>
+          );
+        })()}
 
         {/* Context (if any) */}
         {currentQuestion.context && (

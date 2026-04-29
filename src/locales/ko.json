@@ -597,7 +597,12 @@
         "wrong": "✗ 틀림",
         "more": "📖 더 보기",
         "close": "▲ 닫기",
-        "longExp": "자세한 설명"
+        "longExp": "자세한 설명",
+        "hintAtc": "🎧 무선으로 듣는다고 상상 — ATC 용어.",
+        "hintGrammar": "📚 문법: 올바른 형태와 구조.",
+        "hintVocab": "📖 어휘 — 가장 알맞은 것 선택.",
+        "hintReading": "👁 꼼꼼히 읽고, 단서는 문장 안에.",
+        "hintGeneral": "💡 천천히, 가장 정확한 답을."
       },
       "break": {
         "done": "{{n}}/4 완료!",

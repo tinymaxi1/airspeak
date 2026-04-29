@@ -597,7 +597,12 @@
         "wrong": "✗ Errato",
         "more": "🖔 Per saperne di più",
         "close": "▲ Chiudi",
-        "longExp": "SPIEGAZIONE DETTAGLIATA"
+        "longExp": "SPIEGAZIONE DETTAGLIATA",
+        "hintAtc": "🎧 Immagina di sentirlo via radio — fraseologia ATC.",
+        "hintGrammar": "📚 Grammatica: forma e struttura corrette.",
+        "hintVocab": "📖 Vocabolario — la migliore corrispondenza.",
+        "hintReading": "👁 Leggi attentamente, gli indizi sono nella frase.",
+        "hintGeneral": "💡 Prendi tempo, scegli l'opzione più precisa."
       },
       "break": {
         "done": "{{n}}/4 fatto!",

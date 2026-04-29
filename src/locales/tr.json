@@ -597,7 +597,12 @@
         "wrong": "✗ Yanlış",
         "more": "📖 Daha fazla oku",
         "close": "▲ Kapat",
-        "longExp": "DETAYLI AÇIKLAMA"
+        "longExp": "DETAYLI AÇIKLAMA",
+        "hintAtc": "🎧 Telsizden duyuyormuş gibi düşün — ATC fraseolojisi.",
+        "hintGrammar": "📚 Dilbilgisi: doğru çekim ve yapı.",
+        "hintVocab": "📖 Kelime bilgisi — anlamı en uygun şık.",
+        "hintReading": "👁 Metni dikkatli oku, ipucu cümlelerde.",
+        "hintGeneral": "💡 Acele etme, en doğru şıkkı seç."
       },
       "break": {
         "done": "{{n}}/4 tamam!",

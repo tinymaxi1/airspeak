@@ -597,7 +597,12 @@
         "wrong": "اشتباه",
         "more": "بیشتر بخوانید",
         "close": "نزدیک",
-        "longExp": "DETAILED EXPLANATION"
+        "longExp": "DETAILED EXPLANATION",
+        "hintAtc": "🎧 تصور کن از رادیو می‌شنوی — اصطلاحات ATC.",
+        "hintGrammar": "📚 دستور زبان: شکل و ساختار درست.",
+        "hintVocab": "📖 واژگان — مناسب‌ترین گزینه.",
+        "hintReading": "👁 با دقت بخوان، سرنخ‌ها در جمله هستند.",
+        "hintGeneral": "💡 عجله نکن، دقیق‌ترین گزینه را انتخاب کن."
       },
       "break": {
         "done": "۴.۴ انجام داد!",

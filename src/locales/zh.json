@@ -597,7 +597,12 @@
         "wrong": "✗ 错误",
         "more": "📖 阅读更多",
         "close": "▲ 关闭",
-        "longExp": "详细说明"
+        "longExp": "详细说明",
+        "hintAtc": "🎧 想象在无线电中听到 — ATC 术语。",
+        "hintGrammar": "📚 语法:正确的形式和结构。",
+        "hintVocab": "📖 词汇 — 选最贴切的。",
+        "hintReading": "👁 仔细阅读,线索在句子里。",
+        "hintGeneral": "💡 别急,选最准确的选项。"
       },
       "break": {
         "done": "已完成{{n}}/4！",

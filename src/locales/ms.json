@@ -597,7 +597,12 @@
         "wrong": "Salah",
         "more": "📖 Baca lagi",
         "close": "▲ Tutup",
-        "longExp": "PENJELASAN YANG DIDETAIL"
+        "longExp": "PENJELASAN YANG DIDETAIL",
+        "hintAtc": "🎧 Bayangkan anda dengar melalui radio — fraseologi ATC.",
+        "hintGrammar": "📚 Tatabahasa: bentuk dan struktur yang betul.",
+        "hintVocab": "📖 Perbendaharaan kata — pilih yang paling sesuai.",
+        "hintReading": "👁 Baca dengan teliti, petunjuk ada dalam ayat.",
+        "hintGeneral": "💡 Ambil masa, pilih yang paling tepat."
       },
       "break": {
         "done": "Selesai!",

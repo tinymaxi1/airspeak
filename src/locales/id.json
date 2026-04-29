@@ -597,7 +597,12 @@
         "wrong": "✗ Salah",
         "more": "📖 Baca selengkapnya",
         "close": "▲ Tutup",
-        "longExp": "PENJELASAN TERPERINCI"
+        "longExp": "PENJELASAN TERPERINCI",
+        "hintAtc": "🎧 Bayangkan kau dengar lewat radio — fraseologi ATC.",
+        "hintGrammar": "📚 Tata bahasa: bentuk dan struktur yang benar.",
+        "hintVocab": "📖 Kosakata — pilih yang paling cocok.",
+        "hintReading": "👁 Baca dengan teliti, petunjuk ada di kalimat.",
+        "hintGeneral": "💡 Santai saja, pilih yang paling tepat."
       },
       "break": {
         "done": "{{n}}/4 sudah selesai!",

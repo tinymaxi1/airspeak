@@ -597,7 +597,12 @@
         "wrong": "✗ Fout",
         "more": "🖌 Lees meer",
         "close": "▲ Sluiten",
-        "longExp": "UITGEBREIDE TOELICHTING"
+        "longExp": "UITGEBREIDE TOELICHTING",
+        "hintAtc": "🎧 Stel je voor dat je het via radio hoort — ATC-fraseologie.",
+        "hintGrammar": "📚 Grammatica: juiste vorm en structuur.",
+        "hintVocab": "📖 Woordenschat — kies de beste match.",
+        "hintReading": "👁 Lees aandachtig, hints staan in de zin.",
+        "hintGeneral": "💡 Neem je tijd, kies de meest precieze optie."
       },
       "break": {
         "done": "{{n}}/4 klaar!",
