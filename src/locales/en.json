@@ -81,14 +81,14 @@
     },
     "daily": {
       "5": "5 min",
-      "5_title": "Quick review",
       "10": "10 min",
-      "10_title": "Light",
       "15": "15 min",
-      "15_title": "Regular",
       "30": "30 min",
-      "30_title": "Serious",
       "60": "60+ min",
+      "5_title": "Quick review",
+      "10_title": "Light",
+      "15_title": "Regular",
+      "30_title": "Serious",
       "60_title": "Intensive"
     }
   },
@@ -135,11 +135,11 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "Speak",
-      "hero2": "like a",
-      "hero3": "captain.",
-      "heroAccent": "captain",
-      "subtitle": "Aviation English designed for airline pilots. ICAO Level 4 ready, real scenarios, AI co-pilot included.",
+      "hero1": "Speak the",
+      "hero2": "language of",
+      "hero3": "flight.",
+      "heroAccent": "Cleared for takeoff",
+      "subtitle": "Aviation English community for pilots, cabin crew, technicians, ground staff and students. Built around ICAO Level 4, with real scenarios and an AI co-pilot.",
       "ctaTrial": "Start free trial",
       "ctaLogin": "I have an account",
       "footer": "7 DAY TRIAL • CANCEL ANYTIME"

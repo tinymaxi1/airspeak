@@ -135,14 +135,14 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "Proszę mówić",
-      "hero2": "jak",
-      "hero3": "kapitanie.",
-      "heroAccent": "kapitan",
-      "subtitle": "Angielski lotniczy przeznaczony dla pilotów linii lotniczych. Zgodny z poziomem 4 ICAO, oparty na rzeczywistych scenariuszach, z wirtualnym drugim pilotem.",
-      "ctaTrial": "Rozpocznij bezpłatny okres próbny",
-      "ctaLogin": "Mam konto",
-      "footer": "7-DNIOWY OKRES PRÓBNY • MOŻLIWOŚĆ ANULOWANIA W KAŻDYM MOMENCIE"
+      "hero1": "Mów językiem",
+      "hero2": "lotnictwa,",
+      "hero3": "leć.",
+      "heroAccent": "Gotowy do startu",
+      "subtitle": "Społeczność angielskiego lotniczego dla pilotów, personelu pokładowego, mechaników, obsługi naziemnej i studentów. Zgodny z poziomem ICAO 4, prawdziwe scenariusze, drugi pilot AI.",
+      "ctaTrial": "Bezpłatna wersja",
+      "ctaLogin": "Mam już konto",
+      "footer": "7 DNI ZA DARMO • REZYGNUJ KIEDY CHCESZ"
     },
     "login": {
       "hero1": "Witamy ponownie,",

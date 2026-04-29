@@ -135,14 +135,14 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "Spreek",
-      "hero2": "zoals een",
-      "hero3": "kapitein.",
-      "heroAccent": "aanvoerder",
-      "subtitle": "Luchtvaart-Engels, speciaal ontwikkeld voor piloten van luchtvaartmaatschappijen. Geschikt voor ICAO-niveau 4, met realistische scenario’s en inclusief een AI-copiloot.",
-      "ctaTrial": "Start een gratis proefperiode",
+      "hero1": "Spreek de",
+      "hero2": "taal van",
+      "hero3": "de vlucht.",
+      "heroAccent": "Klaar voor de start",
+      "subtitle": "Luchtvaart-Engels community voor piloten, cabinepersoneel, technici, grondpersoneel en studenten. Op ICAO-niveau 4, met realistische scenario's en AI-copiloot.",
+      "ctaTrial": "Gratis proberen",
       "ctaLogin": "Ik heb een account",
-      "footer": "7 DAGEN PROEFPERIODE • OP ELK MOMENT OP TE ZEGGEN"
+      "footer": "7 DAGEN PROEF • OP ELK MOMENT OPZEGBAAR"
     },
     "login": {
       "hero1": "Welkom terug,",

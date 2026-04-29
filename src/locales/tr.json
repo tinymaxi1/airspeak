@@ -81,14 +81,14 @@
     },
     "daily": {
       "5": "5 dk",
-      "5_title": "Hızlı tekrar",
       "10": "10 dk",
-      "10_title": "Hafif",
       "15": "15 dk",
-      "15_title": "Düzenli",
       "30": "30 dk",
-      "30_title": "Ciddi",
       "60": "60+ dk",
+      "5_title": "Hızlı tekrar",
+      "10_title": "Hafif",
+      "15_title": "Düzenli",
+      "30_title": "Ciddi",
       "60_title": "Yoğun"
     }
   },
@@ -135,11 +135,11 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "Kaptan",
-      "hero2": "gibi",
+      "hero1": "Havacılığın",
+      "hero2": "dilini",
       "hero3": "konuş.",
-      "heroAccent": "Kaptan",
-      "subtitle": "Havayolu pilotları için tasarlanmış havacılık İngilizcesi. ICAO Level 4 hedefli, gerçek senaryolarla, AI co-pilot eşliğinde.",
+      "heroAccent": "Kalkışa hazır",
+      "subtitle": "Pilot, kabin, teknisyen, yer hizmetleri ve havacılık öğrencileri için İngilizce topluluğu. ICAO Level 4 hedefli, gerçek senaryolar, AI co-pilot eşliğinde.",
       "ctaTrial": "Ücretsiz deneme",
       "ctaLogin": "Hesabım var",
       "footer": "7 GÜN DENEME • İSTEDİĞİN ZAMAN İPTAL"

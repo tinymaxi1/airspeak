@@ -135,14 +135,14 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "♪ Bicaralah ♪",
-      "hero2": "Seperti",
-      "hero3": "Kapten.",
-      "heroAccent": "Nakhoda",
-      "subtitle": "Pesawat penerbangan Inggris dirancang untuk pilot penerbangan. Kode ICAO Level 4 siap, skenario nyata, AI co-pilot disertakan.",
-      "ctaTrial": "Pengadilan bebas dimulai",
-      "ctaLogin": "Aku punya akun.",
-      "footer": "7 HARI HARI HADIUS  • ORANG CANCE"
+      "hero1": "Bertutur",
+      "hero2": "bahasa",
+      "hero3": "penerbangan.",
+      "heroAccent": "Bersedia untuk berlepas",
+      "subtitle": "Komuniti Bahasa Inggeris penerbangan untuk juruterbang, anak kapal, juruteknik, kakitangan darat dan pelajar. Sasaran ICAO Level 4, senario sebenar, dengan ko-juruterbang AI.",
+      "ctaTrial": "Cuba percuma",
+      "ctaLogin": "Saya ada akaun",
+      "footer": "CUBAAN 7 HARI • BATAL BILA-BILA MASA"
     },
     "login": {
       "hero1": "Selamat datang kembali,",

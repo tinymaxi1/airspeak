@@ -136,13 +136,13 @@
   "screens": {
     "welcome": {
       "hero1": "Bicara",
-      "hero2": "seperti",
-      "hero3": "kapten.",
-      "heroAccent": "kapten",
-      "subtitle": "Bahasa Inggris Penerbangan yang dirancang khusus untuk pilot maskapai penerbangan. Sesuai dengan Standar ICAO Level 4, dilengkapi skenario nyata, serta co-pilot berbasis kecerdasan buatan (AI).",
+      "hero2": "bahasa",
+      "hero3": "penerbangan.",
+      "heroAccent": "Siap lepas landas",
+      "subtitle": "Komunitas Bahasa Inggris penerbangan untuk pilot, awak kabin, teknisi, petugas darat dan mahasiswa. Sesuai standar ICAO Level 4, skenario nyata, dengan co-pilot AI.",
       "ctaTrial": "Coba gratis",
-      "ctaLogin": "Saya punya akun",
-      "footer": "UJI COBA 7 HARI • DAPAT DIBATALKAN KAPAN SAJA"
+      "ctaLogin": "Sudah punya akun",
+      "footer": "UJI 7 HARI • BATALKAN KAPAN SAJA"
     },
     "login": {
       "hero1": "Selamat datang kembali,",

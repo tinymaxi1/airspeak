@@ -135,14 +135,14 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "Falar",
-      "hero2": "como um",
-      "hero3": "capitão.",
-      "heroAccent": "capitão",
-      "subtitle": "Inglês para aviação concebido para pilotos de linha aérea. Preparado para o Nível 4 da ICAO, cenários reais, copiloto com IA incluído.",
-      "ctaTrial": "Comece o período de avaliação gratuita",
-      "ctaLogin": "Tenho uma conta",
-      "footer": "7 DIAS DE TESTE • CANCELE A QUALQUER MOMENTO"
+      "hero1": "Fala a",
+      "hero2": "língua do",
+      "hero3": "voo.",
+      "heroAccent": "Autorizado para descolagem",
+      "subtitle": "Comunidade de inglês para aviação para pilotos, tripulação de cabine, técnicos, agentes de terra e estudantes. Preparado para o Nível 4 da ICAO, cenários reais, copiloto com IA incluído.",
+      "ctaTrial": "Avaliação gratuita",
+      "ctaLogin": "Já tenho conta",
+      "footer": "7 DIAS GRÁTIS • CANCELE QUANDO QUISER"
     },
     "login": {
       "hero1": "Bem-vindo de volta,",

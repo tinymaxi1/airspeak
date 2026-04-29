@@ -135,14 +135,14 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "说话",
-      "hero2": "就像一个",
-      "hero3": "队长。",
-      "heroAccent": "队长",
-      "subtitle": "专为航空公司飞行员设计的航空英语课程。符合国际民航组织（ICAO）4级标准，包含真实情境，并配备AI副驾驶。",
-      "ctaTrial": "开始免费试用",
-      "ctaLogin": "我已有账户",
-      "footer": "7天试用 • 随时取消"
+      "hero1": "说出",
+      "hero2": "飞行的",
+      "hero3": "语言。",
+      "heroAccent": "允许起飞",
+      "subtitle": "面向飞行员、客舱乘务员、机务、地面服务和航空学员的航空英语社区。符合 ICAO 4 级标准，真实场景，AI 副驾驶随行。",
+      "ctaTrial": "免费试用",
+      "ctaLogin": "我已有账号",
+      "footer": "7 天试用 • 随时取消"
     },
     "login": {
       "hero1": "欢迎回来，",

@@ -135,14 +135,14 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "Sprechen",
-      "hero2": "wie ein",
-      "hero3": "Kapitän.",
-      "heroAccent": "Kapitän",
-      "subtitle": "Luftfahrt-Englisch speziell für Piloten von Fluggesellschaften. ICAO-Level-4-konform, realistische Szenarien, inklusive KI-Kopilot.",
-      "ctaTrial": "Kostenlose Testversion starten",
+      "hero1": "Sprich die",
+      "hero2": "Sprache des",
+      "hero3": "Flugs.",
+      "heroAccent": "Bereit zum Start",
+      "subtitle": "Englisch-Community der Luftfahrt für Piloten, Kabinencrew, Techniker, Bodenpersonal und Studierende. Auf ICAO Level 4 ausgerichtet, mit realen Szenarien und KI-Kopilot.",
+      "ctaTrial": "Kostenlos testen",
       "ctaLogin": "Ich habe ein Konto",
-      "footer": "7-TÄGIGE TESTVERSION • JEDERZEIT KÜNDIGBAR"
+      "footer": "7 TAGE TEST • JEDERZEIT KÜNDBAR"
     },
     "login": {
       "hero1": "Willkommen zurück,",

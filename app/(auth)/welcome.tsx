@@ -1,12 +1,13 @@
 /**
  * Welcome Screen — AirSpeak Cinematic Hero
  *
- * Tasarım: navy-900 bg + topo gradient + globe arcs + hero "Speak like a captain."
+ * Tasarım: navy-900 bg + topo gradient + globe arcs + hero "Speak the language of flight."
  * - Logo lockup üst sol
  * - "ICAO L4 ✦ EN" kod rozeti üst sağ (mono uppercase)
  * - Eyebrow: "Cleared for takeoff" (red)
- * - Hero: Space Grotesk 56px "Speak\nlike a\ncaptain." (red captain)
- * - Body: Aviation English for pilots, cabin & ground crew. Built around ICAO Level 4.
+ * - Hero: Space Grotesk 56px "Speak the\nlanguage of\nflight." (last line red)
+ * - Body: 5 rolün ortak topluluğu (pilot, kabin, teknisyen, yer hizmetleri, öğrenci) +
+ *   ICAO L4 + AI co-pilot vurgusu — havacılık İngilizcesi her rol için
  * - CTA: "START FREE TRIAL" red 3D + ghost "I have an account"
  * - Footer: 7 DAY TRIAL • CANCEL ANYTIME
  */

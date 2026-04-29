@@ -135,14 +135,14 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "Parlare",
-      "hero2": "come un",
-      "hero3": "capitano.",
-      "heroAccent": "capitano",
-      "subtitle": "Inglese aeronautico pensato per i piloti di linea. Conforme al livello 4 dell'ICAO, scenari realistici, copilota con intelligenza artificiale incluso.",
-      "ctaTrial": "Inizi la prova gratuita",
-      "ctaLogin": "Ho un account",
-      "footer": "7 GIORNI DI PROVA • ANNULLABILE IN QUALSIASI MOMENTO"
+      "hero1": "Parla la",
+      "hero2": "lingua del",
+      "hero3": "volo.",
+      "heroAccent": "Autorizzato al decollo",
+      "subtitle": "Comunità di inglese aeronautico per piloti, equipaggio di cabina, tecnici, personale di terra e studenti. Livello ICAO 4, scenari reali, copilota IA incluso.",
+      "ctaTrial": "Prova gratuita",
+      "ctaLogin": "Ho già un account",
+      "footer": "7 GIORNI GRATIS • CANCELLA QUANDO VUOI"
     },
     "login": {
       "hero1": "Bentornato,",

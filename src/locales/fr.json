@@ -135,14 +135,14 @@
   },
   "screens": {
     "welcome": {
-      "hero1": "Parler",
-      "hero2": "comme un",
-      "hero3": "capitaine.",
-      "heroAccent": "capitaine",
-      "subtitle": "Un cours d'anglais aéronautique conçu pour les pilotes de ligne. Conforme au niveau 4 de l'OACI, scénarios réalistes, copilote IA inclus.",
-      "ctaTrial": "Commencez votre essai gratuit",
+      "hero1": "Parlez la",
+      "hero2": "langue du",
+      "hero3": "vol.",
+      "heroAccent": "Autorisé au décollage",
+      "subtitle": "La communauté d'anglais aéronautique pour pilotes, personnel de cabine, techniciens, agents au sol et étudiants. Niveau OACI 4, scénarios réels, copilote IA inclus.",
+      "ctaTrial": "Essai gratuit",
       "ctaLogin": "J'ai un compte",
-      "footer": "ESSAI DE 7 JOURS • RÉSILIATION À TOUT MOMENT"
+      "footer": "7 JOURS GRATUITS • ANNULABLE À TOUT MOMENT"
     },
     "login": {
       "hero1": "Bienvenue à nouveau,",
