@@ -1176,6 +1176,27 @@ Farklı havayolları, misafirperverlik ve hizmet standartları konusunda kendi v
     redFlagsTr: ['"Hepsinden iyiyim"', 'Genelleme', 'Kibirli'],
     sampleAnswerTr: 'Diğer adayların hepsi muhtemelen iyi hazır, bunu kabul ediyorum. Benim 3 farkım: 1) 4 yıl 5-yıldız hospitality — VIP/ünlü servisinde direkt deneyim. 2) Türkçe/İngilizce/İspanyolca rahat konuşma — yolcu çeşitliliğinizde direkt fayda. 3) Bütün ekiplerimde "feedback champion"sım — kritik kabul + uygulamada güçlü. Bu üç nitelik ilk 6 ay içinde size somut katkı verir.',
     tipsTr: ['3 spesifik bullet', 'Şirkete kazanım vurgu', 'Diğerleri kötülenmez'],
+      detailedExplanationTr: `**HR psikoloji perspektifi**
+Bu soru özünde "kendine güveniyor musun + diğerlerinden NASIL ayrılıyorsun" testidir. HR uzmanları 4 niteliği ölçer: özgüven (kibirsiz), öz farkındalık (gerçek güçlü yönlerini bilme), iletişim disiplini (özlü + spesifik) ve şirkete katma değer odaklı düşünme. Cliché cevap (200 başvuran içinden ilk 5 standart bullet) anında ayırt edilir. Diğer adayları kötüleyenler ise direkt elenir.
+
+**Bu aşamada neden sorulur**
+Mülakatın kapanışına yakın, genellikle 2. tur veya panel'de sorulur. HR adayın "bireysel rekabette" özgüvenini görmek ister — 200 başvuran arasında ayırt edici nitelik nedir? Emirates/Qatar Open Day formatında 200+ aday + 5-10 kişi alır; bu soru filtre amacıyla kullanılır.
+
+**3 seviyeli cevap örneği**
+- **Zayıf**: "Çünkü çok çalışkanım, ekip oyunu severim ve hospitality'i seviyorum." → kötü çünkü her aday aynı şeyi söyler, ayırt edicilik sıfır.
+- **Orta**: "5 yıl 5-yıldız hospitality deneyimim var ve 3 dil konuşuyorum." → iyi ama "neden ben" değil, sadece "ne biliyorum" — şirkete katkı yok.
+- **Güçlü**: "200 aday muhtemelen iyi hazırlandı, bunu kabul ediyorum. 3 farkım: (1) 4 yıl 5-yıldız VIP servisi, kraliyet ailesi konuk geçti; (2) Türkçe/İngilizce/İspanyolca rahat — Latin Amerika hattınızda direkt fayda; (3) Marriott'ta 'Feedback Champion' rozeti, kritik kabul + uygulamada güçlü. Bu üç nitelik ilk 6 ayda size ölçülebilir katkı verir." → bu cevap işe alır çünkü diğerlerini kötülemeden, spesifik + somut + şirket faydası odaklı.
+
+**STAR formatı uygulaması**
+Bu soruda klasik STAR yapısı yok — direkt 3-bullet "value proposition". Ama her bullet'ı mini-STAR ile destekle: "VIP servisi" için Situation (5★ otel), Task (VIP guest), Action (özel ihtimam protokolü), Result (geri dönüş ödülü). Ana mesaj 60 saniye altı, takip sorusu beklemeye hazır ol.
+
+**Havayolu uyarlama**
+THY: "Türk misafirperverliği"ni global hub'a taşıma vurgusu. Emirates/Qatar: 5★ servis standardı + multicultural cabin. Pegasus/Ryanair: hızlı turnaround + maliyet bilinci. Lufthansa/SAS: prosedür disiplini + ek Almanca/İskandinav dil bonusu.
+
+**Tipik takip soruları**
+- "Peki 200 aday arasında neden seçilmemen gerek?" (alçakgönüllülük testi)
+- "Mevcut işinden bize taşıyamayacağın bir şey var mı?"
+- "İlk 6 ayda nasıl katkı vereceğini somutlaştırabilir misin?"`,
   },
   {
     id: 'qc_t2',
@@ -1193,6 +1214,27 @@ Farklı havayolları, misafirperverlik ve hizmet standartları konusunda kendi v
     redFlagsTr: ['"Çok perfeksiyonistim" — clichéd', '"Hiç zayıflık yok"', 'İş kritik bir zayıflık seç (ekip oyunu kötü, dakik değilim)'],
     sampleAnswerTr: 'Önceden public speaking — büyük gruplarda sunum gergin oluyordum. Marriott\'ta supervisor olduğumdan beri ekip toplantılarında haftada 3 kez sunum yapıyorum. Ek olarak 1 yıl Toastmasters üyesiyim. Şu an 30 kişiye sunum konforlu. Hala büyük grup öncesi 5 dk hazırlık ritüelim var — ama "stres" "fokus" oldu.',
     tipsTr: ['Üzerinde aktif çalıştığın bir nokta seç', 'Spesifik gelişim kanıtı'],
+      detailedExplanationTr: `**HR psikoloji perspektifi**
+Klasik tuzak soru. HR aslında "kendini biliyor musun + büyümek için aktif çalışıyor musun" testler. Aranan 3 nitelik: öz-farkındalık (kendi zayıflığını dürüst görebilme), gelişim mindset (sabit yetenek değil, çalışılan kapasite), ve risk yönetimi (iş için kritik olmayan bir alanı seçme akıllılığı). "Mükemmeliyetçiyim" tipi cliché veya "zayıflığım yok" cevabı anında negatif puan getirir.
+
+**Bu aşamada neden sorulur**
+Genellikle behavioral bölümünün ortasında, motivasyon ve güçlü yönler sorularından sonra. HR adayın güçlü yönlerini öne çıkarırken zayıflıklarını da kabul edebilen "olgun profesyonel" olup olmadığını görmek ister. Cabin crew rolünde stres altında öz-farkındalık kritik — kabin ekibi kendi sınırlarını bilmediğinde diğer ekibe yük olur.
+
+**3 seviyeli cevap örneği**
+- **Zayıf**: "Çok mükemmeliyetçiyim, bazen çok ayrıntıya takılıyorum." → kötü çünkü cliché, HR bunu yıllardır duyuyor; aday öz-farkındalık eksikliği gösterdi.
+- **Orta**: "Public speaking konusunda zayıfım, üzerinde çalışıyorum." → iyi ama somut çalışma kanıtı yok, gelişim ölçülebilir değil.
+- **Güçlü**: "Önceden büyük gruplara sunum yaparken gergin oluyordum. Marriott'ta supervisor olduğumdan beri haftada 3 kez ekip toplantısı sunum yapıyorum + 1 yıl Toastmasters üyesiyim. Şu an 30 kişiye sunum konforlu. Hâlâ büyük grup öncesi 5 dakika hazırlık ritüelim var ama 'stres' artık 'fokus'a dönüştü." → bu cevap işe alır çünkü gerçek zayıflık + ölçülebilir gelişim + iş için kritik olmayan alan.
+
+**STAR formatı uygulaması**
+Mini-STAR yapısı: Situation (geçmiş bir gergin sunum anı), Task (ekip toplantısı liderliği), Action (Toastmasters + haftalık pratik), Result (30 kişilik gruba konfor). 90 saniyenin altında tut.
+
+**Havayolu uyarlama**
+THY/Pegasus için: dil zayıflığı (örn. İngilizce akıcılık) ve aktif gelişim (BBC English + dil partneri) iyi seçim. Emirates/Qatar için: kültürel adapte zorluğu + öğrenme planı. Lufthansa için: prosedür rijitliği yerine "kontrollü esneklik" çalışması. Asla "İngilizcem zayıf" + plan göstermeden deme.
+
+**Tipik takip soruları**
+- "Bu zayıflık iş performansını şu ana kadar nasıl etkiledi?"
+- "1 yıl sonra hangi alanda kendini geliştirmek istersin?"
+- "Çevren bu zayıflığını nasıl tarif eder?"`,
   },
   {
     id: 'qc_t3',
@@ -1211,6 +1253,27 @@ Farklı havayolları, misafirperverlik ve hizmet standartları konusunda kendi v
     redFlagsTr: ['"İlişki bozulmasın" görmezden gel', 'Direkt patrona koş', 'Asla raporlama'],
     sampleAnswerTr: 'Önce kesinlikle gördüğüme emin olmam gerek — yorgunum, yanlış görmüş olabilirim. 2 farklı uçuşta tekrarlanırsa: önce kişiyle özel konuşurum ("Senden şunu fark ettim, açıklar mısın?"). Açıklayamazsa veya devam ederse pursar\'a bildirim. Yasal: hırsızlık iş suçu + şirket sigortası etkilenir. Kendi etik zorunluluğum — ihbar etmemek beni de suç ortağı yapar.',
     tipsTr: ['Etik + due process', 'Hassas konu — diplomatik'],
+      detailedExplanationTr: `**HR psikoloji perspektifi**
+Etik integrite testi. HR aslında "şirket kuralı vs ekip dayanışması çatışınca hangisini seçersin" sorusu. Aranan 4 nitelik: etik netlik (kararlı moral pusula), due process (önce gözlem doğrula, hemen ihbar değil), iletişim becerisi (önce kişiyle özel konuş), ve hiyerarşi farkındalığı (purser → captain → ground). "İlişki bozulmasın" diyenler elenir; "direkt patrona koş" diyenler ise "ekip oyuncusu değil" damgası alır.
+
+**Bu aşamada neden sorulur**
+Hassas etik soru, mülakatın derin tarafında — aday rahatlamış, savunmasız anda. HR cabin crew için kritik bir senaryoyu test eder: galley hırsızlığı (içki, ekipman, gümrük ürünü) gerçek olay, sigorta + lisans riski yaratır. Whistleblower olmaktan kaçınan aday gelecekte ekibi tehlikeye atabilir.
+
+**3 seviyeli cevap örneği**
+- **Zayıf**: "Hemen pursar'a giderim ve kişiyi bildiririm." → kötü çünkü due process atlandı; belki yanlış gördün, belki kişi authorized restock yapıyordu — yanlış suçlama hem ona hem sana zarar.
+- **Orta**: "Görmezden gelmem ama önce kişiyle özel konuşurum." → iyi yön ama eksik — özel konuşma sonrası çözülmezse plan ne?
+- **Güçlü**: "Önce gözlemimi doğrulamam lazım — yorgunum, yanlış görmüş olabilirim. 2 farklı uçuşta tekrarlanırsa, kişiyle özel + saygılı konuşurum: 'Şunu fark ettim, açıklar mısın?' Authorized bir durumsa OK. Eksik açıklama veya devam ederse, pursar'a yazılı bildirim. Yasal: hırsızlık iş suçu + sigorta etkisi var; ihbar etmemek beni de suç ortağı yapar — kendi sicilim için bile ihbar zorunlu." → bu cevap işe alır çünkü due process + etik zorunluluk + öz-koruma dengesi var.
+
+**STAR formatı uygulaması**
+Hipotetik soru olduğu için STAR tam uygulanamaz, ama "How would you handle" yapısı ile 4 adımı net ver: (1) Doğrulama, (2) Özel iletişim, (3) Hiyerarşik bildirim, (4) Yazılı kayıt. Bu profesyonel zincir bekleniyor.
+
+**Havayolu uyarlama**
+Türk havayolları (THY/Pegasus) için: "ekip içi problem önce dahili çözülür" felsefesi vurgu. Emirates/Qatar: zero tolerance kültürü + anonim ihbar hattı bilgisi (Dubai-based ethics line). Lufthansa: Compliance Office + EASA Just Culture referansı. Asla kişiyi düşman gibi tarif etme — "ekip arkadaşım" terimini koru.
+
+**Tipik takip soruları**
+- "Pursar bu ihbarı ciddiye almazsa ne yaparsın?"
+- "Bu kişi senin yakın arkadaşın olsaydı yaklaşımın değişir miydi?"
+- "Whistleblower haklarını biliyor musun?"`,
   },
   {
     id: 'qc_t4',
@@ -1229,6 +1292,27 @@ Farklı havayolları, misafirperverlik ve hizmet standartları konusunda kendi v
     redFlagsTr: ['"Yapmam!" — direnme', 'Diğer crew\'a şikayet', 'Sessiz kal + sonra suçla'],
     sampleAnswerTr: 'Önce kendi emin olurum: pursar bilmediğim bir procedure mi takip ediyor? Sonra özel konuşurum: "Yardımcı olmak için soruyorum, bunu nasıl yapmamızı istiyorsunuz?" Açıklama mantıklıysa OK. Israr ederse + gerçekten yanlışsa: captain\'a bilgi vermek görevim (CRM gereği). Sonra olay raporu yazarım.',
     tipsTr: ['Hiyerarşi + etik denge', 'Diplomatik ama prensiplere bağlı'],
+      detailedExplanationTr: `**HR psikoloji perspektifi**
+Hiyerarşi vs etik dengesi sorusu. HR adayın 4 niteliğini ölçer: hiyerarşi saygısı (CRM ilkesi — chain of command), assertiveness (yanlışı sessiz kabul etmeme), profesyonel iletişim (saygılı sorgulama), ve operasyonel zekâ (doğru zamanda doğru kişi). Cabin crew için kritik: pursar yanlış komut verirse uçuş emniyeti tehlikeye girer.
+
+**Bu aşamada neden sorulur**
+CRM (Crew Resource Management) zekâsını test eden klasik soru. Pursar veya senior crew'ın hata yapma ihtimali var; aday "I just follow orders" mentaliteyle gelirse Tenerife (1977) tipi felaket riski. Bu soru özellikle Emirates/Qatar/Lufthansa gibi CRM eğitimine yatırım yapan havayollarında critical filtre.
+
+**3 seviyeli cevap örneği**
+- **Zayıf**: "Hiyerarşiyi takip ederim, pursar ne derse onu yaparım." → kötü çünkü CRM bilinci yok; modern havacılık emniyet kültürü "questioning attitude" bekler.
+- **Orta**: "Yanlış olduğunu söyler, yapmam." → iyi yön ama nasıl + kime + ne zaman belirsiz; çatışmacı algılanabilir.
+- **Güçlü**: "Önce kendi emin olurum: pursar bilmediğim bir prosedür mü uyguluyor? Sonra özel ortamda saygılı sorgulama: 'Bu konuda netleşmek istedim, X prosedürünü düşünüyordum, sizin yaklaşımınız neden farklı?' Açıklama mantıklıysa OK. Israr ederse + gerçekten emniyet ihlaliyse, captain'a bilgi vermek görevim — CRM gereği. Sonra olay raporu (ASR) yazarım. Önemli: yolcu önünde asla çelişki sergilemem." → bu cevap işe alır çünkü hiyerarşi + etik + iletişim disiplini + dokümantasyon bilinci içerir.
+
+**STAR formatı uygulaması**
+Hipotetik için "I would" yapısı. 4 fazlı: (1) Self-check, (2) Saygılı özel sorgulama, (3) Captain escalation if safety issue, (4) ASR yazma. Her fazda alternatif sonuç senaryosu ekle (resolved / not resolved).
+
+**Havayolu uyarlama**
+THY: "büyüğüne saygı ama emniyet öncelik" Türk kültürel dengesi. Emirates/Qatar: "Speak Up" programı isim olarak söyle (her ikisinde de var). Lufthansa: Just Culture + EASA reporting referansı. Pegasus: hızlı operasyonel ortamda diplomatik yön — yer hizmetlerine taşmadan içeride çöz.
+
+**Tipik takip soruları**
+- "Captain bile yanlış komut verseydi yaklaşımın değişir miydi?"
+- "ASR raporu yazmak ne demek, biliyor musun?"
+- "Pursar'ın seni hedef alabileceği endişesi seni etkiler miydi?"`,
   },
   {
     id: 'qc_t5',
@@ -1241,6 +1325,27 @@ Farklı havayolları, misafirperverlik ve hizmet standartları konusunda kendi v
     redFlagsTr: ['"Sadece şu şehirde" — esnek değil', 'Tereddüt'],
     sampleAnswerTr: 'Tabi ki. Erasmus\'la İspanya\'da 6 ay yaşadım — başlangıçta ispanyolca yoktu, 6 ay sonra rahat konuştum. Kabin crew rolü beni Tokyo, Paris, Beijing\'e götürebilir — bu beni heyecanlandırıyor. Yeni şehirde önce 3 ay yoğun dil kursu + yerel ekiple network kurarım.',
     tipsTr: ['Past adaptation kanıtı', 'Plan göster'],
+      detailedExplanationTr: `**HR psikoloji perspektifi**
+Esneklik + adaptasyon testi. HR 4 niteliği ölçer: kariyer ciddiyeti (cabin crew = global yaşam tarzı), kültürel uyum kapasitesi (yeni dil + yeni şehir), risk toleransı (komfor zonundan çıkma), ve uzun vadeli commitment (3-5 yıl). Tereddüt edenler veya "sadece şu şehir" diyenler global hub havayolları için elenir.
+
+**Bu aşamada neden sorulur**
+Mülakatın orta-sonu, lojistik ve commitment testleri kısmında. Emirates Dubai'de yaşamayı zorunlu tutar; Qatar Doha'da; Lufthansa Almanya/Avusturya hub'lı. Bu soru "you sign, you move" gerçeğine adayın ne kadar hazır olduğunu görür. Cabin crew rolünde mobilite zorunlu — adayın "evcimen" profili varsa 3-6 ayda istifa riski yüksek.
+
+**3 seviyeli cevap örneği**
+- **Zayıf**: "Aslında ben İstanbul'dan ayrılmamayı tercih ederim." → kötü çünkü cabin crew rolünün temel beklentisini reddetti; mülakat fiilen bitti.
+- **Orta**: "Evet, taşınabilirim." → iyi ama kanıt yok; HR "söyledi sadece" şüphesi taşır.
+- **Güçlü**: "Tabii ki. Erasmus ile İspanya'da 6 ay yaşadım — başlangıçta İspanyolca yoktu, 6 ay sonra B2 seviyesine çıktım. Cabin crew rolü beni Tokyo, Paris, Beijing'e götürebilir; bu beni heyecanlandırıyor. Yeni şehirde plan: ilk 3 ay yoğun dil kursu (Goethe/Alliance Française gibi resmi kurum) + yerel ekipten 2-3 mentör + aylık kültürel etkinlik takvimi. Önceki Erasmus deneyimim 'evcimen değilim' kanıtı." → bu cevap işe alır çünkü geçmiş adapte kanıtı + somut plan + heyecan tonu var.
+
+**STAR formatı uygulaması**
+Erasmus/Work&Travel/Inter-country çalışma deneyimi varsa STAR ile anlat: Situation (yeni ülke), Task (akademik/iş + dil), Action (3 aylık plan), Result (B2 dil + 3-5 arkadaş + 1-2 yerel proje). Yoksa yakın çevrenden örnek (kuzen yurtdışında, vb.) ile "böyle bir geçişin zorluklarını biliyorum" mesajı ver.
+
+**Havayolu uyarlama**
+Emirates: Dubai expat hayatı (no income tax, kompakt expat topluluk) heyecan vurgu. Qatar: aile dostu Doha + 60+ ülkeden ekip. Lufthansa: Frankfurt/Münih merkez, AB içinde mobilite kolaylığı. THY (uluslararası genişleme): İstanbul base ama 6+ ay'lık expat tour'lar.
+
+**Tipik takip soruları**
+- "Ailenin reaksiyonu nasıl olur?"
+- "İlk 3 ay yalnız hisseder + bunu nasıl yönetirsin?"
+- "5 yıl sonra hâlâ bu şehirde olur musun, yoksa Türkiye'ye dönmek hedefin var mı?"`,
   },
 
   // ═══════════ COMPANY KNOWLEDGE — JENERIK ═══════════
@@ -1254,6 +1359,27 @@ Farklı havayolları, misafirperverlik ve hizmet standartları konusunda kendi v
     goodAnswerPointsTr: ['3 spesifik fact (filo, network, ödül)', 'Heyecan — somut sebep', 'Son gelişme bil', 'Felsefe + değer'],
     redFlagsTr: ['Genel "iyi şirket"', 'Yanlış fact'],
     tipsTr: ['Mülakat öncesi LinkedIn + websitesi', 'Son haberler tarama'],
+      detailedExplanationTr: `**HR psikoloji perspektifi**
+Hazırlık + ciddiyet testi. HR adayın "buraya neden başvurdun" sorusunun gerçek versiyonu. Aranan 4 nitelik: araştırma disiplini (mülakat öncesi homework), seçicilik (her havayoluna değil, BU havayolu), ticari farkındalık (filo, network, son haberler) ve duygusal bağ (heyecan tonu). 3 fact veremeyen aday "her havayoluna başvuruyorum" izlenimi verir.
+
+**Bu aşamada neden sorulur**
+Mülakat açılışında veya orta kısmında. HR adayın hazırlık seviyesini ölçer — havayolu hakkında 30 saniye konuşamayan adaylar yıllık binlerce başvuru havuzunda anında elenir. Özellikle THY/Emirates/Qatar gibi büyük marka havayollarında "neden bizimle?" sorusu adayın commitment göstergesi.
+
+**3 seviyeli cevap örneği**
+- **Zayıf**: "Şirketinizi seviyorum ve büyük bir havayolu olduğu için heyecanlıyım." → kötü çünkü hiçbir spesifik bilgi yok; cliché + jenerik.
+- **Orta**: "Filonuz büyük ve farklı destinasyonlarınız var, bu beni heyecanlandırıyor." → iyi yön ama hâlâ generic; herhangi bir flagship için aynı cümle uyar.
+- **Güçlü**: "3 nokta beni heyecanlandırıyor: (1) Geçen ay Cape Town hattını açtınız, Afrika network'üzü 24'ten 27'ye çıkardınız — büyüme stratejisi belli; (2) IATA Diversity Charter imzacısısınız ve %52 kabin crew kadın oranı sektör ortalamasının üstünde — kültürünüze uyduğumu hissediyorum; (3) Skytrax 5-Star rating + Best Cabin Crew (2024) ödülü standartlarınızı gösteriyor — bu seviyede çalışmak gelişimim için ideal." → bu cevap işe alır çünkü 3 farklı kategori (operasyon, kültür, kalite) + son haberler + kişisel bağ var.
+
+**STAR formatı uygulaması**
+Bu soru STAR değil, "research showcase" formatı. 3-bullet yapısı: her bullet'ta (a) spesifik fact, (b) zaman damgası (geçen ay, 2024), (c) kişisel rezonans cümle. Her bullet 15-20 saniye, toplam 60 saniye altı.
+
+**Havayolu uyarlama**
+THY: "Star Alliance üyesi + 130+ ülke" gibi spesifik network rakamları + son THY Cargo büyüme verileri. Emirates: "60.000 kabin ekibi + 350 uçak filo" + yeni A380 retire kararı yorumu. Qatar: "Skytrax 7 kez 1. + Hamad Airport hub" detayı. Pegasus: "Avrupa'da en hızlı büyüyen LCC + ATR/A320 filo" verileri. Mülakatta kullanmadan önce LinkedIn + havayolu yıllık raporu (annual report) tara.
+
+**Tipik takip soruları**
+- "Bu 3 noktadan hangisi senin için en önemli, neden?"
+- "Şirketin sektörde hangi konuda zayıf olduğunu düşünüyorsun?"
+- "1 yıl sonra burayı seçmesinden pişman olur musun?"`,
   },
   {
     id: 'qc_ck2',
@@ -1265,6 +1391,27 @@ Farklı havayolları, misafirperverlik ve hizmet standartları konusunda kendi v
     goodAnswerPointsTr: ['CEO adı doğru', 'Stratejik vizyon bil (recent statement)', 'Pozitif ama dürüst görüş', 'Şirket trajektory'],
     redFlagsTr: ['Yanlış isim', '"Bilmiyorum"', 'Politik yorum'],
     tipsTr: ['Şirket yıllık raporu oku', 'CEO LinkedIn takip et'],
+      detailedExplanationTr: `**HR psikoloji perspektifi**
+Derin homework testi. CEO ismini bilmek bilgi değil, aramak için 30 saniye harcamak demek — bunu yapmayan aday "ciddi adayı" filtresinden geçmez. HR aranıyor: araştırma disiplini, ticari okuryazarlık (CEO açıklamalarını anlama), profesyonel görüş geliştirme yeteneği (nötr ama somut), ve politik nötrlük (CEO'yu eleştirme/abartma değil, dengeli yorum).
+
+**Bu aşamada neden sorulur**
+Mülakatın orta kısmında, "şirket bilgisi" derinleştirme aşamasında. THY için Bilal Ekşi, Emirates için Tim Clark, Pegasus için Güliz Öztürk; bu isimler 1 dakikalık Google araması. Bilmemek "ben sadece kabin crew olmak istedim, şirket önemli değil" mesajı gönderir. CEO'yu bilen aday gelecekte şirket büyüme stratejilerini takip eden çalışan profili gösterir.
+
+**3 seviyeli cevap örneği**
+- **Zayıf**: "Bilmiyorum, hatırlamıyorum." → mülakat oradan toparlanmaz.
+- **Orta**: "Tim Clark, Emirates başkanı." → iyi başlangıç ama sadece isim — görüş yok.
+- **Güçlü**: "Tim Clark, Sir Tim Clark — 2003'ten beri Emirates Başkanı. Liderliğinin 3 önemli yönü görüyorum: (1) Filo stratejisi — A380 büyük yatırımı agresif ama 2024'te emekli kararı pragmatist; (2) Hub felsefesi — Dubai'yi 'global aktarma noktası' olarak konumlandırma vizyonu sektörü değiştirdi; (3) Öğrenme — son röportajında 'A350 ile uzun-haul stratejisi yeniden' demesi adapte yeteneği. Genel görüşüm: uzun vadeli stratejik düşünür, kısa vadeli kar peşinde değil — bu cabin crew kariyerime yatırım anlamına gelir." → bu cevap işe alır çünkü isim + zaman + spesifik karar yorumu + kişisel bağ var.
+
+**STAR formatı uygulaması**
+Klasik STAR yok, "leadership analysis" formatı. 3-bullet ile (a) spesifik karar/strateji, (b) sektörel etkisi, (c) sana çağrışımı. Politik yorum (Trump tweet, Brexit, vb.) yapma — havacılık + iş yorumuna sınırla.
+
+**Havayolu uyarlama**
+THY: Bilal Ekşi (CEO), Ahmet Bolat (Yönetim Kurulu Bşk) — ayırımı bil. Emirates: Sir Tim Clark (President), Sheikh Ahmed (Chairman). Qatar: Akbar Al Baker (uzun yıllar, 2023'te emekli, Badr Mohammed Al-Meer şu an). Pegasus: Güliz Öztürk (Türkiye'nin ilk havayolu kadın CEO'su — bunu vurgu iyi). Lufthansa: Carsten Spohr (Group CEO).
+
+**Tipik takip soruları**
+- "Onun yerinde olsaydın hangi kararı farklı verirdin?"
+- "Bu CEO'nun bir zayıflığı olduğunu düşünüyor musun?"
+- "Yıllık raporu okudun mu? En çarpıcı nokta neydi?"`,
   },
 
   // ═══════════ GROUP EXERCISE ═══════════
@@ -1285,5 +1432,26 @@ Farklı havayolları, misafirperverlik ve hizmet standartları konusunda kendi v
     redFlagsTr: ['Çok baskın (her şeyi sen söyle)', 'Sessiz kal', 'Diğerlerini kes'],
     sampleAnswerTr: 'Önce gruba "Listeyi prioritize edelim" derim. 1) Hamile + acil değil — kalmalı (sağlık riski + vulnerability). 2) Aile düğüne gidiyor — uzun vadeli plan, alternatif zor — kalmalı. 3) Yaşlı çift — vulnerability, kalmalı. Backpacker + businessman: backpacker esnek plan, çıkmaya hazır olabilir; businessman ticari önemli ama next flight 3 saat sonra varsa — businessman da çıkabilir. Ben grup tartışmasını özetleyip oylama önereirim.',
     tipsTr: ['Grup içi rol — moderatör/özet', 'Empati ile mantık', 'Konsensüs vurgu'],
+      detailedExplanationTr: `**HR psikoloji perspektifi**
+Group exercise klasik senaryosu. Bireysel mülakat değil, **gözlemlenen** ekip dinamiği — HR uzmanları odanın etrafında not tutar. Aranan 4 nitelik: katılım dengesi (sessiz değil, dominant değil), aktif dinleme (diğerlerinin fikrini referans verme), structured thinking (kriterlere göre prioritize), ve liderlik gönüllüsü (özet/oylama önerme). Emirates/Qatar Open Day'inde grup task'ı eleme aşaması; sessiz kalanın CV'si bile okunmaz.
+
+**Bu aşamada neden sorulur**
+Open Day veya assessment center'da, bireysel mülakatlardan önce/sonra. HR cabin crew için kritik test: 200 yolcuyla, 8 ekip arkadaşıyla, sınırlı zamanda karar verebiliyor mu? Bu hipotetik etik dilemma (kim kalmalı/çıkmalı) STAR cevabı için fırsat değil — yargı + iletişim test ediyor.
+
+**3 seviyeli cevap örneği**
+- **Zayıf**: Hiç konuşmaz veya sadece "bence backpacker çıkmalı" der → kötü çünkü ekip oyuncusu profili gösterilmedi.
+- **Orta**: Tüm sorulara cevap verir ama diğerlerini referans almaz, monopolize eder → kötü çünkü "team killer" izlenimi.
+- **Güçlü**: "Önce gruba 'Listeyi prioritize edelim' der + hiyerarşi önerir: (1) Hamile + acil değil — kalmalı (sağlık riski + vulnerability); (2) Aile düğüne — uzun planlama, alternatif zor — kalmalı; (3) Yaşlı çift — vulnerability, kalmalı. Backpacker (esnek plan) + businessman (next flight 3 saat sonraysa OK) çıkma adayı. Sonra diğerlerine 'Bu yaklaşıma katılıyor musunuz?' der + 1-2 sessiz kişiyi 'Sen ne düşünüyorsun?' diye davet eder. Final: 'Konsensüsteyiz galiba — backpacker + businessman + ___?' diye özet + oylama önerir." → bu cevap işe alır çünkü structured thinking + grup yönetimi + sessiz adayları dahil etme + özet liderliği var.
+
+**STAR formatı uygulaması**
+Group exercise canlı performans, sonradan rapor yazma değil. Ama hazırlık: (1) Soruyu duyunca 30 saniye düşün, (2) İlk 1-2 dakikada katıl ama dominant olma, (3) Diğerlerinin adıyla referans ver ("Selin'in noktasına eklersem..."), (4) Son 2 dakikada özet rolüne gönüllü ol.
+
+**Havayolu uyarlama**
+Emirates Open Day: 8-10 kişi, 15 dk task, 2 HR gözlem. Konuşma sayısı değil kalitesi sayılır — 3 kez ama spesifik konuş. Qatar: benzer ama daha sıkı zamanlama. Lufthansa Assessment Center: yarım gün, çoklu task — sürekli kalitede kal. THY Cabin Mülakatı: grup task daha az ama oluyor — Türk eğitim sisteminin "konuşma" odaksızlığı dezavantaj, hazırlanılması gerek.
+
+**Tipik takip soruları**
+- "Grup'ta seninle hemfikir olmayan biri olsaydı yaklaşımın ne olurdu?"
+- "Bu task'ta seni en zorlayan an hangisiydi?"
+- "Liderlik etmeye çalıştın mı, yoksa katılımcı mı kaldın?"`,
   },
 ];
