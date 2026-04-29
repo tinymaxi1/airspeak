@@ -29,7 +29,7 @@ import {
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
-} from 'expo-speech-recognition';
+} from '@/lib/speechRecognition';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { track } from '@/lib/posthog';

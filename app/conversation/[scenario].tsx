@@ -21,7 +21,7 @@ import * as Speech from 'expo-speech';
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
-} from 'expo-speech-recognition';
+} from '@/lib/speechRecognition';
 import {
   getScenariosForRole,
   getScenarioById,

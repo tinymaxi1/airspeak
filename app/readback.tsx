@@ -20,7 +20,7 @@ import * as Speech from 'expo-speech';
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
-} from 'expo-speech-recognition';
+} from '@/lib/speechRecognition';
 import { getRandomClearances, type AtcClearance } from '@/features/readback/clearances';
 import { matchTranscript } from '@/features/conversation/scenarios';
 import { useGamificationStore } from '@/stores/gamificationStore';
