@@ -107,7 +107,7 @@
     "profile": "Profil"
   },
   "home": {
-    "greeting": "Hoş geldin, Kaptan!",
+    "greeting": "Hoş geldin, havacı!",
     "subtitle": "Bugünün görevleri ve kaldığın yerden devam et",
     "yourLevel": "Seviyen",
     "dailyGoal": "Günlük hedef",
@@ -235,7 +235,7 @@
       "dimCom": "İletişim"
     },
     "home": {
-      "greeting": "Günaydın, kaptan.",
+      "greeting": "Günaydın, havacı.",
       "today": "BUGÜNKÜ UÇUŞ PLANI",
       "weeklyChallenge": "HAFTANIN GÖREVİ",
       "wordOfFlight": "UÇUŞUN KELİMESİ",

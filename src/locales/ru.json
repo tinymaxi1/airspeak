@@ -107,7 +107,7 @@
     "profile": "Профиль"
   },
   "home": {
-    "greeting": "Добро пожаловать, капитан!",
+    "greeting": "Добро пожаловать, авиатор!",
     "subtitle": "Сегодняшние задания и продолжение с того места, где вы остановились",
     "yourLevel": "Ваш уровень",
     "dailyGoal": "Ежедневная цель",
@@ -235,7 +235,7 @@
       "dimCom": "Коммуникация"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "Доброе утро, авиатор.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

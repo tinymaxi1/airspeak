@@ -107,7 +107,7 @@
     "profile": "Profile"
   },
   "home": {
-    "greeting": "Selamat datang, Kapten!",
+    "greeting": "Selamat datang, penerbang!",
     "subtitle": "Misi hari ini dan melanjutkan dari mana Anda meninggalkan",
     "yourLevel": "Kehebatanmu",
     "dailyGoal": "Tujuan harian",
@@ -235,7 +235,7 @@
       "dimCom": "Komunikasi"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "Selamat pagi, penerbang.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

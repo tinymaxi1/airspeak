@@ -107,7 +107,7 @@
     "profile": "الملف الشخصي"
   },
   "home": {
-    "greeting": "مرحبًا بك أيها القائد!",
+    "greeting": "مرحباً يا طيار!",
     "subtitle": "مهام اليوم واستكمل من حيث توقفت",
     "yourLevel": "مستواك",
     "dailyGoal": "الهدف اليومي",
@@ -235,7 +235,7 @@
       "dimCom": "التواصل"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "صباح الخير يا طيار.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

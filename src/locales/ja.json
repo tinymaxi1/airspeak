@@ -107,7 +107,7 @@
     "profile": "プロフィール"
   },
   "home": {
-    "greeting": "ようこそ、船長！",
+    "greeting": "ようこそ、航空人!",
     "subtitle": "本日のミッションと、前回中断したところからの続き",
     "yourLevel": "あなたのレベル",
     "dailyGoal": "毎日の目標",
@@ -235,7 +235,7 @@
       "dimCom": "コミュニケーション"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "おはよう、航空人。",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

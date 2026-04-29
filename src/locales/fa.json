@@ -107,7 +107,7 @@
     "profile": "پروفایل پروفایل پروفایل پروفایل"
   },
   "home": {
-    "greeting": "خوش آمدید کاپیتان!",
+    "greeting": "خوش آمدی، هوانورد!",
     "subtitle": "ماموریت های امروز و ادامه از جایی که شما ترک کردید",
     "yourLevel": "سطح شما",
     "dailyGoal": "هدف روزانه",
@@ -235,7 +235,7 @@
       "dimCom": "ارتباطات ارتباطات"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "صبح بخیر، هوانورد.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

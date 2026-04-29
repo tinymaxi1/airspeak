@@ -107,7 +107,7 @@
     "profile": "Perfil"
   },
   "home": {
-    "greeting": "¡Bienvenido, capitán!",
+    "greeting": "¡Bienvenido, aviador!",
     "subtitle": "Las misiones de hoy y continuar desde donde lo dejó",
     "yourLevel": "Su nivel",
     "dailyGoal": "Objetivo diario",
@@ -235,7 +235,7 @@
       "dimCom": "Comunicación"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "Buen día, aviador.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

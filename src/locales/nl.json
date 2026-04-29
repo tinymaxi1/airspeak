@@ -107,7 +107,7 @@
     "profile": "Profiel"
   },
   "home": {
-    "greeting": "Welkom, kapitein!",
+    "greeting": "Welkom, luchtvaarder!",
     "subtitle": "De opdrachten van vandaag en verdergaan waar u gebleven was",
     "yourLevel": "Uw niveau",
     "dailyGoal": "Dagelijks doel",
@@ -235,7 +235,7 @@
       "dimCom": "Communicatie"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "Goedemorgen, luchtvaarder.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

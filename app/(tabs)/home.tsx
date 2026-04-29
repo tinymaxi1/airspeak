@@ -107,7 +107,7 @@ export default function HomeScreen() {
                 position: 'relative',
               }}
             >
-              <View>
+              <View style={{ flex: 1, marginRight: 8 }}>
                 <Text
                   style={{
                     fontFamily: FONTS.mono,
@@ -117,15 +117,17 @@ export default function HomeScreen() {
                     textTransform: 'uppercase',
                   }}
                 >
-                  FLT 12 ✦ DAY {streak}
+                  {`FLT 12 ✦ DAY ${streak}`}
                 </Text>
                 <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                   style={{
                     fontFamily: FONTS.display,
-                    fontSize: 26,
+                    fontSize: 22,
                     fontWeight: '700',
                     color: '#FFFFFF',
-                    letterSpacing: -0.52,
+                    letterSpacing: -0.44,
                     marginTop: 2,
                   }}
                 >

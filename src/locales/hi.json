@@ -107,7 +107,7 @@
     "profile": "प्रोफ़ाइल"
   },
   "home": {
-    "greeting": "आपका स्वागत है, कप्तान!",
+    "greeting": "स्वागत है, विमानचालक!",
     "subtitle": "आज के मिशन और जहाँ से आप छोड़ दिया",
     "yourLevel": "आपका स्तर",
     "dailyGoal": "दैनिक लक्ष्य",
@@ -235,7 +235,7 @@
       "dimCom": "संचार"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "सुप्रभात, विमानचालक.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

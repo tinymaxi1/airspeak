@@ -107,7 +107,7 @@
     "profile": "프로필"
   },
   "home": {
-    "greeting": "환영합니다, 선장님!",
+    "greeting": "환영합니다, 항공인!",
     "subtitle": "오늘의 미션과 중단했던 부분부터 이어서 진행하세요",
     "yourLevel": "귀하의 레벨",
     "dailyGoal": "오늘의 목표",
@@ -235,7 +235,7 @@
       "dimCom": "의사소통"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "좋은 아침, 항공인.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

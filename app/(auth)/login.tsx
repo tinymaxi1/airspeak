@@ -30,7 +30,9 @@ export default function LoginScreen() {
       Alert.alert('Hata', error.message);
       return;
     }
-    router.replace('/(tabs)/home');
+    // Index'e yönlendir — onboarding tamamlanmış mı diye orada karar verilir
+    // (hasCompletedOnboarding=false ise role-select'e gider, true ise home'a)
+    router.replace('/');
   }
 
   return (

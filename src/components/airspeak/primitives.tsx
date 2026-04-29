@@ -252,24 +252,34 @@ export function Button3D({
       ]}
       {...rest}
     >
-      {typeof children === 'string' ? (
-        <Text
-          style={[
-            {
-              fontFamily: FONTS.body800,
-              fontSize: 16,
-              letterSpacing: 0.32,
-              color: c.fg,
-              textTransform: 'uppercase',
-            },
-            textStyle,
-          ]}
-        >
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
+      {(() => {
+        // Children string, number ya da bunların array'i ise tek <Text> içinde render et
+        // (Button3D'ye {t('x')} ✈ gibi karışık string verirsen ona uyum sağlar)
+        const isStringLike =
+          typeof children === 'string' ||
+          typeof children === 'number' ||
+          (Array.isArray(children) &&
+            children.every((c) => typeof c === 'string' || typeof c === 'number'));
+        if (isStringLike) {
+          return (
+            <Text
+              style={[
+                {
+                  fontFamily: FONTS.body800,
+                  fontSize: 16,
+                  letterSpacing: 0.32,
+                  color: c.fg,
+                  textTransform: 'uppercase',
+                },
+                textStyle,
+              ]}
+            >
+              {children}
+            </Text>
+          );
+        }
+        return children;
+      })()}
     </TouchableOpacity>
   );
 }

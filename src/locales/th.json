@@ -107,7 +107,7 @@
     "profile": "โพรไฟล์"
   },
   "home": {
-    "greeting": "ยินดีต้อนรับ กัปตัน!",
+    "greeting": "ยินดีต้อนรับ นักบิน!",
     "subtitle": "ภารกิจของวันนี้และดําเนินต่อไป จากที่คุณจากมา",
     "yourLevel": "ระดับของคุณ",
     "dailyGoal": "เป้าหมายรายวัน",
@@ -235,7 +235,7 @@
       "dimCom": "การ สื่อ ความ"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "อรุณสวัสดิ์ นักบิน.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

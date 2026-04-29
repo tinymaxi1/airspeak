@@ -107,7 +107,7 @@
     "profile": "Profil"
   },
   "home": {
-    "greeting": "Herzlich willkommen, Kapitän!",
+    "greeting": "Willkommen, Crew!",
     "subtitle": "Die heutigen Aufgaben und dort weitermachen, wo Sie aufgehört haben",
     "yourLevel": "Ihr Niveau",
     "dailyGoal": "Tagesziel",
@@ -235,7 +235,7 @@
       "dimCom": "Kommunikation"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "Guten Morgen, Crew.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

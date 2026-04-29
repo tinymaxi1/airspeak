@@ -107,7 +107,7 @@
     "profile": "个人简介"
   },
   "home": {
-    "greeting": "欢迎，船长！",
+    "greeting": "欢迎,航空人!",
     "subtitle": "今天的任务，从上次中断的地方继续",
     "yourLevel": "您的等级",
     "dailyGoal": "每日目标",
@@ -235,7 +235,7 @@
       "dimCom": "沟通"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "早上好,航空人。",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

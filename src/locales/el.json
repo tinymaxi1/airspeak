@@ -107,7 +107,7 @@
     "profile": "Προφίλ"
   },
   "home": {
-    "greeting": "Καλώς ήρθες, Καπετάνιε!",
+    "greeting": "Καλώς ήρθες, αεροπόρε!",
     "subtitle": "Οι αποστολές της ημέρας και συνέχισε από εκεί που σταμάτησες",
     "yourLevel": "Το επίπεδό σου",
     "dailyGoal": "Καθημερινός στόχος",
@@ -235,7 +235,7 @@
       "dimCom": "Επικοινωνία"
     },
     "home": {
-      "greeting": "Good morning, captain.",
+      "greeting": "Καλημέρα, αεροπόρε.",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",
