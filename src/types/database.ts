@@ -59,6 +59,63 @@ export type Database = {
         }
         Relationships: []
       }
+      content_flags: {
+        Row: {
+          comment: string | null
+          content_id: string
+          content_type: string
+          created_at: string
+          id: string
+          reason: string
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_note: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          content_id: string
+          content_type: string
+          created_at?: string
+          id?: string
+          reason: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          reason?: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_flags_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_flags_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_tokens: {
         Row: {
           app_version: string | null

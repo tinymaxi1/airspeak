@@ -26,7 +26,8 @@ SUPABASE_PROJECT_ID=xxx npm run supabase:gen-types
 |---|---|---|---|
 | 1 | Sprint 1 | `20260426000000_init_profiles.sql` | profiles + user_settings + RLS + auto-create trigger |
 | 2 | Sprint 7 | `20260429100000_push_tokens.sql` | push_tokens + RLS + 30-gün stale cleanup |
-| 3 | Sprint 2 | (gelecek) | categories, courses, units, lessons, exercises |
+| 3 | Sprint 7 | `20260429110000_content_flags.sql` | content_flags + 24h dup-guard + flag_counts view |
+| 4 | Sprint 2 | (gelecek) | categories, courses, units, lessons, exercises |
 | 4 | Sprint 3 | (gelecek) | xp_logs, streaks, hearts, coins, badges |
 | 5 | Sprint 4 | (gelecek) | SRS, daily_quests, leagues |
 | 6 | Sprint 5 | (gelecek) | conversation_scenarios, user_conversations |

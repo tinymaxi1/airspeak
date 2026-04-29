@@ -16,6 +16,7 @@ import { getAirlineById } from '@/features/exams/airlines';
 import { getQuestionsForAirline } from '@/features/exams/interviewQuestions';
 import { getKnowledgeForAirline, getRoleKnowledge } from '@/features/exams/airlineKnowledge';
 import type { InterviewQuestion } from '@/features/exams/airlineTypes';
+import { FlagContentTrigger } from '@/components/moderation/FlagContentSheet';
 
 export default function AirlineDetailScreen() {
   const params = useLocalSearchParams<{ id: string }>();
@@ -572,6 +573,10 @@ function MockInterview({
             </Button>
           </YStack>
         )}
+
+        <XStack justifyContent="flex-end" paddingTop="$2">
+          <FlagContentTrigger contentType="interview_question" contentId={q.id} />
+        </XStack>
       </YStack>
     </ScrollView>
   );
