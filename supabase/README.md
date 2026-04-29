@@ -25,13 +25,14 @@ SUPABASE_PROJECT_ID=xxx npm run supabase:gen-types
 | # | Sprint | Dosya | İçerik |
 |---|---|---|---|
 | 1 | Sprint 1 | `20260426000000_init_profiles.sql` | profiles + user_settings + RLS + auto-create trigger |
-| 2 | Sprint 2 | (gelecek) | categories, courses, units, lessons, exercises |
-| 3 | Sprint 3 | (gelecek) | xp_logs, streaks, hearts, coins, badges |
-| 4 | Sprint 4 | (gelecek) | SRS, daily_quests, leagues |
-| 5 | Sprint 5 | (gelecek) | conversation_scenarios, user_conversations |
-| 6 | Sprint 6 | (gelecek) | subscriptions, ai_usage_logs, pronunciation_attempts |
-| 7 | Sprint 7 | (gelecek) | exam_simulations, oral_exam_prompts, content_flags |
-| 8 | Sprint 8 | (gelecek) | phraseology_entries, aviation_documents, exam_schedules, referrals, offline_downloads |
+| 2 | Sprint 7 | `20260429100000_push_tokens.sql` | push_tokens + RLS + 30-gün stale cleanup |
+| 3 | Sprint 2 | (gelecek) | categories, courses, units, lessons, exercises |
+| 4 | Sprint 3 | (gelecek) | xp_logs, streaks, hearts, coins, badges |
+| 5 | Sprint 4 | (gelecek) | SRS, daily_quests, leagues |
+| 6 | Sprint 5 | (gelecek) | conversation_scenarios, user_conversations |
+| 7 | Sprint 6 | (gelecek) | subscriptions, ai_usage_logs, pronunciation_attempts |
+| 8 | Sprint 7 | (gelecek) | exam_simulations, oral_exam_prompts, content_flags |
+| 9 | Sprint 8 | (gelecek) | phraseology_entries, aviation_documents, exam_schedules, referrals, offline_downloads |
 
 ## Edge Functions
 

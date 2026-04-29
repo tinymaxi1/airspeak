@@ -10,7 +10,10 @@
  * Permission istemediği sürece bildirim gelmez.
  */
 import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import { supabase } from './supabase';
 
 // Foreground'da gelen bildirim banner görünür olsun
 Notifications.setNotificationHandler({
@@ -173,4 +176,83 @@ export async function cancelAllAirspeakNotifications(): Promise<void> {
 export async function getScheduledAirspeakNotifications(): Promise<Notifications.NotificationRequest[]> {
   const all = await Notifications.getAllScheduledNotificationsAsync();
   return all.filter((n) => n.identifier.startsWith('airspeak-') || n.content.data?.app === 'airspeak');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  PUSH TOKEN REGISTRATION (Server push için)
+//
+//  Expo Push Service kullanır (FCM/APNs proxy). Token Supabase'e kayıt edilir,
+//  sonradan Edge Function'lar bu token'a push gönderir (streak danger, lig
+//  ödülü, AI senaryo vb. — bkz. SPRINTS Sprint 7 "11 bildirim trigger").
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Cihaza özel Expo push token al. Simulator/web'de null döner.
+ * Permission yoksa null döner (caller request edebilir).
+ */
+export async function getExpoPushToken(): Promise<string | null> {
+  if (!Device.isDevice) return null;
+  if (Platform.OS === 'web') return null;
+
+  await ensureChannel();
+
+  const granted = await requestPermission();
+  if (!granted) return null;
+
+  // EAS Build için projectId şart (eas.json içinde tanımlı)
+  const projectId =
+    Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+
+  try {
+    const tokenResponse = await Notifications.getExpoPushTokenAsync(
+      projectId ? { projectId } : undefined,
+    );
+    return tokenResponse.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Push token'ı Supabase push_tokens tablosuna upsert eder.
+ * Auth zorunlu — userId yoksa skip.
+ *
+ * Aynı cihaz aynı kullanıcıyla tekrar açılırsa updated_at yenilenir,
+ * cihaz değişirse yeni satır eklenir (token unique).
+ */
+export async function syncPushTokenToSupabase(): Promise<{ ok: boolean; reason?: string }> {
+  const token = await getExpoPushToken();
+  if (!token) return { ok: false, reason: 'no-token' };
+
+  const { data: userData } = await supabase.auth.getUser();
+  const userId = userData.user?.id;
+  if (!userId) return { ok: false, reason: 'no-auth' };
+
+  const platform = Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'other';
+  const deviceName = Device.modelName ?? Device.deviceName ?? null;
+
+  const { error } = await supabase.from('push_tokens').upsert(
+    {
+      user_id: userId,
+      token,
+      platform,
+      device_name: deviceName,
+      app_version: Constants.expoConfig?.version ?? null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'token' },
+  );
+
+  if (error) return { ok: false, reason: error.message };
+  return { ok: true };
+}
+
+/**
+ * Logout sırasında çağrılır — bu cihazın token'ını DB'den sil.
+ * Push'ları geri çağırır, başka bir hesap login olunca yeni token alınır.
+ */
+export async function unregisterPushToken(): Promise<void> {
+  const token = await getExpoPushToken();
+  if (!token) return;
+  await supabase.from('push_tokens').delete().eq('token', token);
 }

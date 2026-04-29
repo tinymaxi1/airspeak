@@ -34,7 +34,9 @@ import {
   requestPermission as requestNotifPermission,
   scheduleDailyReminders,
   updateStreakDangerNotification,
+  syncPushTokenToSupabase,
 } from '@/lib/notifications';
+import { supabase } from '@/lib/supabase';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useOfflineStore } from '@/stores/offlineStore';
 
@@ -92,6 +94,19 @@ export default function RootLayout() {
       ]);
     })();
   }, [fontsLoaded, lastActivityDate, t]);
+
+  // Push token: kullanıcı login olduğunda Supabase'e sync et
+  useEffect(() => {
+    if (!fontsLoaded) return;
+    const sync = () => {
+      syncPushTokenToSupabase().catch((e) => console.warn('Push token sync failed', e));
+    };
+    sync();
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') sync();
+    });
+    return () => data.subscription.unsubscribe();
+  }, [fontsLoaded]);
 
   useEffect(() => {
     if (fontsLoaded) {

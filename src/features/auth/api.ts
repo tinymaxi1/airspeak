@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import { identify, resetAnalytics, track } from '@/lib/posthog';
 import { setUser } from '@/lib/sentry';
+import { unregisterPushToken } from '@/lib/notifications';
 import * as mockAuth from './mockAuth';
 
 const USE_MOCK = process.env.EXPO_PUBLIC_USE_MOCK_AUTH !== 'false';
@@ -49,6 +50,10 @@ export async function resetPassword(email: string) {
 }
 
 export async function signOut() {
+  // Push token unregister: cihazın bildirim almaması için.
+  // Logout'tan ÖNCE çağrılır — sonra auth.uid() null olur, RLS engeller.
+  await unregisterPushToken().catch(() => undefined);
+
   if (USE_MOCK) {
     const result = await mockAuth.signOut();
     resetAnalytics();
