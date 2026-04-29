@@ -2,7 +2,7 @@
  * Login Screen — Boarding pass sign-in (eşlik eden Register tasarımıyla aynı dil)
  */
 import { useState } from 'react';
-import { ScrollView, View, Text, TextInput, Alert } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -103,13 +103,11 @@ export default function LoginScreen() {
               onChangeText={setEmail}
               placeholder="captain@airspeak.io"
             />
-            <Field
+            <PasswordField
               label={t('screens.login.password')}
               value={password}
               onChangeText={setPassword}
               placeholder={t('screens.login.passwordHint')}
-              secureTextEntry
-              mono
             />
           </View>
 
@@ -156,15 +154,11 @@ function Field({
   value,
   onChangeText,
   placeholder,
-  mono,
-  secureTextEntry,
 }: {
   label: string;
   value: string;
   onChangeText: (v: string) => void;
   placeholder: string;
-  mono?: boolean;
-  secureTextEntry?: boolean;
 }) {
   return (
     <View>
@@ -175,18 +169,63 @@ function Field({
         placeholder={placeholder}
         placeholderTextColor="#8A93A6"
         autoCapitalize="none"
-        secureTextEntry={secureTextEntry}
-        keyboardType={mono ? 'default' : 'email-address'}
+        keyboardType="email-address"
         style={{
           marginTop: 4,
           borderBottomWidth: 1.5,
           borderBottomColor: '#B8BFCC',
           paddingBottom: 6,
           fontSize: 17,
-          fontFamily: mono ? FONTS.mono : FONTS.body600,
+          fontFamily: FONTS.body600,
           color: '#0E1116',
         }}
       />
+    </View>
+  );
+}
+
+function PasswordField({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (v: string) => void;
+  placeholder: string;
+}) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <View>
+      <Eyebrow>{label}</Eyebrow>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          placeholderTextColor="#8A93A6"
+          autoCapitalize="none"
+          secureTextEntry={!visible}
+          style={{
+            flex: 1,
+            marginTop: 4,
+            borderBottomWidth: 1.5,
+            borderBottomColor: '#B8BFCC',
+            paddingBottom: 6,
+            fontSize: 17,
+            fontFamily: FONTS.mono,
+            color: '#0E1116',
+          }}
+        />
+        <TouchableOpacity
+          onPress={() => setVisible((v) => !v)}
+          style={{ paddingLeft: 10, paddingBottom: 4 }}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={{ fontSize: 18 }}>{visible ? '🙈' : '👁️'}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

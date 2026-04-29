@@ -93,9 +93,17 @@ export async function signInWithEmail(email: string, password: string) {
   }
 
   const users = getUsers();
-  const user = users.find((u) => u.email === email && u.password === password);
+  let user = users.find((u) => u.email === email && u.password === password);
+
+  // Dev kolaylığı: kullanıcı hiç yoksa otomatik oluştur (mock modda ayrı kayıt gerekmiyor)
   if (!user) {
-    return { data: null, error: { message: 'E-posta veya şifre hatalı' } };
+    const existing = users.find((u) => u.email === email);
+    if (existing) {
+      return { data: null, error: { message: 'Şifre hatalı' } };
+    }
+    user = { id: makeId(), email, password, created_at: new Date().toISOString() };
+    users.push(user);
+    saveUsers(users);
   }
 
   const session = makeSession(user);

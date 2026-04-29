@@ -9,7 +9,7 @@
  * - Terms footnote
  */
 import { useState } from 'react';
-import { ScrollView, View, Text, TextInput, Alert } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,8 +30,8 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
 
   async function handleRegister() {
-    if (!email || !password || password.length < 8) {
-      Alert.alert('Eksik bilgi', 'Geçerli e-posta ve en az 8 karakter şifre.');
+    if (!email || !password || password.length < 6) {
+      Alert.alert('Eksik bilgi', 'Geçerli e-posta ve en az 6 karakter şifre.');
       return;
     }
     setLoading(true);
@@ -125,13 +125,11 @@ export default function RegisterScreen() {
               placeholder="captain@airspeak.io"
               keyboardType="email-address"
             />
-            <Field
+            <PasswordField
               label={t('screens.register.password')}
               value={password}
               onChangeText={setPassword}
               placeholder={t('screens.register.passwordHint')}
-              secureTextEntry
-              mono
             />
           </View>
 
@@ -204,7 +202,6 @@ function Field({
   onChangeText,
   placeholder,
   mono,
-  secureTextEntry,
   keyboardType,
 }: {
   label: string;
@@ -212,7 +209,6 @@ function Field({
   onChangeText: (v: string) => void;
   placeholder: string;
   mono?: boolean;
-  secureTextEntry?: boolean;
   keyboardType?: 'email-address' | 'default';
 }) {
   return (
@@ -224,7 +220,6 @@ function Field({
         placeholder={placeholder}
         placeholderTextColor="#8A93A6"
         autoCapitalize="none"
-        secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
         style={{
           marginTop: 4,
@@ -236,6 +231,52 @@ function Field({
           color: '#0E1116',
         }}
       />
+    </View>
+  );
+}
+
+function PasswordField({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (v: string) => void;
+  placeholder: string;
+}) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <View>
+      <Eyebrow>{label}</Eyebrow>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          placeholderTextColor="#8A93A6"
+          autoCapitalize="none"
+          secureTextEntry={!visible}
+          style={{
+            flex: 1,
+            marginTop: 4,
+            borderBottomWidth: 1.5,
+            borderBottomColor: '#B8BFCC',
+            paddingBottom: 6,
+            fontSize: 17,
+            fontFamily: FONTS.mono,
+            color: '#0E1116',
+          }}
+        />
+        <TouchableOpacity
+          onPress={() => setVisible((v) => !v)}
+          style={{ paddingLeft: 10, paddingBottom: 4 }}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={{ fontSize: 18 }}>{visible ? '🙈' : '👁️'}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
