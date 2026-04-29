@@ -5,7 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_500Medium,
@@ -39,6 +39,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useOfflineStore } from '@/stores/offlineStore';
+// Not: useOfflineStore.getState() kullanıyoruz — hook subscribe etmek döngüye girer
 
 SplashScreen.preventAutoHideAsync();
 
@@ -65,35 +66,38 @@ export default function RootLayout() {
   });
 
   const { t } = useTranslation();
-  const lastActivityDate = useGamificationStore((s) => s.lastActivityDate);
-  const startNetInfo = useOfflineStore((s) => s.startNetInfoMonitoring);
+  // Ref ile alıyoruz — subscribe etmek sonsuz döngüye neden olur
+  const tRef = useRef(t);
+  useEffect(() => { tRef.current = t; });
 
-  // Network durumu monitoring
+  // Network durumu monitoring — getState() ile al, subscribe etme
   useEffect(() => {
-    const unsub = startNetInfo();
+    const unsub = useOfflineStore.getState().startNetInfoMonitoring();
     return unsub;
-  }, [startNetInfo]);
+  }, []);
 
-  // Notifications: izin iste + günlük + streak danger paralel
+  // Notifications: izin iste + günlük + streak danger (sadece fontsLoaded'da çalışır)
   useEffect(() => {
     if (!fontsLoaded) return;
+    const lastActivityDate = useGamificationStore.getState().lastActivityDate;
+    const tr = tRef.current;
     (async () => {
       const granted = await requestNotifPermission().catch(() => false);
       if (!granted) return;
       await Promise.all([
         scheduleDailyReminders(undefined, {
-          morningTitle: t('notif.morningTitle', 'Günaydın, kaptan ✈'),
-          morningBody: t('notif.morningBody', 'Bugünkü uçuş planın hazır. 15 dk yeter.'),
-          eveningTitle: t('notif.eveningTitle', '🔥 Streak\'in tehlikede'),
-          eveningBody: t('notif.eveningBody', 'Bugün hâlâ pratik yapmadın. 1 ders streak\'i kurtarır.'),
+          morningTitle: tr('notif.morningTitle', 'Günaydın, kaptan ✈'),
+          morningBody: tr('notif.morningBody', 'Bugünkü uçuş planın hazır. 15 dk yeter.'),
+          eveningTitle: tr('notif.eveningTitle', '🔥 Streak\'in tehlikede'),
+          eveningBody: tr('notif.eveningBody', 'Bugün hâlâ pratik yapmadın. 1 ders streak\'i kurtarır.'),
         }).catch((e) => console.warn('Notif schedule failed', e)),
         updateStreakDangerNotification(lastActivityDate, {
-          title: t('notif.dangerTitle', '⚠ Son 90 dk!'),
-          body: t('notif.dangerBody', 'Streak kırılmasın diye 1 hızlı pratik yeter.'),
+          title: tr('notif.dangerTitle', '⚠ Son 90 dk!'),
+          body: tr('notif.dangerBody', 'Streak kırılmasın diye 1 hızlı pratik yeter.'),
         }).catch(() => undefined),
       ]);
     })();
-  }, [fontsLoaded, lastActivityDate, t]);
+  }, [fontsLoaded]);
 
   // Push token: kullanıcı login olduğunda Supabase'e sync et
   useEffect(() => {
