@@ -94,6 +94,9 @@ export function initI18n(): void {
     lng: lang,
     fallbackLng: ['en', 'tr'], // chain: kullanıcı dili → en → tr
     interpolation: { escapeValue: false },
+    react: {
+      useSuspense: false, // Suspense kapalı — RN'de re-render döngüsüne girebiliyor
+    },
   });
 }
 
