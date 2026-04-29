@@ -8,6 +8,7 @@
  * - Badges row (3-4 earned + locked)
  * - Settings link, Language link, Logout
  */
+import { useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -41,8 +42,29 @@ export default function ProfileScreen() {
   const totalXp = useGamificationStore((s) => s.totalXp ?? 0);
   const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
-  const heatmapBuckets = useLessonHistoryStore((s) => s.getHeatmapBuckets());
-  const activeDayCount = useLessonHistoryStore((s) => s.getActiveDayCount());
+  // Selector method'a (yeni array döndüren) çağrı yapmak sonsuz render döngüsü
+  // tetikler. Sadece raw history alıp useMemo'da hesapla.
+  const history = useLessonHistoryStore((s) => s.history);
+  const heatmapBuckets = useMemo(() => {
+    const HEATMAP_DAYS = 84; // 12 hafta × 7 gün
+    const map = new Map(history.map((e) => [e.date, e.count]));
+    const out: { date: string; count: number }[] = [];
+    const today = new Date();
+    for (let i = HEATMAP_DAYS - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const k = `${y}-${m}-${day}`;
+      out.push({ date: k, count: map.get(k) ?? 0 });
+    }
+    return out;
+  }, [history]);
+  const activeDayCount = useMemo(
+    () => history.filter((e) => e.count > 0).length,
+    [history],
+  );
   const lang = getCurrentLanguage();
 
   const level = placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
