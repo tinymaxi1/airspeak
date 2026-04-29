@@ -166,42 +166,233 @@ export async function runPipeline(target: string): Promise<void> {
 }
 
 /**
- * Placement test 22 sorusuna explanationLongTr (300-500 kelime) çevir.
- * Her dile ~80K karakter, DeepL Free tek seferde rahat sığar.
+ * Generic uzun-metin pipeline — TR kaynak metinleri 18 dile çevir.
+ *
+ * Kaynak: { id: string; tr: string }[]
+ * Output: scripts/i18n/translated-output/{slug}.json
+ *   {
+ *     "<id>": { "tr": "...", "ar": "...", "de": "...", ... }
+ *   }
+ *
+ * DeepL kotasında sığarsa onu kullanır, taşarsa kalanı Argos'a düşer.
+ * Mevcut output JSON'unda zaten dolu olan diller atlanır (resume desteği).
+ */
+async function translateLongTextPipeline(
+  slug: string,
+  emoji: string,
+  label: string,
+  items: { id: string; tr: string }[],
+  opts: { deeplApiKey?: string; useArgos: boolean },
+): Promise<void> {
+  console.log(`${emoji} ${label} → 18 dil...`);
+  console.log(`  ${items.length} öğe × 18 dil = ${items.length * 18} çeviri`);
+
+  const totalChars = items.reduce((s, it) => s + it.tr.length, 0);
+  console.log(`  Kaynak hacim: ${totalChars.toLocaleString()} karakter`);
+  console.log(`  18 dil hedef: ~${(totalChars * 18).toLocaleString()} karakter\n`);
+
+  const outputDir = path.join(__dirname, 'translated-output');
+  fs.mkdirSync(outputDir, { recursive: true });
+  const outputPath = path.join(outputDir, `${slug}.json`);
+
+  // Resume: var olan output'u oku
+  const existing: Record<string, Record<string, string>> = fs.existsSync(outputPath)
+    ? JSON.parse(fs.readFileSync(outputPath, 'utf8'))
+    : {};
+
+  // TR kaynak her id için sabit
+  for (const it of items) {
+    existing[it.id] = existing[it.id] ?? {};
+    existing[it.id]!.tr = it.tr;
+  }
+
+  for (const lang of TARGET_LANGS) {
+    // Bu dilde hangi id'ler eksik?
+    const missing = items.filter((it) => !existing[it.id]?.[lang]);
+    if (missing.length === 0) {
+      console.log(`  ✓ ${lang} zaten tam (${items.length}/${items.length})`);
+      continue;
+    }
+    console.log(`  → ${lang} (${missing.length} eksik)...`);
+    const sources = missing.map((m) => m.tr);
+    let translated: string[] | null = null;
+    let usedSource = '';
+
+    // DeepL once dene
+    if (opts.deeplApiKey && isSupportedByDeepL(lang)) {
+      try {
+        translated = await translateDeepL(sources, lang, opts.deeplApiKey);
+        usedSource = 'DeepL';
+      } catch (e) {
+        console.log(`    DeepL başarısız (${(e as Error).message.slice(0, 60)}), Argos'a düşülüyor`);
+      }
+    }
+
+    // Argos fallback
+    if (!translated && opts.useArgos && isSupportedByArgos(lang)) {
+      try {
+        translated = await bulkTranslateArgos(sources, lang);
+        usedSource = 'Argos';
+      } catch (e) {
+        console.log(`    Argos da başarısız: ${(e as Error).message.slice(0, 80)}`);
+      }
+    }
+
+    if (!translated) {
+      console.log(`    ❌ ${lang} atlandı (kaynak yok)`);
+      continue;
+    }
+
+    missing.forEach((it, i) => {
+      existing[it.id]![lang] = translated![i] ?? it.tr;
+    });
+
+    // Her dilden sonra disk'e yaz (resume güvenliği)
+    fs.writeFileSync(outputPath, JSON.stringify(existing, null, 2));
+    console.log(`    ✅ ${lang} (${usedSource}) yazıldı`);
+  }
+
+  console.log(`\n✅ ${label} pipeline tamamlandı → ${outputPath}`);
+}
+
+/**
+ * Placement test 22 sorusunun explanationLongTr alanını 18 dile çevir.
  */
 async function pipelinePlacementLong(opts: { deeplApiKey?: string; useArgos: boolean }): Promise<void> {
-  console.log('📚 Placement Long Explanations → 18 dil...');
-  console.log('  ~80K karakter × 18 dil — DeepL Free 1 ay kotasında rahat sığar');
-  console.log('  ⚠️ Bu pipeline questions.ts dosyasını okur ve i18n.explanationLong alanı doldurur');
-  console.log('  ⚠️ Şu an stub — gerçek implementasyon Sprint 9\'da Claude pipeline ile yapılır');
-  console.log('  Komut: ts-node scripts/i18n/run-pipeline.ts --target placement-long\n');
-  // Gerçek implementasyon Sprint 9'da:
-  // 1. PLACEMENT_QUESTIONS'tan explanationLongTr olanları çek
-  // 2. Her birini 18 dile çevir (DeepL/Argos hibrit)
-  // 3. questions.ts'e i18n.explanationLong alanı ekle (programatik AST manipulation veya inline JSON output)
+  const mod: any = await import('../../src/features/placement/questions');
+  const PLACEMENT_QUESTIONS: any[] = mod.PLACEMENT_QUESTIONS ?? mod.default?.PLACEMENT_QUESTIONS ?? [];
+  const items = PLACEMENT_QUESTIONS.filter((q: any) => q.explanationLongTr).map((q: any) => ({
+    id: q.id,
+    tr: q.explanationLongTr,
+  }));
+  if (items.length === 0) {
+    console.log('⚠️ explanationLongTr olan placement question yok');
+    return;
+  }
+  await translateLongTextPipeline('placement-long', '📚', 'Placement Long Explanations', items, opts);
 }
 
 /**
- * 155 mülakat sorusunun detailedExplanationTr alanını 18 dile çevir.
- * ~600K karakter, DeepL Free quota'da 1.2 ay sürer.
+ * Mülakat sorularının detailedExplanationTr alanını 18 dile çevir.
+ * INTERVIEW_QUESTIONS modülünden okur (tüm dosyalar zaten merge'lenmiş).
+ * Henüz inject edilmemiş içerik content/output/interview-detailed.json'dan eklenir.
  */
-async function pipelineInterviewDetailed(opts: { deeplApiKey?: string; useArgos: boolean }): Promise<void> {
-  console.log('💼 Interview Detailed Explanations → 18 dil...');
-  console.log('  ~600K karakter × 18 dil = ~11M total — DeepL Free quota 1.2 ay');
-  console.log('  Sprint 9\'da Claude batch ile parallel translation alternatif');
-  console.log('  Komut: ts-node scripts/i18n/run-pipeline.ts --target interview-detailed\n');
-  // Sprint 9'da implementasyon
+async function pipelineInterviewDetailed(opts: {
+  deeplApiKey?: string;
+  useArgos: boolean;
+}): Promise<void> {
+  const mod: any = await import('../../src/features/exams/interviewQuestions');
+  const INTERVIEW_QUESTIONS: any[] = mod.INTERVIEW_QUESTIONS ?? mod.default?.INTERVIEW_QUESTIONS ?? [];
+  const items: { id: string; tr: string }[] = INTERVIEW_QUESTIONS
+    .filter((q: any) => q.detailedExplanationTr)
+    .map((q: any) => ({ id: q.id, tr: q.detailedExplanationTr }));
+
+  // Henüz inject edilmemiş üretim
+  const outputJson = path.join(__dirname, '../content/output/interview-detailed.json');
+  if (fs.existsSync(outputJson)) {
+    const data = JSON.parse(fs.readFileSync(outputJson, 'utf8'));
+    if (Array.isArray(data.items)) {
+      for (const it of data.items as { id: string; text: string }[]) {
+        if (!items.find((x) => x.id === it.id)) {
+          items.push({ id: it.id, tr: it.text });
+        }
+      }
+    }
+  }
+
+  if (items.length === 0) {
+    console.log('⚠️ detailedExplanationTr olan mülakat sorusu bulunamadı');
+    return;
+  }
+  await translateLongTextPipeline(
+    'interview-detailed',
+    '💼',
+    'Interview Detailed Explanations',
+    items,
+    opts,
+  );
 }
 
 /**
- * 1300 vocab terimi richDefinitionTr alanını 18 dile çevir.
- * ~400K karakter, DeepL Free quota'da 0.8 ay.
+ * Vocab terimlerinin richDefinitionTr alanını 18 dile çevir.
+ * Tüm rolün vocab seed'lerinden import + üretilmiş output birleştir.
  */
-async function pipelineVocabRich(opts: { deeplApiKey?: string; useArgos: boolean }): Promise<void> {
-  console.log('📚 Vocab Rich Definitions → 18 dil...');
-  console.log('  ~400K karakter × 18 dil = ~7.2M total');
-  console.log('  Sprint 9\'da Claude batch parallel');
-  console.log('  Komut: ts-node scripts/i18n/run-pipeline.ts --target vocab-rich\n');
+async function pipelineVocabRich(opts: {
+  deeplApiKey?: string;
+  useArgos: boolean;
+}): Promise<void> {
+  const items: { id: string; tr: string }[] = [];
+
+  const seedNames = ['pilotVocab', 'cabinVocab', 'technicianVocab', 'groundVocab', 'studentVocab'];
+  const seedExports = ['PILOT_VOCAB_FAZ1', 'CABIN_VOCAB_FAZ1', 'TECHNICIAN_VOCAB_FAZ1', 'GROUND_VOCAB_FAZ1', 'STUDENT_VOCAB_FAZ1'];
+  for (let i = 0; i < seedNames.length; i++) {
+    const mod: any = await import(`../../src/features/lessons/seed/${seedNames[i]}`);
+    const exportName = seedExports[i]!;
+    const arr: any[] = mod[exportName] ?? mod.default?.[exportName] ?? [];
+    for (const v of arr) {
+      if (v.richDefinitionTr && !items.find((x) => x.id === v.id)) {
+        items.push({ id: v.id, tr: v.richDefinitionTr });
+      }
+    }
+  }
+
+  // Henüz inject edilmemiş üretim
+  const outputJson = path.join(__dirname, '../content/output/vocab-rich.json');
+  if (fs.existsSync(outputJson)) {
+    const data = JSON.parse(fs.readFileSync(outputJson, 'utf8'));
+    if (Array.isArray(data.items)) {
+      for (const it of data.items as { id: string; text: string }[]) {
+        if (!items.find((x) => x.id === it.id)) {
+          items.push({ id: it.id, tr: it.text });
+        }
+      }
+    }
+  }
+
+  if (items.length === 0) {
+    console.log('⚠️ richDefinitionTr olan vocab terimi bulunamadı');
+    return;
+  }
+  await translateLongTextPipeline('vocab-rich', '📚', 'Vocab Rich Definitions', items, opts);
+}
+
+/**
+ * TS kaynak dosyasından `id: '...'` ve `<field>: '...'` veya template literal
+ * alanlarını eşleştirip { id, tr } listesi çıkarır. Basit regex tabanlı,
+ * AST kullanmadan — kaynak dosyalar düzenli format kullanıyor.
+ */
+function extractIdAndField(source: string, field: string): { id: string; tr: string }[] {
+  const out: { id: string; tr: string }[] = [];
+  // Object literal'leri kabaca yakala: id: '...' den sonraki ilk <field>: ...
+  // Hem '...', "..." hem `...` (template literal) destekler.
+  //
+  // Önemli: placement options (`{ id: 'a', text: '...' }`) gibi nested ID'leri
+  // yakalama — onlarda hemen `text:` gelir veya ID 1 karakter (a/b/c/d).
+  const objectRe = /id:\s*['"`]([^'"`]+)['"`][\s\S]*?(?=\bid:\s*['"`]|\Z)/g;
+  const seen = new Set<string>();
+  let match: RegExpExecArray | null;
+  while ((match = objectRe.exec(source)) !== null) {
+    const id = match[1]!;
+    const block = match[0]!;
+
+    // Filtre 1: çok kısa ID = nested option (a/b/c/d)
+    if (id.length < 2) continue;
+
+    // Filtre 2: aynı satırda `text:` varsa nested option literal'i
+    const firstLine = block.split('\n')[0]!;
+    if (/text:\s*['"`]/.test(firstLine)) continue;
+
+    // Filtre 3: aynı id daha önce görüldüyse (nested duplicate)
+    if (seen.has(id)) continue;
+    seen.add(id);
+
+    const fieldRe = new RegExp(`${field}:\\s*([\`'\"])([\\s\\S]*?)(?<!\\\\)\\1`);
+    const fieldMatch = block.match(fieldRe);
+    if (fieldMatch && fieldMatch[2]) {
+      out.push({ id, tr: fieldMatch[2] });
+    }
+  }
+  return out;
 }
 
 /**

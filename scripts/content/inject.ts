@@ -19,7 +19,8 @@ interface GeneratedItem {
 
 interface InjectionTarget {
   outputFile: string;
-  sourceFile: string;
+  /** Tek dosya veya birden fazla — ID hangisinde varsa orada enjekte */
+  sourceFile: string | string[];
   fieldName: string;
   description: string;
 }
@@ -33,7 +34,13 @@ const INJECTIONS: InjectionTarget[] = [
   },
   {
     outputFile: 'interview-detailed.json',
-    sourceFile: 'src/features/exams/interviewQuestions.ts',
+    sourceFile: [
+      'src/features/exams/interviewQuestions.ts',
+      'src/features/exams/questionsCabinExtra.ts',
+      'src/features/exams/questionsPilotExtra.ts',
+      'src/features/exams/questionsRolesExtra.ts',
+      'src/features/exams/questionsRolesExtraV2.ts',
+    ],
     fieldName: 'detailedExplanationTr',
     description: 'Mülakat detayed cevap',
   },
@@ -133,50 +140,67 @@ function injectField(
 
 async function injectFromOutput(
   outputFile: string,
-  sourceFile: string,
+  sourceFiles: string | string[],
   fieldName: string,
   description: string,
 ): Promise<void> {
   const outputPath = path.join(OUTPUT_DIR, outputFile);
-  const sourcePath = path.join(__dirname, '../..', sourceFile);
+  const sourceFileList = Array.isArray(sourceFiles) ? sourceFiles : [sourceFiles];
 
   if (!fs.existsSync(outputPath)) {
     console.log(`⚠️  ${description}: ${outputFile} yok, atlanıyor`);
     return;
   }
-  if (!fs.existsSync(sourcePath)) {
-    console.log(`❌  Kaynak dosya yok: ${sourceFile}`);
-    return;
-  }
 
   const data = JSON.parse(fs.readFileSync(outputPath, 'utf8')) as { items: GeneratedItem[] };
-  let source = fs.readFileSync(sourcePath, 'utf8');
+  const remaining = new Map(data.items.map((item) => [item.id, item]));
+  let totalInjected = 0;
+  let totalSkipped = 0;
 
-  // Backup
-  const backupPath = `${sourcePath}.backup-${Date.now()}`;
-  fs.writeFileSync(backupPath, source);
+  for (const sourceFile of sourceFileList) {
+    const sourcePath = path.join(__dirname, '../..', sourceFile);
+    if (!fs.existsSync(sourcePath)) {
+      console.log(`❌  Kaynak dosya yok: ${sourceFile}`);
+      continue;
+    }
 
-  let injectedCount = 0;
-  let skippedCount = 0;
+    let source = fs.readFileSync(sourcePath, 'utf8');
+    const backupPath = `${sourcePath}.backup-${Date.now()}`;
+    fs.writeFileSync(backupPath, source);
 
-  for (const item of data.items) {
-    const result = injectField(source, item.id, fieldName, item.text);
-    if (result.injected) {
-      source = result.source;
-      injectedCount += 1;
-    } else {
-      skippedCount += 1;
-      if (result.reason !== 'field already exists') {
-        console.log(`   ⚠️ ${item.id}: ${result.reason}`);
+    let fileInjected = 0;
+    const matchedHere: string[] = [];
+
+    for (const [id, item] of remaining) {
+      const result = injectField(source, id, fieldName, item.text);
+      if (result.injected) {
+        source = result.source;
+        fileInjected += 1;
+        matchedHere.push(id);
+      } else if (result.reason === 'field already exists') {
+        // Source'ta zaten var — bu dosyada matchlendi say
+        matchedHere.push(id);
       }
+    }
+
+    fs.writeFileSync(sourcePath, source);
+    matchedHere.forEach((id) => remaining.delete(id));
+    totalInjected += fileInjected;
+    if (fileInjected > 0 || matchedHere.length > 0) {
+      console.log(
+        `   ${path.basename(sourceFile)}: enjekte ${fileInjected}, mevcut ${matchedHere.length - fileInjected}`,
+      );
     }
   }
 
-  fs.writeFileSync(sourcePath, source);
+  // Hâlâ eşleşmeyenleri uyar
+  for (const id of remaining.keys()) {
+    console.log(`   ⚠️ ${id}: hiçbir kaynak dosyada bulunamadı`);
+    totalSkipped += 1;
+  }
+
   console.log(`✅ ${description}`);
-  console.log(`   Enjekte: ${injectedCount}, Atlandı: ${skippedCount}`);
-  console.log(`   Kaynak: ${sourceFile}`);
-  console.log(`   Backup: ${path.basename(backupPath)}\n`);
+  console.log(`   Toplam enjekte: ${totalInjected}, Atlandı: ${totalSkipped}\n`);
 }
 
 /**

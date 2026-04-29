@@ -10,6 +10,7 @@ import type { InterviewQuestion } from './airlineTypes';
 import { CABIN_EXTRA_QUESTIONS } from './questionsCabinExtra';
 import { PILOT_EXTRA_QUESTIONS } from './questionsPilotExtra';
 import { ROLES_EXTRA_QUESTIONS } from './questionsRolesExtra';
+import { ROLES_EXTRA_QUESTIONS_V2 } from './questionsRolesExtraV2';
 
 const CORE_QUESTIONS: InterviewQuestion[] = [
   // ═══════════════════════════════════════
@@ -1711,6 +1712,7 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
   ...CABIN_EXTRA_QUESTIONS,
   ...PILOT_EXTRA_QUESTIONS,
   ...ROLES_EXTRA_QUESTIONS,
+  ...ROLES_EXTRA_QUESTIONS_V2,
 ];
 
 /**
