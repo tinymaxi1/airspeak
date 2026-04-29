@@ -30,13 +30,23 @@ import {
 } from '@/components/airspeak';
 
 interface TreeNode {
-  id: number;
+  id: string; // lesson id (gerçek)
   type: 'lesson' | 'checkpoint' | 'boss';
   state: 'done' | 'current' | 'locked';
   iconLabel: string;
   x: number;
   startTag?: boolean;
+  /** Tıklandığında nereye gidilecek (lesson id) */
+  lessonId?: string;
 }
+
+const LESSON_ICON: Record<string, string> = {
+  vocabulary: '📖',
+  dialogue: '💬',
+  listening: '🎧',
+  pronunciation: '🎙',
+  quiz: '⭐',
+};
 
 export default function LearnScreen() {
   const role = useOnboardingStore((s) => s.role);
@@ -44,23 +54,44 @@ export default function LearnScreen() {
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
   const modules = useMemo(() => getModulesForRole(role), [role]);
   const activeModule = modules[0]; // Şimdilik ilk modül
+  const [activeUnitIdx, setActiveUnitIdx] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => setRefreshing(false), 600);
   }, []);
 
-  const nodes: TreeNode[] = [
-    { id: 1, type: 'lesson', state: 'done', iconLabel: '🎙', x: 0 },
-    { id: 2, type: 'lesson', state: 'done', iconLabel: '🎧', x: -40 },
-    { id: 3, type: 'lesson', state: 'done', iconLabel: '📖', x: -20 },
-    { id: 4, type: 'checkpoint', state: 'done', iconLabel: '⭐', x: 30 },
-    { id: 5, type: 'lesson', state: 'done', iconLabel: '💬', x: 50 },
-    { id: 6, type: 'lesson', state: 'current', iconLabel: '✈', x: 20, startTag: true },
-    { id: 7, type: 'lesson', state: 'locked', iconLabel: '🔊', x: -20 },
-    { id: 8, type: 'lesson', state: 'locked', iconLabel: '🧭', x: -50 },
-    { id: 9, type: 'boss', state: 'locked', iconLabel: '🏆', x: 0 },
-  ];
+  const activeUnit = activeModule?.units[activeUnitIdx];
+
+  // Gerçek lesson listesinden node'lar — ilk locked olmayan ders 'current'
+  const nodes: TreeNode[] = useMemo(() => {
+    if (!activeUnit) return [];
+    const lessons = activeUnit.lessons;
+    const xs = [0, -40, -20, 30, 50, 20, -20, -50, 0]; // zig-zag
+    let firstUndoneFound = false;
+    return lessons.map((l, idx) => {
+      const isDone = completedSet.has(l.id);
+      const isLast = idx === lessons.length - 1;
+      let state: TreeNode['state'];
+      if (isDone) {
+        state = 'done';
+      } else if (!firstUndoneFound) {
+        state = 'current';
+        firstUndoneFound = true;
+      } else {
+        state = 'locked';
+      }
+      return {
+        id: l.id,
+        type: isLast ? 'boss' : l.type === 'quiz' ? 'checkpoint' : 'lesson',
+        state,
+        iconLabel: isLast ? '🏆' : LESSON_ICON[l.type] ?? '✈',
+        x: xs[idx % xs.length] ?? 0,
+        startTag: state === 'current',
+        lessonId: l.id,
+      };
+    });
+  }, [activeUnit, completedSet]);
 
   const completedCount = nodes.filter((n) => n.state === 'done').length;
 
@@ -93,7 +124,7 @@ export default function LearnScreen() {
                     <Text style={{ color: '#FFFFFF', fontSize: 20 }}>‹</Text>
                   </TouchableOpacity>
                   <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', letterSpacing: 1.8 }}>
-                    SECTION {activeModule?.number ?? 2} · UNIT {(activeModule?.number ?? 4)}
+                    SECTION {activeModule?.number ?? 1} · UNIT {(activeUnit?.number ?? 1)}
                   </Mono>
                 </View>
                 <Text
@@ -106,7 +137,7 @@ export default function LearnScreen() {
                     letterSpacing: -0.48,
                   }}
                 >
-                  {activeModule?.title ?? 'Communicate during\nholding & approach'}
+                  {activeUnit?.title ?? activeModule?.title ?? ''}
                 </Text>
                 <Mono style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', marginTop: 6 }}>
                   ICAO descriptors: Comprehension · Vocabulary
@@ -135,7 +166,7 @@ export default function LearnScreen() {
                     lineHeight: 22,
                   }}
                 >
-                  {String(activeModule?.number ?? 4).padStart(2, '0')}
+                  {String(activeUnit?.number ?? 1).padStart(2, '0')}
                 </Text>
               </View>
             </View>
@@ -197,36 +228,36 @@ export default function LearnScreen() {
           }}
           style={{ borderBottomWidth: 1, borderBottomColor: '#DCE0E8' }}
         >
-          {[
-            { label: 'Holding & approach', active: true },
-            { label: 'Taxi & ground', active: false },
-            { label: 'Departure', active: false },
-            { label: 'Emergency', active: false },
-          ].map((c, i) => (
-            <View
-              key={i}
-              style={{
-                height: 36,
-                paddingHorizontal: 14,
-                borderRadius: 999,
-                backgroundColor: c.active ? '#0F1E47' : '#FFFFFF',
-                borderWidth: 1.5,
-                borderColor: c.active ? '#0F1E47' : '#DCE0E8',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text
+          {(activeModule?.units ?? []).map((u, i) => {
+            const isActive = i === activeUnitIdx;
+            return (
+              <TouchableOpacity
+                key={u.id}
+                activeOpacity={0.85}
+                onPress={() => setActiveUnitIdx(i)}
                 style={{
-                  fontFamily: FONTS.body700,
-                  fontSize: 13,
-                  color: c.active ? '#FFFFFF' : '#0E1116',
+                  height: 36,
+                  paddingHorizontal: 14,
+                  borderRadius: 999,
+                  backgroundColor: isActive ? '#0F1E47' : '#FFFFFF',
+                  borderWidth: 1.5,
+                  borderColor: isActive ? '#0F1E47' : '#DCE0E8',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                {c.label}
-              </Text>
-            </View>
-          ))}
+                <Text
+                  style={{
+                    fontFamily: FONTS.body700,
+                    fontSize: 13,
+                    color: isActive ? '#FFFFFF' : '#0E1116',
+                  }}
+                >
+                  {u.title}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
 
         {/* Tree */}
@@ -311,10 +342,18 @@ export default function LearnScreen() {
               <TouchableOpacity
                 activeOpacity={0.85}
                 disabled={node.state === 'locked'}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  node.state === 'locked'
+                    ? 'Kilitli ders'
+                    : node.state === 'done'
+                      ? 'Tamamlanmış ders, tekrar et'
+                      : 'Dersi başlat'
+                }
                 onPress={() => {
-                  if (node.state !== 'locked') {
-                    router.push('/(tabs)/learn'); // TODO: lesson route with id
-                  }
+                  if (node.state === 'locked') return;
+                  if (!node.lessonId) return;
+                  router.push({ pathname: '/lesson/[id]', params: { id: node.lessonId } });
                 }}
                 style={{
                   width: node.type === 'boss' ? 92 : node.type === 'checkpoint' ? 80 : 72,
