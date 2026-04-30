@@ -23,6 +23,7 @@ import { useOfflineStore } from '@/stores/offlineStore';
 import { useActivityStore } from '@/stores/activityStore';
 import { useNextLesson } from '@/features/content/api';
 import type { UserRole } from '@/types/profile';
+import { CompetitionBanner } from '@/components/competitions/CompetitionBanner';
 import {
   HHero,
   H2,
@@ -238,6 +239,11 @@ export default function HomeScreen() {
           />
         }
       >
+        {/* Aktif yarışma banner (varsa, en başta) */}
+        <View style={{ marginBottom: 14 }}>
+          <CompetitionBanner />
+        </View>
+
         {/* İlk kullanıcı için onboarding banner */}
         {isFirstTime && (
           <View
