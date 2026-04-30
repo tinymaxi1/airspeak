@@ -41,6 +41,7 @@ import { useGamificationStore } from '@/stores/gamificationStore';
 import { useOfflineStore } from '@/stores/offlineStore';
 import { subscribeContentRealtime } from '@/features/content/realtime';
 import { useBadgeWatcher } from '@/features/badges/useBadgeWatcher';
+import { PaywallTriggerSheet } from '@/components/paywall/PaywallTriggerSheet';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -194,6 +195,7 @@ export default function RootLayout() {
             <Stack.Screen name="settings/language" options={{ headerShown: true, headerTitle: 'Dil Seç' }} />
             <Stack.Screen name="quiz/[id]" options={{ headerShown: true, headerTitle: 'Quiz' }} />
           </Stack>
+          <PaywallTriggerSheet />
         </QueryClientProvider>
       </TamaguiProvider>
     </GestureHandlerRootView>
