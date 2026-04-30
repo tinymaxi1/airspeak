@@ -31,6 +31,7 @@ import {
   useUserTypeRatings,
 } from '@/features/profile/api';
 import { useBadgeTemplates, useUserBadges } from '@/features/badges/api';
+import { useUserXpSummary } from '@/features/league/api';
 import { Hero } from '@/components/profile/Hero';
 import { StatStrip } from '@/components/profile/StatStrip';
 import { LevelMap } from '@/components/profile/LevelMap';
@@ -67,8 +68,12 @@ export default function ProfileScreen() {
   const role = useOnboardingStore((s) => s.role);
   const { data: airlines = [] } = useAirlines();
   const placement = useOnboardingStore((s) => s.placementResult);
-  const totalXp = useGamificationStore((s) => s.totalXp ?? 0);
-  const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
+  const localTotalXp = useGamificationStore((s) => s.totalXp ?? 0);
+  const localStreak = useGamificationStore((s) => s.currentStreak ?? 0);
+  // DB source of truth (Sprint 4B.2). Yoksa local fallback.
+  const { row: xpSummary } = useUserXpSummary(user?.id);
+  const totalXp = xpSummary?.total_xp ?? localTotalXp;
+  const currentStreak = localStreak; // streak DB henüz lazy sync — local first
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
   const history = useLessonHistoryStore((s) => s.history);
   const { badges: badgeTemplates } = useBadgeTemplates();

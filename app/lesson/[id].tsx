@@ -25,6 +25,7 @@ import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
 import { useLessonLimit, bumpServerUsage } from '@/features/config/limits';
 import { PaywallSheet } from '@/components/paywall/PaywallSheet';
 import { track } from '@/lib/posthog';
+import { bumpUserXp } from '@/features/league/api';
 
 export default function LessonScreen() {
   const params = useLocalSearchParams<{ id: string }>();
@@ -199,6 +200,22 @@ export default function LessonScreen() {
       void bumpServerUsage('lessons_completed');
       const score = Math.round((nextCorrect / total) * 100);
       markLessonCompleted(lessonSlug, score);
+      // DB sync: user_lesson_progress + user_xp_summary + streak + lazy lig assign
+      // Background — UI'yı blokla­ma. Response gelince store'u DB ground truth ile sync.
+      if (lesson?.id) {
+        const lessonDbId = lesson.id;
+        void bumpUserXp({
+          lessonId: lessonDbId,
+          score,
+          xp: 50,
+        }).then((r) => {
+          if (r.ok && r.current_streak !== undefined) {
+            useGamificationStore.getState().syncFromServer({
+              currentStreak: r.current_streak,
+            });
+          }
+        });
+      }
       recordRecentActivity({
         type: 'lesson',
         refId: lessonSlug,
