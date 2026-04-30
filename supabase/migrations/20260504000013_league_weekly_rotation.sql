@@ -521,7 +521,7 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN NULL;
 END $$;
 
-DO $$
+DO $outer$
 DECLARE
   v_url text;
   v_token text;
@@ -555,7 +555,7 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN
   -- pg_cron yoksa (Free tier) sessizce geç — manuel admin endpoint kullanılır
   RAISE NOTICE 'pg_cron schedule skipped: %', SQLERRM;
-END $$;
+END $outer$;
 
 DO $$ BEGIN
   RAISE NOTICE 'Sprint 4B.1 — pg_cron + 3 RPC + lazy assign + 9 badge seed aktif';
