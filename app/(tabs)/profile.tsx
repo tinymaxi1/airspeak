@@ -1,12 +1,12 @@
 /**
  * Profile Screen — Pilot Logbook
  *
- * Tasarım birebir (screens-other.jsx Profile):
- * - Header: navy + avatar + "Captain Ekrem" + callsign + role
- * - Stats grid: XP / Streak / Level / Lessons (4 hücre)
- * - Heatmap: 7x12 grid (12 hafta) — green/red/empty
- * - Badges row (3-4 earned + locked)
- * - Settings link, Language link, Logout
+ * Sprint 3a refactor:
+ * - DynamicGreeting + Hero (avatar uploadable) — useProfile hook'tan beslenir
+ * - StatStrip (XP / Streak / Rozet) — Reanimated entry + count-up
+ * - LevelMap — XP bar + milestone marker
+ * - ActivityHeatmap (84 gün) — ayrı component, stagger entry
+ * - Badges + Settings + SignOut korunur
  */
 import { useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
@@ -14,42 +14,50 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
-import { useGamificationStore } from '@/stores/gamificationStore';
+import {
+  useGamificationStore,
+  calculateLevelFromXp,
+} from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
 import { useAirlines } from '@/features/content/api';
+import { useProfile } from '@/features/profile/useProfile';
+import { Hero } from '@/components/profile/Hero';
+import { StatStrip } from '@/components/profile/StatStrip';
+import { LevelMap } from '@/components/profile/LevelMap';
 import {
-  HHero,
-  H2,
+  ActivityHeatmap,
+  type HeatmapBucket,
+} from '@/components/profile/ActivityHeatmap';
+import { DynamicGreeting } from '@/components/profile/DynamicGreeting';
+import {
   Body,
   Eyebrow,
   Mono,
   FONTS,
-  Avatar,
   Button3D,
-  Card3D,
-  StreakChip,
 } from '@/components/airspeak';
 import { getCurrentLanguage } from '@/lib/i18n';
+
+const HEATMAP_DAYS = 84;
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
+  const { profile } = useProfile(user?.id);
   const role = useOnboardingStore((s) => s.role);
   const { data: airlines = [] } = useAirlines();
   const placement = useOnboardingStore((s) => s.placementResult);
   const totalXp = useGamificationStore((s) => s.totalXp ?? 0);
   const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
-  // Selector method'a (yeni array döndüren) çağrı yapmak sonsuz render döngüsü
-  // tetikler. Sadece raw history alıp useMemo'da hesapla.
   const history = useLessonHistoryStore((s) => s.history);
-  const heatmapBuckets = useMemo(() => {
-    const HEATMAP_DAYS = 84; // 12 hafta × 7 gün
+
+  const heatmapBuckets = useMemo<HeatmapBucket[]>(() => {
     const map = new Map(history.map((e) => [e.date, e.count]));
-    const out: { date: string; count: number }[] = [];
+    const out: HeatmapBucket[] = [];
     const today = new Date();
     for (let i = HEATMAP_DAYS - 1; i >= 0; i--) {
       const d = new Date(today);
@@ -62,15 +70,20 @@ export default function ProfileScreen() {
     }
     return out;
   }, [history]);
+
   const activeDayCount = useMemo(
     () => history.filter((e) => e.count > 0).length,
     [history],
   );
+
   const lang = getCurrentLanguage();
 
-  const level = placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
-  const username = user?.email?.split('@')[0] ?? 'pilot';
-  const initials = username.slice(0, 2).toUpperCase();
+  const placementLevel =
+    placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
+  const username = profile?.username ?? user?.email?.split('@')[0] ?? 'pilot';
+  const displayName = profile?.full_name ?? username;
+  const initials = (displayName || username).slice(0, 2).toUpperCase();
+  const avatarUrl = profile?.avatar_url ?? null;
 
   const roleLabel = {
     pilot: 'Pilot',
@@ -79,6 +92,18 @@ export default function ProfileScreen() {
     ground: 'Ground Ops',
     student: 'Student',
   }[role ?? 'student'];
+
+  const xpLevel = calculateLevelFromXp(totalXp);
+
+  // Rozet sayısı — mevcut 6 koşullu rozetin earned olanları
+  const earnedBadges = [
+    completedCount >= 5,
+    currentStreak >= 7,
+    completedCount >= 100,
+    (placement?.aviationEnglish?.label ?? '') === 'L4',
+    totalXp >= 4000,
+    totalXp >= 1000,
+  ].filter(Boolean).length;
 
   const handleSignOut = () => {
     Alert.alert(t('screens.profile.signOut'), t('screens.profile.signOutConfirm'), [
@@ -102,138 +127,63 @@ export default function ProfileScreen() {
           <View
             style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 22 }}
             accessibilityRole="header"
-            accessibilityLabel={`${roleLabel}, ${username}, Level ${level}`}
+            accessibilityLabel={`${roleLabel}, ${displayName}, Level ${placementLevel}`}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-              <Avatar initials={initials} color="#E63946" size={64} />
-              <View style={{ flex: 1 }}>
-                <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
-                  {t('screens.profile.captain')}
-                </Mono>
-                <Text
-                  style={{
-                    fontFamily: FONTS.display,
-                    fontSize: 26,
-                    fontWeight: '700',
-                    color: '#FFFFFF',
-                    letterSpacing: -0.52,
-                    marginTop: 2,
-                    lineHeight: 28,
-                  }}
-                >
-                  {username}
-                </Text>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 6 }}>
-                  <View
-                    style={{
-                      backgroundColor: 'rgba(255,255,255,0.12)',
-                      paddingHorizontal: 8,
-                      paddingVertical: 2,
-                      borderRadius: 6,
-                    }}
-                  >
-                    <Mono style={{ fontSize: 11, color: '#FFFFFF', letterSpacing: 0.88 }}>
-                      {roleLabel}
-                    </Mono>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: '#F2C14E',
-                      paddingHorizontal: 8,
-                      paddingVertical: 2,
-                      borderRadius: 6,
-                    }}
-                  >
-                    <Mono style={{ fontSize: 11, color: '#0A1430', letterSpacing: 0.88 }}>
-                      LEVEL {level}
-                    </Mono>
-                  </View>
-                </View>
-              </View>
+            <View style={{ marginBottom: 10 }}>
+              <DynamicGreeting name={displayName} streak={currentStreak} />
             </View>
+            {user?.id ? (
+              <Hero
+                userId={user.id}
+                displayName={displayName}
+                avatarUrl={avatarUrl}
+                initials={initials}
+                roleLabel={roleLabel}
+                level={String(placementLevel)}
+              />
+            ) : null}
           </View>
         </SafeAreaView>
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* Stats grid — 4 cells */}
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 18 }}>
-          <StatCell label={t('screens.profile.xp')} value={totalXp.toLocaleString()} accent="#E63946" />
-          <StatCell label={t('screens.profile.streak')} value={`${currentStreak}d`} accent="#FF7847" />
-          <StatCell label={t('screens.profile.level')} value={level} accent="#0F1E47" />
-          <StatCell label={t('screens.profile.lessons')} value={String(completedCount)} accent="#2DBE6C" />
+        {/* Stat strip — 3 hücre */}
+        <View style={{ marginBottom: 18 }}>
+          <StatStrip
+            totalXp={totalXp}
+            currentStreak={currentStreak}
+            badgeCount={earnedBadges}
+          />
         </View>
 
-        {/* Heatmap — 12 hafta x 7 gün, gerçek aktivite */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <Eyebrow>{t('screens.profile.flightLog')}</Eyebrow>
-          {activeDayCount > 0 && (
-            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
-              {t('screens.profile.activeDays', '{{n}} aktif gün · 84', { n: activeDayCount })}
-            </Mono>
-          )}
+        {/* Level map */}
+        <View style={{ marginBottom: 18 }}>
+          <LevelMap
+            level={xpLevel.level}
+            xpInLevel={xpLevel.xpInLevel}
+            xpToNextLevel={xpLevel.xpToNext}
+          />
         </View>
-        <Card3D style={{ marginTop: 8, marginBottom: 18, padding: 14 }}>
-          {activeDayCount === 0 ? (
-            <View style={{ alignItems: 'center', paddingVertical: 18, gap: 8 }}>
-              <Text style={{ fontSize: 32 }}>📅</Text>
-              <Body color="#5A6478" style={{ fontSize: 13, textAlign: 'center', maxWidth: 240 }}>
-                {t(
-                  'screens.profile.heatmapEmpty',
-                  'Henüz aktivite yok. İlk dersi tamamla, heatmap dolmaya başlasın.',
-                )}
-              </Body>
-            </View>
-          ) : (
-            <>
-              <View style={{ gap: 4 }}>
-                {Array.from({ length: 7 }).map((_, dayIdx) => (
-                  <View key={dayIdx} style={{ flexDirection: 'row', gap: 4 }}>
-                    {Array.from({ length: 12 }).map((_, weekIdx) => {
-                      // 84 günlük dizi 12 hafta × 7 gün, eski → yeni
-                      // Grid'de satır = haftanın günü (0=Mon), kolon = hafta indexi
-                      const bucketIdx = weekIdx * 7 + dayIdx;
-                      const bucket = heatmapBuckets[bucketIdx];
-                      const count = bucket?.count ?? 0;
-                      const color = countToColor(count);
-                      return (
-                        <View
-                          key={weekIdx}
-                          style={{
-                            flex: 1,
-                            height: 14,
-                            borderRadius: 3,
-                            backgroundColor: color,
-                          }}
-                        />
-                      );
-                    })}
-                  </View>
-                ))}
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginTop: 10,
-                  alignItems: 'center',
-                }}
-              >
-                <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
-                  {t('screens.profile.less')}
-                </Mono>
-                <View style={{ flexDirection: 'row', gap: 3 }}>
-                  {['#EDEFF3', '#DDF7E6', '#4FD487', '#2DBE6C'].map((c) => (
-                    <View key={c} style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: c }} />
-                  ))}
-                </View>
-                <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
-                  {t('screens.profile.more')}
-                </Mono>
-              </View>
-            </>
-          )}
-        </Card3D>
+
+        {/* Activity heatmap — 84 gün */}
+        <View style={{ marginBottom: 18 }}>
+          <ActivityHeatmap
+            buckets={heatmapBuckets}
+            activeDayCount={activeDayCount}
+            flightLogLabel={t('screens.profile.flightLog')}
+            activeDaysLabel={t(
+              'screens.profile.activeDays',
+              '{{n}} aktif gün · 84',
+              { n: activeDayCount },
+            )}
+            emptyLabel={t(
+              'screens.profile.heatmapEmpty',
+              'Henüz aktivite yok. İlk dersi tamamla, heatmap dolmaya başlasın.',
+            )}
+            lessLabel={t('screens.profile.less')}
+            moreLabel={t('screens.profile.more')}
+          />
+        </View>
 
         {/* Badges — gerçek state'ten türetilir */}
         <Eyebrow>{t('screens.profile.badges')}</Eyebrow>
@@ -286,45 +236,6 @@ export default function ProfileScreen() {
           {t('screens.profile.signOut')}
         </Button3D>
       </ScrollView>
-    </View>
-  );
-}
-
-function countToColor(count: number): string {
-  if (count <= 0) return '#EDEFF3';
-  if (count === 1) return '#DDF7E6';
-  if (count <= 3) return '#4FD487';
-  return '#2DBE6C';
-}
-
-function StatCell({ label, value, accent }: { label: string; value: string; accent: string }) {
-  return (
-    <View
-      style={{
-        flex: 1,
-        minWidth: '47%',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 14,
-        borderWidth: 1.5,
-        borderColor: '#DCE0E8',
-        borderBottomWidth: 4,
-        padding: 14,
-      }}
-    >
-      <Eyebrow>{label}</Eyebrow>
-      <Text
-        style={{
-          fontFamily: FONTS.display,
-          fontSize: 28,
-          fontWeight: '700',
-          color: accent,
-          letterSpacing: -0.56,
-          marginTop: 4,
-          lineHeight: 30,
-        }}
-      >
-        {value}
-      </Text>
     </View>
   );
 }

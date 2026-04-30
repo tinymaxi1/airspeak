@@ -13,7 +13,7 @@
  * - Waveform (audio bars)
  * - PassDivider (boarding pass kesik)
  */
-import { View, TouchableOpacity, type ViewProps, type TouchableOpacityProps } from 'react-native';
+import { Image, View, TouchableOpacity, type ViewProps, type TouchableOpacityProps } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import type { ReactNode } from 'react';
 import { Eyebrow, Label, FONTS } from './typography';
@@ -533,13 +533,34 @@ export function ProgressBar({
 
 export function Avatar({
   initials,
+  imageUrl,
   color = '#0F1E47',
   size = 40,
+  ringColor,
 }: {
   initials: string;
+  imageUrl?: string | null;
   color?: string;
   size?: number;
+  ringColor?: string;
 }) {
+  const ring = ringColor
+    ? { borderWidth: 2, borderColor: ringColor }
+    : null;
+  if (imageUrl) {
+    return (
+      <Image
+        source={{ uri: imageUrl }}
+        style={{
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: color,
+          ...ring,
+        }}
+      />
+    );
+  }
   return (
     <View
       style={{
@@ -549,6 +570,7 @@ export function Avatar({
         backgroundColor: color,
         alignItems: 'center',
         justifyContent: 'center',
+        ...ring,
       }}
     >
       <Text
