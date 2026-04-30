@@ -1,10 +1,9 @@
 /**
- * Shop Screen — Coin store (yeni tasarım)
+ * Shop Screen — Coin store (DB-backed).
  *
- * - "🪙 Coin balance" gold card (StreakChip benzeri)
- * - Inventory satırı: streak freeze, hint sayıları
- * - 6 ürün kartı (3D card pattern, badge kırmızı/gold)
- * - Item effect → gerçekten gamificationStore'a bağlandı
+ * - useWallet ile DB'den okur (realtime).
+ * - purchaseShopItem RPC: spend + inventory atomik.
+ * - extra_heart / heart_full / xp_boost — local store (hearts MMKV).
  */
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
@@ -12,22 +11,30 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SHOP_ITEMS, type ShopItem } from '@/features/shop/items';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { useAuthStore } from '@/stores/authStore';
+import { useWallet, purchaseShopItem } from '@/features/wallet/api';
 import {
-  Eyebrow,
   Mono,
   Body,
   FONTS,
-  Button3D,
-  Card3D,
 } from '@/components/airspeak';
+
+const INVENTORY_FIELD: Partial<Record<ShopItem['type'], 'streak_freezes_inventory' | 'hints_inventory' | 'lesson_skips_inventory'>> = {
+  streak_freeze: 'streak_freezes_inventory',
+  hint: 'hints_inventory',
+  lesson_skip: 'lesson_skips_inventory',
+};
 
 export default function ShopScreen() {
   const { t } = useTranslation();
-  const coins = useGamificationStore((s) => s.coins);
+  const userId = useAuthStore((s) => s.user?.id);
+  const { wallet } = useWallet(userId);
   const hearts = useGamificationStore((s) => s.hearts);
   const maxHearts = useGamificationStore((s) => s.maxHearts);
-  const streakFreezes = useGamificationStore((s) => s.streakFreezes);
-  const hints = useGamificationStore((s) => s.hints);
+
+  const coins = wallet?.coins ?? 0;
+  const streakFreezes = wallet?.streak_freezes_inventory ?? 0;
+  const hints = wallet?.hints_inventory ?? 0;
 
   function handlePurchase(item: ShopItem) {
     if (item.isPremiumOnly) {
@@ -58,43 +65,61 @@ export default function ShopScreen() {
         { text: t('screens.shop.cancel'), style: 'cancel' },
         {
           text: t('screens.shop.buy'),
-          onPress: () => {
-            const success = useGamificationStore.getState().spendCoins(item.costCoins, item.type);
-            if (success) {
-              applyItemEffect(item);
-              Alert.alert(
-                t('screens.shop.successTitle'),
-                t('screens.shop.successBody', { title }),
-              );
-            }
-          },
+          onPress: () => void doPurchase(item, title),
         },
       ],
     );
   }
 
-  function applyItemEffect(item: ShopItem) {
-    const store = useGamificationStore.getState();
-    switch (item.type) {
-      case 'extra_heart':
-        store.addHeart(1);
-        break;
-      case 'heart_full':
-        store.fillHearts();
-        break;
-      case 'streak_freeze':
-        store.addStreakFreeze(1);
-        break;
-      case 'hint':
-        store.addHint(3);
-        break;
-      case 'xp_boost':
-        store.activateXpMultiplier(2.0, 60);
-        break;
-      case 'lesson_skip':
-        // İleride: store.addLessonSkip(1)
-        break;
+  async function doPurchase(item: ShopItem, title: string) {
+    const inventoryField = INVENTORY_FIELD[item.type];
+    const isLocalOnly = item.type === 'extra_heart' || item.type === 'heart_full';
+
+    // extra_heart / heart_full — DB inventory yok, sadece coin spend + local hearts.
+    if (isLocalOnly) {
+      const res = await purchaseShopItem({
+        itemId: item.id,
+        cost: item.costCoins,
+      });
+      if (!res.ok) {
+        Alert.alert(t('screens.shop.errorTitle', 'Hata'), res.error ?? t('screens.shop.errorBody', 'İşlem başarısız.'));
+        return;
+      }
+      const store = useGamificationStore.getState();
+      if (item.type === 'extra_heart') store.addHeart(1);
+      else if (item.type === 'heart_full') store.fillHearts();
+      Alert.alert(t('screens.shop.successTitle'), t('screens.shop.successBody', { title }));
+      return;
     }
+
+    // xp_boost — DB-side `xp_boost_until` set
+    if (item.type === 'xp_boost') {
+      const res = await purchaseShopItem({
+        itemId: item.id,
+        cost: item.costCoins,
+        boostMinutes: 60,
+      });
+      if (!res.ok) {
+        Alert.alert(t('screens.shop.errorTitle', 'Hata'), res.error ?? t('screens.shop.errorBody', 'İşlem başarısız.'));
+        return;
+      }
+      Alert.alert(t('screens.shop.successTitle'), t('screens.shop.successBody', { title }));
+      return;
+    }
+
+    // streak_freeze / hint / lesson_skip — DB inventory column
+    const count = item.type === 'hint' ? 3 : 1;
+    const res = await purchaseShopItem({
+      itemId: item.id,
+      cost: item.costCoins,
+      inventoryField,
+      inventoryCount: count,
+    });
+    if (!res.ok) {
+      Alert.alert(t('screens.shop.errorTitle', 'Hata'), res.error ?? t('screens.shop.errorBody', 'İşlem başarısız.'));
+      return;
+    }
+    Alert.alert(t('screens.shop.successTitle'), t('screens.shop.successBody', { title }));
   }
 
   return (
@@ -303,30 +328,28 @@ function ShopItemCard({
         {isLocked ? (
           <Text style={{ fontSize: 22 }}>🔒</Text>
         ) : (
-          <>
-            <View
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 4,
+              backgroundColor: canAfford ? '#FFF3D6' : '#FFE4E7',
+              paddingHorizontal: 10,
+              paddingVertical: 6,
+              borderRadius: 999,
+            }}
+          >
+            <Text style={{ fontSize: 14 }}>🪙</Text>
+            <Text
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 4,
-                backgroundColor: canAfford ? '#FFF3D6' : '#FFE4E7',
-                paddingHorizontal: 10,
-                paddingVertical: 6,
-                borderRadius: 999,
+                fontFamily: FONTS.mono700,
+                fontSize: 13,
+                color: canAfford ? '#F2C14E' : '#E63946',
               }}
             >
-              <Text style={{ fontSize: 14 }}>🪙</Text>
-              <Text
-                style={{
-                  fontFamily: FONTS.mono700,
-                  fontSize: 13,
-                  color: canAfford ? '#F2C14E' : '#E63946',
-                }}
-              >
-                {item.costCoins}
-              </Text>
-            </View>
-          </>
+              {item.costCoins}
+            </Text>
+          </View>
         )}
       </View>
     </TouchableOpacity>

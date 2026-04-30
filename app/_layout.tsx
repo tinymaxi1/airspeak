@@ -42,6 +42,7 @@ import { useOfflineStore } from '@/stores/offlineStore';
 import { subscribeContentRealtime } from '@/features/content/realtime';
 import { useBadgeWatcher } from '@/features/badges/useBadgeWatcher';
 import { PaywallTriggerSheet } from '@/components/paywall/PaywallTriggerSheet';
+import { useWalletMigration } from '@/features/wallet/useWalletMigration';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -71,6 +72,9 @@ export default function RootLayout() {
 
   // Badge watcher — store değişimlerinde eligible rozetleri server'a yazar
   useBadgeWatcher();
+
+  // Wallet migration — first launch'ta MMKV → DB one-way
+  useWalletMigration();
 
   // Network monitoring — getState() ile al, subscribe etme (döngü önler)
   useEffect(() => {

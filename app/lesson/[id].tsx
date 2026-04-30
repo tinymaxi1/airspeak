@@ -26,6 +26,7 @@ import { useLessonLimit, bumpServerUsage } from '@/features/config/limits';
 import { PaywallSheet } from '@/components/paywall/PaywallSheet';
 import { track } from '@/lib/posthog';
 import { bumpUserXp } from '@/features/league/api';
+import { addCoins as addCoinsServer } from '@/features/wallet/api';
 import { showPaywall } from '@/stores/paywallStore';
 
 export default function LessonScreen() {
@@ -33,7 +34,7 @@ export default function LessonScreen() {
   const lessonSlug = typeof params.id === 'string' ? params.id : '';
 
   // ─────────── Stores ───────────
-  const { addXp, recordDailyActivity, loseHeart, addCoins } = useGamificationStore();
+  const { addXp, recordDailyActivity, loseHeart } = useGamificationStore();
   const hearts = useGamificationStore((s) => s.hearts ?? 5);
   const markLessonCompleted = useProgressStore((s) => s.markLessonCompleted);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
@@ -194,7 +195,8 @@ export default function LessonScreen() {
 
     if (isLast) {
       addXp(50, 'lesson_completed');
-      addCoins(10, 'lesson_completed');
+      // Coins: server-side authoritative (DB realtime → useWallet'i günceller)
+      void addCoinsServer({ amount: 10, reason: 'lesson_completed', source: 'lesson_completed' });
       recordDailyActivity();
       recordHistoryActivity('lesson');
       bumpDaily('lessons_completed');
