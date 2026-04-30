@@ -23,6 +23,7 @@ import {
   TrendingUp,
   FileJson,
   Award,
+  Trophy,
 } from 'lucide-react';
 
 interface NavItem {
@@ -44,6 +45,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/scenarios', label: 'AI Senaryolar', icon: MessageSquare, minRole: 'reviewer' },
   { href: '/placement', label: 'Placement Test', icon: ClipboardList, minRole: 'reviewer' },
   { href: '/badges', label: 'Rozetler', icon: Award, minRole: 'editor' },
+  { href: '/leagues', label: 'Lig Yönetimi', icon: Trophy, minRole: 'editor' },
   { href: '/audio', label: 'Ses Kütüphanesi', icon: Volume2, minRole: 'editor' },
   { href: '/users', label: 'Kullanıcılar', icon: Users, minRole: 'editor' },
   { href: '/revenue', label: 'Revenue / Premium', icon: TrendingUp, minRole: 'editor' },
