@@ -20,6 +20,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
+import { showPaywall } from '@/stores/paywallStore';
 import {
   Mono,
   Body,
@@ -88,6 +89,8 @@ export default function OnboardingTourScreen() {
   const goToHome = () => {
     setHasSeenTour(true);
     router.replace('/(tabs)/home');
+    // Tour bittikten kısa süre sonra paywall sheet (yumuşak, 1×/30gün cooldown)
+    setTimeout(() => showPaywall('onboarding_tour_end'), 600);
   };
 
   const goToNext = () => {

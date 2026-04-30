@@ -20,6 +20,7 @@ import { router } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { Body, Eyebrow, Mono, FONTS, Avatar, Button3D } from '@/components/airspeak';
 import { useAuthStore } from '@/stores/authStore';
+import { showPaywall } from '@/stores/paywallStore';
 import {
   useLeagueMembership,
   useLeagueGroup,
@@ -96,6 +97,14 @@ export default function LeagueScreen() {
   const totalMembers = rows.length;
   const userRow = rows.find((r) => r.is_self) ?? null;
   const myRank = userRow?.rank ?? null;
+
+  // Lig top 3'te → "ödülünü 2× al" paywall (cooldown 7 gün, sadece 1× görünür)
+  useEffect(() => {
+    if (myRank != null && myRank <= 3) {
+      const t = setTimeout(() => showPaywall('league_top3_celebration'), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [myRank]);
 
   // Empty state — kullanıcı henüz lige atanmamış
   if (!lMem && !membership) {

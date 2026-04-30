@@ -32,6 +32,7 @@ import {
 } from '@/lib/speechRecognition';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
+import { showPaywall } from '@/stores/paywallStore';
 import { track } from '@/lib/posthog';
 
 const TASK_TYPES: { type: TaskType; emoji: string; titleTr: string; descTr: string }[] = [
@@ -152,6 +153,10 @@ export default function Icao4Screen() {
         overall_level: scored.overallLevel,
         is_heuristic: scored.isHeuristic,
       });
+      // Free user 1. görevi bitirdi → diğer 3 görev kilitli paywall nudge
+      if (task.id === FREE_TASK_ID) {
+        setTimeout(() => showPaywall('icao_oral_first_task_done'), 1500);
+      }
     } catch (err) {
       console.warn('Scoring failed', err);
       setStage('briefing');

@@ -51,6 +51,13 @@ export function useBadgeWatcher() {
         onNewlyEarned: (code) => {
           // Pub/sub — celebration overlay gibi tüketiciler dinler.
           newlyEarnedListeners.forEach((cb) => cb(code));
+          // %20 random soft paywall nudge (cooldown 3 gün)
+          if (Math.random() < 0.2) {
+            // Geç dynamic import — circular ref'i önle
+            void import('@/stores/paywallStore').then((m) => {
+              setTimeout(() => m.showPaywall('badge_celebration_random'), 2500);
+            });
+          }
         },
       });
     }, DEBOUNCE_MS);

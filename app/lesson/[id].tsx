@@ -26,6 +26,7 @@ import { useLessonLimit, bumpServerUsage } from '@/features/config/limits';
 import { PaywallSheet } from '@/components/paywall/PaywallSheet';
 import { track } from '@/lib/posthog';
 import { bumpUserXp } from '@/features/league/api';
+import { showPaywall } from '@/stores/paywallStore';
 
 export default function LessonScreen() {
   const params = useLocalSearchParams<{ id: string }>();
@@ -213,6 +214,10 @@ export default function LessonScreen() {
             useGamificationStore.getState().syncFromServer({
               currentStreak: r.current_streak,
             });
+            // Streak 3+ gün milestone → freeze offer paywall (cooldown 7gün)
+            if (r.current_streak >= 3) {
+              setTimeout(() => showPaywall('streak_milestone_3d'), 1200);
+            }
           }
         });
       }
