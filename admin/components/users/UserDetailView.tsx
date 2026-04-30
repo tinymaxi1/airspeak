@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * UserDetailView — admin user detail tab UI (4 tab).
+ * UserDetailView — admin user detail (5 tab).
  *
- * Tabs: Kişisel · Kariyer · Sertifika · Sosyal
- * Her tab'da inline form + (kariyer/sertifika) detay listeler CRUD.
+ * Tabs: Genel Bakış · Kişisel · Kariyer · Sosyal · Moderasyon
+ * Kariyer altında 4 alt-section: deneyim/eğitim/sertifika/type rating.
  */
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
@@ -21,25 +21,42 @@ import {
 import {
   adminUpdateProfile,
   adminClearAvatar,
+  adminBlankBio,
   adminCreateDetailRow,
   adminUpdateDetailRow,
   adminDeleteDetailRow,
   type UserDetailTable,
 } from '@/lib/users/actions';
+import {
+  setPremium,
+  banUser,
+  unbanUser,
+  setAdminRole,
+} from '@/lib/content/actions';
 import { toast } from 'sonner';
 import {
   Plus,
   Pencil,
   Trash2,
-  ShieldOff,
   ImageOff,
   Globe,
   Briefcase,
   GraduationCap,
   Award,
   Plane,
+  Crown,
+  Ban,
+  ShieldCheck,
+  Activity,
+  Eye,
+  EyeOff,
+  Calendar,
+  Clock,
+  Trophy,
+  History,
 } from 'lucide-react';
 
+// ─── Types ──────────────────────────────────────────────────────────────────
 export interface UserProfile {
   id: string;
   username: string | null;
@@ -69,6 +86,7 @@ export interface UserProfile {
   admin_role: string | null;
   premium_until: string | null;
   banned_at: string | null;
+  ban_reason: string | null;
   created_at: string;
 }
 
@@ -81,7 +99,6 @@ export interface ExperienceRow {
   is_current: boolean;
   description: string | null;
 }
-
 export interface EducationRow {
   id: string;
   school: string;
@@ -89,7 +106,6 @@ export interface EducationRow {
   field: string | null;
   graduation_year: number | null;
 }
-
 export interface CertificationRow {
   id: string;
   type: string;
@@ -98,12 +114,19 @@ export interface CertificationRow {
   expiry_date: string | null;
   issuing_authority: string | null;
 }
-
 export interface TypeRatingRow {
   id: string;
   aircraft_type: string;
   hours: number | null;
   certified_date: string | null;
+}
+export interface AuditEntry {
+  id: string;
+  action: string;
+  table_name: string | null;
+  diff: any;
+  metadata: any;
+  created_at: string;
 }
 
 interface Props {
@@ -112,40 +135,38 @@ interface Props {
   education: EducationRow[];
   certifications: CertificationRow[];
   typeRatings: TypeRatingRow[];
+  badgeCount: number;
+  lastSignInAt: string | null;
+  auditEntries: AuditEntry[];
   currentAdminRole: 'super_admin' | 'editor' | 'reviewer' | null;
 }
 
-type TabKey = 'personal' | 'career' | 'certs' | 'social';
+type TabKey = 'overview' | 'personal' | 'career' | 'social' | 'moderation';
 
 const TABS: { key: TabKey; label: string }[] = [
+  { key: 'overview', label: '📊 Genel Bakış' },
   { key: 'personal', label: '👤 Kişisel' },
   { key: 'career', label: '💼 Kariyer' },
-  { key: 'certs', label: '🏅 Sertifika' },
   { key: 'social', label: '🌐 Sosyal' },
+  { key: 'moderation', label: '🛡️ Moderasyon' },
 ];
 
-export function UserDetailView({
-  profile,
-  experiences,
-  education,
-  certifications,
-  typeRatings,
-  currentAdminRole,
-}: Props) {
-  const [active, setActive] = useState<TabKey>('personal');
+export function UserDetailView(props: Props) {
+  const [active, setActive] = useState<TabKey>('overview');
+  const isSuper = props.currentAdminRole === 'super_admin';
 
   return (
     <div className="space-y-6">
-      <ProfileHeader profile={profile} canModerate={currentAdminRole === 'super_admin'} />
+      <ProfileHeader profile={props.profile} canModerate={isSuper} />
 
       <div className="bg-white border border-border rounded-xl overflow-hidden">
-        <div className="flex border-b border-border">
+        <div className="flex border-b border-border overflow-x-auto">
           {TABS.map((t) => (
             <button
               key={t.key}
               type="button"
               onClick={() => setActive(t.key)}
-              className={`flex-1 px-4 py-3 text-sm font-semibold transition ${
+              className={`px-4 py-3 text-sm font-semibold transition whitespace-nowrap ${
                 active === t.key
                   ? 'bg-airspeak-navy text-white'
                   : 'bg-white text-foreground hover:bg-secondary'
@@ -157,29 +178,40 @@ export function UserDetailView({
         </div>
 
         <div className="p-6">
-          {active === 'personal' && <PersonalTab profile={profile} />}
+          {active === 'overview' && (
+            <OverviewTab
+              profile={props.profile}
+              badgeCount={props.badgeCount}
+              lastSignInAt={props.lastSignInAt}
+              experiencesCount={props.experiences.length}
+              certificationsCount={props.certifications.length}
+            />
+          )}
+          {active === 'personal' && <PersonalTab profile={props.profile} canSuper={isSuper} />}
           {active === 'career' && (
             <CareerTab
-              profile={profile}
-              experiences={experiences}
-              education={education}
+              profile={props.profile}
+              experiences={props.experiences}
+              education={props.education}
+              certifications={props.certifications}
+              typeRatings={props.typeRatings}
             />
           )}
-          {active === 'certs' && (
-            <CertsTab
-              userId={profile.id}
-              certifications={certifications}
-              typeRatings={typeRatings}
+          {active === 'social' && <SocialTab profile={props.profile} />}
+          {active === 'moderation' && (
+            <ModerationTab
+              profile={props.profile}
+              auditEntries={props.auditEntries}
+              canSuper={isSuper}
             />
           )}
-          {active === 'social' && <SocialTab profile={profile} />}
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Header (her tab'da görünür) ──────────────────────────────────────────
+// ─── Header ─────────────────────────────────────────────────────────────────
 function ProfileHeader({
   profile,
   canModerate,
@@ -190,9 +222,11 @@ function ProfileHeader({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const initials = (profile.full_name ?? profile.username ?? 'PI').slice(0, 2).toUpperCase();
+  const isBanned = !!profile.banned_at;
+  const isPremium = profile.premium_until && new Date(profile.premium_until) > new Date();
 
   function clearAvatar() {
-    if (!confirm("Avatar'ı temizle? Kullanıcı bunu görür ve baştan yükler.")) return;
+    if (!confirm("Avatar'ı temizle? Kullanıcı baştan yükler.")) return;
     startTransition(async () => {
       const r = await adminClearAvatar(profile.id);
       if (r.ok) {
@@ -230,28 +264,41 @@ function ProfileHeader({
         <p className="text-xs text-muted-foreground font-mono mt-1">{profile.id}</p>
         <div className="flex items-center gap-2 flex-wrap mt-2">
           {profile.role && (
-            <span className="text-xs px-2 py-0.5 rounded font-bold uppercase bg-secondary">
-              {profile.role}
-            </span>
+            <Pill className="bg-secondary">{profile.role.toUpperCase()}</Pill>
           )}
           {profile.is_profile_public ? (
-            <span className="text-xs px-2 py-0.5 rounded font-bold uppercase bg-emerald-100 text-emerald-700">
-              Public
-            </span>
+            <Pill className="bg-emerald-100 text-emerald-700">
+              <Eye className="w-3 h-3 inline mr-1" /> Public
+            </Pill>
           ) : (
-            <span className="text-xs px-2 py-0.5 rounded font-bold uppercase bg-amber-100 text-amber-700">
-              Private
-            </span>
+            <Pill className="bg-amber-100 text-amber-700">
+              <EyeOff className="w-3 h-3 inline mr-1" /> Private
+            </Pill>
           )}
-          <span
-            className={`text-xs px-2 py-0.5 rounded font-bold ${
+          {isPremium && (
+            <Pill className="bg-amber-100 text-amber-800">
+              <Crown className="w-3 h-3 inline mr-1" /> Premium
+            </Pill>
+          )}
+          {isBanned && (
+            <Pill className="bg-red-100 text-red-700">
+              <Ban className="w-3 h-3 inline mr-1" /> Yasaklı
+            </Pill>
+          )}
+          {profile.is_admin && (
+            <Pill className="bg-airspeak-red/10 text-airspeak-red">
+              <ShieldCheck className="w-3 h-3 inline mr-1" /> {profile.admin_role ?? 'admin'}
+            </Pill>
+          )}
+          <Pill
+            className={
               profile.profile_completion_percent >= 80
                 ? 'bg-emerald-100 text-emerald-700'
                 : 'bg-airspeak-red/10 text-airspeak-red'
-            }`}
+            }
           >
             %{profile.profile_completion_percent} tamamlandı
-          </span>
+          </Pill>
         </div>
       </div>
       {canModerate && profile.avatar_url && (
@@ -263,8 +310,217 @@ function ProfileHeader({
   );
 }
 
-// ─── Tab 1: Kişisel ───────────────────────────────────────────────────────
-function PersonalTab({ profile }: { profile: UserProfile }) {
+function Pill({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <span className={`text-xs px-2 py-0.5 rounded font-bold uppercase ${className}`}>
+      {children}
+    </span>
+  );
+}
+
+// ─── Tab 1: Genel Bakış ────────────────────────────────────────────────────
+function OverviewTab({
+  profile,
+  badgeCount,
+  lastSignInAt,
+  experiencesCount,
+  certificationsCount,
+}: {
+  profile: UserProfile;
+  badgeCount: number;
+  lastSignInAt: string | null;
+  experiencesCount: number;
+  certificationsCount: number;
+}) {
+  const isPremium = profile.premium_until && new Date(profile.premium_until) > new Date();
+  const isBanned = !!profile.banned_at;
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatCell
+          label="Üyelik"
+          value={fmtDate(profile.created_at)}
+          icon={<Calendar className="w-4 h-4" />}
+        />
+        <StatCell
+          label="Son Giriş"
+          value={lastSignInAt ? fmtRelative(lastSignInAt) : '—'}
+          icon={<Clock className="w-4 h-4" />}
+        />
+        <StatCell
+          label="Rozetler"
+          value={String(badgeCount)}
+          icon={<Trophy className="w-4 h-4 text-amber-600" />}
+        />
+        <StatCell
+          label="Tamamlanma"
+          value={`%${profile.profile_completion_percent}`}
+          icon={<Activity className="w-4 h-4" />}
+          accent={profile.profile_completion_percent >= 80 ? 'green' : 'red'}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InfoCard title="Kimlik & İletişim" icon={<Globe className="w-4 h-4" />}>
+          <Row label="Tam İsim" value={profile.full_name} />
+          <Row label="Kullanıcı Adı" value={profile.username} mono />
+          <Row label="Çağrı Kodu" value={profile.callsign} mono />
+          <Row label="Rol" value={profile.role?.toUpperCase() ?? null} />
+          <Row label="Seviye" value={profile.level} />
+          <Row
+            label="Lokasyon"
+            value={
+              [profile.base_airport, profile.city, profile.country]
+                .filter(Boolean)
+                .join(' · ') || null
+            }
+          />
+        </InfoCard>
+
+        <InfoCard title="Hesap Durumu" icon={<ShieldCheck className="w-4 h-4" />}>
+          <Row
+            label="Premium"
+            value={
+              isPremium
+                ? `Aktif — ${fmtDate(profile.premium_until!)}`
+                : profile.premium_until
+                  ? `Bitmiş — ${fmtDate(profile.premium_until)}`
+                  : 'Yok'
+            }
+            accent={isPremium ? 'amber' : undefined}
+          />
+          <Row
+            label="Yasaklı"
+            value={
+              isBanned
+                ? `${fmtDate(profile.banned_at!)} — ${profile.ban_reason ?? '—'}`
+                : 'Hayır'
+            }
+            accent={isBanned ? 'red' : undefined}
+          />
+          <Row
+            label="Admin"
+            value={profile.is_admin ? profile.admin_role ?? 'admin' : 'Hayır'}
+            accent={profile.is_admin ? 'red' : undefined}
+          />
+          <Row
+            label="Profil Görünür"
+            value={profile.is_profile_public ? 'Evet (public)' : 'Hayır (private)'}
+          />
+          <Row label="ICAO English" value={profile.icao_english_level ? `L${profile.icao_english_level}` : null} />
+          <Row
+            label="Aviation Deneyim"
+            value={
+              profile.aviation_experience_years != null
+                ? `${profile.aviation_experience_years} yıl`
+                : null
+            }
+          />
+        </InfoCard>
+
+        <InfoCard title="Kariyer" icon={<Briefcase className="w-4 h-4" />}>
+          <Row label="Şirket" value={profile.company} />
+          <Row label="Pozisyon" value={profile.position} />
+          <Row label="Deneyim Kayıtları" value={String(experiencesCount)} />
+          <Row label="Sertifika" value={String(certificationsCount)} />
+        </InfoCard>
+
+        <InfoCard title="Bio" icon={<Activity className="w-4 h-4" />}>
+          {profile.bio_short ? (
+            <p className="text-sm text-foreground whitespace-pre-wrap">{profile.bio_short}</p>
+          ) : (
+            <p className="text-sm text-muted-foreground italic">Kısa bio yok.</p>
+          )}
+        </InfoCard>
+      </div>
+    </div>
+  );
+}
+
+function StatCell({
+  label,
+  value,
+  icon,
+  accent,
+}: {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+  accent?: 'green' | 'red' | 'amber';
+}) {
+  const accentClass =
+    accent === 'green'
+      ? 'text-emerald-700'
+      : accent === 'red'
+        ? 'text-airspeak-red'
+        : accent === 'amber'
+          ? 'text-amber-700'
+          : 'text-airspeak-navy';
+  return (
+    <div className="bg-secondary/30 border border-border rounded-lg p-3">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase text-muted-foreground tracking-wider">
+        {icon}
+        <span>{label}</span>
+      </div>
+      <p className={`mt-1 text-xl font-bold ${accentClass}`}>{value}</p>
+    </div>
+  );
+}
+
+function InfoCard({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="bg-white border border-border rounded-lg p-4">
+      <div className="flex items-center gap-2 mb-3 text-sm font-bold uppercase tracking-wider text-muted-foreground">
+        {icon}
+        <span>{title}</span>
+      </div>
+      <div className="space-y-2">{children}</div>
+    </div>
+  );
+}
+
+function Row({
+  label,
+  value,
+  mono,
+  accent,
+}: {
+  label: string;
+  value: string | null | undefined;
+  mono?: boolean;
+  accent?: 'red' | 'amber' | 'green';
+}) {
+  const accentClass =
+    accent === 'red'
+      ? 'text-airspeak-red'
+      : accent === 'amber'
+        ? 'text-amber-700'
+        : accent === 'green'
+          ? 'text-emerald-700'
+          : 'text-foreground';
+  return (
+    <div className="flex justify-between gap-2 py-1 border-b border-border last:border-b-0">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span
+        className={`text-sm text-right ${mono ? 'font-mono' : ''} ${accentClass}`}
+      >
+        {value ?? <span className="text-muted-foreground italic">—</span>}
+      </span>
+    </div>
+  );
+}
+
+// ─── Tab 2: Kişisel ───────────────────────────────────────────────────────
+function PersonalTab({ profile, canSuper }: { profile: UserProfile; canSuper: boolean }) {
   const router = useRouter();
   const [form, setForm] = useState({
     full_name: profile.full_name ?? '',
@@ -274,18 +530,15 @@ function PersonalTab({ profile }: { profile: UserProfile }) {
     role: profile.role ?? '',
     level: profile.level ?? '',
     is_profile_public: profile.is_profile_public,
+    icao_english_level: profile.icao_english_level ?? '',
+    aviation_experience_years:
+      profile.aviation_experience_years != null ? String(profile.aviation_experience_years) : '',
   });
   const [isPending, startTransition] = useTransition();
 
   function save() {
-    if (form.bio_short.length > 280) {
-      toast.error('Kısa bio en fazla 280 karakter');
-      return;
-    }
-    if (form.bio_long.length > 1500) {
-      toast.error('Uzun bio en fazla 1500 karakter');
-      return;
-    }
+    if (form.bio_short.length > 280) return toast.error('Kısa bio en fazla 280 karakter');
+    if (form.bio_long.length > 1500) return toast.error('Uzun bio en fazla 1500 karakter');
     startTransition(async () => {
       const r = await adminUpdateProfile(profile.id, {
         full_name: form.full_name.trim() || null,
@@ -295,9 +548,24 @@ function PersonalTab({ profile }: { profile: UserProfile }) {
         role: form.role || null,
         level: form.level || null,
         is_profile_public: form.is_profile_public,
+        icao_english_level: form.icao_english_level || null,
+        aviation_experience_years: form.aviation_experience_years
+          ? Number(form.aviation_experience_years)
+          : null,
       });
       if (r.ok) {
         toast.success('Kaydedildi');
+        router.refresh();
+      } else toast.error(r.error ?? 'Hata');
+    });
+  }
+
+  function clearBio() {
+    if (!confirm('Kısa ve uzun bio temizlensin mi?')) return;
+    startTransition(async () => {
+      const r = await adminBlankBio(profile.id);
+      if (r.ok) {
+        toast.success('Bio temizlendi');
         router.refresh();
       } else toast.error(r.error ?? 'Hata');
     });
@@ -348,8 +616,44 @@ function PersonalTab({ profile }: { profile: UserProfile }) {
         </div>
       </div>
 
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label>ICAO English Level</Label>
+          <Select
+            value={form.icao_english_level}
+            onChange={(e) => setForm({ ...form, icao_english_level: e.target.value })}
+          >
+            <option value="">—</option>
+            <option value="4">Level 4 — Operational</option>
+            <option value="5">Level 5 — Extended</option>
+            <option value="6">Level 6 — Expert</option>
+          </Select>
+        </div>
+        <div>
+          <Label>Aviation Deneyim (yıl)</Label>
+          <Input
+            type="number"
+            min={0}
+            value={form.aviation_experience_years}
+            onChange={(e) => setForm({ ...form, aviation_experience_years: e.target.value })}
+          />
+        </div>
+      </div>
+
       <div>
-        <Label hint={`${form.bio_short.length} / 280`}>Kısa Bio</Label>
+        <div className="flex justify-between items-center">
+          <Label hint={`${form.bio_short.length} / 280`}>Kısa Bio</Label>
+          {canSuper && (form.bio_short || form.bio_long) && (
+            <button
+              type="button"
+              onClick={clearBio}
+              className="text-xs text-airspeak-red font-bold uppercase tracking-wider"
+              disabled={isPending}
+            >
+              Bio Temizle
+            </button>
+          )}
+        </div>
         <Textarea
           value={form.bio_short}
           onChange={(e) => setForm({ ...form, bio_short: e.target.value })}
@@ -373,7 +677,7 @@ function PersonalTab({ profile }: { profile: UserProfile }) {
             <Globe className="w-4 h-4" /> Profil herkese açık
           </p>
           <p className="text-xs text-muted-foreground">
-            Kapalı: kariyer/sertifika detayı sadece kullanıcı görür
+            Kapalı: kariyer/sertifika sadece kullanıcı görür
           </p>
         </div>
         <button
@@ -398,15 +702,19 @@ function PersonalTab({ profile }: { profile: UserProfile }) {
   );
 }
 
-// ─── Tab 2: Kariyer (şu anki + experiences + education) ──────────────────
+// ─── Tab 3: Kariyer (4 alt-section) ───────────────────────────────────────
 function CareerTab({
   profile,
   experiences,
   education,
+  certifications,
+  typeRatings,
 }: {
   profile: UserProfile;
   experiences: ExperienceRow[];
   education: EducationRow[];
+  certifications: CertificationRow[];
+  typeRatings: TypeRatingRow[];
 }) {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -415,9 +723,6 @@ function CareerTab({
     base_airport: profile.base_airport ?? '',
     city: profile.city ?? '',
     country: profile.country ?? '',
-    icao_english_level: profile.icao_english_level ?? '',
-    aviation_experience_years:
-      profile.aviation_experience_years != null ? String(profile.aviation_experience_years) : '',
   });
   const [isPending, startTransition] = useTransition();
 
@@ -429,10 +734,6 @@ function CareerTab({
         base_airport: form.base_airport.trim().toUpperCase() || null,
         city: form.city.trim() || null,
         country: form.country.trim() || null,
-        icao_english_level: form.icao_english_level || null,
-        aviation_experience_years: form.aviation_experience_years
-          ? Number(form.aviation_experience_years)
-          : null,
       });
       if (r.ok) {
         toast.success('Kaydedildi');
@@ -443,6 +744,7 @@ function CareerTab({
 
   return (
     <div className="space-y-6">
+      {/* Şu anki */}
       <div>
         <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
           <Briefcase className="w-5 h-5 text-airspeak-navy" />
@@ -485,29 +787,6 @@ function CareerTab({
               onChange={(e) => setForm({ ...form, country: e.target.value })}
             />
           </div>
-          <div>
-            <Label>Aviation Deneyim (yıl)</Label>
-            <Input
-              type="number"
-              min={0}
-              value={form.aviation_experience_years}
-              onChange={(e) =>
-                setForm({ ...form, aviation_experience_years: e.target.value })
-              }
-            />
-          </div>
-          <div>
-            <Label>ICAO English Level</Label>
-            <Select
-              value={form.icao_english_level}
-              onChange={(e) => setForm({ ...form, icao_english_level: e.target.value })}
-            >
-              <option value="">—</option>
-              <option value="4">Level 4 — Operational</option>
-              <option value="5">Level 5 — Extended</option>
-              <option value="6">Level 6 — Expert</option>
-            </Select>
-          </div>
         </div>
         <Button onClick={save} disabled={isPending} className="mt-4">
           {isPending ? 'Kaydediliyor…' : 'Şu anki bilgileri kaydet'}
@@ -517,7 +796,7 @@ function CareerTab({
       <DetailListSection
         userId={profile.id}
         table="user_experiences"
-        title="Deneyim Geçmişi"
+        title="Deneyim"
         icon={Briefcase}
         items={experiences}
         renderRow={(it) => ({
@@ -525,9 +804,7 @@ function CareerTab({
           secondary: it.company,
           tertiary: `${it.start_date ?? '?'} → ${it.is_current ? 'devam' : it.end_date ?? '?'}`,
         })}
-        formFields={(form, setForm) => (
-          <ExperienceFields form={form} setForm={setForm} />
-        )}
+        formFields={(form, setForm) => <ExperienceFields form={form} setForm={setForm} />}
         emptyForm={() => ({
           company: '',
           position: '',
@@ -582,24 +859,9 @@ function CareerTab({
         })}
         validate={(f) => (f.school ? null : 'Okul zorunlu')}
       />
-    </div>
-  );
-}
 
-// ─── Tab 3: Sertifika + Type Rating ───────────────────────────────────────
-function CertsTab({
-  userId,
-  certifications,
-  typeRatings,
-}: {
-  userId: string;
-  certifications: CertificationRow[];
-  typeRatings: TypeRatingRow[];
-}) {
-  return (
-    <div className="space-y-6">
       <DetailListSection
-        userId={userId}
+        userId={profile.id}
         table="user_certifications"
         title="Sertifikalar"
         icon={Award}
@@ -641,7 +903,7 @@ function CertsTab({
       />
 
       <DetailListSection
-        userId={userId}
+        userId={profile.id}
         table="user_type_ratings"
         title="Type Ratings"
         icon={Plane}
@@ -685,9 +947,7 @@ function SocialTab({ profile }: { profile: UserProfile }) {
   function save() {
     startTransition(async () => {
       const patch: Record<string, string | null> = {};
-      for (const [k, v] of Object.entries(form)) {
-        patch[k] = v.trim() || null;
-      }
+      for (const [k, v] of Object.entries(form)) patch[k] = v.trim() || null;
       const r = await adminUpdateProfile(profile.id, patch);
       if (r.ok) {
         toast.success('Kaydedildi');
@@ -724,6 +984,227 @@ function SocialTab({ profile }: { profile: UserProfile }) {
       <Button onClick={save} disabled={isPending}>
         {isPending ? 'Kaydediliyor…' : 'Kaydet'}
       </Button>
+    </div>
+  );
+}
+
+// ─── Tab 5: Moderasyon ────────────────────────────────────────────────────
+function ModerationTab({
+  profile,
+  auditEntries,
+  canSuper,
+}: {
+  profile: UserProfile;
+  auditEntries: AuditEntry[];
+  canSuper: boolean;
+}) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const isPremium = profile.premium_until && new Date(profile.premium_until) > new Date();
+  const isBanned = !!profile.banned_at;
+
+  const [premiumDays, setPremiumDays] = useState(30);
+  const [banReason, setBanReason] = useState('');
+  const [adminRoleSel, setAdminRoleSel] = useState(profile.admin_role ?? 'reviewer');
+
+  function applyPremium(days: number | null) {
+    startTransition(async () => {
+      const r = await setPremium(profile.id, days);
+      if (r.ok) {
+        toast.success(days === null ? 'Premium kaldırıldı' : `${days} gün premium`);
+        router.refresh();
+      } else toast.error(r.error);
+    });
+  }
+  function applyBan() {
+    if (!banReason.trim()) return toast.error('Sebep zorunlu');
+    startTransition(async () => {
+      const r = await banUser(profile.id, banReason.trim());
+      if (r.ok) {
+        toast.success('Yasaklandı');
+        setBanReason('');
+        router.refresh();
+      } else toast.error(r.error);
+    });
+  }
+  function applyUnban() {
+    startTransition(async () => {
+      const r = await unbanUser(profile.id);
+      if (r.ok) {
+        toast.success('Yasak kaldırıldı');
+        router.refresh();
+      } else toast.error(r.error);
+    });
+  }
+  function applyAdminRole(role: string | null) {
+    startTransition(async () => {
+      const r = await setAdminRole(profile.id, role);
+      if (r.ok) {
+        toast.success(role ? `Admin: ${role}` : 'Admin yetkisi kaldırıldı');
+        router.refresh();
+      } else toast.error(r.error);
+    });
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Premium */}
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
+        <div className="flex items-center gap-2 font-bold">
+          <Crown className="w-5 h-5 text-amber-700" />
+          <span>Premium</span>
+          {isPremium && (
+            <span className="text-xs text-amber-700">
+              Aktif — {fmtDate(profile.premium_until!)}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Input
+            type="number"
+            min={1}
+            value={premiumDays}
+            onChange={(e) => setPremiumDays(Number(e.target.value))}
+            className="w-24"
+          />
+          <Button
+            size="sm"
+            variant="gold"
+            onClick={() => applyPremium(premiumDays)}
+            disabled={isPending}
+          >
+            {premiumDays} gün ver
+          </Button>
+          {isPremium && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => applyPremium(null)}
+              disabled={isPending}
+            >
+              Premium'u Kaldır
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Ban */}
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4 space-y-3">
+        <div className="flex items-center gap-2 font-bold">
+          <Ban className="w-5 h-5 text-airspeak-red" />
+          <span>Hesap Yasağı</span>
+          {isBanned && (
+            <span className="text-xs text-airspeak-red">
+              {fmtDate(profile.banned_at!)} — {profile.ban_reason ?? '—'}
+            </span>
+          )}
+        </div>
+        {isBanned ? (
+          <Button size="sm" variant="outline" onClick={applyUnban} disabled={isPending}>
+            Yasağı Kaldır
+          </Button>
+        ) : (
+          <div className="space-y-2">
+            <Textarea
+              placeholder="Yasak sebebi (zorunlu)"
+              rows={2}
+              value={banReason}
+              onChange={(e) => setBanReason(e.target.value)}
+            />
+            <Button size="sm" variant="destructive" onClick={applyBan} disabled={isPending}>
+              Yasakla
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Admin role — sadece super_admin görür */}
+      {canSuper && (
+        <div className="bg-secondary/40 border border-border rounded-lg p-4 space-y-3">
+          <div className="flex items-center gap-2 font-bold">
+            <ShieldCheck className="w-5 h-5 text-airspeak-red" />
+            <span>Admin Yetkisi</span>
+            {profile.is_admin && (
+              <span className="text-xs text-airspeak-red">{profile.admin_role}</span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Select
+              value={adminRoleSel}
+              onChange={(e) => setAdminRoleSel(e.target.value)}
+              className="w-44"
+            >
+              <option value="reviewer">Reviewer</option>
+              <option value="editor">Editor</option>
+              <option value="super_admin">Super Admin</option>
+            </Select>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => applyAdminRole(adminRoleSel)}
+              disabled={isPending}
+            >
+              Atan / Yükselt
+            </Button>
+            {profile.is_admin && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => applyAdminRole(null)}
+                disabled={isPending}
+              >
+                Admin'i Kaldır
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Audit log */}
+      <div>
+        <h3 className="font-semibold text-lg flex items-center gap-2 mb-3">
+          <History className="w-5 h-5 text-airspeak-navy" />
+          Audit Log <span className="text-xs text-muted-foreground">(son 50)</span>
+        </h3>
+        {auditEntries.length === 0 ? (
+          <p className="text-sm text-muted-foreground italic">Bu kullanıcı için audit kaydı yok.</p>
+        ) : (
+          <div className="border border-border rounded-lg overflow-hidden">
+            <table className="w-full text-xs">
+              <thead className="bg-secondary border-b border-border">
+                <tr>
+                  <th className="px-3 py-2 text-left">Zaman</th>
+                  <th className="px-3 py-2 text-left">Aksiyon</th>
+                  <th className="px-3 py-2 text-left">Tablo</th>
+                  <th className="px-3 py-2 text-left">Detay</th>
+                </tr>
+              </thead>
+              <tbody>
+                {auditEntries.map((a) => (
+                  <tr key={a.id} className="border-b border-border last:border-b-0">
+                    <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
+                      {fmtDateTime(a.created_at)}
+                    </td>
+                    <td className="px-3 py-2 font-mono">{a.action}</td>
+                    <td className="px-3 py-2 font-mono text-muted-foreground">
+                      {a.table_name ?? '—'}
+                    </td>
+                    <td className="px-3 py-2">
+                      {a.metadata ? (
+                        <code className="text-[10px] text-muted-foreground">
+                          {JSON.stringify(a.metadata).slice(0, 80)}
+                        </code>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -780,10 +1261,7 @@ function DetailListSection<T extends { id: string }, F>({
   function submit() {
     if (!form) return;
     const err = validate(form);
-    if (err) {
-      toast.error(err);
-      return;
-    }
+    if (err) return toast.error(err);
     const payload = prepare(form);
     startTransition(async () => {
       const r = editingId
@@ -1066,6 +1544,7 @@ function TypeRatingFields({ form, setForm }: { form: any; setForm: (f: any) => v
   );
 }
 
+// ─── Helpers ───────────────────────────────────────────────────────────────
 function normalizeDate(input: string, full = false): string | null {
   const t = input.trim();
   if (!t) return null;
@@ -1073,4 +1552,45 @@ function normalizeDate(input: string, full = false): string | null {
   if (/^\d{4}-\d{2}$/.test(t)) return `${t}-01`;
   if (/^\d{4}-\d{2}-\d{2}$/.test(t)) return t;
   return null;
+}
+
+function fmtDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString('tr-TR', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+function fmtDateTime(iso: string): string {
+  try {
+    return new Date(iso).toLocaleString('tr-TR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+function fmtRelative(iso: string): string {
+  try {
+    const ms = Date.now() - new Date(iso).getTime();
+    const min = Math.floor(ms / 60000);
+    if (min < 60) return `${min} dk önce`;
+    const h = Math.floor(min / 60);
+    if (h < 24) return `${h} saat önce`;
+    const d = Math.floor(h / 24);
+    if (d < 30) return `${d} gün önce`;
+    return fmtDate(iso);
+  } catch {
+    return iso;
+  }
 }

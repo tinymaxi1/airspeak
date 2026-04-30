@@ -42,6 +42,25 @@ const ALLOWED_PROFILE_FIELDS = new Set([
   'level',
 ]);
 
+export async function adminBlankBio(
+  userId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  await requireAdminRole('super_admin');
+  const supabase = createServiceClient();
+  const { error } = await (supabase as any)
+    .from('profiles')
+    .update({ bio_short: null, bio_long: null })
+    .eq('id', userId);
+  if (error) return { ok: false, error: error.message };
+  await logAdmin(supabase, 'update', {
+    table: 'profiles',
+    target_user_id: userId,
+    action: 'bio_moderation_clear',
+  });
+  revalidatePath(`/users/${userId}`);
+  return { ok: true };
+}
+
 function sanitizeProfilePatch(input: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(input)) {
