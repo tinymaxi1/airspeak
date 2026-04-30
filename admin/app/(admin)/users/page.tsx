@@ -1,7 +1,8 @@
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { requireAdminRole } from '@/lib/auth/guard';
 import { formatDate } from '@/lib/utils';
-import { Crown, Ban, ShieldCheck } from 'lucide-react';
+import { Crown, Ban, ShieldCheck, ExternalLink } from 'lucide-react';
 import { UserRowActions } from '@/components/forms/UserActions';
 
 const ROLE_BADGE: Record<string, string> = {
@@ -51,8 +52,18 @@ export default async function UsersPage() {
               return (
                 <tr key={u.id} className="border-b border-border last:border-b-0 hover:bg-secondary/30">
                   <td className="px-4 py-3">
-                    <div className="font-semibold">{u.full_name ?? u.username ?? '—'}</div>
-                    <div className="text-xs text-muted-foreground">{u.id.slice(0, 8)}…</div>
+                    <Link
+                      href={`/users/${u.id}`}
+                      className="inline-flex items-center gap-1.5 hover:text-airspeak-red"
+                    >
+                      <div>
+                        <div className="font-semibold">
+                          {u.full_name ?? u.username ?? '—'}
+                        </div>
+                        <div className="text-xs text-muted-foreground">{u.id.slice(0, 8)}…</div>
+                      </div>
+                      <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                    </Link>
                   </td>
                   <td className="px-4 py-3">
                     {u.role && (
