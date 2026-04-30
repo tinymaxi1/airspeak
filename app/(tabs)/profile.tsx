@@ -32,7 +32,9 @@ import {
 } from '@/features/profile/api';
 import { useBadgeTemplates, useUserBadges } from '@/features/badges/api';
 import { useUserXpSummary, useLeagueMembership } from '@/features/league/api';
+import { useUserChampionships } from '@/features/league/championships';
 import { LeagueChip } from '@/components/profile/LeagueChip';
+import { ChampionshipsSection } from '@/components/profile/ChampionshipsSection';
 import { Hero } from '@/components/profile/Hero';
 import { StatStrip } from '@/components/profile/StatStrip';
 import { LevelMap } from '@/components/profile/LevelMap';
@@ -74,6 +76,7 @@ export default function ProfileScreen() {
   // DB source of truth (Sprint 4B.2). Yoksa local fallback.
   const { row: xpSummary } = useUserXpSummary(user?.id);
   const { membership: lgMembership, group: lgGroup } = useLeagueMembership(user?.id);
+  const { rows: championships } = useUserChampionships(user?.id);
   const totalXp = xpSummary?.total_xp ?? localTotalXp;
   const currentStreak = localStreak; // streak DB henüz lazy sync — local first
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
@@ -223,6 +226,13 @@ export default function ProfileScreen() {
             xpToNextLevel={xpLevel.xpToNext}
           />
         </View>
+
+        {/* Sprint 4C — Şampiyonluklar (en son 3) */}
+        {championships.length > 0 && (
+          <View style={{ marginBottom: 18 }}>
+            <ChampionshipsSection rows={championships} />
+          </View>
+        )}
 
         {/* Sprint 3c-B detay bölümleri */}
         {profile?.bio_long ? (
