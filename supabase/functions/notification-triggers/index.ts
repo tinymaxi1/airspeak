@@ -295,6 +295,85 @@ async function inactivityRecovery(client: SupabaseClient): Promise<number> {
   return messages.length;
 }
 
+/** 12. TRIAL ENDING T-1 — trial_ends_at 24 saat içinde, hâlâ trialing */
+async function trialEndingT1(client: SupabaseClient): Promise<number> {
+  const now = new Date();
+  const in24h = new Date(now.getTime() + 24 * 3600e3);
+  const { data } = await client
+    .from('profiles')
+    .select('id, trial_ends_at')
+    .eq('subscription_status', 'trialing')
+    .gte('trial_ends_at', now.toISOString())
+    .lte('trial_ends_at', in24h.toISOString());
+
+  const userIds = (data ?? []).map((r) => r.id as string);
+  const tokens = await getTokensForUsers(client, userIds);
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title: '⏱ Deneme bitiyor — 24 saat kaldı',
+    body: 'Pro\'ya geçerek tüm ICAO 4 setlerini ve sınırsız AI\'ı koru.',
+    data: { kind: 'trial_ending_t1' },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  return messages.length;
+}
+
+/** 13. TRIAL ENDING T-0 — trial_ends_at bugün biten, hâlâ trialing */
+async function trialEndingT0(client: SupabaseClient): Promise<number> {
+  const now = new Date();
+  const in1h = new Date(now.getTime() + 1 * 3600e3);
+  const startOfDay = new Date(now);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+  const endOfDay = new Date(startOfDay);
+  endOfDay.setUTCHours(23, 59, 59, 999);
+
+  const { data } = await client
+    .from('profiles')
+    .select('id, trial_ends_at')
+    .eq('subscription_status', 'trialing')
+    .gte('trial_ends_at', now.toISOString())
+    .lte('trial_ends_at', endOfDay.toISOString());
+
+  const userIds = (data ?? []).map((r) => r.id as string);
+  const tokens = await getTokensForUsers(client, userIds);
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title: '🚨 Son şans — Deneme bugün bitiyor',
+    body: 'Pro yıllığa geç, %50 yıllık tasarruf.',
+    data: { kind: 'trial_ending_t0' },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  // unused variable noise prevent
+  void in1h;
+  return messages.length;
+}
+
+/** 14. TRIAL WIN-BACK — trial bitmiş + 3 gün geçmiş + status expired */
+async function trialWinback(client: SupabaseClient): Promise<number> {
+  const threeDaysAgo = new Date(Date.now() - 3 * 86400e3);
+  const fourDaysAgo = new Date(Date.now() - 4 * 86400e3);
+  const { data } = await client
+    .from('profiles')
+    .select('id, trial_ends_at')
+    .eq('subscription_status', 'expired')
+    .gte('trial_ends_at', fourDaysAgo.toISOString())
+    .lte('trial_ends_at', threeDaysAgo.toISOString());
+
+  const userIds = (data ?? []).map((r) => r.id as string);
+  const tokens = await getTokensForUsers(client, userIds);
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title: '🎁 Sana özel — %50 indirim',
+    body: 'Geri dön: ilk yıl yarı fiyat. Sadece bu hafta.',
+    data: { kind: 'trial_winback' },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  return messages.length;
+}
+
 // ═══════════════════════════════════════════════════════════════════
 //  ROUTER
 // ═══════════════════════════════════════════════════════════════════
@@ -311,6 +390,10 @@ const TRIGGERS: Record<string, (client: SupabaseClient, userIds?: string[]) => P
   new_unit_unlocked: (c, u) => newUnitUnlocked(c, u ?? []),
   exam_day_countdown: (c) => examDayCountdown(c),
   inactivity_recovery: (c) => inactivityRecovery(c),
+  // 5.C.1 trial push triggers
+  trial_ending_t1: (c) => trialEndingT1(c),
+  trial_ending_t0: (c) => trialEndingT0(c),
+  trial_winback: (c) => trialWinback(c),
 };
 
 Deno.serve(async (req) => {
