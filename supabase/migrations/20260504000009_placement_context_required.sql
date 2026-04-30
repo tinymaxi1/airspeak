@@ -31,6 +31,9 @@ BEGIN
 END $$;
 
 ALTER TABLE public.placement_questions
+  DROP CONSTRAINT IF EXISTS placement_passage_scenario_requires_context;
+
+ALTER TABLE public.placement_questions
   ADD CONSTRAINT placement_passage_scenario_requires_context
   CHECK (
     status <> 'published'

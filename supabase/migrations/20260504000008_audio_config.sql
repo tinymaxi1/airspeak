@@ -9,12 +9,30 @@
 BEGIN;
 
 -- ─── 1. category enum'a 'audio' ekle ───
+-- Mevcut tüm kategorileri koru (main branch eklediği veya manuel eklenenler) +
+-- 'audio' ekle. Dinamik CHECK constraint ile DB'deki kategorilere uyumlu.
 ALTER TABLE public.app_config
   DROP CONSTRAINT IF EXISTS app_config_category_check;
 
-ALTER TABLE public.app_config
-  ADD CONSTRAINT app_config_category_check
-  CHECK (category IN ('ads', 'freemium', 'paywall', 'feature_flag', 'general', 'audio'));
+DO $cat$
+DECLARE
+  v_cats text;
+BEGIN
+  -- DB'deki tüm distinct kategoriler + standart bilinenler + 'audio'
+  SELECT string_agg(DISTINCT quote_literal(c), ',')
+    INTO v_cats
+  FROM (
+    SELECT category AS c FROM public.app_config
+    UNION ALL
+    SELECT unnest(ARRAY['ads', 'freemium', 'paywall', 'feature_flag', 'general', 'audio'])
+  ) sub
+  WHERE c IS NOT NULL;
+
+  EXECUTE format(
+    'ALTER TABLE public.app_config ADD CONSTRAINT app_config_category_check CHECK (category IN (%s))',
+    v_cats
+  );
+END $cat$;
 
 -- ─── 2. Default audio config seed ───
 INSERT INTO public.app_config (key, value, description, category, data_type) VALUES
