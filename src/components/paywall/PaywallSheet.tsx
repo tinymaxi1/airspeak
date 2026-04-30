@@ -9,6 +9,8 @@ import { useAppConfig } from '@/features/config/api';
 import { useAuthStore } from '@/stores/authStore';
 import { useTrialStatus, startTrial } from '@/features/trial/api';
 import { useActiveCount24h } from '@/features/social/presence';
+import { useTopOffer, useEffectivePricing, claimOffer } from '@/features/offers/api';
+import { LimitedOfferBanner } from '@/components/offers/LimitedOfferBanner';
 
 interface Props {
   visible: boolean;
@@ -23,19 +25,31 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
   const userId = useAuthStore((s) => s.user?.id);
   const trial = useTrialStatus(userId);
   const { count: activeCount } = useActiveCount24h();
+  const offer = useTopOffer();
+  const { pricing } = useEffectivePricing(offer?.code ?? null);
+
+  // Effective fiyatlar: offer varsa override, yoksa app_config default
+  const monthly = pricing?.monthly ?? Number(cfg['paywall.monthly_price_try'] ?? 0);
+  const yearly = pricing?.yearly ?? Number(cfg['paywall.yearly_price_try'] ?? 0);
+  const lifetime = pricing?.lifetime ?? Number(cfg['paywall.lifetime_price_try'] ?? 0);
+  const monthlyDefault = pricing?.monthly_default ?? monthly;
+  const yearlyDefault = pricing?.yearly_default ?? yearly;
+  const lifetimeDefault = pricing?.lifetime_default ?? lifetime;
 
   const tiers = [
     {
       id: 'monthly' as const,
       label: 'Aylık',
-      price: cfg['paywall.monthly_price_try'],
+      price: monthly,
+      defaultPrice: monthlyDefault,
       period: 'ay',
-      badge: null,
+      badge: null as string | null,
     },
     {
       id: 'yearly' as const,
       label: 'Yıllık',
-      price: cfg['paywall.yearly_price_try'],
+      price: yearly,
+      defaultPrice: yearlyDefault,
       period: 'yıl',
       badge: `%${cfg['paywall.yearly_savings_percent']} TASARRUF`,
     },
@@ -44,7 +58,8 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
           {
             id: 'lifetime' as const,
             label: 'Lifetime',
-            price: cfg['paywall.lifetime_price_try'],
+            price: lifetime,
+            defaultPrice: lifetimeDefault,
             period: 'tek seferde',
             badge: '⭐ EN İYİSİ',
           },
@@ -57,6 +72,8 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
   // TODO: gerçek IAP entegrasyonu (Apple/Google) - şimdilik mock
   // (Sprint 6'da RevenueCat tier purchase'larını yönetecek; trial DB-side gerçek)
   const handlePurchase = (_tierId: 'monthly' | 'yearly' | 'lifetime') => {
+    // Aktif offer varsa claim (audit log)
+    if (offer?.code) void claimOffer(offer.code);
     setPremium(true);
     onClose();
   };
@@ -177,6 +194,13 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
               )}
             </View>
 
+            {/* LIMITED OFFER BANNER — paywall içi (header altı) */}
+            {offer && (
+              <View style={{ marginBottom: 16 }}>
+                <LimitedOfferBanner marginBottom={0} />
+              </View>
+            )}
+
             {/* BENEFITS */}
             <View style={{ marginBottom: 24, gap: 10 }}>
               {(cfg['paywall.benefits_tr'] ?? []).map((b, i) => (
@@ -238,6 +262,18 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
                         </Text>
                       </View>
                       <View style={{ alignItems: 'flex-end' }}>
+                        {t.defaultPrice && t.defaultPrice > t.price && (
+                          <Text
+                            style={{
+                              fontSize: 13,
+                              color: 'rgba(255,255,255,0.55)',
+                              textDecorationLine: 'line-through',
+                              marginBottom: 2,
+                            }}
+                          >
+                            ₺{t.defaultPrice}
+                          </Text>
+                        )}
                         <Text style={{ fontSize: 28, fontWeight: '700', color: '#FFFFFF' }}>
                           ₺{t.price}
                         </Text>

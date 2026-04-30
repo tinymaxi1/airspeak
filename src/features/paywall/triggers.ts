@@ -23,7 +23,9 @@ export type PaywallTriggerId =
   | 'pronunciation_limit'
   | 'trial_ending'
   | 'exam_day_mode'
-  | 'offline_download';
+  | 'offline_download'
+  // 5.D.3 limited offer
+  | 'limited_offer_seen';
 
 export interface TriggerMeta {
   id: PaywallTriggerId;
@@ -128,6 +130,13 @@ export const TRIGGERS: Record<PaywallTriggerId, TriggerMeta> = {
     title: 'Sınırsız offline',
     body: 'Tüm ders + ses + SRS\'i indir, internetsiz çalış.',
     intensity: 'hard',
+  },
+  limited_offer_seen: {
+    id: 'limited_offer_seen',
+    title: 'Sınırlı süreli teklif',
+    body: 'Sadece bu hafta — kaçırma.',
+    intensity: 'hard',
+    cooldownHours: 6, // banner kullanıcı tap edince paywall açar; spam önleme
   },
 };
 

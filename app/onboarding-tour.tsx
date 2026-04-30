@@ -28,6 +28,7 @@ import {
   Button3D,
   TopoBackground,
 } from '@/components/airspeak';
+import { LimitedOfferBanner } from '@/components/offers/LimitedOfferBanner';
 
 interface Slide {
   emoji: string;
@@ -207,6 +208,10 @@ export default function OnboardingTourScreen() {
 
       <SafeAreaView edges={['bottom']}>
         <View style={{ paddingHorizontal: 24, paddingVertical: 16 }}>
+          {/* Sadece son slaytta limited offer banner (compact) */}
+          {page === SLIDES.length - 1 && (
+            <LimitedOfferBanner compact marginBottom={12} />
+          )}
           <Button3D variant="primary" fullWidth onPress={goToNext}>
             {page === SLIDES.length - 1
               ? t('tour.start', 'Başla 🚀')

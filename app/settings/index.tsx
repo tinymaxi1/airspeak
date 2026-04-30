@@ -20,6 +20,7 @@ import {
   FONTS,
   Avatar,
 } from '@/components/airspeak';
+import { LimitedOfferBanner } from '@/components/offers/LimitedOfferBanner';
 
 interface RowDef {
   icon: string;
@@ -172,6 +173,9 @@ export default function SettingsScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+        {/* Limited offer banner — settings ekranı üstünde, kendi marginini yönetir */}
+        <LimitedOfferBanner compact />
+
         {/* Pilot card */}
         <View
           style={{
