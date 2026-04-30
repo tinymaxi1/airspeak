@@ -350,6 +350,18 @@ export default function ProfileScreen() {
             value={t('screens.profile.bookmarksDesc', 'Kaydettiğin vocab ve senaryolar')}
             onPress={() => router.push('/bookmarks')}
           />
+          <SettingsRow
+            icon="👥"
+            label={t('screens.profile.friends', 'Arkadaşlar')}
+            value={t('screens.profile.friendsDesc', 'Kullanıcı adıyla ekle, sıralamayı gör')}
+            onPress={() => router.push('/social/friends')}
+          />
+          <SettingsRow
+            icon="✈️"
+            label={t('screens.profile.squadrons', 'Squadrons')}
+            value={t('screens.profile.squadronsDesc', 'Squadron oluştur, katıl, takımca yarış')}
+            onPress={() => router.push('/social/squadrons')}
+          />
         </View>
 
         {/* Sign out */}
