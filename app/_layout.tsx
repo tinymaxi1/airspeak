@@ -43,6 +43,9 @@ import { subscribeContentRealtime } from '@/features/content/realtime';
 import { useBadgeWatcher } from '@/features/badges/useBadgeWatcher';
 import { PaywallTriggerSheet } from '@/components/paywall/PaywallTriggerSheet';
 import { useWalletMigration } from '@/features/wallet/useWalletMigration';
+import { useLastActiveHeartbeat } from '@/features/social/presence';
+import { useTrialEndingPaywall } from '@/features/trial/api';
+import { useAuthStore } from '@/stores/authStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -75,6 +78,13 @@ export default function RootLayout() {
 
   // Wallet migration — first launch'ta MMKV → DB one-way
   useWalletMigration();
+
+  // Last-active heartbeat — sosyal kanıt (son 24h aktif sayısı) için DB bump
+  useLastActiveHeartbeat();
+
+  // Trial 1 gün/0 gün kala client-side paywall (push trigger'a ek olarak)
+  const trialUserId = useAuthStore((s) => s.user?.id);
+  useTrialEndingPaywall(trialUserId);
 
   // Network monitoring — getState() ile al, subscribe etme (döngü önler)
   useEffect(() => {

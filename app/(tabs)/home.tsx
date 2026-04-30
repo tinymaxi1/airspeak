@@ -24,6 +24,7 @@ import { useActivityStore } from '@/stores/activityStore';
 import { useNextLesson } from '@/features/content/api';
 import type { UserRole } from '@/types/profile';
 import { CompetitionBanner } from '@/components/competitions/CompetitionBanner';
+import { TrialCountdownChip } from '@/components/trial/TrialCountdownChip';
 import {
   HHero,
   H2,
@@ -239,6 +240,9 @@ export default function HomeScreen() {
           />
         }
       >
+        {/* Trial countdown — sadece subscription_status='trialing' ise (kendi marginini yönetir) */}
+        <TrialCountdownChip />
+
         {/* Aktif yarışma banner (varsa, en başta) */}
         <View style={{ marginBottom: 14 }}>
           <CompetitionBanner />

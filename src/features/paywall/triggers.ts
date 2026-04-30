@@ -113,8 +113,9 @@ export const TRIGGERS: Record<PaywallTriggerId, TriggerMeta> = {
   trial_ending: {
     id: 'trial_ending',
     title: 'Deneme bitiyor',
-    body: '7 gün doldu — Pro ile devam et.',
+    body: 'Pro\'yu kaybetme — yıllık ile %50 tasarruf.',
     intensity: 'hard',
+    cooldownHours: 168, // haftada 1× — push trigger'ı zaten her gün gönderiyor
   },
   exam_day_mode: {
     id: 'exam_day_mode',
