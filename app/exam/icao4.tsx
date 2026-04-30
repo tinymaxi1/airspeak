@@ -75,7 +75,9 @@ export default function Icao4Screen() {
 
   function startBriefing(t: IcaoTask) {
     if (t.id !== FREE_TASK_ID) {
-      router.push('/paywall');
+      // Premium task tap'i → trigger sheet (full paywall yerine yumuşak nudge,
+      // cooldown ile spam önler)
+      showPaywall('icao_oral_first_task_done');
       return;
     }
     setTask(t);

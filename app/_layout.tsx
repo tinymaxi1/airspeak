@@ -164,6 +164,7 @@ export default function RootLayout() {
             <Stack.Screen name="offline" options={{ headerShown: false }} />
             <Stack.Screen name="mic-denied" options={{ headerShown: false }} />
             <Stack.Screen name="squadron-pairing" options={{ headerShown: false }} />
+            <Stack.Screen name="exam/icao4-sets" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-briefing" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="exam/icao4-live" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-result" options={{ headerShown: false }} />
