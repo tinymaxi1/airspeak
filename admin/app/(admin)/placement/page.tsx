@@ -1,11 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import {
-  CreateGenericButton,
-  EditGenericButton,
-} from '@/components/forms/GenericTableForm';
+  CreatePlacementButton,
+  EditPlacementButton,
+} from '@/components/forms/PlacementForm';
 import { StatusActions } from '@/components/forms/StatusActions';
-import { PLACEMENT_SCHEMA } from '@/lib/content/schemas';
+import { FileWarning } from 'lucide-react';
 
 const DIM_LABEL: Record<string, string> = {
   general_english: 'Genel İngilizce',
@@ -32,7 +32,7 @@ export default async function PlacementPage() {
           <h1 className="text-3xl font-bold text-airspeak-navy">Placement Test Soruları</h1>
           <p className="text-muted-foreground mt-1">{(data ?? []).length} soru · 4 boyutta seviye ölçümü</p>
         </div>
-        <CreateGenericButton schema={PLACEMENT_SCHEMA} label="Yeni soru" />
+        <CreatePlacementButton label="Yeni soru" />
       </div>
 
       <div className="bg-white border border-border rounded-xl overflow-hidden">
@@ -48,32 +48,46 @@ export default async function PlacementPage() {
             </tr>
           </thead>
           <tbody>
-            {(data ?? []).map((q: any) => (
-              <tr key={q.id} className="border-b border-border last:border-b-0 hover:bg-secondary/30">
-                <td className="px-4 py-3 text-xs">{DIM_LABEL[q.dimension] ?? q.dimension}</td>
-                <td className="px-4 py-3 text-xs">{q.level}</td>
-                <td className="px-4 py-3 text-xs">{q.category}</td>
-                <td className="px-4 py-3">
-                  <p className="line-clamp-2 max-w-xl">{q.question}</p>
-                </td>
-                <td className="px-4 py-3">
-                  <StatusBadge status={q.status} />
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-1">
-                    <EditGenericButton schema={PLACEMENT_SCHEMA} row={q} />
-                    <StatusActions
-                      table="placement_questions"
-                      id={q.id}
-                      status={q.status}
-                      revalidate="/placement"
-                      label={q.question.slice(0, 40)}
-                      canDelete
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {(data ?? []).map((q: any) => {
+              const missingContext =
+                (q.format === 'passage' || q.format === 'scenario') && !q.context;
+              return (
+                <tr key={q.id} className="border-b border-border last:border-b-0 hover:bg-secondary/30">
+                  <td className="px-4 py-3 text-xs">{DIM_LABEL[q.dimension] ?? q.dimension}</td>
+                  <td className="px-4 py-3 text-xs">{q.level}</td>
+                  <td className="px-4 py-3 text-xs">{q.category}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-start gap-2">
+                      {missingContext && (
+                        <span
+                          title={`${q.format} — ${q.format === 'passage' ? 'pasaj' : 'senaryo'} eksik, yayına çıkamaz`}
+                          className="shrink-0 mt-0.5 text-airspeak-red"
+                        >
+                          <FileWarning className="w-4 h-4" />
+                        </span>
+                      )}
+                      <p className="line-clamp-2 max-w-xl">{q.question}</p>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <StatusBadge status={q.status} />
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-1">
+                      <EditPlacementButton row={q} />
+                      <StatusActions
+                        table="placement_questions"
+                        id={q.id}
+                        status={q.status}
+                        revalidate="/placement"
+                        label={q.question.slice(0, 40)}
+                        canDelete
+                      />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
