@@ -24,6 +24,12 @@ import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
 import { useAirlines } from '@/features/content/api';
 import { useProfile } from '@/features/profile/useProfile';
+import {
+  useUserExperiences,
+  useUserEducation,
+  useUserCertifications,
+  useUserTypeRatings,
+} from '@/features/profile/api';
 import { useBadgeTemplates, useUserBadges } from '@/features/badges/api';
 import { Hero } from '@/components/profile/Hero';
 import { StatStrip } from '@/components/profile/StatStrip';
@@ -34,6 +40,15 @@ import {
 } from '@/components/profile/ActivityHeatmap';
 import { DynamicGreeting } from '@/components/profile/DynamicGreeting';
 import { SummaryCard } from '@/components/profile/SummaryCard';
+import {
+  BioSection,
+  ExperienceTimeline,
+  EducationSection,
+  CertificationsSection,
+  TypeRatingsSection,
+  AviationLevelSection,
+  SocialGrid,
+} from '@/components/profile/ProfileSections';
 import {
   Body,
   Eyebrow,
@@ -58,6 +73,10 @@ export default function ProfileScreen() {
   const history = useLessonHistoryStore((s) => s.history);
   const { badges: badgeTemplates } = useBadgeTemplates();
   const { rows: userBadges } = useUserBadges(user?.id);
+  const { rows: experiences } = useUserExperiences(user?.id);
+  const { rows: education } = useUserEducation(user?.id);
+  const { rows: certifications } = useUserCertifications(user?.id);
+  const { rows: typeRatings } = useUserTypeRatings(user?.id);
 
   const heatmapBuckets = useMemo<HeatmapBucket[]>(() => {
     const map = new Map(history.map((e) => [e.date, e.count]));
@@ -186,6 +205,49 @@ export default function ProfileScreen() {
             level={xpLevel.level}
             xpInLevel={xpLevel.xpInLevel}
             xpToNextLevel={xpLevel.xpToNext}
+          />
+        </View>
+
+        {/* Sprint 3c-B detay bölümleri */}
+        {profile?.bio_long ? (
+          <View style={{ marginBottom: 18 }}>
+            <BioSection bioLong={profile.bio_long} />
+          </View>
+        ) : null}
+
+        <View style={{ marginBottom: 18 }}>
+          <AviationLevelSection
+            icaoLevel={profile?.icao_english_level ?? null}
+            experienceYears={profile?.aviation_experience_years ?? null}
+          />
+        </View>
+
+        <View style={{ marginBottom: 18 }}>
+          <ExperienceTimeline items={experiences} />
+        </View>
+
+        <View style={{ marginBottom: 18 }}>
+          <EducationSection items={education} />
+        </View>
+
+        <View style={{ marginBottom: 18 }}>
+          <CertificationsSection items={certifications} />
+        </View>
+
+        {(role === 'pilot' || typeRatings.length > 0) && (
+          <View style={{ marginBottom: 18 }}>
+            <TypeRatingsSection items={typeRatings} />
+          </View>
+        )}
+
+        <View style={{ marginBottom: 18 }}>
+          <SocialGrid
+            linkedinUrl={profile?.linkedin_url ?? null}
+            instagram={profile?.instagram ?? null}
+            twitter={profile?.twitter ?? null}
+            youtube={profile?.youtube ?? null}
+            facebook={profile?.facebook ?? null}
+            website={profile?.website ?? null}
           />
         </View>
 
