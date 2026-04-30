@@ -76,31 +76,8 @@ CREATE INDEX IF NOT EXISTS squadrons_creator_idx ON public.squadrons (created_by
 CREATE INDEX IF NOT EXISTS squadrons_public_idx ON public.squadrons (is_public, member_count DESC) WHERE is_public = true;
 
 ALTER TABLE public.squadrons ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS squadrons_public_read ON public.squadrons;
-CREATE POLICY squadrons_public_read ON public.squadrons
-  FOR SELECT USING (
-    is_public = true
-    OR created_by = auth.uid()
-    OR EXISTS (
-      SELECT 1 FROM public.squadron_members sm
-       WHERE sm.squadron_id = id AND sm.user_id = auth.uid()
-    )
-    OR public.is_admin_user()
-  );
-
-DROP POLICY IF EXISTS squadrons_creator_insert ON public.squadrons;
-CREATE POLICY squadrons_creator_insert ON public.squadrons
-  FOR INSERT WITH CHECK (created_by = auth.uid());
-
-DROP POLICY IF EXISTS squadrons_creator_update ON public.squadrons;
-CREATE POLICY squadrons_creator_update ON public.squadrons
-  FOR UPDATE USING (created_by = auth.uid())
-                WITH CHECK (created_by = auth.uid());
-
-DROP POLICY IF EXISTS squadrons_creator_delete ON public.squadrons;
-CREATE POLICY squadrons_creator_delete ON public.squadrons
-  FOR DELETE USING (created_by = auth.uid() OR public.has_admin_role('super_admin'));
+-- squadrons RLS policy'leri squadron_members'a referans verdiği için
+-- aşağıda squadron_members yaratıldıktan sonra eklenir.
 
 DROP TRIGGER IF EXISTS set_updated_at ON public.squadrons;
 CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.squadrons
@@ -140,6 +117,32 @@ CREATE POLICY squadron_members_self_delete ON public.squadron_members
        WHERE s.id = squadron_id AND s.created_by = auth.uid()
     )
   );
+
+-- ─── 3.5. squadrons RLS (squadron_members yaratıldığı için artık geçerli) ─
+DROP POLICY IF EXISTS squadrons_public_read ON public.squadrons;
+CREATE POLICY squadrons_public_read ON public.squadrons
+  FOR SELECT USING (
+    is_public = true
+    OR created_by = auth.uid()
+    OR EXISTS (
+      SELECT 1 FROM public.squadron_members sm
+       WHERE sm.squadron_id = id AND sm.user_id = auth.uid()
+    )
+    OR public.is_admin_user()
+  );
+
+DROP POLICY IF EXISTS squadrons_creator_insert ON public.squadrons;
+CREATE POLICY squadrons_creator_insert ON public.squadrons
+  FOR INSERT WITH CHECK (created_by = auth.uid());
+
+DROP POLICY IF EXISTS squadrons_creator_update ON public.squadrons;
+CREATE POLICY squadrons_creator_update ON public.squadrons
+  FOR UPDATE USING (created_by = auth.uid())
+                WITH CHECK (created_by = auth.uid());
+
+DROP POLICY IF EXISTS squadrons_creator_delete ON public.squadrons;
+CREATE POLICY squadrons_creator_delete ON public.squadrons
+  FOR DELETE USING (created_by = auth.uid() OR public.has_admin_role('super_admin'));
 
 -- ─── 4. RPC: send_friend_request ─────────────────────────────────────────
 CREATE OR REPLACE FUNCTION public.send_friend_request(p_username text)
