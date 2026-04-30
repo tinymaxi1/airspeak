@@ -24,6 +24,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
 import { useAirlines } from '@/features/content/api';
 import { useProfile } from '@/features/profile/useProfile';
+import { useBadgeTemplates, useUserBadges } from '@/features/badges/api';
 import { Hero } from '@/components/profile/Hero';
 import { StatStrip } from '@/components/profile/StatStrip';
 import { LevelMap } from '@/components/profile/LevelMap';
@@ -54,6 +55,8 @@ export default function ProfileScreen() {
   const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
   const history = useLessonHistoryStore((s) => s.history);
+  const { badges: badgeTemplates } = useBadgeTemplates();
+  const { rows: userBadges } = useUserBadges(user?.id);
 
   const heatmapBuckets = useMemo<HeatmapBucket[]>(() => {
     const map = new Map(history.map((e) => [e.date, e.count]));
@@ -95,15 +98,20 @@ export default function ProfileScreen() {
 
   const xpLevel = calculateLevelFromXp(totalXp);
 
-  // Rozet sayısı — mevcut 6 koşullu rozetin earned olanları
-  const earnedBadges = [
-    completedCount >= 5,
-    currentStreak >= 7,
-    completedCount >= 100,
-    (placement?.aviationEnglish?.label ?? '') === 'L4',
-    totalXp >= 4000,
-    totalXp >= 1000,
-  ].filter(Boolean).length;
+  // Rozet sayısı — DB'den (gerçek user_badges count)
+  const earnedBadges = userBadges.length;
+  const earnedIdSet = useMemo(
+    () => new Set(userBadges.map((u) => u.badge_id)),
+    [userBadges],
+  );
+  const previewBadges = useMemo(() => {
+    if (badgeTemplates.length === 0) return [];
+    const earned = badgeTemplates.filter((b) => earnedIdSet.has(b.id));
+    if (earned.length >= 6) return earned.slice(0, 6);
+    // Earned + ilk locked'larla 6'a tamamla
+    const locked = badgeTemplates.filter((b) => !earnedIdSet.has(b.id));
+    return [...earned, ...locked].slice(0, 6);
+  }, [badgeTemplates, earnedIdSet]);
 
   const handleSignOut = () => {
     Alert.alert(t('screens.profile.signOut'), t('screens.profile.signOutConfirm'), [
@@ -185,15 +193,24 @@ export default function ProfileScreen() {
           />
         </View>
 
-        {/* Badges — gerçek state'ten türetilir */}
-        <Eyebrow>{t('screens.profile.badges')}</Eyebrow>
+        {/* Badges — DB'den ilk 6 (earned + locked'larla 6'a tamamlanır) */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Eyebrow>{t('screens.profile.badges')}</Eyebrow>
+          <TouchableOpacity onPress={() => router.push('/profile/badges')} hitSlop={8}>
+            <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#E63946' }}>
+              {t('screens.profile.badgesViewAll', 'Tümünü gör →')}
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8, marginBottom: 18 }}>
-          <BadgeCell emoji="🎙" name={t('screens.profile.badgeReadbackPro', 'Read-back Pro')} earned={completedCount >= 5} />
-          <BadgeCell emoji="🔥" name={t('screens.profile.badgeStreak', '7-gün streak')} earned={currentStreak >= 7} />
-          <BadgeCell emoji="✈" name={t('screens.profile.badgeLessons', '100 ders')} earned={completedCount >= 100} />
-          <BadgeCell emoji="🏆" name={t('screens.profile.badgeIcao', 'ICAO L4')} earned={(placement?.aviationEnglish?.label ?? '') === 'L4'} />
-          <BadgeCell emoji="👑" name={t('screens.profile.badgeLeague', 'Lig Captain')} earned={totalXp >= 4000} />
-          <BadgeCell emoji="⚡" name={t('screens.profile.badgeSpeed', 'XP 1000')} earned={totalXp >= 1000} />
+          {previewBadges.map((b) => (
+            <BadgeCell
+              key={b.id}
+              emoji={b.icon_emoji}
+              name={b.name_tr}
+              earned={earnedIdSet.has(b.id)}
+            />
+          ))}
         </View>
 
         {/* Settings rows */}

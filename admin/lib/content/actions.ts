@@ -25,7 +25,8 @@ export type ContentTable =
   | 'oral_prompts'
   | 'placement_questions'
   | 'airlines'
-  | 'scenarios';
+  | 'scenarios'
+  | 'badges';
 
 export type ActionResult<T = unknown> =
   | { ok: true; data: T }

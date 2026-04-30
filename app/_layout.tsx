@@ -40,6 +40,7 @@ import { supabase } from '@/lib/supabase';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useOfflineStore } from '@/stores/offlineStore';
 import { subscribeContentRealtime } from '@/features/content/realtime';
+import { useBadgeWatcher } from '@/features/badges/useBadgeWatcher';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -66,6 +67,9 @@ export default function RootLayout() {
   });
 
   const { t } = useTranslation();
+
+  // Badge watcher — store değişimlerinde eligible rozetleri server'a yazar
+  useBadgeWatcher();
 
   // Network monitoring — getState() ile al, subscribe etme (döngü önler)
   useEffect(() => {
