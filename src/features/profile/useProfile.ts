@@ -23,6 +23,25 @@ export interface ProfileRow {
   timezone: string;
   active_hours: number[];
   is_student: boolean;
+  // Sprint 3c-A genişletme
+  bio_short: string | null;
+  bio_long: string | null;
+  callsign: string | null;
+  company: string | null;
+  position: string | null;
+  base_airport: string | null;
+  city: string | null;
+  country: string | null;
+  linkedin_url: string | null;
+  instagram: string | null;
+  twitter: string | null;
+  youtube: string | null;
+  facebook: string | null;
+  website: string | null;
+  icao_english_level: '4' | '5' | '6' | null;
+  aviation_experience_years: number | null;
+  profile_completion_percent: number;
+  is_profile_public: boolean;
   created_at: string;
   updated_at: string;
 }
