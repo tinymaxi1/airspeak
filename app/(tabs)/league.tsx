@@ -196,7 +196,7 @@ export default function LeagueScreen() {
           </Text>
         </View>
         <PeriodTabLink label="Aylık" route="/league/monthly" />
-        <PeriodTabLink label="Yıllık" route="/league/yearly" disabled />
+        <PeriodTabLink label="Yıllık" route="/league/yearly" />
       </View>
 
       {/* ═════ CLASS LADDER ═════ */}
