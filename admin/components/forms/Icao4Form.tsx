@@ -18,7 +18,7 @@ import {
   DialogFooter,
   DialogDescription,
 } from '@/components/ui/Dialog';
-import { AudioUploader } from '@/components/forms/AudioUploader';
+import { AudioField } from '@/components/forms/AudioField';
 import { createRow, updateRow } from '@/lib/content/actions';
 import { uniqueSlug } from '@/lib/content/slug';
 import {
@@ -245,31 +245,18 @@ function Icao4FormBody({
           />
         </div>
 
-        {/* Listening: audio uploader (zorunlu) */}
+        {/* Listening: ses dosyası yükleme (zorunlu — manuel mp3/wav/ogg) */}
         {form.section === 'listening' && (
           <div>
             <Label required hint="Yayına çıkması için ses dosyası şart">
-              Ses URL
+              Ses dosyası
             </Label>
-            <Input
-              value={form.audio_url}
-              onChange={(e) => setField('audio_url', e.target.value)}
-              placeholder="https://....supabase.co/storage/v1/object/public/lesson-audio/..."
-              className={
-                !form.audio_url
-                  ? 'ring-2 ring-destructive/40 focus-visible:ring-destructive'
-                  : ''
-              }
+            <AudioField
+              bucket="lesson-audio"
+              pathPrefix={`icao4/${form.section}`}
+              value={form.audio_url || null}
+              onChange={(url) => setField('audio_url', url ?? '')}
             />
-            <div className="mt-2">
-              <AudioUploader
-                sourceText={form.context || form.question}
-                onAudioGenerated={(url) => setField('audio_url', url)}
-                bucket="lesson-audio"
-                pathPrefix={`icao4/set${form.set_no}/listening`}
-                currentUrl={form.audio_url || null}
-              />
-            </div>
           </div>
         )}
 
