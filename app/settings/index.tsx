@@ -58,13 +58,13 @@ export default function SettingsScreen() {
           icon: '👤',
           label: t('screens.settings.profile'),
           sub: t('screens.settings.profileDesc', { name: username, username }),
-          onPress: () => router.push('/settings/profile'),
+          onPress: () => router.push('/settings/profile-edit'),
         },
         {
           icon: '🎯',
           label: t('screens.settings.target'),
           sub: t('screens.settings.targetDesc'),
-          onPress: () => router.push('/settings/profile'),
+          onPress: () => router.push('/settings/profile-edit'),
         },
         {
           icon: '✈',

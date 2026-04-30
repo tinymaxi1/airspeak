@@ -33,6 +33,7 @@ import {
   type HeatmapBucket,
 } from '@/components/profile/ActivityHeatmap';
 import { DynamicGreeting } from '@/components/profile/DynamicGreeting';
+import { SummaryCard } from '@/components/profile/SummaryCard';
 import {
   Body,
   Eyebrow,
@@ -155,6 +156,21 @@ export default function ProfileScreen() {
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+        {/* Profesyonel özet + completion CTA */}
+        {profile && (
+          <View style={{ marginBottom: 18 }}>
+            <SummaryCard
+              position={profile.position}
+              company={profile.company}
+              baseAirport={profile.base_airport}
+              city={profile.city}
+              country={profile.country}
+              bioShort={profile.bio_short}
+              completionPercent={profile.profile_completion_percent}
+            />
+          </View>
+        )}
+
         {/* Stat strip — 3 hücre */}
         <View style={{ marginBottom: 18 }}>
           <StatStrip
