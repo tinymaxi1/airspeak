@@ -11,6 +11,7 @@ import {
   type CertificationRow,
   type TypeRatingRow,
   type AuditEntry,
+  type LeagueSummary,
 } from '@/components/users/UserDetailView';
 
 export default async function UserDetailPage({
@@ -74,6 +75,40 @@ export default async function UserDetailPage({
   const lastSignInAt: string | null =
     authUserRes?.data?.user?.last_sign_in_at ?? null;
 
+  // Lig summary
+  const [xpRes, membershipRes, championshipsCountRes] = await Promise.all([
+    (supabase as any)
+      .from('user_xp_summary')
+      .select('total_xp, week_xp, month_xp, year_xp')
+      .eq('user_id', params.id)
+      .maybeSingle(),
+    (supabase as any)
+      .from('league_memberships')
+      .select(
+        'rank, group_id, league_groups!inner(season_id, league_seasons!inner(season_type, status))',
+      )
+      .eq('user_id', params.id)
+      .eq('league_groups.league_seasons.season_type', 'weekly')
+      .eq('league_groups.league_seasons.status', 'active')
+      .maybeSingle(),
+    (supabase as any)
+      .from('championships')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', params.id),
+  ]);
+
+  const league: LeagueSummary = {
+    current_class: profile.current_league_class ?? null,
+    highest_class: profile.highest_league_class ?? null,
+    total_xp: xpRes?.data?.total_xp ?? 0,
+    week_xp: xpRes?.data?.week_xp ?? 0,
+    month_xp: xpRes?.data?.month_xp ?? 0,
+    year_xp: xpRes?.data?.year_xp ?? 0,
+    current_rank: membershipRes?.data?.rank ?? null,
+    current_group_id: membershipRes?.data?.group_id ?? null,
+    championship_count: championshipsCountRes?.count ?? 0,
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-4">
       <Link
@@ -92,6 +127,7 @@ export default async function UserDetailPage({
         badgeCount={badgeCountRes.count ?? 0}
         lastSignInAt={lastSignInAt}
         auditEntries={(auditRes.data ?? []) as AuditEntry[]}
+        league={league}
         currentAdminRole={adminProfile.admin_role}
       />
     </div>

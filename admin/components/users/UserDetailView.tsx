@@ -33,6 +33,11 @@ import {
   unbanUser,
   setAdminRole,
 } from '@/lib/content/actions';
+import {
+  changeUserLeagueClass,
+  adjustUserXp,
+  removeUserFromLeague,
+} from '@/lib/leagues/actions';
 import { toast } from 'sonner';
 import {
   Plus,
@@ -54,6 +59,7 @@ import {
   Clock,
   Trophy,
   History,
+  XCircle,
 } from 'lucide-react';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -129,6 +135,18 @@ export interface AuditEntry {
   created_at: string;
 }
 
+export interface LeagueSummary {
+  current_class: string | null;
+  highest_class: string | null;
+  total_xp: number;
+  week_xp: number;
+  month_xp: number;
+  year_xp: number;
+  current_rank: number | null;
+  current_group_id: string | null;
+  championship_count: number;
+}
+
 interface Props {
   profile: UserProfile;
   experiences: ExperienceRow[];
@@ -138,16 +156,18 @@ interface Props {
   badgeCount: number;
   lastSignInAt: string | null;
   auditEntries: AuditEntry[];
+  league: LeagueSummary;
   currentAdminRole: 'super_admin' | 'editor' | 'reviewer' | null;
 }
 
-type TabKey = 'overview' | 'personal' | 'career' | 'social' | 'moderation';
+type TabKey = 'overview' | 'personal' | 'career' | 'social' | 'league' | 'moderation';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'overview', label: '📊 Genel Bakış' },
   { key: 'personal', label: '👤 Kişisel' },
   { key: 'career', label: '💼 Kariyer' },
   { key: 'social', label: '🌐 Sosyal' },
+  { key: 'league', label: '🏆 Lig' },
   { key: 'moderation', label: '🛡️ Moderasyon' },
 ];
 
@@ -198,6 +218,13 @@ export function UserDetailView(props: Props) {
             />
           )}
           {active === 'social' && <SocialTab profile={props.profile} />}
+          {active === 'league' && (
+            <LeagueTab
+              profile={props.profile}
+              league={props.league}
+              canSuper={isSuper}
+            />
+          )}
           {active === 'moderation' && (
             <ModerationTab
               profile={props.profile}
@@ -988,7 +1015,180 @@ function SocialTab({ profile }: { profile: UserProfile }) {
   );
 }
 
-// ─── Tab 5: Moderasyon ────────────────────────────────────────────────────
+// ─── Tab 5: Lig ──────────────────────────────────────────────────────────
+function LeagueTab({
+  profile,
+  league,
+  canSuper,
+}: {
+  profile: UserProfile;
+  league: LeagueSummary;
+  canSuper: boolean;
+}) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [newClass, setNewClass] = useState<string>(league.current_class ?? 'bronze');
+  const [xpDelta, setXpDelta] = useState<number>(0);
+  const [xpReason, setXpReason] = useState<string>('');
+
+  function changeClass() {
+    if (!confirm(`${profile.full_name ?? profile.username} kullanıcısı ${newClass} sınıfına alınacak. Devam?`)) return;
+    startTransition(async () => {
+      const r = await changeUserLeagueClass({ userId: profile.id, newClass: newClass as any });
+      if (r.ok) {
+        toast.success('Sınıf değiştirildi');
+        router.refresh();
+      } else toast.error(r.error ?? 'Hata');
+    });
+  }
+
+  function applyXpAdjust() {
+    if (!xpReason.trim()) return toast.error('Sebep zorunlu');
+    if (xpDelta === 0) return toast.error('Delta 0 olamaz');
+    if (!confirm(`XP ${xpDelta > 0 ? '+' : ''}${xpDelta} ayarlanacak. Devam?`)) return;
+    startTransition(async () => {
+      const r = await adjustUserXp({
+        userId: profile.id,
+        delta: xpDelta,
+        reason: xpReason.trim(),
+      });
+      if (r.ok) {
+        toast.success('XP düzenlendi');
+        setXpDelta(0);
+        setXpReason('');
+        router.refresh();
+      } else toast.error(r.error ?? 'Hata');
+    });
+  }
+
+  function removeFromLeague() {
+    if (!confirm('Kullanıcı liglerden çıkarılsın mı? Mevcut membership silinir, sınıf bilgisi temizlenir.')) return;
+    startTransition(async () => {
+      const r = await removeUserFromLeague({ userId: profile.id });
+      if (r.ok) {
+        toast.success('Lig\'den çıkarıldı');
+        router.refresh();
+      } else toast.error(r.error ?? 'Hata');
+    });
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-secondary/30 border border-border rounded-lg p-3">
+          <div className="text-xs font-bold uppercase text-muted-foreground">Mevcut Sınıf</div>
+          <div className="text-xl font-bold mt-1">{league.current_class ?? '—'}</div>
+        </div>
+        <div className="bg-secondary/30 border border-border rounded-lg p-3">
+          <div className="text-xs font-bold uppercase text-muted-foreground">En Yüksek</div>
+          <div className="text-xl font-bold mt-1">{league.highest_class ?? '—'}</div>
+        </div>
+        <div className="bg-secondary/30 border border-border rounded-lg p-3">
+          <div className="text-xs font-bold uppercase text-muted-foreground">Şu An Sıra</div>
+          <div className="text-xl font-bold mt-1">{league.current_rank ?? '—'}</div>
+        </div>
+        <div className="bg-secondary/30 border border-border rounded-lg p-3">
+          <div className="text-xs font-bold uppercase text-muted-foreground">Şampiyonluk</div>
+          <div className="text-xl font-bold mt-1">{league.championship_count}</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-white border border-border rounded-lg p-3">
+          <div className="text-xs font-bold uppercase text-muted-foreground">Toplam XP</div>
+          <div className="text-lg font-bold mt-1 font-mono">{league.total_xp.toLocaleString('tr-TR')}</div>
+        </div>
+        <div className="bg-white border border-border rounded-lg p-3">
+          <div className="text-xs font-bold uppercase text-muted-foreground">Bu Hafta</div>
+          <div className="text-lg font-bold mt-1 font-mono">{league.week_xp.toLocaleString('tr-TR')}</div>
+        </div>
+        <div className="bg-white border border-border rounded-lg p-3">
+          <div className="text-xs font-bold uppercase text-muted-foreground">Bu Ay</div>
+          <div className="text-lg font-bold mt-1 font-mono">{league.month_xp.toLocaleString('tr-TR')}</div>
+        </div>
+        <div className="bg-white border border-border rounded-lg p-3">
+          <div className="text-xs font-bold uppercase text-muted-foreground">Bu Yıl</div>
+          <div className="text-lg font-bold mt-1 font-mono">{league.year_xp.toLocaleString('tr-TR')}</div>
+        </div>
+      </div>
+
+      {canSuper && (
+        <>
+          <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-airspeak-gold" /> Sınıf Değiştir
+            </h3>
+            <div className="flex gap-2">
+              <Select
+                value={newClass}
+                onChange={(e) => setNewClass(e.target.value)}
+                className="w-44"
+              >
+                <option value="bronze">Bronz</option>
+                <option value="silver">Gümüş</option>
+                <option value="gold">Altın</option>
+                <option value="sapphire">Safir</option>
+                <option value="ruby">Yakut</option>
+                <option value="emerald">Zümrüt</option>
+                <option value="diamond">Elmas</option>
+              </Select>
+              <Button onClick={changeClass} disabled={isPending}>
+                Sınıfa Taşı
+              </Button>
+            </div>
+          </div>
+
+          <div className="bg-white border border-border rounded-lg p-4 space-y-3">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Activity className="w-4 h-4 text-airspeak-navy" /> XP Düzelt
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <Label hint="negatif veya pozitif">Delta</Label>
+                <Input
+                  type="number"
+                  value={xpDelta}
+                  onChange={(e) => setXpDelta(Number(e.target.value))}
+                />
+              </div>
+              <div>
+                <Label required>Sebep (audit)</Label>
+                <Input
+                  value={xpReason}
+                  onChange={(e) => setXpReason(e.target.value)}
+                  placeholder="Düzeltme nedeni"
+                />
+              </div>
+            </div>
+            <Button onClick={applyXpAdjust} disabled={isPending} variant="secondary">
+              Uygula
+            </Button>
+          </div>
+
+          <div className="bg-red-50 border border-airspeak-red/40 rounded-lg p-4 space-y-3">
+            <h3 className="font-semibold flex items-center gap-2">
+              <XCircle className="w-4 h-4 text-airspeak-red" /> Lig'den Çıkar
+            </h3>
+            <p className="text-xs text-red-900">
+              Membership silinir, current_league_class temizlenir. Bir sonraki ders
+              tamamlandığında lazy assign yeniden çalışır.
+            </p>
+            <Button
+              variant="destructive"
+              onClick={removeFromLeague}
+              disabled={isPending}
+              size="sm"
+            >
+              Lig'den Çıkar
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Tab 6: Moderasyon ────────────────────────────────────────────────────
 function ModerationTab({
   profile,
   auditEntries,
