@@ -467,38 +467,52 @@ COMMENT ON FUNCTION public.rotate_active_weekly_league() IS
   'Haftalık lig kapanış — atomik. Edge Function veya admin manuel çağırır.';
 
 -- ─── 7. Yeni rozet seed — 9 lig rozeti ────────────────────────────────────
-INSERT INTO public.badges (
-  code, name_tr, name_en, description_tr, description_en,
-  icon_emoji, category, condition_type, condition_value, rarity, sort
-) VALUES
-  ('weekly_champion', 'Haftanın Birincisi', 'Weekly Champion',
-   'Bir haftalık ligte 1. ol', 'Finish #1 in a weekly league',
-   '🏆', 'league', 'custom', 1, 'rare', 100),
-  ('monthly_champion', 'Ayın Birincisi', 'Monthly Champion',
-   'Bir aylık şampiyonayı kazan', 'Win a monthly championship',
-   '👑', 'league', 'custom', 1, 'epic', 110),
-  ('yearly_champion', 'Yılın Birincisi', 'Yearly Champion',
-   'Yıllık şampiyonayı kazan', 'Win the yearly championship',
-   '⭐', 'league', 'custom', 1, 'legendary', 120),
-  ('promoted_to_silver', 'Gümüşe Yükseldi', 'Promoted to Silver',
-   'Gümüş sınıfa terfi et', 'Promote to Silver class',
-   '🥈', 'league', 'custom', 1, 'common', 200),
-  ('promoted_to_gold', 'Altına Yükseldi', 'Promoted to Gold',
-   'Altın sınıfa terfi et', 'Promote to Gold class',
-   '🥇', 'league', 'custom', 1, 'rare', 210),
-  ('promoted_to_sapphire', 'Safire Yükseldi', 'Promoted to Sapphire',
-   'Safir sınıfa terfi et', 'Promote to Sapphire class',
-   '💙', 'league', 'custom', 1, 'rare', 220),
-  ('promoted_to_ruby', 'Yakuta Yükseldi', 'Promoted to Ruby',
-   'Yakut sınıfa terfi et', 'Promote to Ruby class',
-   '❤️', 'league', 'custom', 1, 'epic', 230),
-  ('promoted_to_emerald', 'Zümrüde Yükseldi', 'Promoted to Emerald',
-   'Zümrüt sınıfa terfi et', 'Promote to Emerald class',
-   '💚', 'league', 'custom', 1, 'epic', 240),
-  ('promoted_to_diamond', 'Elmasa Yükseldi', 'Promoted to Diamond',
-   'Elmas sınıfa terfi et', 'Promote to Diamond class',
-   '💎', 'league', 'custom', 1, 'legendary', 250)
-ON CONFLICT (code) DO NOTHING;
+-- Sprint 3b-A (20260504000010) apply edildiyse seed yapılır. Edilmediyse
+-- sessizce geçilir — 3b-A apply edildikten sonra bu migration yeniden
+-- çalıştırıldığında ON CONFLICT DO NOTHING ile idempotent eklenir.
+DO $badges$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.tables
+     WHERE table_schema = 'public' AND table_name = 'badges'
+  ) THEN
+    RAISE NOTICE 'badges tablosu yok — Sprint 3b-A migration eksik, 9 lig rozet seed atlandı';
+    RETURN;
+  END IF;
+
+  INSERT INTO public.badges (
+    code, name_tr, name_en, description_tr, description_en,
+    icon_emoji, category, condition_type, condition_value, rarity, sort
+  ) VALUES
+    ('weekly_champion', 'Haftanın Birincisi', 'Weekly Champion',
+     'Bir haftalık ligte 1. ol', 'Finish #1 in a weekly league',
+     '🏆', 'league', 'custom', 1, 'rare', 100),
+    ('monthly_champion', 'Ayın Birincisi', 'Monthly Champion',
+     'Bir aylık şampiyonayı kazan', 'Win a monthly championship',
+     '👑', 'league', 'custom', 1, 'epic', 110),
+    ('yearly_champion', 'Yılın Birincisi', 'Yearly Champion',
+     'Yıllık şampiyonayı kazan', 'Win the yearly championship',
+     '⭐', 'league', 'custom', 1, 'legendary', 120),
+    ('promoted_to_silver', 'Gümüşe Yükseldi', 'Promoted to Silver',
+     'Gümüş sınıfa terfi et', 'Promote to Silver class',
+     '🥈', 'league', 'custom', 1, 'common', 200),
+    ('promoted_to_gold', 'Altına Yükseldi', 'Promoted to Gold',
+     'Altın sınıfa terfi et', 'Promote to Gold class',
+     '🥇', 'league', 'custom', 1, 'rare', 210),
+    ('promoted_to_sapphire', 'Safire Yükseldi', 'Promoted to Sapphire',
+     'Safir sınıfa terfi et', 'Promote to Sapphire class',
+     '💙', 'league', 'custom', 1, 'rare', 220),
+    ('promoted_to_ruby', 'Yakuta Yükseldi', 'Promoted to Ruby',
+     'Yakut sınıfa terfi et', 'Promote to Ruby class',
+     '❤️', 'league', 'custom', 1, 'epic', 230),
+    ('promoted_to_emerald', 'Zümrüde Yükseldi', 'Promoted to Emerald',
+     'Zümrüt sınıfa terfi et', 'Promote to Emerald class',
+     '💚', 'league', 'custom', 1, 'epic', 240),
+    ('promoted_to_diamond', 'Elmasa Yükseldi', 'Promoted to Diamond',
+     'Elmas sınıfa terfi et', 'Promote to Diamond class',
+     '💎', 'league', 'custom', 1, 'legendary', 250)
+  ON CONFLICT (code) DO NOTHING;
+END $badges$;
 
 -- ─── 8. pg_cron schedule — Pazartesi 00:00 UTC ────────────────────────────
 -- Edge Function URL'i app_config'ten okunur.
