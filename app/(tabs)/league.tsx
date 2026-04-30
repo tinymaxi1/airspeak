@@ -13,7 +13,7 @@
  * - Boş state: lig'e atanmamış → "ilk dersini bitir"
  */
 import { useEffect, useState, useMemo } from 'react';
-import { ScrollView, View, Text, RefreshControl, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -173,6 +173,32 @@ export default function LeagueScreen() {
         </SafeAreaView>
       </View>
 
+      {/* ═════ PERIOD NAV (Haftalık aktif, Aylık → /league/monthly) ═════ */}
+      <View
+        style={{
+          flexDirection: 'row',
+          backgroundColor: '#FFFFFF',
+          borderBottomWidth: 1,
+          borderBottomColor: '#EDEFF3',
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            paddingVertical: 12,
+            alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: '#E63946',
+          }}
+        >
+          <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#E63946' }}>
+            Haftalık
+          </Text>
+        </View>
+        <PeriodTabLink label="Aylık" route="/league/monthly" />
+        <PeriodTabLink label="Yıllık" route="/league/yearly" disabled />
+      </View>
+
       {/* ═════ CLASS LADDER ═════ */}
       <View style={{ paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#EDEFF3' }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -253,6 +279,35 @@ export default function LeagueScreen() {
         </View>
       </ScrollView>
     </View>
+  );
+}
+
+// ─── Period tab link ──────────────────────────────────────────────────────
+function PeriodTabLink({
+  label,
+  route,
+  disabled,
+}: {
+  label: string;
+  route: string;
+  disabled?: boolean;
+}) {
+  return (
+    <TouchableOpacity
+      onPress={() => !disabled && router.push(route as any)}
+      activeOpacity={0.85}
+      disabled={disabled}
+      style={{
+        flex: 1,
+        paddingVertical: 12,
+        alignItems: 'center',
+        opacity: disabled ? 0.4 : 1,
+      }}
+    >
+      <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#5A6478' }}>
+        {label}
+      </Text>
+    </TouchableOpacity>
   );
 }
 
