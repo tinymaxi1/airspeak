@@ -31,7 +31,8 @@ import {
   useUserTypeRatings,
 } from '@/features/profile/api';
 import { useBadgeTemplates, useUserBadges } from '@/features/badges/api';
-import { useUserXpSummary } from '@/features/league/api';
+import { useUserXpSummary, useLeagueMembership } from '@/features/league/api';
+import { LeagueChip } from '@/components/profile/LeagueChip';
 import { Hero } from '@/components/profile/Hero';
 import { StatStrip } from '@/components/profile/StatStrip';
 import { LevelMap } from '@/components/profile/LevelMap';
@@ -72,6 +73,7 @@ export default function ProfileScreen() {
   const localStreak = useGamificationStore((s) => s.currentStreak ?? 0);
   // DB source of truth (Sprint 4B.2). Yoksa local fallback.
   const { row: xpSummary } = useUserXpSummary(user?.id);
+  const { membership: lgMembership, group: lgGroup } = useLeagueMembership(user?.id);
   const totalXp = xpSummary?.total_xp ?? localTotalXp;
   const currentStreak = localStreak; // streak DB henüz lazy sync — local first
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
@@ -175,6 +177,14 @@ export default function ProfileScreen() {
                 level={String(placementLevel)}
               />
             ) : null}
+            {lgGroup && (
+              <View style={{ marginTop: 12 }}>
+                <LeagueChip
+                  classTier={lgGroup.class_tier}
+                  rank={lgMembership?.rank ?? null}
+                />
+              </View>
+            )}
           </View>
         </SafeAreaView>
       </View>
@@ -201,6 +211,7 @@ export default function ProfileScreen() {
             totalXp={totalXp}
             currentStreak={currentStreak}
             badgeCount={earnedBadges}
+            leagueRank={lgMembership?.rank ?? null}
           />
         </View>
 

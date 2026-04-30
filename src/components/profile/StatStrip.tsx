@@ -89,16 +89,24 @@ export function StatStrip({
   totalXp,
   currentStreak,
   badgeCount,
+  leagueRank,
 }: {
   totalXp: number;
   currentStreak: number;
   badgeCount: number;
+  leagueRank?: number | null;
 }) {
   return (
-    <View style={{ flexDirection: 'row', gap: 10 }}>
+    <View style={{ flexDirection: 'row', gap: 8 }}>
       <StatCell label="XP" value={totalXp} accent="#E63946" delay={0} countUp />
       <StatCell label="Streak" value={`${currentStreak}d`} accent="#FF7847" delay={80} />
       <StatCell label="Rozet" value={badgeCount} accent="#2DBE6C" delay={160} countUp />
+      <StatCell
+        label="Sıra"
+        value={leagueRank != null ? `#${leagueRank}` : '—'}
+        accent="#7C5CFF"
+        delay={240}
+      />
     </View>
   );
 }
