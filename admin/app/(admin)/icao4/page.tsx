@@ -1,11 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import {
-  CreateGenericButton,
-  EditGenericButton,
-} from '@/components/forms/GenericTableForm';
+import { CreateIcao4Button, EditIcao4Button } from '@/components/forms/Icao4Form';
 import { StatusActions } from '@/components/forms/StatusActions';
-import { ICAO4_SCHEMA } from '@/lib/content/schemas';
+import { VolumeX } from 'lucide-react';
 
 export default async function Icao4Page() {
   const supabase = await createClient();
@@ -22,7 +19,7 @@ export default async function Icao4Page() {
           <h1 className="text-3xl font-bold text-airspeak-navy">ICAO 4 Sınav Soruları</h1>
           <p className="text-muted-foreground mt-1">{(data ?? []).length} soru</p>
         </div>
-        <CreateGenericButton schema={ICAO4_SCHEMA} label="Yeni soru" />
+        <CreateIcao4Button label="Yeni soru" />
       </div>
 
       <div className="bg-white border border-border rounded-xl overflow-hidden">
@@ -38,32 +35,45 @@ export default async function Icao4Page() {
             </tr>
           </thead>
           <tbody>
-            {(data ?? []).map((q: any) => (
-              <tr key={q.id} className="border-b border-border last:border-b-0 hover:bg-secondary/30">
-                <td className="px-4 py-3 font-semibold">SET {q.set_no}</td>
-                <td className="px-4 py-3 text-xs uppercase tracking-wider">{q.section}</td>
-                <td className="px-4 py-3 text-xs">{q.level}</td>
-                <td className="px-4 py-3">
-                  <p className="line-clamp-2 max-w-xl">{q.question}</p>
-                </td>
-                <td className="px-4 py-3">
-                  <StatusBadge status={q.status} />
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-1">
-                    <EditGenericButton schema={ICAO4_SCHEMA} row={q} />
-                    <StatusActions
-                      table="icao4_questions"
-                      id={q.id}
-                      status={q.status}
-                      revalidate="/icao4"
-                      label={q.question.slice(0, 40)}
-                      canDelete
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {(data ?? []).map((q: any) => {
+              const missingAudio = q.section === 'listening' && !q.audio_url;
+              return (
+                <tr key={q.id} className="border-b border-border last:border-b-0 hover:bg-secondary/30">
+                  <td className="px-4 py-3 font-semibold">SET {q.set_no}</td>
+                  <td className="px-4 py-3 text-xs uppercase tracking-wider">{q.section}</td>
+                  <td className="px-4 py-3 text-xs">{q.level}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-start gap-2">
+                      {missingAudio && (
+                        <span
+                          title="Listening — ses yok, yayına çıkamaz"
+                          className="shrink-0 mt-0.5 text-airspeak-red"
+                        >
+                          <VolumeX className="w-4 h-4" />
+                        </span>
+                      )}
+                      <p className="line-clamp-2 max-w-xl">{q.question}</p>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <StatusBadge status={q.status} />
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-1">
+                      <EditIcao4Button row={q} />
+                      <StatusActions
+                        table="icao4_questions"
+                        id={q.id}
+                        status={q.status}
+                        revalidate="/icao4"
+                        label={q.question.slice(0, 40)}
+                        canDelete
+                      />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
