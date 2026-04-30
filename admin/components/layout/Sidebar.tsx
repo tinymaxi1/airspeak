@@ -24,6 +24,7 @@ import {
   FileJson,
   Award,
   Trophy,
+  Sparkles,
 } from 'lucide-react';
 
 interface NavItem {
@@ -53,6 +54,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/freemium', label: 'Freemium / Limitler', icon: Lock, minRole: 'editor' },
   { href: '/ads', label: 'Reklamlar', icon: Megaphone, minRole: 'editor' },
   { href: '/paywall', label: 'Paywall / Fiyat', icon: Crown, minRole: 'editor' },
+  { href: '/offers', label: 'Limited Offers', icon: Sparkles, minRole: 'editor' },
   { href: '/import', label: 'Bulk Import', icon: FileJson, minRole: 'super_admin' },
   { href: '/audit', label: 'Audit Log', icon: History, minRole: 'reviewer' },
   { href: '/analytics', label: 'Analitik', icon: BarChart3, minRole: 'reviewer' },
