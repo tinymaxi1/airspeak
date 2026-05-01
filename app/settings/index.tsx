@@ -106,10 +106,30 @@ export default function SettingsScreen() {
     {
       title: t('screens.settings.groupLearning'),
       rows: [
-        { icon: '⚡', label: t('screens.settings.dailyPlan'), sub: t('screens.settings.dailyPlanDesc') },
-        { icon: '🔔', label: t('screens.settings.reminders'), sub: t('screens.settings.remindersDesc') },
-        { icon: '🎧', label: t('screens.settings.audio'), sub: t('screens.settings.audioDesc') },
-        { icon: '🎙', label: t('screens.settings.microphone'), sub: t('screens.settings.microphoneDesc') },
+        {
+          icon: '⚡',
+          label: t('screens.settings.dailyPlan'),
+          sub: t('screens.settings.dailyPlanDesc'),
+          onPress: () => router.push('/settings/daily-plan'),
+        },
+        {
+          icon: '🔔',
+          label: t('screens.settings.reminders'),
+          sub: t('screens.settings.remindersDesc'),
+          onPress: () => router.push('/settings/notifications'),
+        },
+        {
+          icon: '🎧',
+          label: t('screens.settings.audio'),
+          sub: t('screens.settings.audioDesc'),
+          onPress: () => router.push('/settings/audio'),
+        },
+        {
+          icon: '🎙',
+          label: t('screens.settings.microphone'),
+          sub: t('screens.settings.microphoneDesc'),
+          onPress: () => router.push('/settings/microphone'),
+        },
       ],
     },
     {
