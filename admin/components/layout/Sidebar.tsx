@@ -30,6 +30,7 @@ import {
   Bot,
   Headphones,
   FileDown,
+  Bell,
 } from 'lucide-react';
 
 interface NavItem {
@@ -64,6 +65,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/oral-review', label: 'Oral Review', icon: Headphones, minRole: 'reviewer' },
   { href: '/import', label: 'Bulk Import', icon: FileJson, minRole: 'super_admin' },
   { href: '/data-exports', label: 'Veri Export Talepleri', icon: FileDown, minRole: 'super_admin' },
+  { href: '/notifications', label: 'Bildirimler', icon: Bell, minRole: 'reviewer' },
   { href: '/reports', label: 'Reports', icon: ShieldAlert, minRole: 'reviewer' },
   { href: '/banned-words', label: 'Yasaklı Kelimeler', icon: Ban, minRole: 'editor' },
   { href: '/audit', label: 'Audit Log', icon: History, minRole: 'reviewer' },

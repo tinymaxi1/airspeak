@@ -685,6 +685,54 @@ async function postMention(
   return messages.length;
 }
 
+/** ADMIN BROADCAST — Sprint 5.E
+ *  body: { user_ids?: string[], audience?: 'all'|'free'|'premium'|'role:X'|'level:Y',
+ *          title, body, kind?, data? }
+ *  audience verilirse user_ids türetilir. Aksi halde body.user_ids kullanılır. */
+async function broadcast(
+  client: SupabaseClient,
+  body: any,
+): Promise<number> {
+  const title = (body?.title as string) ?? '';
+  const message = (body?.body as string) ?? '';
+  const kind = (body?.kind as string) ?? 'broadcast';
+  const extraData = (body?.data as Record<string, unknown>) ?? {};
+  if (!title || !message) return 0;
+
+  let userIds: string[] = Array.isArray(body?.user_ids) ? body.user_ids : [];
+
+  if (userIds.length === 0 && body?.audience) {
+    const audience = body.audience as string;
+    let q = client.from('profiles').select('id');
+    if (audience === 'free') {
+      q = q.is('premium_until', null);
+    } else if (audience === 'premium') {
+      q = q.gt('premium_until', new Date().toISOString());
+    } else if (audience.startsWith('role:')) {
+      q = q.eq('role', audience.slice(5));
+    } else if (audience.startsWith('level:')) {
+      q = q.eq('level', audience.slice(6));
+    }
+    const { data } = await q;
+    userIds = ((data as any[]) ?? []).map((r) => r.id);
+  }
+
+  if (userIds.length === 0) return 0;
+
+  const tokens = await getTokensForUsers(client, userIds);
+  if (tokens.length === 0) return 0;
+
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title,
+    body: message,
+    data: { kind, ...extraData },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  return messages.length;
+}
+
 /** 14. TRIAL WIN-BACK — trial bitmiş + 3 gün geçmiş + status expired */
 async function trialWinback(client: SupabaseClient): Promise<number> {
   const threeDaysAgo = new Date(Date.now() - 3 * 86400e3);
@@ -743,6 +791,8 @@ const TRIGGERS: Record<string, (client: SupabaseClient, ctx: TriggerCtx) => Prom
   // 6.D.1 comment_reply + post_reaction (DB triggers)
   comment_reply: (c, ctx) => commentReply(c, ctx.body as any),
   post_reaction: (c, ctx) => postReaction(c, ctx.body as any),
+  // 5.E admin broadcast
+  broadcast: (c, ctx) => broadcast(c, ctx.body as any),
 };
 
 Deno.serve(async (req) => {
