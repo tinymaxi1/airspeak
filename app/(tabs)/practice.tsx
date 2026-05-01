@@ -9,6 +9,7 @@
  * - 5 drill cards (3D, ATC read-back, Numbers, Garbled, Emergency vocab, Weather)
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, type Href } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,6 +50,7 @@ const DRILLS: Drill[] = [
 ];
 
 export default function PracticeScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<DrillCategory>('all');
 
@@ -63,7 +65,7 @@ export default function PracticeScreen() {
   const filteredDrills = filter === 'all' ? DRILLS : DRILLS.filter((d) => d.category === filter);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
           <Eyebrow>{t('screens.practice.eyebrow')}</Eyebrow>

@@ -11,6 +11,7 @@
  * - Section closer (navy boss card + trophy bg)
  */
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useMemo, useState, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -51,6 +52,7 @@ const LESSON_ICON: Record<string, string> = {
 };
 
 export default function LearnScreen() {
+  const c = usePalette();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const completedIds = useProgressStore((s) => s.completedLessonIds);
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
@@ -105,7 +107,7 @@ export default function LearnScreen() {
   // Loading state
   if (modulesLoading && modules.length === 0) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.bg }}>
         <ActivityIndicator size="large" color="#E63946" />
         <Text style={{ marginTop: 12, color: '#5A6478' }}>Modüller yükleniyor…</Text>
       </View>
@@ -113,7 +115,7 @@ export default function LearnScreen() {
   }
   if (!modulesLoading && modules.length === 0) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7', padding: 24 }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.bg, padding: 24 }}>
         <Text style={{ fontSize: 64, marginBottom: 16 }}>📚</Text>
         <Text style={{ fontSize: 18, fontWeight: '700', color: '#0E1116', marginBottom: 8 }}>
           Henüz modül yok
@@ -126,7 +128,7 @@ export default function LearnScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       {/* ═══════════ HEADER — Red boarding pass ═══════════ */}
       <View style={{ backgroundColor: '#E63946', position: 'relative', overflow: 'hidden' }}>
         <SafeAreaView edges={['top']}>

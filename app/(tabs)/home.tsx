@@ -10,6 +10,7 @@
  * - Tab bar 5 sekme (active: home)
  */
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +42,7 @@ import {
 } from '@/components/airspeak';
 
 export default function HomeScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const placement = useOnboardingStore((s) => s.placementResult);
@@ -83,7 +85,7 @@ export default function HomeScreen() {
   const isFirstTime = completedIds.length === 0 && xp === 0;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       {/* ═══════════ HEADER — navy topo strip ═══════════ */}
       <View style={{ backgroundColor: '#0F1E47', position: 'relative', overflow: 'hidden' }}>
         <SafeAreaView edges={['top']}>
