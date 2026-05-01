@@ -1,108 +1,116 @@
 /**
- * Notifications Screen — Ops freq feed
+ * Notifications Screen — gerçek DB feed (notification_log + community_notifications).
+ * Sprint 5.B
  *
- * Tasarım birebir (screens-extras.jsx NotificationsScreen):
- * - "OPS FREQ · 3 NEW" eyebrow + Notifications title + Mark read
- * - Tab strip: All(12)/Coach(3)/League/System with red underline
- * - Date eyebrows (TODAY · 04 MAR / YESTERDAY / EARLIER)
- * - Notif items: 40x40 colored icon + title + time + body + action pills
- *   unread = red dot left + light red bg
+ * - Tab strip: All / Unread / Coach / League / Community
+ * - Swipe to delete (gesture-handler)
+ * - Tap → markRead + deep link
+ * - "Tümünü oku" header butonu
+ * - Realtime (yeni notif anlık görünür)
+ * - Empty state
  */
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { useMemo, useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+  Alert,
+  FlatList,
+} from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Mono, FONTS } from '@/components/airspeak';
+import { Swipeable } from 'react-native-gesture-handler';
+import { useAuthStore } from '@/stores/authStore';
+import {
+  useNotifications,
+  markAllNotificationsRead,
+  deleteNotification,
+  markNotificationTapped,
+  routeFromNotification,
+  type UnifiedNotification,
+} from '@/features/notifications/api';
+import { Mono, FONTS, BackButton } from '@/components/airspeak';
 
-interface Notif {
-  icon: string;
-  color: string;
-  title: string;
-  body: string;
-  time: string;
-  unread?: boolean;
-  actions?: { label: string; primary?: boolean }[];
+type FilterKey = 'all' | 'unread' | 'coach' | 'league' | 'community';
+
+const FILTERS: Array<{ key: FilterKey; tk: string; td: string }> = [
+  { key: 'all', tk: 'notif.filter.all', td: 'Hepsi' },
+  { key: 'unread', tk: 'notif.filter.unread', td: 'Okunmamış' },
+  { key: 'coach', tk: 'notif.filter.coach', td: 'Koç' },
+  { key: 'league', tk: 'notif.filter.league', td: 'Lig' },
+  { key: 'community', tk: 'notif.filter.community', td: 'Komünite' },
+];
+
+function categorize(n: UnifiedNotification): 'coach' | 'league' | 'community' | 'system' {
+  if (n.source === 'community') return 'community';
+  const t = n.type;
+  if (t.startsWith('league_') || t === 'squadron_lapped') return 'league';
+  if (
+    t.startsWith('streak') ||
+    t === 'heart_full' ||
+    t === 'icao_mock_feedback' ||
+    t === 'oral_evaluated' ||
+    t === 'ai_scenario_weekly' ||
+    t === 'inactivity_recovery' ||
+    t === 'new_unit' ||
+    t === 'exam_countdown'
+  )
+    return 'coach';
+  return 'system';
 }
 
-const TODAY: Notif[] = [
-  {
-    icon: '🔥',
-    color: '#E63946',
-    title: 'Streak ateşte 🔥 — 12 gün',
-    body: 'Bugünkü 20 dakikalık planını henüz başlatmadın. 3 saat 14 dk kaldı.',
-    time: '2h',
-    unread: true,
-    actions: [{ label: 'Start flight', primary: true }, { label: 'Snooze 1h' }],
-  },
-  {
-    icon: '🤖',
-    color: '#7C5CFF',
-    title: 'AI Co-pilot · yeni senaryo',
-    body: 'Diversion to alternate · LFPG → LEMD. Geçen hafta kaçırdığın holding pattern bu kez senaryoda.',
-    time: '5h',
-    unread: true,
-    actions: [{ label: 'Roleplay', primary: true }],
-  },
-  {
-    icon: '🏆',
-    color: '#F2C14E',
-    title: 'Captain ligine yükseldin',
-    body: 'Geçen hafta 1,820 XP — top 12. Bu hafta podium için 240 XP daha lazım.',
-    time: '9h',
-    unread: true,
-  },
-];
+const CAT_STYLE: Record<string, { icon: string; color: string }> = {
+  coach: { icon: '🤖', color: '#7C5CFF' },
+  league: { icon: '🏆', color: '#F2C14E' },
+  community: { icon: '💬', color: '#2EA8FF' },
+  system: { icon: '✦', color: '#0F1E47' },
+};
 
-const YESTERDAY: Notif[] = [
-  {
-    icon: '🎧',
-    color: '#2EA8FF',
-    title: 'ICAO mock geri bildirimi',
-    body: 'Pronunciation 3 → 4 yükseldi. Fluency hâlâ 3 — "expanded responses" egzersizi öneriyoruz.',
-    time: '1d',
-    actions: [{ label: 'See breakdown' }],
-  },
-  {
-    icon: '❤',
-    color: '#FB6D78',
-    title: '5/5 hearts',
-    body: 'Tüm canların yenilendi. Yeni dersler için hazırsın.',
-    time: '1d',
-  },
-  {
-    icon: '👥',
-    color: '#0F1E47',
-    title: 'Squadron · @altay seninle yarışıyor',
-    body: 'Altay bu hafta 1,640 XP topladı. Sen 1,420 XP\'desin.',
-    time: '1d',
-  },
-];
-
-const EARLIER: Notif[] = [
-  {
-    icon: '✦',
-    color: '#FF7847',
-    title: 'Yeni unit: Severe Weather Ops',
-    body: '6 yeni ders, 32 phraseology kartı. Pro Pilot için kilitli.',
-    time: '3d',
-  },
-  {
-    icon: '🛡',
-    color: '#2DBE6C',
-    title: 'Streak freeze kullanıldı',
-    body: 'Pazar günü dersi kaçırdın ama freeze devreye girdi. Streak korundu.',
-    time: '6d',
-  },
-];
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const sec = Math.floor(diff / 1000);
+  if (sec < 60) return 'şimdi';
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}dk`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h}sa`;
+  const d = Math.floor(h / 24);
+  if (d < 7) return `${d}g`;
+  return `${Math.floor(d / 7)}h`;
+}
 
 export default function NotificationsScreen() {
   const { t } = useTranslation();
-  const TABS = [
-    { l: t('screens.notifications.tabAll'), count: 12, active: true },
-    { l: t('screens.notifications.tabCoach'), count: 3 },
-    { l: t('screens.notifications.tabLeague') },
-    { l: t('screens.notifications.tabSystem') },
-  ];
+  const userId = useAuthStore((s) => s.user?.id);
+  const { rows, loading, refresh, unreadCount } = useNotifications(userId);
+  const [filter, setFilter] = useState<FilterKey>('all');
+  const [refreshing, setRefreshing] = useState(false);
+
+  const filtered = useMemo(() => {
+    if (filter === 'all') return rows;
+    if (filter === 'unread') return rows.filter((r) => !r.read_at);
+    return rows.filter((r) => categorize(r) === filter);
+  }, [rows, filter]);
+
+  async function onTap(item: UnifiedNotification) {
+    void markNotificationTapped(item);
+    const route = routeFromNotification(item);
+    router.push(route as any);
+  }
+
+  async function onMarkAllRead() {
+    await markAllNotificationsRead();
+    await refresh();
+  }
+
+  async function onDelete(item: UnifiedNotification) {
+    await deleteNotification(item);
+    await refresh();
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
@@ -115,218 +123,217 @@ export default function NotificationsScreen() {
             gap: 12,
           }}
         >
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={{ fontSize: 22, color: '#0E1116' }}>←</Text>
-          </TouchableOpacity>
+          <BackButton onPress={() => router.back()} label={t('common.back', 'Geri')} />
           <View style={{ flex: 1 }}>
-            <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-              {t('screens.notifications.eyebrow', { count: 3 })}
+            <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.6 }}>
+              OPS FREQ · {unreadCount} NEW
             </Mono>
-            <Text
-              style={{
-                fontFamily: FONTS.body800,
-                fontSize: 22,
-                color: '#0E1116',
-                marginTop: 2,
-              }}
-            >
-              {t('screens.notifications.title')}
+            <Text style={{ fontFamily: FONTS.body800, fontSize: 22, color: '#0E1116', marginTop: 2 }}>
+              {t('screens.notifications.title', 'Bildirimler')}
             </Text>
           </View>
-          <TouchableOpacity>
-            <Text
-              style={{
-                fontFamily: FONTS.body700,
-                fontSize: 12,
-                color: '#5A6478',
-              }}
-            >
-              {t('screens.notifications.markRead')}
-            </Text>
-          </TouchableOpacity>
+          {unreadCount > 0 && (
+            <TouchableOpacity onPress={onMarkAllRead}>
+              <Mono style={{ fontSize: 11, color: '#0F1E47', letterSpacing: 1 }}>
+                {t('notif.markAllRead', 'TÜMÜNÜ OKU')}
+              </Mono>
+            </TouchableOpacity>
+          )}
         </View>
 
-        {/* Tab strip */}
         <View
           style={{
             flexDirection: 'row',
-            gap: 24,
-            paddingHorizontal: 16,
-            paddingBottom: 8,
+            paddingHorizontal: 12,
+            gap: 4,
             borderBottomWidth: 1,
-            borderBottomColor: '#DCE0E8',
+            borderBottomColor: '#EDEFF3',
           }}
         >
-          {TABS.map((t, i) => (
-            <View
-              key={i}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 6,
-                paddingVertical: 10,
-                borderBottomWidth: 2,
-                borderBottomColor: t.active ? '#E63946' : 'transparent',
-              }}
-            >
-              <Text
+          {FILTERS.map((f) => {
+            const active = filter === f.key;
+            const count =
+              f.key === 'all'
+                ? rows.length
+                : f.key === 'unread'
+                  ? unreadCount
+                  : rows.filter((r) => categorize(r) === f.key).length;
+            return (
+              <TouchableOpacity
+                key={f.key}
+                onPress={() => setFilter(f.key)}
                 style={{
-                  fontFamily: FONTS.body700,
-                  fontSize: 13,
-                  color: t.active ? '#0E1116' : '#8A93A6',
-                }}
-              >
-                {t.l}
-              </Text>
-              {t.count !== undefined && (
-                <View
-                  style={{
-                    backgroundColor: t.active ? '#E63946' : '#EDEFF3',
-                    paddingHorizontal: 6,
-                    paddingVertical: 1,
-                    borderRadius: 999,
-                  }}
-                >
-                  <Mono
-                    style={{
-                      fontSize: 10,
-                      color: t.active ? '#FFFFFF' : '#8A93A6',
-                    }}
-                  >
-                    {t.count}
-                  </Mono>
-                </View>
-              )}
-            </View>
-          ))}
-        </View>
-      </SafeAreaView>
-
-      <ScrollView style={{ flex: 1 }}>
-        <Section title={t('screens.notifications.today')} notifs={TODAY} />
-        <Section title={t('screens.notifications.yesterday')} notifs={YESTERDAY} />
-        <Section title={t('screens.notifications.earlier')} notifs={EARLIER} />
-        <View style={{ height: 24 }} />
-      </ScrollView>
-    </View>
-  );
-}
-
-function Section({ title, notifs }: { title: string; notifs: Notif[] }) {
-  return (
-    <>
-      <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 6 }}>
-        <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>{title}</Mono>
-      </View>
-      {notifs.map((n, i) => (
-        <NotifItem key={i} n={n} />
-      ))}
-    </>
-  );
-}
-
-function NotifItem({ n }: { n: Notif }) {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        gap: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 14,
-        backgroundColor: n.unread ? 'rgba(230,57,70,0.04)' : 'transparent',
-        borderBottomWidth: 1,
-        borderBottomColor: '#EDEFF3',
-        position: 'relative',
-      }}
-    >
-      {n.unread && (
-        <View
-          style={{
-            position: 'absolute',
-            left: 6,
-            top: '50%',
-            width: 6,
-            height: 6,
-            borderRadius: 3,
-            backgroundColor: '#E63946',
-          }}
-        />
-      )}
-      <View
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 10,
-          backgroundColor: n.color,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 18, color: '#FFFFFF' }}>{n.icon}</Text>
-      </View>
-      <View style={{ flex: 1 }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'baseline',
-            gap: 8,
-          }}
-        >
-          <Text
-            style={{
-              flex: 1,
-              fontFamily: FONTS.body700,
-              fontSize: 14,
-              color: '#0E1116',
-              lineHeight: 18,
-            }}
-          >
-            {n.title}
-          </Text>
-          <Mono style={{ fontSize: 10, color: '#8A93A6' }}>{n.time}</Mono>
-        </View>
-        <Text
-          style={{
-            fontSize: 13,
-            color: '#5A6478',
-            marginTop: 4,
-            lineHeight: 18,
-            fontFamily: FONTS.body,
-          }}
-        >
-          {n.body}
-        </Text>
-        {n.actions && (
-          <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
-            {n.actions.map((a, ai) => (
-              <View
-                key={ai}
-                style={{
-                  height: 30,
                   paddingHorizontal: 12,
-                  borderRadius: 8,
-                  borderWidth: a.primary ? 0 : 1.5,
-                  borderColor: '#DCE0E8',
-                  backgroundColor: a.primary ? '#0F1E47' : 'transparent',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  paddingVertical: 10,
+                  borderBottomWidth: active ? 2 : 0,
+                  borderBottomColor: '#E63946',
                 }}
               >
                 <Text
                   style={{
                     fontFamily: FONTS.body700,
-                    fontSize: 12,
-                    color: a.primary ? '#FFFFFF' : '#0E1116',
+                    fontSize: 13,
+                    color: active ? '#0E1116' : '#8A93A6',
                   }}
                 >
-                  {a.label}
+                  {t(f.tk, f.td)}
+                  {count > 0 && (
+                    <Text style={{ color: active ? '#E63946' : '#8A93A6' }}> ({count})</Text>
+                  )}
                 </Text>
-              </View>
-            ))}
-          </View>
-        )}
-      </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </SafeAreaView>
+
+      {loading ? (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator color="#0F1E47" />
+        </View>
+      ) : filtered.length === 0 ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: 32,
+          }}
+        >
+          <Text style={{ fontSize: 56, marginBottom: 12 }}>🔔</Text>
+          <Text style={{ fontFamily: FONTS.body700, fontSize: 16, color: '#0E1116', marginBottom: 6 }}>
+            {filter === 'unread'
+              ? t('notif.empty.unread', 'Okunmamış bildirim yok')
+              : t('notif.empty.title', 'Henüz bildirim yok')}
+          </Text>
+          <Text style={{ fontSize: 13, color: '#8A93A6', textAlign: 'center', lineHeight: 18 }}>
+            {t(
+              'notif.empty.body',
+              'Streak, lig, komünite ve ICAO sözlü bildirimleri burada toplanır.',
+            )}
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filtered}
+          keyExtractor={(item) => `${item.source}-${item.id}`}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={async () => {
+                setRefreshing(true);
+                await refresh();
+                setRefreshing(false);
+              }}
+            />
+          }
+          renderItem={({ item }) => (
+            <NotifRow item={item} onTap={onTap} onDelete={onDelete} />
+          )}
+          contentContainerStyle={{ paddingBottom: 24 }}
+        />
+      )}
     </View>
+  );
+}
+
+function NotifRow({
+  item,
+  onTap,
+  onDelete,
+}: {
+  item: UnifiedNotification;
+  onTap: (i: UnifiedNotification) => void;
+  onDelete: (i: UnifiedNotification) => void;
+}) {
+  const cat = categorize(item);
+  const style = CAT_STYLE[cat] ?? CAT_STYLE.system!;
+  const unread = !item.read_at;
+
+  const renderRightActions = () => (
+    <TouchableOpacity
+      onPress={() =>
+        Alert.alert('Sil', 'Bu bildirimi silmek istediğine emin misin?', [
+          { text: 'İptal', style: 'cancel' },
+          { text: 'Sil', style: 'destructive', onPress: () => onDelete(item) },
+        ])
+      }
+      style={{
+        backgroundColor: '#E63946',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 80,
+      }}
+    >
+      <Text style={{ color: '#FFFFFF', fontFamily: FONTS.body700, fontSize: 13 }}>Sil</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <Swipeable renderRightActions={renderRightActions}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => onTap(item)}
+        style={{
+          flexDirection: 'row',
+          gap: 12,
+          paddingHorizontal: 16,
+          paddingVertical: 14,
+          backgroundColor: unread ? '#FFF1F2' : '#FFFFFF',
+          borderBottomWidth: 1,
+          borderBottomColor: '#EDEFF3',
+          alignItems: 'flex-start',
+        }}
+      >
+        {unread && (
+          <View
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: 3,
+              backgroundColor: '#E63946',
+              marginTop: 18,
+            }}
+          />
+        )}
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 10,
+            backgroundColor: style.color + '22',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: unread ? 0 : 6,
+          }}
+        >
+          <Text style={{ fontSize: 20 }}>{style.icon}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                flex: 1,
+                fontFamily: unread ? FONTS.body700 : FONTS.body,
+                fontSize: 14,
+                color: '#0E1116',
+              }}
+            >
+              {item.title}
+            </Text>
+            <Mono style={{ fontSize: 11, color: '#8A93A6' }}>{relativeTime(item.created_at)}</Mono>
+          </View>
+          {item.body && (
+            <Text
+              numberOfLines={2}
+              style={{ fontSize: 13, color: '#5A6478', marginTop: 3, lineHeight: 17 }}
+            >
+              {item.body}
+            </Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    </Swipeable>
   );
 }
