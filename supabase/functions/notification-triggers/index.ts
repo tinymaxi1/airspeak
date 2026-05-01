@@ -37,10 +37,64 @@ interface PushPayload {
 
 const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
 
+async function logPushMessages(messages: PushPayload[]): Promise<void> {
+  // Sprint 5.A — her gönderimi notification_log'a yaz (token → user_id lookup)
+  if (messages.length === 0) return;
+  const url = Deno.env.get('SUPABASE_URL');
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!url || !key) return;
+
+  try {
+    const logClient = createClient(url, key, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const tokens = Array.from(new Set(messages.map((m) => m.to)));
+    const { data: tokenRows } = await logClient
+      .from('push_tokens')
+      .select('token, user_id')
+      .in('token', tokens);
+
+    const tokenToUser = new Map<string, string>(
+      ((tokenRows as any[]) ?? []).map((r) => [r.token as string, r.user_id as string]),
+    );
+
+    type LogEntry = {
+      user_id: string;
+      type: string;
+      title: string;
+      body: string;
+      data: Record<string, unknown>;
+      channel: 'push';
+    };
+    const logs: LogEntry[] = [];
+    for (const m of messages) {
+      const userId = tokenToUser.get(m.to);
+      if (!userId) continue;
+      logs.push({
+        user_id: userId,
+        type: ((m.data as any)?.kind as string) ?? 'unknown',
+        title: m.title,
+        body: m.body,
+        data: m.data ?? {},
+        channel: 'push',
+      });
+    }
+
+    if (logs.length === 0) return;
+    const { error } = await logClient.from('notification_log').insert(logs);
+    if (error) console.error('[notification_log] insert', error.message);
+  } catch (e) {
+    console.error('[notification_log] failed', e);
+  }
+}
+
 async function sendExpoPush(messages: PushPayload[]): Promise<void> {
   if (messages.length === 0) return;
 
-  // Expo limit: 100 message per request
+  // 1) Log to notification_log (best-effort, push'tan bağımsız)
+  await logPushMessages(messages);
+
+  // 2) Expo Push Service'e gönder — limit 100/request
   for (let i = 0; i < messages.length; i += 100) {
     const batch = messages.slice(i, i + 100);
     const response = await fetch(EXPO_PUSH_URL, {
