@@ -42,6 +42,7 @@ import { SkillRadar } from '@/components/oral/SkillRadar';
 import { IcaoTrend } from '@/components/oral/IcaoTrend';
 import { IcaoTimeline } from '@/components/oral/IcaoTimeline';
 import { useUserOralHistory, aggregateRubric } from '@/features/oral/api';
+import { useGoalsProgress, usePeerComparison } from '@/features/stats/api';
 import {
   ActivityHeatmap,
   type HeatmapBucket,
@@ -84,6 +85,9 @@ export default function ProfileScreen() {
   // Sprint 7.D.2 + 7.F — son 30 oral attempt (trend 8 hafta, timeline 8 satır)
   const { rows: oralHistory } = useUserOralHistory(user?.id, 30);
   const oralRubric = useMemo(() => aggregateRubric(oralHistory.slice(0, 10)), [oralHistory]);
+  // Sprint 3e.E — detaylı istatistik mini önizleme
+  const { goals } = useGoalsProgress(user?.id);
+  const { peer } = usePeerComparison(user?.id);
   const totalXp = xpSummary?.total_xp ?? localTotalXp;
   const currentStreak = localStreak; // streak DB henüz lazy sync — local first
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
@@ -224,6 +228,71 @@ export default function ProfileScreen() {
             leagueRank={lgMembership?.rank ?? null}
           />
         </View>
+
+        {/* Sprint 3e.E — Detaylı istatistik CTA + mini önizleme */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => router.push('/profile/stats' as any)}
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 14,
+            borderWidth: 1.5,
+            borderColor: '#DCE0E8',
+            borderBottomWidth: 4,
+            borderBottomColor: '#DCE0E8',
+            padding: 14,
+            marginBottom: 18,
+          }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <View
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 10,
+                backgroundColor: '#FFE4E7',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>📊</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: FONTS.body800, fontSize: 14, color: '#0E1116' }}>
+                Detaylı İstatistik
+              </Text>
+              <Mono style={{ fontSize: 9, color: '#8A93A6', letterSpacing: 0.9, marginTop: 2 }}>
+                XP TRENDİ · ÇALIŞMA SAATİ · AKRAN KIYASLAMASI
+              </Mono>
+            </View>
+            <Text style={{ fontSize: 18, color: '#8A93A6' }}>›</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 6,
+              paddingTop: 10,
+              borderTopWidth: 1,
+              borderTopColor: '#EDEFF3',
+            }}
+          >
+            <MiniStat
+              label="BU HAFTA"
+              value={goals ? `${goals.week_xp.toLocaleString('tr-TR')} XP` : '—'}
+              tone="#E63946"
+            />
+            <MiniStat
+              label="BUGÜN"
+              value={goals ? `${goals.today_minutes} dk` : '—'}
+              tone="#1F4FB6"
+            />
+            <MiniStat
+              label="AKRAN"
+              value={peer ? `%${Math.round(peer.week_xp_percentile)}` : '—'}
+              tone="#2DBE6C"
+            />
+          </View>
+        </TouchableOpacity>
 
         {/* Level map */}
         <View style={{ marginBottom: 18 }}>
@@ -452,6 +521,26 @@ export default function ProfileScreen() {
           {t('screens.profile.signOut')}
         </Button3D>
       </ScrollView>
+    </View>
+  );
+}
+
+function MiniStat({ label, value, tone }: { label: string; value: string; tone: string }) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: `${tone}11`,
+        borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 6,
+        alignItems: 'center',
+      }}
+    >
+      <Text style={{ fontFamily: FONTS.body800, fontSize: 14, color: tone }}>{value}</Text>
+      <Mono style={{ fontSize: 8, color: '#8A93A6', letterSpacing: 0.8, marginTop: 2 }}>
+        {label}
+      </Mono>
     </View>
   );
 }
