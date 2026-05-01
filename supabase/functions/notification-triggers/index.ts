@@ -446,6 +446,33 @@ async function specialOffer(
   return messages.length;
 }
 
+/** 17. MOD WARNING — DB trigger çağırır, body { kind, target_id, user_id } */
+async function modWarning(
+  client: SupabaseClient,
+  body: { kind?: 'post' | 'comment'; target_id?: string; user_id?: string } | undefined,
+): Promise<number> {
+  const userId = body?.user_id;
+  const kind = body?.kind;
+  if (!userId || !kind) {
+    console.error('[mod_warning] missing user_id or kind');
+    return 0;
+  }
+  const tokens = await getTokensForUsers(client, [userId]);
+  if (tokens.length === 0) return 0;
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title: '⚠️ Moderasyon uyarısı',
+    body:
+      kind === 'post'
+        ? 'Postun topluluk kurallarını ihlal ettiği için gizlendi. Yeniden değerlendirme için itiraz edebilirsin.'
+        : 'Yorumun topluluk kurallarını ihlal ettiği için gizlendi.',
+    data: { kind: 'mod_warning', target_kind: kind, target_id: body?.target_id },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  return messages.length;
+}
+
 /** 16. POST MENTION — DB trigger çağırır, body { mention_id } */
 async function postMention(
   client: SupabaseClient,
@@ -566,6 +593,8 @@ const TRIGGERS: Record<string, (client: SupabaseClient, ctx: TriggerCtx) => Prom
   special_offer: (c, ctx) => specialOffer(c, ctx.body as any),
   // 6.B.1 community mention (DB trigger fires per mention)
   post_mention: (c, ctx) => postMention(c, ctx.body as any),
+  // 6.C.1 moderation warning (DB trigger fires when status='hidden')
+  mod_warning: (c, ctx) => modWarning(c, ctx.body as any),
 };
 
 Deno.serve(async (req) => {
