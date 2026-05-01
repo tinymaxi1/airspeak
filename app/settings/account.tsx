@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,6 +22,7 @@ import { Eyebrow, Mono, Body, FONTS, BackButton, Button3D } from '@/components/a
 import { KeyboardAware } from '@/components/ui/KeyboardAware';
 
 export default function AccountSettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
 
@@ -102,7 +104,7 @@ export default function AccountSettingsScreen() {
   }
 
   return (
-    <KeyboardAware style={{ backgroundColor: '#FAFAF7' }}>
+    <KeyboardAware style={{ backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

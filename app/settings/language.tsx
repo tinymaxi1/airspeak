@@ -5,6 +5,7 @@
  * Çeviri kapsamı %0 olan dillerde uyarı gösterir (Sprint 9'da gelecek).
  */
 import { ScrollView } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { YStack, XStack, H2, H3, Paragraph, Card, Text, Button } from 'tamagui';
 import { router } from 'expo-router';
 import { useState, useEffect } from 'react';
@@ -12,6 +13,7 @@ import { changeLanguage, getCurrentLanguage, LOCALE_COVERAGE } from '@/lib/i18n'
 import { LOCALE_META, SUPPORTED_LOCALES, type Locale } from '@/lib/i18nTypes';
 
 export default function LanguagePickerScreen() {
+  const c = usePalette();
   const [current, setCurrent] = useState<Locale>('en');
 
   useEffect(() => {

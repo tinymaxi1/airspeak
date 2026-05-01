@@ -3,6 +3,7 @@
  * useThemeStore üzerinden anlık değişir, user_settings.theme'e DB sync.
  */
 import { ScrollView, View, Text, TouchableOpacity, useColorScheme } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -46,13 +47,14 @@ const OPTIONS: ThemeOption[] = [
 ];
 
 export default function AppearanceSettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const theme = useThemeStore((s) => s.theme);
   const setTheme = useThemeStore((s) => s.setTheme);
   const systemScheme = useColorScheme();
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

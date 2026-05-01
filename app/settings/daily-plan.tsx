@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,6 +26,7 @@ import { Eyebrow, Mono, Body, FONTS, BackButton } from '@/components/airspeak';
 const GOAL_OPTIONS = [5, 10, 15, 20, 30, 45, 60];
 
 export default function DailyPlanSettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userId = useAuthStore((s) => s.user?.id);
   const profile = useAuthStore((s) => s.profile);
@@ -70,7 +72,7 @@ export default function DailyPlanSettingsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

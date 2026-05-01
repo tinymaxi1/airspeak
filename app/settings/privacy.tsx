@@ -3,6 +3,7 @@
  */
 import { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert, Linking, Switch } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +21,7 @@ import {
 } from '@/components/airspeak';
 
 export default function PrivacySettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userId = useAuthStore((s) => s.user?.id);
   const [friendsOnlyMentions, setFriendsOnlyMentions] = useState(false);
@@ -172,7 +174,7 @@ export default function PrivacySettingsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

@@ -3,6 +3,7 @@
  */
 import { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Switch, ActivityIndicator, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,6 +25,7 @@ const TYPED: Array<{ key: keyof UserSettings; icon: string; tk: string; td: stri
 ];
 
 export default function NotificationsSettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userId = useAuthStore((s) => s.user?.id);
   const [s, setS] = useState<UserSettings | null>(null);
@@ -50,7 +52,7 @@ export default function NotificationsSettingsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

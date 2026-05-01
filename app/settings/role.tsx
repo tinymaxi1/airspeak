@@ -4,6 +4,7 @@
  */
 import { useEffect, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,6 +31,7 @@ const ROLES: RoleSpec[] = [
 ];
 
 export default function RoleSettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userId = useAuthStore((s) => s.user?.id);
   const profile = useAuthStore((s) => s.profile);
@@ -64,7 +66,7 @@ export default function RoleSettingsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{
@@ -177,7 +179,7 @@ export default function RoleSettingsScreen() {
 
       {/* Sticky CTA */}
       {selected && selected !== profile?.role && (
-        <SafeAreaView edges={['bottom']} style={{ backgroundColor: '#FAFAF7' }}>
+        <SafeAreaView edges={['bottom']} style={{ backgroundColor: c.bg }}>
           <View style={{ padding: 16, borderTopWidth: 1, borderTopColor: '#EDEFF3' }}>
             <Button3D onPress={onSave} disabled={saving} variant="primary">
               {saving

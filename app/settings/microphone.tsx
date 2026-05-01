@@ -12,6 +12,7 @@ import {
   Linking,
   Platform,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,6 +22,7 @@ import { Eyebrow, Mono, Body, FONTS, BackButton, Button3D } from '@/components/a
 type PermStatus = 'granted' | 'denied' | 'undetermined' | 'unknown';
 
 export default function MicrophoneSettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const [status, setStatus] = useState<PermStatus>('unknown');
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
@@ -124,7 +126,7 @@ export default function MicrophoneSettingsScreen() {
         : t('settings.microphone.notRequested', 'Henüz istenmedi');
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

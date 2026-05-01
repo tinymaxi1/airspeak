@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -62,6 +63,7 @@ const TABS: TabItem<TabKey>[] = [
 ];
 
 export default function ProfileEditScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ tab?: string }>();
   const user = useAuthStore((s) => s.user);
@@ -179,7 +181,7 @@ export default function ProfileEditScreen() {
     .toUpperCase();
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#FFFFFF' }}>
         <View
           style={{
