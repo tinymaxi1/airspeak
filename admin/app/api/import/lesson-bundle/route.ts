@@ -28,16 +28,23 @@ const exerciseBundleItemSchema = z
   .object({
     sort: z.number().int().min(0),
     type: z.enum([
+      // Eski naming
       'vocab-mc', 'fill-blank', 'dialogue-fill', 'listening-mc',
       'pronunciation-record', 'match', 'order', 'drag-drop', 'open-text',
+      // Sprint 10.A yeni
       'matching', 'ordering', 'true_false',
+      // Sprint 10.E yeni naming
+      'fill_blank', 'listening', 'speaking',
     ] as const),
     vocab_term_slug: z.string().nullable().optional(),
     prompt: z.string().nullable().optional(),
     prompt_tr: z.string().nullable().optional(),
     context: z.string().nullable().optional(),
     context_tr: z.string().nullable().optional(),
-    options: z.array(z.object({ id: z.string().min(1).max(2), text: z.string().min(1) })).nullable().optional(),
+    options: z
+      .array(z.object({ id: z.string().min(1).max(4), text: z.string().min(1) }))
+      .nullable()
+      .optional(),
     correct_id: z.string().nullable().optional(),
     alt_correct_ids: z.array(z.string()).nullable().optional(),
     explanation: z.string().nullable().optional(),
@@ -46,9 +53,17 @@ const exerciseBundleItemSchema = z
     audio_url: z.string().nullable().optional(),
     image_url: z.string().nullable().optional(),
     difficulty: z.number().int().min(1).max(5).optional().default(2),
-    pairs: z.array(z.object({ id: z.string(), left: z.string(), right: z.string() })).nullable().optional(),
-    correct_order: z.array(z.string()).nullable().optional(),
+    // Sprint 10.A: matching pairs, ordering correct_order, true_false is_true
+    pairs: z
+      .array(z.object({ id: z.string(), left: z.string(), right: z.string() }))
+      .nullable()
+      .optional(),
+    // correct_order: string id'ler veya 0-based number indexes (normalize'da id'ye çevrilir)
+    correct_order: z.array(z.union([z.string(), z.number()])).nullable().optional(),
     is_true: z.boolean().nullable().optional(),
+    // Sprint 10.E: listening transcript, speaking target_text
+    transcript: z.string().nullable().optional(),
+    target_text: z.string().nullable().optional(),
   })
   .strict();
 
@@ -207,9 +222,52 @@ export async function POST(req: NextRequest) {
       bundleVocabCount = ids.length;
     }
 
-    // Exercises insert (lesson_slug inject + normalize)
+    // Exercises insert (lesson_slug inject + correct_order number→id normalize)
     if (b.exercises.length > 0) {
-      const exRows = b.exercises.map((e) => ({ ...e, lesson_slug: b.lesson_slug }));
+      let exRows: any[];
+      try {
+        exRows = b.exercises.map((e) => {
+          const norm: any = { ...e, lesson_slug: b.lesson_slug };
+          // Sprint 10.E — correct_order number array → options[i].id mapping
+          if (Array.isArray(e.correct_order) && e.correct_order.length > 0) {
+            const co = e.correct_order;
+            if (typeof co[0] === 'number') {
+              if (!Array.isArray(e.options)) {
+                throw new Error(
+                  `bundle ${bi} exercise sort=${e.sort}: correct_order numeric ama options eksik`,
+                );
+              }
+              norm.correct_order = co.map((idx: any) => {
+                const opt = e.options![idx as number];
+                if (!opt) {
+                  throw new Error(
+                    `bundle ${bi} exercise sort=${e.sort}: correct_order[${idx}] options dışında`,
+                  );
+                }
+                return opt.id;
+              });
+            }
+            // string array: olduğu gibi geçir
+          }
+          return norm;
+        });
+      } catch (mapErr: any) {
+        await rollback();
+        return NextResponse.json(
+          {
+            ok: false,
+            errors: [
+              {
+                row: -1,
+                bundle: bi,
+                section: 'exercises',
+                message: mapErr?.message ?? 'correct_order normalize hatası',
+              },
+            ],
+          },
+          { status: 422 },
+        );
+      }
       const normalized = await normalizeRows('exercises', exRows, supabase as any);
       if (!normalized.ok) {
         await rollback();
