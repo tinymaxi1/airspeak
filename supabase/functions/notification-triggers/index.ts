@@ -446,6 +446,73 @@ async function specialOffer(
   return messages.length;
 }
 
+/** 16. POST MENTION — DB trigger çağırır, body { mention_id } */
+async function postMention(
+  client: SupabaseClient,
+  body: { mention_id?: string } | undefined,
+): Promise<number> {
+  const mentionId = body?.mention_id;
+  if (!mentionId) {
+    console.error('[post_mention] missing mention_id');
+    return 0;
+  }
+
+  const { data: mention } = await client
+    .from('community_mentions')
+    .select('id, post_id, comment_id, mentioned_user_id, mentioner_user_id, notified')
+    .eq('id', mentionId)
+    .maybeSingle();
+
+  if (!mention || (mention as any).notified) return 0;
+
+  const m = mention as any;
+
+  // Mentioner profil bilgisi (push title için)
+  const { data: mentionerProfile } = await client
+    .from('profiles')
+    .select('username, full_name')
+    .eq('id', m.mentioner_user_id)
+    .maybeSingle();
+
+  // Post snippet (body'de göstermek için)
+  const tableName = m.comment_id ? 'community_comments' : 'community_posts';
+  const idCol = m.comment_id ?? m.post_id;
+  const { data: contentRow } = await client
+    .from(tableName)
+    .select('content')
+    .eq('id', idCol)
+    .maybeSingle();
+
+  const mentionerName =
+    (mentionerProfile as any)?.full_name ??
+    (mentionerProfile as any)?.username ??
+    'Birisi';
+  const snippet = ((contentRow as any)?.content ?? '').slice(0, 100);
+
+  const tokens = await getTokensForUsers(client, [m.mentioned_user_id]);
+  if (tokens.length === 0) {
+    // Notif imkânı yok ama yine de notified = true işaretleyelim
+    await client.from('community_mentions').update({ notified: true }).eq('id', m.id);
+    return 0;
+  }
+
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title: `${mentionerName} seni etiketledi`,
+    body: snippet,
+    data: {
+      kind: 'post_mention',
+      post_id: m.post_id,
+      comment_id: m.comment_id,
+      mention_id: m.id,
+    },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  await client.from('community_mentions').update({ notified: true }).eq('id', m.id);
+  return messages.length;
+}
+
 /** 14. TRIAL WIN-BACK — trial bitmiş + 3 gün geçmiş + status expired */
 async function trialWinback(client: SupabaseClient): Promise<number> {
   const threeDaysAgo = new Date(Date.now() - 3 * 86400e3);
@@ -497,6 +564,8 @@ const TRIGGERS: Record<string, (client: SupabaseClient, ctx: TriggerCtx) => Prom
   trial_winback: (c) => trialWinback(c),
   // 5.D.3 special offer (admin manuel broadcast)
   special_offer: (c, ctx) => specialOffer(c, ctx.body as any),
+  // 6.B.1 community mention (DB trigger fires per mention)
+  post_mention: (c, ctx) => postMention(c, ctx.body as any),
 };
 
 Deno.serve(async (req) => {
