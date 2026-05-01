@@ -242,17 +242,17 @@ export default function PrivacySettingsScreen() {
           <SettingsRow
             icon="📜"
             label={t('settings.privacy.policy', 'Gizlilik Politikası')}
-            onPress={() => Linking.openURL('https://airspeak.io/privacy')}
+            onPress={() => router.push('/legal/privacy')}
           />
           <SettingsRow
             icon="📋"
             label={t('settings.privacy.terms', 'Kullanım Şartları')}
-            onPress={() => Linking.openURL('https://airspeak.io/terms')}
+            onPress={() => router.push('/legal/terms')}
           />
           <SettingsRow
             icon="🇹🇷"
             label={t('settings.privacy.kvkk', 'KVKK Aydınlatma Metni')}
-            onPress={() => Linking.openURL('https://airspeak.io/kvkk')}
+            onPress={() => router.push('/legal/kvkk')}
             last
           />
         </View>

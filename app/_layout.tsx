@@ -205,6 +205,9 @@ export default function RootLayout() {
             <Stack.Screen name="settings/index" options={{ headerShown: false }} />
             <Stack.Screen name="settings/profile" options={{ headerShown: false }} />
             <Stack.Screen name="settings/privacy" options={{ headerShown: false }} />
+            <Stack.Screen name="legal/privacy" options={{ headerShown: false }} />
+            <Stack.Screen name="legal/terms" options={{ headerShown: false }} />
+            <Stack.Screen name="legal/kvkk" options={{ headerShown: false }} />
             <Stack.Screen name="settings/help" options={{ headerShown: false }} />
             <Stack.Screen name="notifications" options={{ headerShown: false }} />
             <Stack.Screen name="offline" options={{ headerShown: false }} />
