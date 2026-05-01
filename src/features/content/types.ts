@@ -17,7 +17,18 @@ export type ExerciseType =
   | 'match'
   | 'order'
   | 'drag-drop'
-  | 'open-text';
+  | 'open-text'
+  // Sprint 10.A — yeni tipler
+  | 'matching'
+  | 'ordering'
+  | 'true_false';
+
+/** Sprint 10.A — matching tipi için pair item */
+export interface ExercisePair {
+  id: string;
+  left: string;
+  right: string;
+}
 
 export type Role = 'pilot' | 'cabin' | 'technician' | 'ground' | 'student';
 
@@ -89,6 +100,10 @@ export interface ExerciseRow extends ContentBase {
   audio_url: string | null;
   image_url: string | null;
   difficulty: number;
+  // Sprint 10.A — tipe-özel kolonlar (nullable; CHECK constraint zorunluluğu serverda)
+  pairs: ExercisePair[] | null;
+  correct_order: string[] | null;
+  is_true: boolean | null;
 }
 
 export interface VocabTermRow extends ContentBase {
