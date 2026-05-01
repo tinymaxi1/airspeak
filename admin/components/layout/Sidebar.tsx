@@ -25,6 +25,8 @@ import {
   Award,
   Trophy,
   Sparkles,
+  ShieldAlert,
+  Ban,
 } from 'lucide-react';
 
 interface NavItem {
@@ -56,6 +58,8 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/paywall', label: 'Paywall / Fiyat', icon: Crown, minRole: 'editor' },
   { href: '/offers', label: 'Limited Offers', icon: Sparkles, minRole: 'editor' },
   { href: '/import', label: 'Bulk Import', icon: FileJson, minRole: 'super_admin' },
+  { href: '/reports', label: 'Reports', icon: ShieldAlert, minRole: 'reviewer' },
+  { href: '/banned-words', label: 'Yasaklı Kelimeler', icon: Ban, minRole: 'editor' },
   { href: '/audit', label: 'Audit Log', icon: History, minRole: 'reviewer' },
   { href: '/analytics', label: 'Analitik', icon: BarChart3, minRole: 'reviewer' },
 ];
