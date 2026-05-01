@@ -39,6 +39,8 @@ import { Hero } from '@/components/profile/Hero';
 import { StatStrip } from '@/components/profile/StatStrip';
 import { LevelMap } from '@/components/profile/LevelMap';
 import { SkillRadar } from '@/components/oral/SkillRadar';
+import { IcaoTrend } from '@/components/oral/IcaoTrend';
+import { IcaoTimeline } from '@/components/oral/IcaoTimeline';
 import { useUserOralHistory, aggregateRubric } from '@/features/oral/api';
 import {
   ActivityHeatmap,
@@ -79,9 +81,9 @@ export default function ProfileScreen() {
   const { row: xpSummary } = useUserXpSummary(user?.id);
   const { membership: lgMembership, group: lgGroup } = useLeagueMembership(user?.id);
   const { rows: championships } = useUserChampionships(user?.id);
-  // Sprint 7.D.2 — son 10 oral attempt rubric ortalaması
-  const { rows: oralHistory } = useUserOralHistory(user?.id, 10);
-  const oralRubric = useMemo(() => aggregateRubric(oralHistory), [oralHistory]);
+  // Sprint 7.D.2 + 7.F — son 30 oral attempt (trend 8 hafta, timeline 8 satır)
+  const { rows: oralHistory } = useUserOralHistory(user?.id, 30);
+  const oralRubric = useMemo(() => aggregateRubric(oralHistory.slice(0, 10)), [oralHistory]);
   const totalXp = xpSummary?.total_xp ?? localTotalXp;
   const currentStreak = localStreak; // streak DB henüz lazy sync — local first
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
@@ -322,13 +324,48 @@ export default function ProfileScreen() {
                 padding: 16,
                 alignItems: 'center',
                 marginTop: 8,
-                marginBottom: 18,
+                marginBottom: 12,
               }}
             >
               <SkillRadar rubric={oralRubric} size={200} />
               <Mono style={{ fontSize: 9, color: '#8A93A6', letterSpacing: 0.9, marginTop: 6 }}>
                 SON {oralHistory.filter((r) => r.rubric).length} DENEMENİN ORTALAMASI · YEŞİL HALKA L4
               </Mono>
+            </View>
+
+            {/* Trend (haftalık ortalama) */}
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderColor: '#DCE0E8',
+                padding: 14,
+                alignItems: 'center',
+                marginBottom: 12,
+              }}
+            >
+              <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.2, alignSelf: 'flex-start', marginBottom: 6 }}>
+                GELİŞİM TRENDİ (8 HAFTA)
+              </Mono>
+              <IcaoTrend attempts={oralHistory} weeks={8} />
+            </View>
+
+            {/* Timeline (son 8 attempt) */}
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderColor: '#DCE0E8',
+                padding: 14,
+                marginBottom: 18,
+              }}
+            >
+              <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.2, marginBottom: 10 }}>
+                ICAO SEVİYE GEÇMİŞİ
+              </Mono>
+              <IcaoTimeline attempts={oralHistory} limit={8} />
             </View>
           </>
         )}
