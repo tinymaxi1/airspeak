@@ -28,6 +28,7 @@ import {
   ShieldAlert,
   Ban,
   Bot,
+  Headphones,
 } from 'lucide-react';
 
 interface NavItem {
@@ -59,6 +60,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/paywall', label: 'Paywall / Fiyat', icon: Crown, minRole: 'editor' },
   { href: '/offers', label: 'Limited Offers', icon: Sparkles, minRole: 'editor' },
   { href: '/ai', label: 'AI Settings', icon: Bot, minRole: 'editor' },
+  { href: '/oral-review', label: 'Oral Review', icon: Headphones, minRole: 'reviewer' },
   { href: '/import', label: 'Bulk Import', icon: FileJson, minRole: 'super_admin' },
   { href: '/reports', label: 'Reports', icon: ShieldAlert, minRole: 'reviewer' },
   { href: '/banned-words', label: 'Yasaklı Kelimeler', icon: Ban, minRole: 'editor' },
