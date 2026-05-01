@@ -10,12 +10,14 @@ import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBannerStore } from '@/stores/notificationBannerStore';
 import { Mono, FONTS } from '@/components/airspeak';
+import { useReducedMotion } from '@/lib/useReducedMotion';
 
 const AUTO_DISMISS_MS = 3000;
 
 export function NotificationBannerHost() {
   const current = useBannerStore((s) => s.current);
   const dismiss = useBannerStore((s) => s.dismiss);
+  const reduceMotion = useReducedMotion();
 
   const translateY = useRef(new Animated.Value(-200)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -26,13 +28,13 @@ export function NotificationBannerHost() {
     Animated.parallel([
       Animated.timing(translateY, {
         toValue: 0,
-        duration: 280,
+        duration: reduceMotion ? 0 : 280,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
       Animated.timing(opacity, {
         toValue: 1,
-        duration: 220,
+        duration: reduceMotion ? 0 : 220,
         useNativeDriver: true,
       }),
     ]).start();
@@ -51,12 +53,12 @@ export function NotificationBannerHost() {
     Animated.parallel([
       Animated.timing(translateY, {
         toValue: -200,
-        duration: 220,
+        duration: reduceMotion ? 0 : 220,
         useNativeDriver: true,
       }),
       Animated.timing(opacity, {
         toValue: 0,
-        duration: 180,
+        duration: reduceMotion ? 0 : 180,
         useNativeDriver: true,
       }),
     ]).start(() => {

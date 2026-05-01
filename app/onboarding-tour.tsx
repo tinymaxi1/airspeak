@@ -8,6 +8,7 @@
  */
 import { useState, useRef, useCallback } from 'react';
 import { useAndroidBack } from '@/lib/useAndroidBack';
+import { useReducedMotion } from '@/lib/useReducedMotion';
 import {
   View,
   Text,
@@ -88,6 +89,7 @@ const { width: SCREEN_W } = Dimensions.get('window');
 export default function OnboardingTourScreen() {
   const { t } = useTranslation();
   const setHasSeenTour = useAuthStore((s) => s.setHasSeenTour);
+  const reduceMotion = useReducedMotion();
   const [page, setPage] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
 
@@ -107,7 +109,7 @@ export default function OnboardingTourScreen() {
   const onAndroidBack = useCallback(() => {
     if (page > 0) {
       // önceki slide'a kaydır
-      scrollRef.current?.scrollTo({ x: (page - 1) * SCREEN_W, animated: true });
+      scrollRef.current?.scrollTo({ x: (page - 1) * SCREEN_W, animated: !reduceMotion });
       return true;
     }
     // ilk slide'da: turu atla → home
@@ -121,7 +123,7 @@ export default function OnboardingTourScreen() {
     if (page === SLIDES.length - 1) {
       goToHome();
     } else {
-      scrollRef.current?.scrollTo({ x: (page + 1) * SCREEN_W, animated: true });
+      scrollRef.current?.scrollTo({ x: (page + 1) * SCREEN_W, animated: !reduceMotion });
     }
   };
 
