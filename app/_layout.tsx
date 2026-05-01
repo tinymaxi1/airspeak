@@ -186,6 +186,7 @@ export default function RootLayout() {
             <Stack.Screen name="community/search" options={{ headerShown: false, presentation: 'modal' }} />
             <Stack.Screen name="community/bookmarks" options={{ headerShown: false }} />
             <Stack.Screen name="community/notifications" options={{ headerShown: false }} />
+            <Stack.Screen name="community/u/[username]" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-sets" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-briefing" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="exam/icao4-live" options={{ headerShown: false }} />

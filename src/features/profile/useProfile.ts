@@ -42,6 +42,10 @@ export interface ProfileRow {
   aviation_experience_years: number | null;
   profile_completion_percent: number;
   is_profile_public: boolean;
+  // Sprint 6.E.1 community
+  community_post_count?: number;
+  community_follower_count?: number;
+  community_following_count?: number;
   created_at: string;
   updated_at: string;
 }

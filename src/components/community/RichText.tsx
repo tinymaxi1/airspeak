@@ -87,7 +87,7 @@ export function RichText({
             style={{ color: linkColor, fontFamily: FONTS.body700 }}
             onPress={() => {
               if (onMentionPress) onMentionPress(s.value);
-              // 6.E profile screen yok ise sessiz no-op
+              else router.push(`/community/u/${s.value}` as any);
             }}
           >
             {s.raw}

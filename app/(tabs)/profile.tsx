@@ -365,7 +365,11 @@ export default function ProfileScreen() {
           <SettingsRow
             icon="💬"
             label="Squadron Hub"
-            value="Komünite — gruplar, postlar, tartışmalar"
+            value={
+              (profile?.community_post_count ?? 0) > 0 || (profile?.community_follower_count ?? 0) > 0
+                ? `${profile?.community_post_count ?? 0} post · ${profile?.community_follower_count ?? 0} takipçi`
+                : 'Komünite — gruplar, postlar, tartışmalar'
+            }
             onPress={() => router.push('/community' as any)}
           />
         </View>

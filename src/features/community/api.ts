@@ -826,6 +826,100 @@ export function usePostsByHashtag(tag: string | null | undefined, limit = 50): {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// 6.E.2 — Follows + user profile posts
+// ═══════════════════════════════════════════════════════════════════════
+
+export async function toggleFollow(
+  targetUserId: string,
+): Promise<{ ok: boolean; action?: 'followed' | 'unfollowed'; error?: string }> {
+  const { data, error } = await (supabase as any).rpc('toggle_community_follow', {
+    p_target_id: targetUserId,
+  });
+  if (error) return { ok: false, error: error.message };
+  return data;
+}
+
+export function useFollowing(
+  followerId: string | null | undefined,
+  targetUserId: string | null | undefined,
+): { following: boolean; loading: boolean; refresh: () => Promise<void> } {
+  const [following, setFollowing] = useState(false);
+  const [loading, setLoading] = useState(!!followerId && !!targetUserId);
+
+  const refresh = useCallback(async () => {
+    if (!followerId || !targetUserId || followerId === targetUserId) {
+      setFollowing(false);
+      setLoading(false);
+      return;
+    }
+    const { data } = await (supabase as any)
+      .from('community_follows')
+      .select('follower_id')
+      .eq('follower_id', followerId)
+      .eq('followed_id', targetUserId)
+      .maybeSingle();
+    setFollowing(!!data);
+    setLoading(false);
+  }, [followerId, targetUserId]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { following, loading, refresh };
+}
+
+export function useUserCommunityPosts(
+  userId: string | null | undefined,
+  limit = 50,
+): { rows: CommunityPost[]; loading: boolean; refresh: () => Promise<void> } {
+  const [rows, setRows] = useState<CommunityPost[]>([]);
+  const [loading, setLoading] = useState(!!userId);
+
+  const refresh = useCallback(async () => {
+    if (!userId) {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
+    const { data } = await (supabase as any)
+      .from('community_posts')
+      .select(
+        'id, group_id, author_id, content, image_urls, pinned, comment_count, reaction_count, created_at, edited_at, status, author:profiles!community_posts_author_id_fkey(username, full_name, avatar_url)',
+      )
+      .eq('author_id', userId)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    const mapped = ((data as any[]) ?? []).map(
+      (p): CommunityPost => ({
+        id: p.id,
+        group_id: p.group_id,
+        author_id: p.author_id,
+        content: p.content,
+        image_urls: p.image_urls ?? [],
+        pinned: !!p.pinned,
+        comment_count: p.comment_count ?? 0,
+        reaction_count: p.reaction_count ?? 0,
+        created_at: p.created_at,
+        edited_at: p.edited_at,
+        author_username: p.author?.username ?? null,
+        author_full_name: p.author?.full_name ?? null,
+        author_avatar_url: p.author?.avatar_url ?? null,
+      }),
+    );
+    setRows(mapped);
+    setLoading(false);
+  }, [userId, limit]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { rows, loading, refresh };
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // 6.C.3 — Reports + mention privacy
 // ═══════════════════════════════════════════════════════════════════════
 

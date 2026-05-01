@@ -72,6 +72,14 @@ const SLIDES: Slide[] = [
     bgColor: '#06091A',
     accentColor: '#2DBE6C',
   },
+  {
+    emoji: '✈️',
+    eyebrowKey: 'tour.s5.eyebrow',
+    titleKey: 'tour.s5.title',
+    bodyKey: 'tour.s5.body',
+    bgColor: '#0F1E47',
+    accentColor: '#FFD56B',
+  },
 ];
 
 const { width: SCREEN_W } = Dimensions.get('window');
@@ -211,6 +219,20 @@ export default function OnboardingTourScreen() {
           {/* Sadece son slaytta limited offer banner (compact) */}
           {page === SLIDES.length - 1 && (
             <LimitedOfferBanner compact marginBottom={12} />
+          )}
+          {/* Squadron slaytında secondary CTA */}
+          {page === SLIDES.length - 1 && (
+            <Button3D
+              variant="secondary"
+              fullWidth
+              onPress={() => {
+                setHasSeenTour(true);
+                router.replace('/community' as any);
+              }}
+              style={{ marginBottom: 10 }}
+            >
+              ✈️ Squadron'a katıl
+            </Button3D>
           )}
           <Button3D variant="primary" fullWidth onPress={goToNext}>
             {page === SLIDES.length - 1
