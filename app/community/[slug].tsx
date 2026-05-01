@@ -30,6 +30,8 @@ import {
   joinGroup,
   leaveGroup,
 } from '@/features/community/api';
+import { useGroupPresence } from '@/features/community/notifications';
+import { useProfile } from '@/features/profile/useProfile';
 import { PostCard } from '@/components/community/PostCard';
 import { PostComposer } from '@/components/community/PostComposer';
 import { FONTS, Mono, Body, Button3D } from '@/components/airspeak';
@@ -58,6 +60,22 @@ export default function GroupDetailScreen() {
     postIds,
   );
   const { bookmarked, refresh: refreshBookmarks } = useBookmarkSet(userId, postIds);
+
+  // Realtime presence — sadece üyelik aktifse track et (banned/pending hariç)
+  const { profile } = useProfile(userId);
+  const presenceProfile =
+    userId && membership?.status === 'active'
+      ? {
+          user_id: userId,
+          full_name: profile?.full_name ?? null,
+          username: profile?.username ?? null,
+          avatar_url: profile?.avatar_url ?? null,
+        }
+      : null;
+  const { count: onlineCount } = useGroupPresence(
+    membership?.status === 'active' ? groupId : null,
+    presenceProfile,
+  );
 
   const [composerOpen, setComposerOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -180,6 +198,26 @@ export default function GroupDetailScreen() {
               {group.name}
             </Text>
           </View>
+          {onlineCount > 0 && (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+                backgroundColor: 'rgba(45,190,108,0.22)',
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: 999,
+              }}
+            >
+              <View
+                style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: '#2DBE6C' }}
+              />
+              <Mono style={{ fontSize: 10, color: '#FFFFFF', letterSpacing: 0.8 }}>
+                {onlineCount}
+              </Mono>
+            </View>
+          )}
         </View>
       </SafeAreaView>
 

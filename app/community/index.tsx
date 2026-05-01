@@ -10,6 +10,7 @@ import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroups, useMyGroups } from '@/features/community/api';
+import { useCommunityNotifications } from '@/features/community/notifications';
 import { GroupCard } from '@/components/community/GroupCard';
 import { FONTS, Mono, Body } from '@/components/airspeak';
 
@@ -18,6 +19,7 @@ export default function CommunityIndexScreen() {
   const [tab, setTab] = useState<'mine' | 'discover'>(userId ? 'mine' : 'discover');
   const { rows: myRows, loading: myLoading } = useMyGroups(userId);
   const { rows: allRows, loading: allLoading, refresh } = useGroups();
+  const { unreadCount } = useCommunityNotifications(userId);
   const [refreshing, setRefreshing] = useState(false);
 
   async function onRefresh() {
@@ -53,6 +55,42 @@ export default function CommunityIndexScreen() {
               Squadron Hub
             </Text>
           </View>
+          <TouchableOpacity
+            onPress={() => router.push('/community/notifications' as any)}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: 'rgba(255,255,255,0.12)',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>🔔</Text>
+            {unreadCount > 0 && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: -2,
+                  right: -2,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  backgroundColor: '#E63946',
+                  paddingHorizontal: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderWidth: 1.5,
+                  borderColor: '#0F1E47',
+                }}
+              >
+                <Text style={{ color: '#FFFFFF', fontSize: 9, fontWeight: '700' }}>
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => router.push('/community/search' as any)}
             style={{
