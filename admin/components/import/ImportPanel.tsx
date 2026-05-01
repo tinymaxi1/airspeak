@@ -27,7 +27,56 @@ interface RowError {
   row: number;
   message: string;
   detail?: string;
+  section?: 'vocab' | 'exercises';
 }
+
+// Sprint 10.C — bundle import için pseudo-table sentinel
+const BUNDLE_KEY = '__lesson_bundle__';
+type TableOrBundle = ImportTable | typeof BUNDLE_KEY;
+
+const BUNDLE_SAMPLE = {
+  lesson_slug: 'tech-a1-engine-basics',
+  vocab: [
+    {
+      term: 'engine',
+      term_tr: 'motor',
+      definition: 'A machine that converts fuel into mechanical motion.',
+      example: 'The engine produces 30,000 lbs of thrust.',
+      difficulty: 2,
+    },
+  ],
+  exercises: [
+    {
+      sort: 0,
+      type: 'matching',
+      prompt_tr: 'Eşleştir: parçalar — fonksiyonlar',
+      pairs: [
+        { id: 'p1', left: 'Aileron', right: 'Roll control' },
+        { id: 'p2', left: 'Elevator', right: 'Pitch control' },
+      ],
+      difficulty: 2,
+    },
+    {
+      sort: 1,
+      type: 'true_false',
+      prompt_tr: 'Mayday üç kez tekrar edilmelidir.',
+      is_true: true,
+      difficulty: 1,
+    },
+    {
+      sort: 2,
+      type: 'ordering',
+      prompt_tr: 'Pre-flight check sırası',
+      options: [
+        { id: 'o1', text: 'Walkaround' },
+        { id: 'o2', text: 'Cockpit setup' },
+        { id: 'o3', text: 'Engine start' },
+      ],
+      correct_order: ['o1', 'o2', 'o3'],
+      difficulty: 2,
+    },
+  ],
+};
 
 type ValidationState =
   | { kind: 'idle' }
@@ -38,16 +87,21 @@ const MAX_BYTES = 5 * 1024 * 1024;
 
 export function ImportPanel() {
   const router = useRouter();
-  const [table, setTable] = useState<ImportTable>('vocab_terms');
+  const [table, setTable] = useState<TableOrBundle>('vocab_terms');
   const [rows, setRows] = useState<unknown[] | null>(null);
+  const [bundleData, setBundleData] = useState<any | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [validation, setValidation] = useState<ValidationState>({ kind: 'idle' });
   const [isPending, startTransition] = useTransition();
   const [dragActive, setDragActive] = useState(false);
+  const [showSample, setShowSample] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const isBundle = table === BUNDLE_KEY;
 
   function reset() {
     setRows(null);
+    setBundleData(null);
     setFileName(null);
     setValidation({ kind: 'idle' });
     if (inputRef.current) inputRef.current.value = '';
@@ -66,6 +120,37 @@ export function ImportPanel() {
       toast.error(`JSON parse hatası: ${e.message}`);
       return;
     }
+
+    if (isBundle) {
+      // Bundle: top-level Object beklenir
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        toast.error("Bundle JSON top-level 'object' olmalı: { lesson_slug, vocab[], exercises[] }");
+        return;
+      }
+      const obj = parsed as any;
+      if (!obj.lesson_slug || typeof obj.lesson_slug !== 'string') {
+        toast.error("Bundle 'lesson_slug' (string) zorunlu");
+        return;
+      }
+      const vCount = Array.isArray(obj.vocab) ? obj.vocab.length : 0;
+      const eCount = Array.isArray(obj.exercises) ? obj.exercises.length : 0;
+      if (vCount + eCount === 0) {
+        toast.error('Bundle: en az 1 vocab veya 1 exercise gerekli');
+        return;
+      }
+      if (vCount + eCount > 5000) {
+        toast.error(`${vCount + eCount} toplam — max 5000`);
+        return;
+      }
+      setBundleData(obj);
+      setRows(null);
+      setFileName(file.name);
+      setValidation({ kind: 'idle' });
+      toast.success(`Bundle okundu: ${vCount} vocab + ${eCount} exercises`);
+      return;
+    }
+
+    // Standart per-table mode: top-level Array
     if (!Array.isArray(parsed)) {
       toast.error("JSON top-level 'array' olmalı: [{...}, {...}]");
       return;
@@ -79,6 +164,7 @@ export function ImportPanel() {
       return;
     }
     setRows(parsed);
+    setBundleData(null);
     setFileName(file.name);
     setValidation({ kind: 'idle' });
     toast.success(`${parsed.length} satır okundu`);
@@ -97,8 +183,39 @@ export function ImportPanel() {
   }
 
   function callImport(dryRun: boolean) {
-    if (!rows) return;
     startTransition(async () => {
+      // BUNDLE MODE — POST /api/import/lesson-bundle (dryRun support yok, direkt commit)
+      if (isBundle) {
+        if (!bundleData) return;
+        if (dryRun) {
+          // Bundle dryRun yok; "Doğrula" tıklamasında sadece pre-parse OK göster
+          const v = (bundleData.vocab ?? []).length;
+          const e = (bundleData.exercises ?? []).length;
+          setValidation({ kind: 'valid', count: v + e });
+          toast.success(`✓ Bundle parse OK: ${v} vocab + ${e} exercises`);
+          return;
+        }
+        const res = await fetch('/api/import/lesson-bundle', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(bundleData),
+        });
+        const json = await res.json();
+        if (json.ok) {
+          toast.success(
+            `Bundle eklendi: ${json.vocab_count} vocab + ${json.exercise_count} exercises`,
+          );
+          reset();
+          router.refresh();
+        } else {
+          setValidation({ kind: 'errors', errors: json.errors ?? [] });
+          toast.error(`${(json.errors ?? []).length} hata`);
+        }
+        return;
+      }
+
+      // STANDART MODE
+      if (!rows) return;
       const res = await fetch(`/api/import/${table}`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -123,8 +240,9 @@ export function ImportPanel() {
 
   function commit() {
     if (validation.kind !== 'valid') return;
+    const label = isBundle ? 'Lesson Bundle' : TABLE_LABEL[table as ImportTable];
     const ok = window.confirm(
-      `${validation.count} satır "${TABLE_LABEL[table]}" tablosuna taslak olarak eklenecek. Devam?`,
+      `${validation.count} satır "${label}" olarak eklenecek (draft). Devam?`,
     );
     if (!ok) return;
     callImport(false);
@@ -139,20 +257,46 @@ export function ImportPanel() {
           <Select
             value={table}
             onChange={(e) => {
-              setTable(e.target.value as ImportTable);
-              setValidation({ kind: 'idle' });
+              setTable(e.target.value as TableOrBundle);
+              reset();
             }}
           >
-            {IMPORT_TABLES.map((t) => (
-              <option key={t} value={t}>
-                {TABLE_LABEL[t]} — {t}
-              </option>
-            ))}
+            <option value={BUNDLE_KEY}>📦 Lesson Bundle — vocab + exercises tek dosya</option>
+            <optgroup label="Tek tablo">
+              {IMPORT_TABLES.map((t) => (
+                <option key={t} value={t}>
+                  {TABLE_LABEL[t]} — {t}
+                </option>
+              ))}
+            </optgroup>
           </Select>
           <p className="text-xs text-muted-foreground mt-1">
             Tüm satırlar <span className="font-semibold">draft</span> durumunda eklenir. Yayına
             almak için sonradan manuel publish gerekir.
           </p>
+          {isBundle && (
+            <div className="mt-3 bg-airspeak-gold/10 border border-airspeak-gold/40 rounded-lg p-3 text-xs space-y-1">
+              <p className="font-semibold">📦 Lesson Bundle modu</p>
+              <ul className="list-disc pl-4 space-y-0.5">
+                <li>Top-level <code>{'{'}lesson_slug, vocab[], exercises[]{'}'}</code></li>
+                <li>lesson_slug DB'de mevcut olmalı (önce manuel veya tree'den oluştur)</li>
+                <li>Vocab + exercises tek transaction; hata olursa rollback</li>
+                <li>Yeni tipler: <code>matching</code> (pairs), <code>ordering</code> (correct_order), <code>true_false</code> (is_true)</li>
+              </ul>
+              <button
+                type="button"
+                onClick={() => setShowSample((s) => !s)}
+                className="text-airspeak-navy underline mt-1"
+              >
+                {showSample ? 'Örnek JSON\'u gizle' : 'Örnek JSON\'u göster'}
+              </button>
+              {showSample && (
+                <pre className="mt-2 bg-white border border-border rounded p-2 overflow-x-auto max-h-72 text-[11px] font-mono leading-relaxed">
+                  {JSON.stringify(BUNDLE_SAMPLE, null, 2)}
+                </pre>
+              )}
+            </div>
+          )}
         </div>
 
         {/* File picker / drag-drop */}
@@ -198,7 +342,7 @@ export function ImportPanel() {
         )}
 
         {/* Action butonları */}
-        {rows && (
+        {(rows || bundleData) && (
           <div className="flex gap-2">
             <Button
               type="button"
@@ -222,7 +366,7 @@ export function ImportPanel() {
         )}
       </div>
 
-      {/* Preview */}
+      {/* Preview — standart mod */}
       {rows && rows.length > 0 && (
         <div className="bg-white border border-border rounded-xl p-5">
           <h3 className="font-semibold mb-2">İlk {Math.min(5, rows.length)} satır preview</h3>
@@ -234,6 +378,31 @@ export function ImportPanel() {
               … ve {rows.length - 5} satır daha
             </p>
           )}
+        </div>
+      )}
+
+      {/* Preview — bundle mod */}
+      {bundleData && (
+        <div className="bg-white border border-border rounded-xl p-5">
+          <h3 className="font-semibold mb-2">Bundle preview</h3>
+          <div className="grid grid-cols-3 gap-3 mb-3 text-sm">
+            <div className="bg-secondary/30 rounded p-3">
+              <div className="text-xs text-muted-foreground">lesson_slug</div>
+              <div className="font-mono font-semibold mt-1">{bundleData.lesson_slug}</div>
+            </div>
+            <div className="bg-secondary/30 rounded p-3">
+              <div className="text-xs text-muted-foreground">vocab</div>
+              <div className="font-bold text-2xl mt-1">{(bundleData.vocab ?? []).length}</div>
+            </div>
+            <div className="bg-secondary/30 rounded p-3">
+              <div className="text-xs text-muted-foreground">exercises</div>
+              <div className="font-bold text-2xl mt-1">{(bundleData.exercises ?? []).length}</div>
+            </div>
+          </div>
+          <pre className="text-xs bg-secondary/50 rounded p-3 overflow-x-auto max-h-72 font-mono">
+            {JSON.stringify(bundleData, null, 2).slice(0, 2000)}
+            {JSON.stringify(bundleData, null, 2).length > 2000 ? '\n…' : ''}
+          </pre>
         </div>
       )}
 
