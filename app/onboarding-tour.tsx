@@ -6,7 +6,8 @@
  *
  * Tour state: useAuthStore'da `hasSeenTour` flag persist.
  */
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
+import { useAndroidBack } from '@/lib/useAndroidBack';
 import {
   View,
   Text,
@@ -101,6 +102,20 @@ export default function OnboardingTourScreen() {
     // Tour bittikten kısa süre sonra paywall sheet (yumuşak, 1×/30gün cooldown)
     setTimeout(() => showPaywall('onboarding_tour_end'), 600);
   };
+
+  // Android hardware back: tour'da geriye gitmek yerine "atla" davranışı
+  const onAndroidBack = useCallback(() => {
+    if (page > 0) {
+      // önceki slide'a kaydır
+      scrollRef.current?.scrollTo({ x: (page - 1) * SCREEN_W, animated: true });
+      return true;
+    }
+    // ilk slide'da: turu atla → home
+    goToHome();
+    return true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+  useAndroidBack(onAndroidBack);
 
   const goToNext = () => {
     if (page === SLIDES.length - 1) {

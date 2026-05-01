@@ -15,7 +15,8 @@
  *   - Edge fn unreachable → submit_oral_attempt yine yapılır, 'evaluating' takılırsa
  *     mobile timeout (30sn) + retry button.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAndroidBack } from '@/lib/useAndroidBack';
 import {
   ScrollView,
   View,
@@ -71,6 +72,23 @@ export default function ICAO4LiveScreen() {
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [meteringDb, setMeteringDb] = useState<number | null>(null);
+
+  // Android hardware back: aktif kayıt/upload sırasında onay sor
+  const onAndroidBack = useCallback(() => {
+    if (phase === 'recording' || phase === 'uploading' || phase === 'submitting' || phase === 'evaluating') {
+      Alert.alert(
+        'Sınavdan çık?',
+        'Aktif kayıt iptal olur ve değerlendirme yapılmaz.',
+        [
+          { text: 'Devam', style: 'cancel' },
+          { text: 'Çık', style: 'destructive', onPress: () => router.back() },
+        ],
+      );
+      return true;
+    }
+    return false;
+  }, [phase]);
+  useAndroidBack(onAndroidBack);
 
   const stt = useOralSTT();
   const recordingFileUri = useRef<string | null>(null);

@@ -1,7 +1,8 @@
-import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAndroidBack } from '@/lib/useAndroidBack';
 import { CelebrationOverlay } from '@/components/ui/CelebrationOverlay';
 import {
   LessonChrome,
@@ -88,6 +89,21 @@ export default function LessonScreen() {
 
   const total = exercises.length;
   const exercise = exercises[currentIdx];
+
+  // Android hardware back: ders ortasında onay sor (progress kaybolmasın)
+  const onAndroidBack = useCallback(() => {
+    if (currentIdx === 0) return false;
+    Alert.alert(
+      'Dersten çık?',
+      'İlerlemen kaydedildi, daha sonra kaldığın yerden devam edebilirsin.',
+      [
+        { text: 'Devam et', style: 'cancel' },
+        { text: 'Çık', style: 'destructive', onPress: () => router.back() },
+      ],
+    );
+    return true;
+  }, [currentIdx]);
+  useAndroidBack(onAndroidBack);
 
   // ─────────── Loading / not found ───────────
   if (isLoading || (!lesson && !error)) {
