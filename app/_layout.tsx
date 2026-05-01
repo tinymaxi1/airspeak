@@ -46,6 +46,7 @@ import { useWalletMigration } from '@/features/wallet/useWalletMigration';
 import { useLastActiveHeartbeat } from '@/features/social/presence';
 import { useTrialEndingPaywall } from '@/features/trial/api';
 import { useAuthStore } from '@/stores/authStore';
+import { useThemeStore } from '@/stores/themeStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,7 +55,19 @@ initAnalytics();
 initI18n();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const systemColorScheme = useColorScheme();
+  const themePref = useThemeStore((s) => s.theme);
+  const hydrateTheme = useThemeStore((s) => s.hydrateFromDb);
+  const userId = useAuthStore((s) => s.user?.id);
+
+  // Tema seçimi: 'system' → cihaz scheme; aksi halde kullanıcı seçimi
+  const colorScheme: 'light' | 'dark' =
+    themePref === 'system' ? (systemColorScheme ?? 'light') : themePref;
+
+  // Login sonrası DB'den theme hydrate et
+  useEffect(() => {
+    if (userId) void hydrateTheme(userId);
+  }, [userId, hydrateTheme]);
 
   // AirSpeak design system: Plus Jakarta Sans (gövde) + Space Grotesk (display) + JetBrains Mono (eyebrow/data)
   const [fontsLoaded] = usePlusJakartaSans({
@@ -147,7 +160,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <TamaguiProvider config={config} defaultTheme={colorScheme ?? 'light'}>
+      <TamaguiProvider config={config} defaultTheme={colorScheme}>
         <QueryClientProvider client={queryClient}>
           <StatusBar style="auto" />
           <Stack

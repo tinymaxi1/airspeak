@@ -13,6 +13,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
+import { useThemeStore } from '@/stores/themeStore';
 import { signOut } from '@/features/auth/api';
 import {
   Eyebrow,
@@ -36,6 +37,13 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const username = user?.email?.split('@')[0] ?? 'pilot';
+  const themePref = useThemeStore((s) => s.theme);
+  const themeLabel =
+    themePref === 'system'
+      ? t('screens.settings.auto')
+      : themePref === 'dark'
+        ? t('settings.appearance.dark', 'Karanlık')
+        : t('settings.appearance.light', 'Aydınlık');
 
   const handleSignOut = () => {
     Alert.alert(t('screens.settings.signOut'), t('screens.profile.signOutConfirm'), [
@@ -105,8 +113,9 @@ export default function SettingsScreen() {
           icon: '✦',
           label: t('screens.settings.appearance'),
           sub: t('screens.settings.appearanceDesc'),
-          right: t('screens.settings.auto'),
+          right: themeLabel,
           rightTone: 'mono',
+          onPress: () => router.push('/settings/appearance'),
         },
         {
           icon: '🌐',
