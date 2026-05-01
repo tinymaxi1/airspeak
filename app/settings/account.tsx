@@ -20,6 +20,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import { Eyebrow, Mono, Body, FONTS, BackButton, Button3D } from '@/components/airspeak';
 import { KeyboardAware } from '@/components/ui/KeyboardAware';
+import { mapAuthError } from '@/lib/authErrors';
 
 export default function AccountSettingsScreen() {
   const c = usePalette();
@@ -44,7 +45,8 @@ export default function AccountSettingsScreen() {
     const { error } = await supabase.auth.updateUser({ email });
     setEmailLoading(false);
     if (error) {
-      Alert.alert(t('common.error', 'Hata'), error.message);
+      const f = mapAuthError(error);
+      Alert.alert(f.title, f.message);
       return;
     }
     Alert.alert(
@@ -91,7 +93,8 @@ export default function AccountSettingsScreen() {
     const { error } = await supabase.auth.updateUser({ password: newPw });
     setPwLoading(false);
     if (error) {
-      Alert.alert(t('common.error', 'Hata'), error.message);
+      const f = mapAuthError(error);
+      Alert.alert(f.title, f.message);
       return;
     }
     setCurrentPw('');

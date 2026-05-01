@@ -16,6 +16,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signUpWithEmail } from '@/features/auth/api';
+import { mapAuthError } from '@/lib/authErrors';
 import {
   HHero,
   Eyebrow,
@@ -41,7 +42,8 @@ export default function RegisterScreen() {
     const { error } = await signUpWithEmail(email, password);
     setLoading(false);
     if (error) {
-      Alert.alert('Hata', error.message);
+      const f = mapAuthError(error);
+      Alert.alert(f.title, f.message);
       return;
     }
     router.replace('/(auth)/onboarding/role-select');
