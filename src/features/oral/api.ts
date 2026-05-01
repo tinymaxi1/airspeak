@@ -235,6 +235,68 @@ export function useUserOralHistory(
   return { rows, loading, refresh };
 }
 
+// ─── Oral prompts (pick + fetch) ─────────────────────────────────────────
+export interface OralPrompt {
+  id: string;
+  task_type: 'picture_description' | 'story_telling' | 'problem_solving' | 'common_topics';
+  prompt: string;
+  image_hint: string | null;
+  follow_ups: string[];
+  expected_topics: string[];
+  difficulty_hint: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
+  context: string | null;
+}
+
+export async function fetchOralPrompt(promptId: string): Promise<OralPrompt | null> {
+  const { data } = await (supabase as any)
+    .from('oral_exam_prompts')
+    .select('*')
+    .eq('id', promptId)
+    .eq('active', true)
+    .maybeSingle();
+  return (data as OralPrompt) ?? null;
+}
+
+// Rastgele aktif bir prompt çek (briefing → live geçişinde).
+export async function pickRandomOralPrompt(args?: {
+  difficulty?: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
+  taskType?: OralPrompt['task_type'];
+}): Promise<OralPrompt | null> {
+  let q = (supabase as any)
+    .from('oral_exam_prompts')
+    .select('*')
+    .eq('active', true)
+    .limit(50);
+  if (args?.difficulty) q = q.eq('difficulty_hint', args.difficulty);
+  if (args?.taskType) q = q.eq('task_type', args.taskType);
+  const { data } = await q;
+  const list = (data as OralPrompt[]) ?? [];
+  if (list.length === 0) return null;
+  return list[Math.floor(Math.random() * list.length)] ?? null;
+}
+
+// ─── Exam simulation create (briefing'ten çağrılır) ──────────────────────
+export async function startOralSimulation(args: {
+  examId: string;
+}): Promise<{ ok: boolean; simulationId?: string; error?: string }> {
+  const { data: userData } = await supabase.auth.getUser();
+  const userId = userData?.user?.id;
+  if (!userId) return { ok: false, error: 'unauthenticated' };
+
+  const { data, error } = await (supabase as any)
+    .from('exam_simulations')
+    .insert({
+      user_id: userId,
+      exam_id: args.examId,
+      status: 'in_progress',
+      started_at: new Date().toISOString(),
+    })
+    .select('id')
+    .single();
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, simulationId: (data as any).id };
+}
+
 // ─── Helper: skill radar mean rubric ─────────────────────────────────────
 export function aggregateRubric(attempts: OralExamAttempt[]): OralRubric | null {
   const valid = attempts.filter((a) => a.rubric);
