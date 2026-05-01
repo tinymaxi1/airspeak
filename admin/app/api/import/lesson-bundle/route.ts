@@ -1,18 +1,16 @@
 /**
- * POST /api/import/lesson-bundle — Sprint 10.C
+ * POST /api/import/lesson-bundle — Sprint 10.C/E
  *
- * Body:
- *   {
- *     "lesson_slug": "tech-a1-engine-basics",
- *     "vocab": [...vocab_terms rows...],
- *     "exercises": [...exercises rows (lesson_slug auto-injected)...]
- *   }
+ * Body — iki format kabul (backward compat):
+ *   1. Tek bundle:  { lesson_slug, vocab[], exercises[] }
+ *   2. Çoklu bundle: [ { lesson_slug, vocab[], exercises[] }, ... ]
  *
- * Akış:
- *   1. lesson_slug → lesson_id resolve (yoksa 422)
- *   2. vocab[] validate + slug üret + insert (vocab_term_id'ler döner)
- *   3. exercises[] validate + lesson_slug inject + normalize + insert
- *   4. Hata: vocab eklendiyse cleanup (best-effort rollback)
+ * Akış (multi):
+ *   1. Tüm lesson_slug'ları tek lookup ile resolve (yoksa 422)
+ *   2. Bundle başına vocab insert (slug üret) + exercises insert
+ *      (lesson_slug inject, normalizeRows reuse)
+ *   3. Hata: şimdiye kadar eklenen vocab+exercise ID'leri cleanup
+ *      (best-effort rollback — Supabase JS SDK transaction yok)
  *
  * Yetki: super_admin
  */
@@ -21,16 +19,11 @@ import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { requireAdminRole } from '@/lib/auth/guard';
-import { vocabTermSchema, exerciseSchema } from '@/lib/import/schemas';
+import { vocabTermSchema } from '@/lib/import/schemas';
 import { normalizeRows } from '@/lib/import/handlers';
 import { uniqueSlug } from '@/lib/content/slug';
 
-// exercise schema'dan lesson_slug'ı çıkar (top-level body'den inject edilecek)
-const exerciseSchemaWithoutLesson = exerciseSchema.innerType
-  ? exerciseSchema
-  : exerciseSchema; // strict() innerType yoksa olduğu gibi kullan
-// Pratikte: bundle exercises içinde lesson_slug yazmaya gerek yok; biz inject ediyoruz.
-// Schema reuse için schema'yı geçici olarak partial yapıyoruz lesson_slug için.
+// Bundle exercise schema (lesson_slug body top-level'da)
 const exerciseBundleItemSchema = z
   .object({
     sort: z.number().int().min(0),
@@ -53,7 +46,6 @@ const exerciseBundleItemSchema = z
     audio_url: z.string().nullable().optional(),
     image_url: z.string().nullable().optional(),
     difficulty: z.number().int().min(1).max(5).optional().default(2),
-    // Sprint 10.A yeni kolonlar
     pairs: z.array(z.object({ id: z.string(), left: z.string(), right: z.string() })).nullable().optional(),
     correct_order: z.array(z.string()).nullable().optional(),
     is_true: z.boolean().nullable().optional(),
@@ -66,12 +58,25 @@ const bundleSchema = z.object({
   exercises: z.array(exerciseBundleItemSchema).optional().default([]),
 });
 
+// Tek bundle veya array — backward compat
+const bodySchema = z.union([bundleSchema, z.array(bundleSchema).min(1, 'En az 1 bundle')]);
+
 interface RowError {
   row: number;
+  bundle?: number;
   section?: 'vocab' | 'exercises';
   message: string;
   detail?: string;
 }
+
+interface BundleResult {
+  lesson_slug: string;
+  lesson_id: string;
+  vocab_count: number;
+  exercise_count: number;
+}
+
+const MAX_TOTAL_ROWS = 5000;
 
 export async function POST(req: NextRequest) {
   await requireAdminRole('super_admin');
@@ -84,7 +89,7 @@ export async function POST(req: NextRequest) {
       { status: 400 },
     );
   }
-  const parsed = bundleSchema.safeParse(raw);
+  const parsed = bodySchema.safeParse(raw);
   if (!parsed.success) {
     const errors = parsed.error.issues.map((i) => ({
       row: -1,
@@ -93,32 +98,34 @@ export async function POST(req: NextRequest) {
     }));
     return NextResponse.json({ ok: false, errors }, { status: 422 });
   }
-  const body = parsed.data;
 
-  // Vocab+exercise toplam 0 ise reject
-  if (body.vocab.length === 0 && body.exercises.length === 0) {
+  // Normalize: tek bundle → array
+  const bundles = Array.isArray(parsed.data) ? parsed.data : [parsed.data];
+
+  // 2. Toplam satır kontrolü
+  let total = 0;
+  for (const b of bundles) total += b.vocab.length + b.exercises.length;
+  if (total === 0) {
     return NextResponse.json(
       { ok: false, errors: [{ row: -1, message: 'En az 1 vocab veya 1 exercise gerekli' }] },
       { status: 400 },
     );
   }
-
-  // Limit (5000 toplam)
-  if (body.vocab.length + body.exercises.length > 5000) {
+  if (total > MAX_TOTAL_ROWS) {
     return NextResponse.json(
-      { ok: false, errors: [{ row: -1, message: 'Max 5000 toplam satır (vocab+exercises)' }] },
+      { ok: false, errors: [{ row: -1, message: `Max ${MAX_TOTAL_ROWS} toplam satır` }] },
       { status: 400 },
     );
   }
 
   const supabase = await createClient();
 
-  // 2. lesson_slug resolve
-  const { data: lessonRow, error: lesErr } = await (supabase as any)
+  // 3. Tüm lesson_slug'ları tek lookup ile resolve
+  const lessonSlugs = Array.from(new Set(bundles.map((b) => b.lesson_slug)));
+  const { data: lessonsData, error: lesErr } = await (supabase as any)
     .from('lessons')
     .select('id, slug')
-    .eq('slug', body.lesson_slug)
-    .maybeSingle();
+    .in('slug', lessonSlugs);
 
   if (lesErr) {
     return NextResponse.json(
@@ -126,90 +133,132 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
-  if (!lessonRow) {
+
+  const lessonMap = new Map<string, string>();
+  for (const r of ((lessonsData ?? []) as { id: string; slug: string }[])) {
+    lessonMap.set(r.slug, r.id);
+  }
+
+  const missingSlugs = lessonSlugs.filter((s) => !lessonMap.has(s));
+  if (missingSlugs.length > 0) {
     return NextResponse.json(
       {
         ok: false,
-        errors: [{ row: -1, message: `lesson_slug bulunamadı: "${body.lesson_slug}"` }],
+        errors: missingSlugs.map((s, i) => ({
+          row: -1,
+          message: `lesson_slug bulunamadı: "${s}"`,
+        })),
       },
       { status: 422 },
     );
   }
 
-  const lessonId = (lessonRow as any).id as string;
+  // 4. Bundle başına process — best-effort rollback için ID'leri tut
+  const insertedVocabIds: string[] = [];
+  const insertedExerciseIds: string[] = [];
+  const results: BundleResult[] = [];
 
-  // 3. Vocab insert (slug üret)
-  let insertedVocabIds: string[] = [];
-  if (body.vocab.length > 0) {
-    const vocabRows = body.vocab.map((v) => ({
-      ...v,
-      slug: uniqueSlug(v.term, `vocab_${v.role ?? 'all'}`),
-      status: 'draft' as const,
-    }));
-    const { data: vocabIns, error: vocabErr } = await (supabase as any)
-      .from('vocab_terms')
-      .insert(vocabRows)
-      .select('id, slug');
-    if (vocabErr) {
-      return NextResponse.json(
-        {
-          ok: false,
-          errors: [
-            { row: -1, section: 'vocab', message: `vocab insert hatası: ${vocabErr.message}` },
-          ],
-        },
-        { status: 500 },
-      );
+  async function rollback() {
+    if (insertedExerciseIds.length > 0) {
+      await (supabase as any).from('exercises').delete().in('id', insertedExerciseIds);
     }
-    insertedVocabIds = ((vocabIns ?? []) as { id: string }[]).map((r) => r.id);
+    if (insertedVocabIds.length > 0) {
+      await (supabase as any).from('vocab_terms').delete().in('id', insertedVocabIds);
+    }
   }
 
-  // 4. Exercises insert (lesson_slug inject + normalize)
-  let insertedExerciseCount = 0;
-  if (body.exercises.length > 0) {
-    const exRows = body.exercises.map((e) => ({
-      ...e,
-      lesson_slug: body.lesson_slug, // top-level inject
-    }));
+  for (let bi = 0; bi < bundles.length; bi++) {
+    const b = bundles[bi]!;
+    const lessonId = lessonMap.get(b.lesson_slug)!;
+    let bundleVocabCount = 0;
+    let bundleExerciseCount = 0;
 
-    // Mevcut normalizer kullan — lesson_id + vocab_term_slug→id resolve
-    const normalized = await normalizeRows('exercises', exRows, supabase as any);
-    if (!normalized.ok) {
-      // ROLLBACK best-effort: yeni eklenen vocab'ları sil
-      if (insertedVocabIds.length > 0) {
-        await (supabase as any).from('vocab_terms').delete().in('id', insertedVocabIds);
+    // Vocab insert
+    if (b.vocab.length > 0) {
+      const vocabRows = b.vocab.map((v) => ({
+        ...v,
+        slug: uniqueSlug(v.term, `vocab_${v.role ?? 'all'}`),
+        status: 'draft' as const,
+      }));
+      const { data: vocabIns, error: vocabErr } = await (supabase as any)
+        .from('vocab_terms')
+        .insert(vocabRows)
+        .select('id, slug');
+
+      if (vocabErr) {
+        await rollback();
+        return NextResponse.json(
+          {
+            ok: false,
+            errors: [
+              {
+                row: -1,
+                bundle: bi,
+                section: 'vocab',
+                message: `bundle ${bi} vocab insert hatası: ${vocabErr.message}`,
+              },
+            ],
+          },
+          { status: 500 },
+        );
       }
-      return NextResponse.json(
-        {
-          ok: false,
-          errors: normalized.errors.map((e) => ({ ...e, section: 'exercises' as const })),
-        },
-        { status: 422 },
-      );
+      const ids = ((vocabIns ?? []) as { id: string }[]).map((r) => r.id);
+      insertedVocabIds.push(...ids);
+      bundleVocabCount = ids.length;
     }
 
-    const { data: exIns, error: exErr } = await (supabase as any)
-      .from('exercises')
-      .insert(normalized.rows)
-      .select('id');
-
-    if (exErr) {
-      // ROLLBACK
-      if (insertedVocabIds.length > 0) {
-        await (supabase as any).from('vocab_terms').delete().in('id', insertedVocabIds);
+    // Exercises insert (lesson_slug inject + normalize)
+    if (b.exercises.length > 0) {
+      const exRows = b.exercises.map((e) => ({ ...e, lesson_slug: b.lesson_slug }));
+      const normalized = await normalizeRows('exercises', exRows, supabase as any);
+      if (!normalized.ok) {
+        await rollback();
+        return NextResponse.json(
+          {
+            ok: false,
+            errors: normalized.errors.map((e) => ({
+              ...e,
+              bundle: bi,
+              section: 'exercises' as const,
+            })),
+          },
+          { status: 422 },
+        );
       }
-      return NextResponse.json(
-        {
-          ok: false,
-          errors: [
-            { row: -1, section: 'exercises', message: `exercise insert hatası: ${exErr.message}` },
-          ],
-        },
-        { status: 500 },
-      );
+
+      const { data: exIns, error: exErr } = await (supabase as any)
+        .from('exercises')
+        .insert(normalized.rows)
+        .select('id');
+
+      if (exErr) {
+        await rollback();
+        return NextResponse.json(
+          {
+            ok: false,
+            errors: [
+              {
+                row: -1,
+                bundle: bi,
+                section: 'exercises',
+                message: `bundle ${bi} exercise insert hatası: ${exErr.message}`,
+              },
+            ],
+          },
+          { status: 500 },
+        );
+      }
+      const ids = ((exIns ?? []) as { id: string }[]).map((r) => r.id);
+      insertedExerciseIds.push(...ids);
+      bundleExerciseCount = ids.length;
     }
 
-    insertedExerciseCount = (exIns ?? []).length;
+    results.push({
+      lesson_slug: b.lesson_slug,
+      lesson_id: lessonId,
+      vocab_count: bundleVocabCount,
+      exercise_count: bundleExerciseCount,
+    });
   }
 
   // 5. Audit
@@ -217,18 +266,18 @@ export async function POST(req: NextRequest) {
     p_action: 'import',
     p_table_name: 'lesson_bundle',
     p_metadata: {
-      lesson_slug: body.lesson_slug,
-      lesson_id: lessonId,
-      vocab_count: insertedVocabIds.length,
-      exercise_count: insertedExerciseCount,
+      bundle_count: bundles.length,
+      total_vocab: insertedVocabIds.length,
+      total_exercises: insertedExerciseIds.length,
       source: 'lesson_bundle',
+      lesson_slugs: lessonSlugs,
     },
   });
 
   return NextResponse.json({
     ok: true,
-    lesson_id: lessonId,
-    vocab_count: insertedVocabIds.length,
-    exercise_count: insertedExerciseCount,
+    bundles: results,
+    total_vocab: insertedVocabIds.length,
+    total_exercises: insertedExerciseIds.length,
   });
 }

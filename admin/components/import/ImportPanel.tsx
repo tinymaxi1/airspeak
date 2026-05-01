@@ -34,49 +34,58 @@ interface RowError {
 const BUNDLE_KEY = '__lesson_bundle__';
 type TableOrBundle = ImportTable | typeof BUNDLE_KEY;
 
-const BUNDLE_SAMPLE = {
-  lesson_slug: 'tech-a1-engine-basics',
-  vocab: [
-    {
-      term: 'engine',
-      term_tr: 'motor',
-      definition: 'A machine that converts fuel into mechanical motion.',
-      example: 'The engine produces 30,000 lbs of thrust.',
-      difficulty: 2,
-    },
-  ],
-  exercises: [
-    {
-      sort: 0,
-      type: 'matching',
-      prompt_tr: 'Eşleştir: parçalar — fonksiyonlar',
-      pairs: [
-        { id: 'p1', left: 'Aileron', right: 'Roll control' },
-        { id: 'p2', left: 'Elevator', right: 'Pitch control' },
-      ],
-      difficulty: 2,
-    },
-    {
-      sort: 1,
-      type: 'true_false',
-      prompt_tr: 'Mayday üç kez tekrar edilmelidir.',
-      is_true: true,
-      difficulty: 1,
-    },
-    {
-      sort: 2,
-      type: 'ordering',
-      prompt_tr: 'Pre-flight check sırası',
-      options: [
-        { id: 'o1', text: 'Walkaround' },
-        { id: 'o2', text: 'Cockpit setup' },
-        { id: 'o3', text: 'Engine start' },
-      ],
-      correct_order: ['o1', 'o2', 'o3'],
-      difficulty: 2,
-    },
-  ],
-};
+// Sprint 10.E — bundle artık array; tek object eski format için backward compat
+const BUNDLE_SAMPLE = [
+  {
+    lesson_slug: 'tech-m1-u01-l1',
+    vocab: [
+      {
+        term: 'engine',
+        term_tr: 'motor',
+        definition: 'A machine that converts fuel into mechanical motion.',
+        example: 'The engine produces 30,000 lbs of thrust.',
+        difficulty: 2,
+      },
+    ],
+    exercises: [
+      {
+        sort: 0,
+        type: 'matching',
+        prompt_tr: 'Eşleştir: parçalar — fonksiyonlar',
+        pairs: [
+          { id: 'p1', left: 'Aileron', right: 'Roll control' },
+          { id: 'p2', left: 'Elevator', right: 'Pitch control' },
+        ],
+        difficulty: 2,
+      },
+    ],
+  },
+  {
+    lesson_slug: 'tech-m1-u01-l2',
+    vocab: [],
+    exercises: [
+      {
+        sort: 0,
+        type: 'true_false',
+        prompt_tr: 'Mayday üç kez tekrar edilmelidir.',
+        is_true: true,
+        difficulty: 1,
+      },
+      {
+        sort: 1,
+        type: 'ordering',
+        prompt_tr: 'Pre-flight check sırası',
+        options: [
+          { id: 'o1', text: 'Walkaround' },
+          { id: 'o2', text: 'Cockpit setup' },
+          { id: 'o3', text: 'Engine start' },
+        ],
+        correct_order: ['o1', 'o2', 'o3'],
+        difficulty: 2,
+      },
+    ],
+  },
+];
 
 type ValidationState =
   | { kind: 'idle' }
@@ -122,31 +131,52 @@ export function ImportPanel() {
     }
 
     if (isBundle) {
-      // Bundle: top-level Object beklenir
-      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        toast.error("Bundle JSON top-level 'object' olmalı: { lesson_slug, vocab[], exercises[] }");
+      // Bundle: top-level Array (önerilen) veya tek Object (backward compat)
+      let arr: any[];
+      if (Array.isArray(parsed)) {
+        arr = parsed;
+      } else if (parsed && typeof parsed === 'object') {
+        arr = [parsed];
+      } else {
+        toast.error("Bundle JSON 'array' veya 'object' olmalı");
         return;
       }
-      const obj = parsed as any;
-      if (!obj.lesson_slug || typeof obj.lesson_slug !== 'string') {
-        toast.error("Bundle 'lesson_slug' (string) zorunlu");
+
+      if (arr.length === 0) {
+        toast.error('Bundle: en az 1 lesson bundle gerekli');
         return;
       }
-      const vCount = Array.isArray(obj.vocab) ? obj.vocab.length : 0;
-      const eCount = Array.isArray(obj.exercises) ? obj.exercises.length : 0;
-      if (vCount + eCount === 0) {
+
+      let totalV = 0;
+      let totalE = 0;
+      for (let i = 0; i < arr.length; i++) {
+        const obj = arr[i];
+        if (!obj || typeof obj !== 'object') {
+          toast.error(`Bundle[${i}]: object olmalı`);
+          return;
+        }
+        if (!obj.lesson_slug || typeof obj.lesson_slug !== 'string') {
+          toast.error(`Bundle[${i}]: 'lesson_slug' (string) zorunlu`);
+          return;
+        }
+        totalV += Array.isArray(obj.vocab) ? obj.vocab.length : 0;
+        totalE += Array.isArray(obj.exercises) ? obj.exercises.length : 0;
+      }
+
+      if (totalV + totalE === 0) {
         toast.error('Bundle: en az 1 vocab veya 1 exercise gerekli');
         return;
       }
-      if (vCount + eCount > 5000) {
-        toast.error(`${vCount + eCount} toplam — max 5000`);
+      if (totalV + totalE > 5000) {
+        toast.error(`${totalV + totalE} toplam — max 5000`);
         return;
       }
-      setBundleData(obj);
+
+      setBundleData(arr);
       setRows(null);
       setFileName(file.name);
       setValidation({ kind: 'idle' });
-      toast.success(`Bundle okundu: ${vCount} vocab + ${eCount} exercises`);
+      toast.success(`${arr.length} bundle · ${totalV} vocab · ${totalE} exercise`);
       return;
     }
 
@@ -187,12 +217,18 @@ export function ImportPanel() {
       // BUNDLE MODE — POST /api/import/lesson-bundle (dryRun support yok, direkt commit)
       if (isBundle) {
         if (!bundleData) return;
+        // bundleData artık array (tek object da array'e wrap edildi readFile'da)
+        const arr: any[] = Array.isArray(bundleData) ? bundleData : [bundleData];
+        let totalV = 0;
+        let totalE = 0;
+        for (const b of arr) {
+          totalV += (b.vocab ?? []).length;
+          totalE += (b.exercises ?? []).length;
+        }
         if (dryRun) {
-          // Bundle dryRun yok; "Doğrula" tıklamasında sadece pre-parse OK göster
-          const v = (bundleData.vocab ?? []).length;
-          const e = (bundleData.exercises ?? []).length;
-          setValidation({ kind: 'valid', count: v + e });
-          toast.success(`✓ Bundle parse OK: ${v} vocab + ${e} exercises`);
+          // Pre-parse OK
+          setValidation({ kind: 'valid', count: totalV + totalE });
+          toast.success(`✓ ${arr.length} bundle · ${totalV} vocab · ${totalE} exercise`);
           return;
         }
         const res = await fetch('/api/import/lesson-bundle', {
@@ -203,7 +239,7 @@ export function ImportPanel() {
         const json = await res.json();
         if (json.ok) {
           toast.success(
-            `Bundle eklendi: ${json.vocab_count} vocab + ${json.exercise_count} exercises`,
+            `${(json.bundles ?? []).length} bundle eklendi: ${json.total_vocab} vocab · ${json.total_exercises} exercise`,
           );
           reset();
           router.refresh();
@@ -278,9 +314,10 @@ export function ImportPanel() {
             <div className="mt-3 bg-airspeak-gold/10 border border-airspeak-gold/40 rounded-lg p-3 text-xs space-y-1">
               <p className="font-semibold">📦 Lesson Bundle modu</p>
               <ul className="list-disc pl-4 space-y-0.5">
-                <li>Top-level <code>{'{'}lesson_slug, vocab[], exercises[]{'}'}</code></li>
-                <li>lesson_slug DB'de mevcut olmalı (önce manuel veya tree'den oluştur)</li>
-                <li>Vocab + exercises tek transaction; hata olursa rollback</li>
+                <li>Array: <code>[{'{'}lesson_slug, vocab[], exercises[]{'}'}, ...]</code> (çoklu bundle)</li>
+                <li>Tek bundle için object da kabul edilir (backward compat)</li>
+                <li>Tüm lesson_slug'lar DB'de mevcut olmalı (önce manuel veya tree'den oluştur)</li>
+                <li>Vocab + exercises bundle başına ardışık insert; hata olursa tümü rollback</li>
                 <li>Yeni tipler: <code>matching</code> (pairs), <code>ordering</code> (correct_order), <code>true_false</code> (is_true)</li>
               </ul>
               <button
@@ -381,28 +418,58 @@ export function ImportPanel() {
         </div>
       )}
 
-      {/* Preview — bundle mod */}
+      {/* Preview — bundle mod (array of bundles) */}
       {bundleData && (
         <div className="bg-white border border-border rounded-xl p-5">
-          <h3 className="font-semibold mb-2">Bundle preview</h3>
-          <div className="grid grid-cols-3 gap-3 mb-3 text-sm">
-            <div className="bg-secondary/30 rounded p-3">
-              <div className="text-xs text-muted-foreground">lesson_slug</div>
-              <div className="font-mono font-semibold mt-1">{bundleData.lesson_slug}</div>
-            </div>
-            <div className="bg-secondary/30 rounded p-3">
-              <div className="text-xs text-muted-foreground">vocab</div>
-              <div className="font-bold text-2xl mt-1">{(bundleData.vocab ?? []).length}</div>
-            </div>
-            <div className="bg-secondary/30 rounded p-3">
-              <div className="text-xs text-muted-foreground">exercises</div>
-              <div className="font-bold text-2xl mt-1">{(bundleData.exercises ?? []).length}</div>
-            </div>
-          </div>
-          <pre className="text-xs bg-secondary/50 rounded p-3 overflow-x-auto max-h-72 font-mono">
-            {JSON.stringify(bundleData, null, 2).slice(0, 2000)}
-            {JSON.stringify(bundleData, null, 2).length > 2000 ? '\n…' : ''}
-          </pre>
+          {(() => {
+            const arr: any[] = Array.isArray(bundleData) ? bundleData : [bundleData];
+            const totalV = arr.reduce((sum, b) => sum + ((b.vocab ?? []).length), 0);
+            const totalE = arr.reduce((sum, b) => sum + ((b.exercises ?? []).length), 0);
+            return (
+              <>
+                <h3 className="font-semibold mb-2">
+                  Bundle preview — {arr.length} bundle · {totalV} vocab · {totalE} exercise
+                </h3>
+                <div className="bg-secondary/30 rounded p-3 mb-3">
+                  <table className="w-full text-sm">
+                    <thead className="text-xs text-muted-foreground border-b border-border">
+                      <tr>
+                        <th className="text-left py-1 pr-3">#</th>
+                        <th className="text-left py-1 pr-3">lesson_slug</th>
+                        <th className="text-right py-1 pr-3">vocab</th>
+                        <th className="text-right py-1">exercise</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {arr.slice(0, 20).map((b: any, i: number) => (
+                        <tr key={i} className="border-b border-border last:border-b-0">
+                          <td className="py-1 pr-3 text-muted-foreground">{i + 1}</td>
+                          <td className="py-1 pr-3 font-mono">{b.lesson_slug}</td>
+                          <td className="py-1 pr-3 text-right font-mono">
+                            {(b.vocab ?? []).length}
+                          </td>
+                          <td className="py-1 text-right font-mono">
+                            {(b.exercises ?? []).length}
+                          </td>
+                        </tr>
+                      ))}
+                      {arr.length > 20 && (
+                        <tr>
+                          <td colSpan={4} className="py-2 text-xs text-muted-foreground text-center">
+                            … ve {arr.length - 20} bundle daha
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <pre className="text-xs bg-secondary/50 rounded p-3 overflow-x-auto max-h-72 font-mono">
+                  {JSON.stringify(bundleData, null, 2).slice(0, 2000)}
+                  {JSON.stringify(bundleData, null, 2).length > 2000 ? '\n…' : ''}
+                </pre>
+              </>
+            );
+          })()}
         </div>
       )}
 
