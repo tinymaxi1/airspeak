@@ -3,10 +3,14 @@
  *
  * Tüm metin ve fiyat admin'den okunan app_config'ten gelir.
  */
-import { Modal, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppConfig } from '@/features/config/api';
 import { useAuthStore } from '@/stores/authStore';
+import { useTrialStatus, startTrial } from '@/features/trial/api';
+import { useActiveCount24h } from '@/features/social/presence';
+import { useTopOffer, useEffectivePricing, claimOffer } from '@/features/offers/api';
+import { LimitedOfferBanner } from '@/components/offers/LimitedOfferBanner';
 
 interface Props {
   visible: boolean;
@@ -18,19 +22,34 @@ interface Props {
 export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
   const cfg = useAppConfig();
   const setPremium = useAuthStore((s) => s.setPremium);
+  const userId = useAuthStore((s) => s.user?.id);
+  const trial = useTrialStatus(userId);
+  const { count: activeCount } = useActiveCount24h();
+  const offer = useTopOffer();
+  const { pricing } = useEffectivePricing(offer?.code ?? null);
+
+  // Effective fiyatlar: offer varsa override, yoksa app_config default
+  const monthly = pricing?.monthly ?? Number(cfg['paywall.monthly_price_try'] ?? 0);
+  const yearly = pricing?.yearly ?? Number(cfg['paywall.yearly_price_try'] ?? 0);
+  const lifetime = pricing?.lifetime ?? Number(cfg['paywall.lifetime_price_try'] ?? 0);
+  const monthlyDefault = pricing?.monthly_default ?? monthly;
+  const yearlyDefault = pricing?.yearly_default ?? yearly;
+  const lifetimeDefault = pricing?.lifetime_default ?? lifetime;
 
   const tiers = [
     {
       id: 'monthly' as const,
       label: 'Aylık',
-      price: cfg['paywall.monthly_price_try'],
+      price: monthly,
+      defaultPrice: monthlyDefault,
       period: 'ay',
-      badge: null,
+      badge: null as string | null,
     },
     {
       id: 'yearly' as const,
       label: 'Yıllık',
-      price: cfg['paywall.yearly_price_try'],
+      price: yearly,
+      defaultPrice: yearlyDefault,
       period: 'yıl',
       badge: `%${cfg['paywall.yearly_savings_percent']} TASARRUF`,
     },
@@ -39,7 +58,8 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
           {
             id: 'lifetime' as const,
             label: 'Lifetime',
-            price: cfg['paywall.lifetime_price_try'],
+            price: lifetime,
+            defaultPrice: lifetimeDefault,
             period: 'tek seferde',
             badge: '⭐ EN İYİSİ',
           },
@@ -50,11 +70,30 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
   const recommended = cfg['paywall.recommended_tier'];
 
   // TODO: gerçek IAP entegrasyonu (Apple/Google) - şimdilik mock
+  // (Sprint 6'da RevenueCat tier purchase'larını yönetecek; trial DB-side gerçek)
   const handlePurchase = (_tierId: 'monthly' | 'yearly' | 'lifetime') => {
-    // Demo: 30g premium ver
+    // Aktif offer varsa claim (audit log)
+    if (offer?.code) void claimOffer(offer.code);
     setPremium(true);
     onClose();
   };
+
+  const handleStartTrial = async () => {
+    const res = await startTrial();
+    if (!res.ok) {
+      Alert.alert(
+        'Deneme başlatılamadı',
+        res.error === 'already_used'
+          ? 'Bu hesap için deneme zaten kullanıldı.'
+          : res.error ?? 'Tekrar deneyin.',
+      );
+      return;
+    }
+    setPremium(true);
+    onClose();
+  };
+
+  const showSocialProof = (activeCount ?? 0) >= 100;
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -104,7 +143,63 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
               >
                 {cfg['paywall.subhead_tr']}
               </Text>
+
+              {/* Social proof — son 24h aktif sayısı (>=100 ise) */}
+              {showSocialProof && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 6,
+                    backgroundColor: 'rgba(45,190,108,0.18)',
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 999,
+                    marginTop: 12,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 4,
+                      backgroundColor: '#2DBE6C',
+                    }}
+                  />
+                  <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: '600' }}>
+                    {activeCount?.toLocaleString('tr-TR')} pilot son 24 saatte aktif
+                  </Text>
+                </View>
+              )}
+
+              {/* Aktif trial — countdown */}
+              {trial.isTrialing && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 6,
+                    backgroundColor: 'rgba(255,213,107,0.22)',
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 999,
+                    marginTop: 12,
+                  }}
+                >
+                  <Text style={{ fontSize: 14 }}>⏱</Text>
+                  <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: '600' }}>
+                    Deneme aktif — {trial.daysLeft} gün kaldı
+                  </Text>
+                </View>
+              )}
             </View>
+
+            {/* LIMITED OFFER BANNER — paywall içi (header altı) */}
+            {offer && (
+              <View style={{ marginBottom: 16 }}>
+                <LimitedOfferBanner marginBottom={0} />
+              </View>
+            )}
 
             {/* BENEFITS */}
             <View style={{ marginBottom: 24, gap: 10 }}>
@@ -167,6 +262,18 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
                         </Text>
                       </View>
                       <View style={{ alignItems: 'flex-end' }}>
+                        {t.defaultPrice && t.defaultPrice > t.price && (
+                          <Text
+                            style={{
+                              fontSize: 13,
+                              color: 'rgba(255,255,255,0.55)',
+                              textDecorationLine: 'line-through',
+                              marginBottom: 2,
+                            }}
+                          >
+                            ₺{t.defaultPrice}
+                          </Text>
+                        )}
                         <Text style={{ fontSize: 28, fontWeight: '700', color: '#FFFFFF' }}>
                           ₺{t.price}
                         </Text>
@@ -177,19 +284,55 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
               })}
             </View>
 
-            {/* TRIAL */}
-            <View
-              style={{
-                backgroundColor: 'rgba(45,190,108,0.18)',
-                borderRadius: 12,
-                padding: 12,
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#FFFFFF', fontSize: 13, fontWeight: '600' }}>
-                ⏱ İlk {cfg['paywall.trial_days']} gün ücretsiz · istediğin zaman iptal
-              </Text>
-            </View>
+            {/* TRIAL CTA — kullanılmadıysa primary buton, aktifse durum, kullanılmışsa hint */}
+            {trial.canStartTrial && !trial.isTrialing && (
+              <TouchableOpacity
+                onPress={handleStartTrial}
+                style={{
+                  backgroundColor: '#2DBE6C',
+                  borderRadius: 14,
+                  padding: 14,
+                  alignItems: 'center',
+                  borderBottomWidth: 4,
+                  borderBottomColor: '#1F8B4D',
+                }}
+              >
+                <Text style={{ color: '#FFFFFF', fontSize: 15, fontWeight: '700' }}>
+                  🎁 {cfg['paywall.trial_days']} gün ücretsiz dene
+                </Text>
+                <Text style={{ color: 'rgba(255,255,255,0.85)', fontSize: 11, marginTop: 4 }}>
+                  Otomatik aboneliğe çevirme yok · istediğin zaman iptal
+                </Text>
+              </TouchableOpacity>
+            )}
+            {trial.isTrialing && (
+              <View
+                style={{
+                  backgroundColor: 'rgba(255,213,107,0.18)',
+                  borderRadius: 12,
+                  padding: 12,
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: '#FFFFFF', fontSize: 13, fontWeight: '600' }}>
+                  ⏱ Deneme aktif — {trial.daysLeft} gün kaldı
+                </Text>
+              </View>
+            )}
+            {!trial.canStartTrial && !trial.isTrialing && (
+              <View
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.06)',
+                  borderRadius: 12,
+                  padding: 12,
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>
+                  Deneme zaten kullanıldı
+                </Text>
+              </View>
+            )}
 
             {/* TERMS */}
             <Text

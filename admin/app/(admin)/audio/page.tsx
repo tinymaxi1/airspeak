@@ -40,7 +40,7 @@ export default async function AudioLibraryPage() {
       <div>
         <h1 className="text-3xl font-bold text-airspeak-navy">Ses & Görsel Kütüphanesi</h1>
         <p className="text-muted-foreground mt-1">
-          5 Storage bucket — admin form'larında ElevenLabs + manuel upload ile dolduruluyor
+          5 Storage bucket — admin form'larındaki AudioField ile manuel mp3/wav/ogg yüklemesi
         </p>
       </div>
 
@@ -80,12 +80,13 @@ export default async function AudioLibraryPage() {
         <div className="flex gap-3">
           <Volume2 className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
           <div className="text-sm text-amber-900">
-            <p className="font-semibold mb-1">Ses üretim akışı</p>
+            <p className="font-semibold mb-1">Manuel ses yükleme akışı</p>
             <ol className="list-decimal pl-4 space-y-1 text-xs">
-              <li>Egzersiz veya vocab terim formunda "Ses üret" butonu — ElevenLabs API ile mp3 üretir</li>
-              <li>Otomatik Supabase Storage'a yükler ve URL'i form'a yazar</li>
+              <li>Egzersiz, ICAO 4 sorusu veya vocab terim formunda AudioField alanı</li>
+              <li>Editör cihazından mp3/wav/ogg dosyasını sürükle-bırak ya da tıkla-seç</li>
+              <li>Client-side validation (MIME + boyut + süre) → Supabase Storage upload</li>
+              <li>Limitler Ayarlar → Audio Limitleri'nden runtime değiştirilir</li>
               <li>Kayıt published edilince mobil app cache invalidate olur, ses indirilebilir</li>
-              <li>Aynı text+voice tekrar üretilirse hash cache ile skip (Sprint 5+)</li>
             </ol>
           </div>
         </div>

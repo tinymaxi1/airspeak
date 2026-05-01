@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input, Textarea, Label, Select } from '@/components/ui/Input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/Dialog';
+import { AudioField } from '@/components/forms/AudioField';
 import { createRow, updateRow } from '@/lib/content/actions';
 import { uniqueSlug } from '@/lib/content/slug';
 import { toast } from 'sonner';
@@ -41,6 +42,7 @@ function VocabForm({ mode, initial, onClose }: VocabFormProps) {
     example_tr: initial?.example_tr ?? '',
     difficulty: initial?.difficulty ?? 2,
     is_premium: initial?.is_premium ?? false,
+    audio_url: initial?.audio_url ?? '',
   });
 
   function submit(e: React.FormEvent) {
@@ -153,6 +155,18 @@ function VocabForm({ mode, initial, onClose }: VocabFormProps) {
               placeholder="verb"
             />
           </div>
+        </div>
+
+        <div>
+          <Label hint="Telaffuz sesi — IPA ile birlikte mobilde oynatılır">
+            Telaffuz sesi
+          </Label>
+          <AudioField
+            bucket="vocab-audio"
+            pathPrefix={`vocab/${form.role}`}
+            value={form.audio_url || null}
+            onChange={(url) => setForm({ ...form, audio_url: url ?? '' })}
+          />
         </div>
 
         <div>

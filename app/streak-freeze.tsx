@@ -1,15 +1,12 @@
 /**
- * Streak Freeze Modal Screen
+ * Streak Freeze Modal — wallet-backed.
  *
- * Tasarım birebir (screens-extras.jsx StreakFreezeModal):
- * - Dimmed bg (rgba 0.55) + bottom sheet
- * - Drag handle 40x5
- * - 96x96 sky-gradient hero with snowflake SVG + flame badge top-right
- * - "STREAK FREEZE · TK-12 PROTECTED" eyebrow + "Hava bozuktu — streak'in donduruldu."
- * - Inventory: 3 cells (2 sky filled + 1 empty) + "2 of 3 freezes left" + Buy gold pill
- * - Got it primary + See streak rules ghost
+ * - Inventory: useWallet().streak_freezes_inventory (DB realtime).
+ * - "Apply" button: applyStreakFreeze() RPC — frozen_until = today + 1 gün.
+ * - "Buy more": shop'a yönlendirir.
  */
-import { View, Text, TouchableOpacity, Pressable } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TouchableOpacity, Pressable, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Svg, { Path, Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
@@ -18,9 +15,35 @@ import {
   FONTS,
   Button3D,
 } from '@/components/airspeak';
+import { useAuthStore } from '@/stores/authStore';
+import { useGamificationStore } from '@/stores/gamificationStore';
+import { useWallet, applyStreakFreeze } from '@/features/wallet/api';
 
 export default function StreakFreezeScreen() {
   const { t } = useTranslation();
+  const userId = useAuthStore((s) => s.user?.id);
+  const { wallet } = useWallet(userId);
+  const currentStreak = useGamificationStore((s) => s.currentStreak);
+  const inventory = wallet?.streak_freezes_inventory ?? 0;
+  const [applying, setApplying] = useState(false);
+  const canApply = inventory > 0 && !applying;
+
+  async function onApply() {
+    if (!canApply) return;
+    setApplying(true);
+    const res = await applyStreakFreeze();
+    setApplying(false);
+    if (!res.ok) {
+      Alert.alert(t('common.error', 'Hata'), res.error ?? t('common.tryAgain', 'Tekrar deneyin.'));
+      return;
+    }
+    Alert.alert(
+      t('screens.modals.streakFreezeAppliedTitle', '🧊 Streak korundu'),
+      t('screens.modals.streakFreezeAppliedBody', 'Yarına kadar streak\'in donduruldu.'),
+      [{ text: t('common.ok', 'Tamam'), onPress: () => router.back() }],
+    );
+  }
+
   return (
     <Pressable
       onPress={() => router.back()}
@@ -40,7 +63,6 @@ export default function StreakFreezeScreen() {
           paddingBottom: 36,
         }}
       >
-        {/* Drag handle */}
         <View
           style={{
             width: 40,
@@ -52,7 +74,6 @@ export default function StreakFreezeScreen() {
           }}
         />
 
-        {/* Hero icon */}
         <View
           style={{
             width: 96,
@@ -79,7 +100,6 @@ export default function StreakFreezeScreen() {
               fill="none"
             />
           </Svg>
-          {/* Flame badge */}
           <View
             style={{
               position: 'absolute',
@@ -105,7 +125,7 @@ export default function StreakFreezeScreen() {
             textAlign: 'center',
           }}
         >
-          {t('screens.modals.streakFreezeEyebrow', { streak: 12 })}
+          {t('screens.modals.streakFreezeEyebrow', { streak: currentStreak })}
         </Mono>
         <Text
           style={{
@@ -130,7 +150,7 @@ export default function StreakFreezeScreen() {
             fontFamily: FONTS.body,
           }}
         >
-          {t('screens.modals.streakFreezeBody', { streak: 12, remaining: 2 })}
+          {t('screens.modals.streakFreezeBody', { streak: currentStreak, remaining: inventory })}
         </Text>
 
         {/* Inventory */}
@@ -153,12 +173,12 @@ export default function StreakFreezeScreen() {
                   width: 22,
                   height: 28,
                   borderRadius: 6,
-                  backgroundColor: i <= 2 ? '#2EA8FF' : '#DCE0E8',
+                  backgroundColor: i <= inventory ? '#2EA8FF' : '#DCE0E8',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                {i <= 2 && (
+                {i <= inventory && (
                   <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '800' }}>❄</Text>
                 )}
               </View>
@@ -166,13 +186,17 @@ export default function StreakFreezeScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0E1116' }}>
-              {t('screens.modals.streakFreezeCount', { used: 2, total: 3 })}
+              {t('screens.modals.streakFreezeCount', { used: inventory, total: 3 })}
             </Text>
             <Text style={{ fontSize: 11, color: '#8A93A6', fontFamily: FONTS.body }}>
               {t('screens.modals.streakFreezeReset')}
             </Text>
           </View>
           <TouchableOpacity
+            onPress={() => {
+              router.back();
+              setTimeout(() => router.push('/shop'), 200);
+            }}
             style={{
               backgroundColor: '#FFD56B',
               paddingHorizontal: 12,
@@ -187,8 +211,17 @@ export default function StreakFreezeScreen() {
         </View>
 
         <View style={{ marginTop: 16 }}>
-          <Button3D variant="primary" fullWidth onPress={() => router.back()}>
-            {t('screens.modals.streakFreezeOk')}
+          <Button3D
+            variant="primary"
+            fullWidth
+            disabled={!canApply}
+            onPress={onApply}
+          >
+            {applying
+              ? t('screens.modals.streakFreezeApplying', 'Uygulanıyor…')
+              : inventory > 0
+                ? t('screens.modals.streakFreezeApply', 'Şimdi Kullan (1)')
+                : t('screens.modals.streakFreezeOk')}
           </Button3D>
         </View>
         <View style={{ marginTop: 8 }}>

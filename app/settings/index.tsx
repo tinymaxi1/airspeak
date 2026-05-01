@@ -20,6 +20,7 @@ import {
   FONTS,
   Avatar,
 } from '@/components/airspeak';
+import { LimitedOfferBanner } from '@/components/offers/LimitedOfferBanner';
 
 interface RowDef {
   icon: string;
@@ -58,13 +59,13 @@ export default function SettingsScreen() {
           icon: '👤',
           label: t('screens.settings.profile'),
           sub: t('screens.settings.profileDesc', { name: username, username }),
-          onPress: () => router.push('/settings/profile'),
+          onPress: () => router.push('/settings/profile-edit'),
         },
         {
           icon: '🎯',
           label: t('screens.settings.target'),
           sub: t('screens.settings.targetDesc'),
-          onPress: () => router.push('/settings/profile'),
+          onPress: () => router.push('/settings/profile-edit'),
         },
         {
           icon: '✈',
@@ -172,6 +173,9 @@ export default function SettingsScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+        {/* Limited offer banner — settings ekranı üstünde, kendi marginini yönetir */}
+        <LimitedOfferBanner compact />
+
         {/* Pilot card */}
         <View
           style={{

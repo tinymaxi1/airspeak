@@ -21,6 +21,7 @@ import {
   Card3D,
   TopoBackground,
 } from '@/components/airspeak';
+import { finalizePlacement, type PlacementLevel } from '@/features/placement/api';
 import {
   getQuestionsForSegment,
   calculateAllDimensions,
@@ -68,6 +69,8 @@ export default function LevelTestScreen() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [showLongExplanation, setShowLongExplanation] = useState(false);
   const [allAnswers, setAllAnswers] = useState<Answer[]>([]);
+  // Sprint 3f.B — test başlangıç zamanı (duration için)
+  const [testStartedAt, setTestStartedAt] = useState<number | null>(null);
 
   const segmentQuestions = useMemo<PlacementQuestion[][]>(
     () => SEGMENTS.map((s) => getQuestionsForSegment(role, s.dim)),
@@ -218,6 +221,7 @@ export default function LevelTestScreen() {
               fullWidth
               onPress={() => {
                 setStep('segment');
+                setTestStartedAt(Date.now());
                 track('level_test_started');
               }}
             >
@@ -439,6 +443,26 @@ export default function LevelTestScreen() {
         aviation_knowledge: dims.aviationKnowledge.label,
         communication: dims.communication.label,
       });
+      // Sprint 3f.B — DB'ye yaz (mevcut 4 dim → yeni 4 score map)
+      // Mapping: generalEnglish→vocabulary, aviationEnglish→grammar,
+      //          aviationKnowledge→listening, communication→reading.
+      // Her dim'in CEFR label'ından band (1-5) hesaplanır.
+      const labelToBand = (lbl: string): number => {
+        const m: Record<string, number> = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5,
+          beginner: 1, elementary: 2, intermediate: 3, advanced: 4, expert: 5 };
+        return m[lbl] ?? 3;
+      };
+      const durationSec = testStartedAt ? Math.round((Date.now() - testStartedAt) / 1000) : null;
+      void finalizePlacement({
+        scores: {
+          vocabulary: labelToBand(dims.generalEnglish.label),
+          grammar: labelToBand(dims.aviationEnglish.label),
+          listening: labelToBand(dims.aviationKnowledge.label),
+          reading: labelToBand(dims.communication.label),
+        },
+        questionsAnswered: newAllAnswers.length,
+        testDurationSeconds: durationSec ?? undefined,
+      }).catch((e) => console.warn('finalizePlacement failed:', e));
       router.replace('/(auth)/onboarding/placement-result');
     } else if (isLastInSegment) {
       setStep('segmentBreak');

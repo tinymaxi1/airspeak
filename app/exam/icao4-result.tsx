@@ -1,39 +1,144 @@
 /**
- * ICAO L4 Result Screen — official-looking score sheet
+ * ICAO L4 Result — gerçek veri (oral_exam_attempts realtime).
  *
- * Tasarım birebir (screens-icao.jsx ICAOResultScreen):
- * - Stamp result card: navy header + L4 gold display 80px + "OPERATIONAL · ICAO Annex 1"
- *   + circular green PASSED stamp (rotated -8deg)
- * - Cut line + 3 stub lights (VALID UNTIL / ICAO ID / EXAMINER)
- * - 6-descriptor profile rows: code + name + 6-bar progress + score number
- *   weakest = red border + FOCUS tag
- * - Examiner Note paper card
- * - Sticky: Share secondary + "Aim for L5" red CTA
+ * Param: attemptId
+ * - useOralAttempt realtime subscribe → rubric/band/feedback geldiğinde otomatik
+ *   render (evaluating loading state'i bitiyor).
+ * - PASSED/FAILED stamp band >= 4 ise PASSED.
+ * - İtiraz et butonu → request_oral_review RPC (manual review queue).
+ * - Yeni deneme → /exam/icao4-briefing.
  */
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
+import { useState } from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  Eyebrow,
   Mono,
   FONTS,
   Button3D,
-  TopoBackground,
 } from '@/components/airspeak';
+import {
+  useOralAttempt,
+  requestOralReview,
+  type OralRubric,
+} from '@/features/oral/api';
 
-const DESCRIPTORS = [
-  { code: 'PRO', name: 'Pronunciation', score: 4 },
-  { code: 'STR', name: 'Structure', score: 4 },
-  { code: 'VOC', name: 'Vocabulary', score: 5 },
-  { code: 'FLU', name: 'Fluency', score: 3 },
-  { code: 'CMP', name: 'Comprehension', score: 4 },
-  { code: 'INT', name: 'Interactions', score: 4 },
+const DESCRIPTOR_META: { key: keyof OralRubric; code: string; name: string }[] = [
+  { key: 'pronunciation', code: 'PRO', name: 'Pronunciation' },
+  { key: 'structure',     code: 'STR', name: 'Structure' },
+  { key: 'vocabulary',    code: 'VOC', name: 'Vocabulary' },
+  { key: 'fluency',       code: 'FLU', name: 'Fluency' },
+  { key: 'comprehension', code: 'CMP', name: 'Comprehension' },
+  { key: 'interactions',  code: 'INT', name: 'Interactions' },
 ];
 
-export default function ICAOResultScreen() {
+export default function ICAO4ResultScreen() {
   const { t } = useTranslation();
-  const overall = Math.min(...DESCRIPTORS.map((d) => d.score));
+  const params = useLocalSearchParams<{ attemptId: string }>();
+  const attemptId = typeof params.attemptId === 'string' ? params.attemptId : '';
+  const { attempt, loading } = useOralAttempt(attemptId);
+  const [requesting, setRequesting] = useState(false);
+
+  const evaluated = !!attempt?.evaluated_at && !!attempt?.rubric;
+
+  async function onDispute() {
+    if (!attemptId) return;
+    Alert.alert(
+      'Sonuca itiraz et',
+      'Cevabın insan moderatör tarafından yeniden değerlendirilecek. 24 saat içinde dönüş yaparız.',
+      [
+        { text: 'İptal', style: 'cancel' },
+        {
+          text: 'İtiraz et',
+          onPress: async () => {
+            setRequesting(true);
+            const r = await requestOralReview({
+              attemptId,
+              reason: 'user_disputes_score',
+            });
+            setRequesting(false);
+            if (r.ok) {
+              Alert.alert('✓ Talebin alındı', 'Mod ekibi inceleyecek.');
+            } else {
+              Alert.alert('Hata', r.error ?? 'Tekrar deneyin');
+            }
+          },
+        },
+      ],
+    );
+  }
+
+  // Loading veya henüz evaluated değil
+  if (loading || !attempt || !evaluated) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+        <SafeAreaView edges={['top']}>
+          <View
+            style={{
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <TouchableOpacity onPress={() => router.replace('/(tabs)/home')}>
+              <Text style={{ fontSize: 22, color: '#0E1116' }}>✕</Text>
+            </TouchableOpacity>
+            <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
+              EVALUATING
+            </Mono>
+            <Text style={{ fontSize: 22 }}>✦</Text>
+          </View>
+        </SafeAreaView>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
+          <ActivityIndicator color="#E63946" size="large" />
+          <Text
+            style={{ fontFamily: FONTS.body700, fontSize: 16, color: '#0E1116', textAlign: 'center' }}
+          >
+            AI değerlendirmesi yapılıyor…
+          </Text>
+          <Text
+            style={{
+              fontFamily: FONTS.body,
+              fontSize: 13,
+              color: '#5A6478',
+              textAlign: 'center',
+              maxWidth: 280,
+            }}
+          >
+            Examiner cevabını analiz ediyor — pronunciation, structure, vocabulary,
+            fluency, comprehension, interactions. Bu birkaç saniye sürer.
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  const rubric = attempt.rubric!;
+  const overall = attempt.band_score ?? Math.min(
+    rubric.pronunciation,
+    rubric.structure,
+    rubric.vocabulary,
+    rubric.fluency,
+    rubric.comprehension,
+    rubric.interactions,
+  );
+  const passed = overall >= 4;
+
+  // En zayıf descriptor (FOCUS tag için)
+  let weakest = DESCRIPTOR_META[0]!;
+  for (const d of DESCRIPTOR_META) {
+    if (rubric[d.key] < rubric[weakest.key]) weakest = d;
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
@@ -51,7 +156,7 @@ export default function ICAOResultScreen() {
             <Text style={{ fontSize: 22, color: '#0E1116' }}>✕</Text>
           </TouchableOpacity>
           <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
-            {t('screens.icao.examComplete')}
+            {t('screens.icao.examComplete', 'EXAM COMPLETE')}
           </Mono>
           <Text style={{ fontSize: 22 }}>✦</Text>
         </View>
@@ -78,235 +183,312 @@ export default function ICAOResultScreen() {
               backgroundColor: '#0F1E47',
               paddingHorizontal: 20,
               paddingTop: 20,
-              paddingBottom: 16,
+              paddingBottom: 24,
+              alignItems: 'center',
               position: 'relative',
-              overflow: 'hidden',
             }}
           >
-            <View style={{ position: 'absolute', inset: 0, opacity: 0.5 }}>
-              <TopoBackground />
-            </View>
-            <View
+            <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', letterSpacing: 1.8 }}>
+              ICAO LEVEL
+            </Mono>
+            <Text
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
+                fontFamily: FONTS.display,
+                fontSize: 80,
+                fontWeight: '700',
+                color: '#F2C14E',
+                marginTop: 4,
+                lineHeight: 84,
               }}
             >
-              <View>
-                <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', letterSpacing: 1.8 }}>
-                  {t('screens.icao.overall')}
-                </Mono>
-                <Text
-                  style={{
-                    fontFamily: FONTS.display,
-                    fontSize: 80,
-                    fontWeight: '700',
-                    color: '#FFD56B',
-                    lineHeight: 76,
-                    letterSpacing: -3.2,
-                  }}
-                >
-                  L{overall}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 13,
-                    color: 'rgba(255,255,255,0.85)',
-                    marginTop: 4,
-                    fontFamily: FONTS.body,
-                  }}
-                >
-                  {t('screens.icao.operational')}
-                </Text>
-              </View>
+              L{overall}
+            </Text>
+            <Mono
+              style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', letterSpacing: 1.4, marginTop: 4 }}
+            >
+              {passed ? 'OPERATIONAL · ICAO ANNEX 1' : 'BELOW OPERATIONAL · KEEP TRAINING'}
+            </Mono>
 
-              {/* PASSED stamp */}
-              <View
+            {/* PASSED/FAILED stamp */}
+            <View
+              style={{
+                position: 'absolute',
+                top: 16,
+                right: 16,
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                borderWidth: 3,
+                borderColor: passed ? '#2DBE6C' : '#E63946',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: [{ rotate: '-8deg' }],
+              }}
+            >
+              <Text
                 style={{
-                  width: 92,
-                  height: 92,
-                  borderRadius: 46,
-                  borderWidth: 3,
-                  borderColor: '#4FD487',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'rgba(45,190,108,0.08)',
-                  transform: [{ rotate: '-8deg' }],
+                  fontFamily: FONTS.body800,
+                  fontSize: 11,
+                  color: passed ? '#2DBE6C' : '#E63946',
+                  letterSpacing: 1.4,
                 }}
               >
-                <Text style={{ fontSize: 24, color: '#4FD487' }}>✓</Text>
-                <Mono style={{ fontSize: 9, color: '#4FD487', letterSpacing: 1, marginTop: 2 }}>
-                  {t('screens.icao.passed')}
-                </Mono>
-                <Mono style={{ fontSize: 8, color: '#4FD487', opacity: 0.8 }}>26·APR·26</Mono>
-              </View>
+                {passed ? 'PASSED' : 'RETRY'}
+              </Text>
             </View>
           </View>
 
-          {/* Cut line */}
+          {/* Cut line stub */}
           <View
             style={{
+              flexDirection: 'row',
               borderTopWidth: 1,
               borderStyle: 'dashed',
-              borderColor: '#DCE0E8',
-              marginHorizontal: 16,
+              borderTopColor: '#DCE0E8',
+              padding: 14,
+              gap: 12,
             }}
-          />
-
-          {/* 3 stat lights */}
-          <View style={{ padding: 16, flexDirection: 'row', gap: 8 }}>
-            <StatLight label={t('screens.icao.validUntil')} value="04·2029" />
-            <StatLight label={t('screens.icao.icaoId')} value="TR-PIL-7421" />
-            <StatLight label={t('screens.icao.examiner')} value="AS-AI-V3" />
+          >
+            <Stub label="VALID UNTIL" value={validUntilText(attempt.attempted_at)} />
+            <Stub label="ATTEMPT ID" value={attempt.id.slice(0, 8).toUpperCase()} />
+            <Stub
+              label="EXAMINER"
+              value={
+                attempt.provider === 'claude'
+                  ? `Claude · ${attempt.examiner_model?.replace('claude-', '') ?? ''}`
+                  : attempt.provider === 'gpt'
+                    ? `GPT · ${attempt.examiner_model ?? ''}`
+                    : 'Mock (admin yapılandırma)'
+              }
+            />
           </View>
         </View>
 
-        {/* 6-descriptor profile */}
-        <Eyebrow>{t('screens.icao.descriptors')}</Eyebrow>
-        <View style={{ marginTop: 8, gap: 8 }}>
-          {DESCRIPTORS.map((d) => {
-            const isWeakest = d.score === overall;
+        {/* 6 descriptor profile */}
+        <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.4, marginBottom: 8 }}>
+          DESCRIPTOR PROFILE
+        </Mono>
+        <View
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 14,
+            borderWidth: 1.5,
+            borderColor: '#DCE0E8',
+            padding: 14,
+            gap: 10,
+            marginBottom: 20,
+          }}
+        >
+          {DESCRIPTOR_META.map((d) => {
+            const score = rubric[d.key];
+            const isWeakest = d.key === weakest.key;
             return (
               <View
                 key={d.code}
                 style={{
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: 14,
-                  borderWidth: isWeakest ? 2 : 1.5,
-                  borderColor: isWeakest ? '#E63946' : '#DCE0E8',
-                  padding: 12,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 10,
+                  paddingVertical: 4,
+                  paddingHorizontal: isWeakest ? 8 : 0,
+                  borderRadius: 8,
+                  borderWidth: isWeakest ? 1.5 : 0,
+                  borderColor: isWeakest ? '#E63946' : 'transparent',
+                  backgroundColor: isWeakest ? '#FFF2F4' : 'transparent',
                 }}
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <Mono
-                    style={{
-                      fontSize: 11,
-                      color: '#8A93A6',
-                      width: 40,
-                      letterSpacing: 1.1,
-                    }}
-                  >
-                    {d.code}
-                  </Mono>
-                  <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <Text
+                <Mono
+                  style={{ fontSize: 11, color: '#5A6478', letterSpacing: 1.2, width: 36 }}
+                >
+                  {d.code}
+                </Mono>
+                <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#0E1116', width: 110 }}>
+                  {d.name}
+                </Text>
+                <View style={{ flex: 1, flexDirection: 'row', gap: 2, height: 8 }}>
+                  {[1, 2, 3, 4, 5, 6].map((b) => (
+                    <View
+                      key={b}
                       style={{
-                        fontFamily: FONTS.body700,
-                        fontSize: 14,
-                        color: '#0E1116',
+                        flex: 1,
+                        height: 8,
+                        borderRadius: 2,
+                        backgroundColor:
+                          b <= score
+                            ? score >= 4
+                              ? '#2DBE6C'
+                              : '#FFD56B'
+                            : '#EDEFF3',
                       }}
-                    >
-                      {d.name}
-                    </Text>
-                    {isWeakest && (
-                      <Mono
-                        style={{
-                          fontSize: 10,
-                          color: '#E63946',
-                          letterSpacing: 1,
-                        }}
-                      >
-                        FOCUS
-                      </Mono>
-                    )}
-                  </View>
-                  {/* 6 bar level */}
-                  <View style={{ flexDirection: 'row', gap: 3 }}>
-                    {[1, 2, 3, 4, 5, 6].map((n) => (
-                      <View
-                        key={n}
-                        style={{
-                          width: 14,
-                          height: 22,
-                          borderRadius: 3,
-                          backgroundColor:
-                            n <= d.score
-                              ? d.score >= 4
-                                ? '#2DBE6C'
-                                : '#E63946'
-                              : '#EDEFF3',
-                        }}
-                      />
-                    ))}
-                  </View>
-                  <Text
+                    />
+                  ))}
+                </View>
+                <Text
+                  style={{ fontFamily: FONTS.mono700, fontSize: 14, color: '#0E1116', width: 28, textAlign: 'right' }}
+                >
+                  {score.toFixed(1)}
+                </Text>
+                {isWeakest && (
+                  <View
                     style={{
-                      fontFamily: FONTS.display,
-                      fontSize: 22,
-                      fontWeight: '700',
-                      width: 24,
-                      textAlign: 'right',
-                      color: '#0E1116',
+                      backgroundColor: '#E63946',
+                      paddingHorizontal: 6,
+                      paddingVertical: 2,
+                      borderRadius: 4,
                     }}
                   >
-                    {d.score}
-                  </Text>
-                </View>
+                    <Mono style={{ fontSize: 9, color: '#FFFFFF', letterSpacing: 0.8 }}>
+                      FOCUS
+                    </Mono>
+                  </View>
+                )}
               </View>
             );
           })}
         </View>
 
         {/* Examiner note */}
-        <View
-          style={{
-            marginTop: 18,
-            backgroundColor: '#FFFFFF',
-            borderRadius: 14,
-            borderWidth: 1.5,
-            borderColor: '#DCE0E8',
-            borderBottomWidth: 4,
-            padding: 14,
-          }}
-        >
-          <Eyebrow>{t('screens.icao.examinerNote')}</Eyebrow>
-          <Text
+        {attempt.feedback_tr && (
+          <>
+            <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.4, marginBottom: 8 }}>
+              EXAMINER NOTE
+            </Mono>
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderColor: '#DCE0E8',
+                padding: 14,
+                marginBottom: 16,
+              }}
+            >
+              <Text
+                style={{ fontSize: 14, lineHeight: 21, color: '#0E1116', fontFamily: FONTS.body }}
+              >
+                {attempt.feedback_tr}
+              </Text>
+            </View>
+          </>
+        )}
+
+        {/* Transcript (collapsed, small) */}
+        {attempt.transcript && (
+          <>
+            <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.4, marginBottom: 8 }}>
+              TRANSCRIPT
+            </Mono>
+            <View
+              style={{
+                backgroundColor: '#F4F5F8',
+                borderRadius: 12,
+                padding: 12,
+                marginBottom: 16,
+              }}
+            >
+              <Text
+                style={{ fontSize: 12, lineHeight: 18, color: '#5A6478', fontFamily: FONTS.body, fontStyle: 'italic' }}
+                numberOfLines={6}
+              >
+                "{attempt.transcript}"
+              </Text>
+            </View>
+          </>
+        )}
+
+        {/* Confidence + provider hint (admin/dev) */}
+        {attempt.confidence_score !== null && attempt.provider === 'mock' && (
+          <View
             style={{
-              fontSize: 14,
-              color: '#0E1116',
-              marginTop: 6,
-              lineHeight: 21,
-              fontFamily: FONTS.body,
+              backgroundColor: 'rgba(255,213,107,0.18)',
+              borderWidth: 1,
+              borderColor: 'rgba(242,193,78,0.5)',
+              borderRadius: 12,
+              padding: 12,
+              marginBottom: 16,
             }}
           >
-            {t('screens.icao.examinerNoteBody')}
-          </Text>
-        </View>
+            <Mono style={{ fontSize: 10, color: '#7A5C00', letterSpacing: 1.2 }}>
+              ℹ MOCK MODE
+            </Mono>
+            <Text style={{ fontSize: 12, color: '#7A5C00', marginTop: 4, lineHeight: 17 }}>
+              Bu sonuç deterministik mock examiner tarafından üretildi. Admin AI provider'ı
+              aktive ettiğinde gerçek Claude değerlendirmesi gelir.
+            </Text>
+          </View>
+        )}
+
+        {/* İtiraz buton */}
+        {attempt.review_status === 'none' && (
+          <TouchableOpacity
+            onPress={onDispute}
+            disabled={requesting}
+            style={{
+              alignItems: 'center',
+              paddingVertical: 8,
+              marginBottom: 8,
+            }}
+          >
+            <Mono style={{ fontSize: 11, color: '#5A6478', letterSpacing: 1, textDecorationLine: 'underline' }}>
+              {requesting ? 'GÖNDERİLİYOR…' : 'SONUCA İTİRAZ ET'}
+            </Mono>
+          </TouchableOpacity>
+        )}
+        {attempt.review_status === 'pending' && (
+          <View style={{ alignItems: 'center', paddingVertical: 8, marginBottom: 8 }}>
+            <Mono style={{ fontSize: 11, color: '#F2C14E', letterSpacing: 1 }}>
+              ⏱ MANUAL REVIEW BEKLİYOR
+            </Mono>
+          </View>
+        )}
+        {attempt.review_status === 'overridden' && (
+          <View style={{ alignItems: 'center', paddingVertical: 8, marginBottom: 8 }}>
+            <Mono style={{ fontSize: 11, color: '#2DBE6C', letterSpacing: 1 }}>
+              ✓ MOD ONAYLI
+            </Mono>
+          </View>
+        )}
       </ScrollView>
 
-      <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
-        <View style={{ padding: 16, flexDirection: 'row', gap: 10 }}>
-          <View style={{ flex: 1 }}>
-            <Button3D variant="secondary" fullWidth onPress={() => {}}>
-              {t('screens.icao.share')}
-            </Button3D>
-          </View>
-          <View style={{ flex: 1.5 }}>
-            <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/home')}>
-              {t('screens.icao.aimL5')}
-            </Button3D>
-          </View>
+      {/* Sticky CTA */}
+      <SafeAreaView edges={['bottom']} style={{ backgroundColor: '#FFFFFF' }}>
+        <View
+          style={{
+            padding: 16,
+            borderTopWidth: 1,
+            borderTopColor: '#EDEFF3',
+            gap: 8,
+          }}
+        >
+          <Button3D
+            variant="primary"
+            fullWidth
+            onPress={() => router.replace('/exam/icao4-briefing' as any)}
+          >
+            {passed ? `Aim for L${Math.min(6, overall + 1)} →` : 'Tekrar dene'}
+          </Button3D>
         </View>
       </SafeAreaView>
     </View>
   );
 }
 
-function StatLight({ label, value }: { label: string; value: string }) {
+function Stub({ label, value }: { label: string; value: string }) {
   return (
     <View style={{ flex: 1 }}>
-      <Mono style={{ fontSize: 9, color: '#5A6478', letterSpacing: 1.62 }}>{label}</Mono>
+      <Mono style={{ fontSize: 9, color: '#8A93A6', letterSpacing: 0.9 }}>{label}</Mono>
       <Text
-        style={{
-          fontFamily: FONTS.mono700,
-          fontSize: 13,
-          color: '#0E1116',
-          marginTop: 2,
-        }}
+        style={{ fontFamily: FONTS.mono700, fontSize: 11, color: '#0E1116', marginTop: 2 }}
+        numberOfLines={1}
       >
         {value}
       </Text>
     </View>
   );
+}
+
+function validUntilText(attemptedAt: string): string {
+  const d = new Date(attemptedAt);
+  d.setFullYear(d.getFullYear() + 3);
+  return d.toLocaleDateString('tr-TR', { year: 'numeric', month: 'short', day: '2-digit' });
 }

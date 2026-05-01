@@ -36,6 +36,11 @@ interface GamificationState {
 
   // Aksiyonlar
   addXp: (amount: number, source: string) => void;
+  syncFromServer: (snapshot: {
+    totalXp?: number;
+    currentStreak?: number;
+    longestStreak?: number;
+  }) => void;
   recordDailyActivity: () => void;
   loseHeart: () => void;
   refillHearts: () => void;
@@ -62,7 +67,7 @@ function xpToReachLevel(level: number): number {
   return Math.floor(100 * Math.pow(level, 1.5));
 }
 
-function calculateLevelFromXp(totalXp: number): {
+export function calculateLevelFromXp(totalXp: number): {
   level: number;
   xpInLevel: number;
   xpToNext: number;
@@ -119,6 +124,28 @@ export const useGamificationStore = create<GamificationState>()(
   persist(
     (set, get) => ({
       ...initialState,
+
+      syncFromServer: (snapshot) => {
+        const updates: Partial<GamificationState> = {};
+        if (snapshot.totalXp !== undefined) {
+          // DB total_xp'i source of truth — local'i override et
+          const calc = calculateLevelFromXp(snapshot.totalXp);
+          updates.totalXp = snapshot.totalXp;
+          updates.currentLevel = calc.level;
+          updates.xpInLevel = calc.xpInLevel;
+          updates.xpToNext = calc.xpToNext;
+        }
+        if (snapshot.currentStreak !== undefined) {
+          updates.currentStreak = snapshot.currentStreak;
+        }
+        if (snapshot.longestStreak !== undefined) {
+          updates.longestStreak = Math.max(
+            get().longestStreak,
+            snapshot.longestStreak,
+          );
+        }
+        set(updates);
+      },
 
       addXp: (amount, source) => {
         // XP boost aktif mi kontrol et

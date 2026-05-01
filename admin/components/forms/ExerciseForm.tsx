@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input, Textarea, Label, Select } from '@/components/ui/Input';
 import { DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/Dialog';
+import { AudioField } from '@/components/forms/AudioField';
 import { createRow, updateRow } from '@/lib/content/actions';
 import { uniqueSlug } from '@/lib/content/slug';
 import { toast } from 'sonner';
@@ -278,15 +279,13 @@ export function ExerciseForm({
 
         {(form.type === 'listening-mc' || form.type === 'pronunciation-record') && (
           <div>
-            <Label>Ses URL'i</Label>
-            <Input
-              value={form.audio_url}
-              onChange={(e) => setForm({ ...form, audio_url: e.target.value })}
-              placeholder="https://....supabase.co/storage/v1/object/public/lesson-audio/..."
+            <Label>Ses dosyası</Label>
+            <AudioField
+              bucket="lesson-audio"
+              pathPrefix={`lessons/${lessonSlug}`}
+              value={form.audio_url || null}
+              onChange={(url) => setForm({ ...form, audio_url: url ?? '' })}
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Faz 5'te Storage upload + ElevenLabs üretim eklenecek.
-            </p>
           </div>
         )}
 

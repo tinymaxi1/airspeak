@@ -20,6 +20,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
+import { showPaywall } from '@/stores/paywallStore';
 import {
   Mono,
   Body,
@@ -27,6 +28,7 @@ import {
   Button3D,
   TopoBackground,
 } from '@/components/airspeak';
+import { LimitedOfferBanner } from '@/components/offers/LimitedOfferBanner';
 
 interface Slide {
   emoji: string;
@@ -70,6 +72,14 @@ const SLIDES: Slide[] = [
     bgColor: '#06091A',
     accentColor: '#2DBE6C',
   },
+  {
+    emoji: '✈️',
+    eyebrowKey: 'tour.s5.eyebrow',
+    titleKey: 'tour.s5.title',
+    bodyKey: 'tour.s5.body',
+    bgColor: '#0F1E47',
+    accentColor: '#FFD56B',
+  },
 ];
 
 const { width: SCREEN_W } = Dimensions.get('window');
@@ -88,6 +98,8 @@ export default function OnboardingTourScreen() {
   const goToHome = () => {
     setHasSeenTour(true);
     router.replace('/(tabs)/home');
+    // Tour bittikten kısa süre sonra paywall sheet (yumuşak, 1×/30gün cooldown)
+    setTimeout(() => showPaywall('onboarding_tour_end'), 600);
   };
 
   const goToNext = () => {
@@ -204,6 +216,24 @@ export default function OnboardingTourScreen() {
 
       <SafeAreaView edges={['bottom']}>
         <View style={{ paddingHorizontal: 24, paddingVertical: 16 }}>
+          {/* Sadece son slaytta limited offer banner (compact) */}
+          {page === SLIDES.length - 1 && (
+            <LimitedOfferBanner compact marginBottom={12} />
+          )}
+          {/* Squadron slaytında secondary CTA */}
+          {page === SLIDES.length - 1 && (
+            <Button3D
+              variant="secondary"
+              fullWidth
+              onPress={() => {
+                setHasSeenTour(true);
+                router.replace('/community' as any);
+              }}
+              style={{ marginBottom: 10 }}
+            >
+              ✈️ Squadron'a katıl
+            </Button3D>
+          )}
           <Button3D variant="primary" fullWidth onPress={goToNext}>
             {page === SLIDES.length - 1
               ? t('tour.start', 'Başla 🚀')

@@ -1,11 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import {
-  CreateGenericButton,
-  EditGenericButton,
-} from '@/components/forms/GenericTableForm';
+import { CreateScenarioButton, EditScenarioButton } from '@/components/forms/ScenarioForm';
 import { StatusActions } from '@/components/forms/StatusActions';
-import { SCENARIO_SCHEMA } from '@/lib/content/schemas';
+import { Crown, Volume2 } from 'lucide-react';
 
 export default async function ScenariosPage() {
   const supabase = await createClient();
@@ -22,7 +19,7 @@ export default async function ScenariosPage() {
           <h1 className="text-3xl font-bold text-airspeak-navy">AI Senaryolar</h1>
           <p className="text-muted-foreground mt-1">{(data ?? []).length} senaryo</p>
         </div>
-        <CreateGenericButton schema={SCENARIO_SCHEMA} label="Yeni senaryo" />
+        <CreateScenarioButton label="Yeni senaryo" />
       </div>
 
       <div className="bg-white border border-border rounded-xl overflow-hidden">
@@ -43,7 +40,21 @@ export default async function ScenariosPage() {
                 <td className="px-4 py-3 text-xs uppercase tracking-wider">{s.role ?? 'all'}</td>
                 <td className="px-4 py-3 text-xs">{s.category ?? '—'}</td>
                 <td className="px-4 py-3">
-                  <p className="font-semibold line-clamp-1">{s.title_tr ?? s.title}</p>
+                  <div className="flex items-center gap-2">
+                    {s.is_premium && (
+                      <Crown
+                        className="w-4 h-4 text-airspeak-gold shrink-0"
+                        aria-label="Premium"
+                      />
+                    )}
+                    {s.audio_intro_url && (
+                      <Volume2
+                        className="w-4 h-4 text-airspeak-green shrink-0"
+                        aria-label="Intro ses var"
+                      />
+                    )}
+                    <p className="font-semibold line-clamp-1">{s.title_tr ?? s.title}</p>
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-xs">{s.difficulty}/5</td>
                 <td className="px-4 py-3">
@@ -51,7 +62,7 @@ export default async function ScenariosPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-1">
-                    <EditGenericButton schema={SCENARIO_SCHEMA} row={s} />
+                    <EditScenarioButton row={s} />
                     <StatusActions
                       table="scenarios"
                       id={s.id}

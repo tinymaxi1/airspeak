@@ -25,13 +25,16 @@ import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
 import { useLessonLimit, bumpServerUsage } from '@/features/config/limits';
 import { PaywallSheet } from '@/components/paywall/PaywallSheet';
 import { track } from '@/lib/posthog';
+import { bumpUserXp } from '@/features/league/api';
+import { addCoins as addCoinsServer } from '@/features/wallet/api';
+import { showPaywall } from '@/stores/paywallStore';
 
 export default function LessonScreen() {
   const params = useLocalSearchParams<{ id: string }>();
   const lessonSlug = typeof params.id === 'string' ? params.id : '';
 
   // ─────────── Stores ───────────
-  const { addXp, recordDailyActivity, loseHeart, addCoins } = useGamificationStore();
+  const { addXp, recordDailyActivity, loseHeart } = useGamificationStore();
   const hearts = useGamificationStore((s) => s.hearts ?? 5);
   const markLessonCompleted = useProgressStore((s) => s.markLessonCompleted);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
@@ -192,13 +195,34 @@ export default function LessonScreen() {
 
     if (isLast) {
       addXp(50, 'lesson_completed');
-      addCoins(10, 'lesson_completed');
+      // Coins: server-side authoritative (DB realtime → useWallet'i günceller)
+      void addCoinsServer({ amount: 10, reason: 'lesson_completed', source: 'lesson_completed' });
       recordDailyActivity();
       recordHistoryActivity('lesson');
       bumpDaily('lessons_completed');
       void bumpServerUsage('lessons_completed');
       const score = Math.round((nextCorrect / total) * 100);
       markLessonCompleted(lessonSlug, score);
+      // DB sync: user_lesson_progress + user_xp_summary + streak + lazy lig assign
+      // Background — UI'yı blokla­ma. Response gelince store'u DB ground truth ile sync.
+      if (lesson?.id) {
+        const lessonDbId = lesson.id;
+        void bumpUserXp({
+          lessonId: lessonDbId,
+          score,
+          xp: 50,
+        }).then((r) => {
+          if (r.ok && r.current_streak !== undefined) {
+            useGamificationStore.getState().syncFromServer({
+              currentStreak: r.current_streak,
+            });
+            // Streak 3+ gün milestone → freeze offer paywall (cooldown 7gün)
+            if (r.current_streak >= 3) {
+              setTimeout(() => showPaywall('streak_milestone_3d'), 1200);
+            }
+          }
+        });
+      }
       recordRecentActivity({
         type: 'lesson',
         refId: lessonSlug,

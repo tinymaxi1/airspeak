@@ -23,6 +23,9 @@ import { useOfflineStore } from '@/stores/offlineStore';
 import { useActivityStore } from '@/stores/activityStore';
 import { useNextLesson } from '@/features/content/api';
 import type { UserRole } from '@/types/profile';
+import { CompetitionBanner } from '@/components/competitions/CompetitionBanner';
+import { TrialCountdownChip } from '@/components/trial/TrialCountdownChip';
+import { LimitedOfferBanner } from '@/components/offers/LimitedOfferBanner';
 import {
   HHero,
   H2,
@@ -238,6 +241,17 @@ export default function HomeScreen() {
           />
         }
       >
+        {/* Limited offer banner — aktif offer + audience match ise (kendi marginini yönetir) */}
+        <LimitedOfferBanner />
+
+        {/* Trial countdown — sadece subscription_status='trialing' ise (kendi marginini yönetir) */}
+        <TrialCountdownChip />
+
+        {/* Aktif yarışma banner (varsa, en başta) */}
+        <View style={{ marginBottom: 14 }}>
+          <CompetitionBanner />
+        </View>
+
         {/* İlk kullanıcı için onboarding banner */}
         {isFirstTime && (
           <View

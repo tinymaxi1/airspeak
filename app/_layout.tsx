@@ -40,6 +40,12 @@ import { supabase } from '@/lib/supabase';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useOfflineStore } from '@/stores/offlineStore';
 import { subscribeContentRealtime } from '@/features/content/realtime';
+import { useBadgeWatcher } from '@/features/badges/useBadgeWatcher';
+import { PaywallTriggerSheet } from '@/components/paywall/PaywallTriggerSheet';
+import { useWalletMigration } from '@/features/wallet/useWalletMigration';
+import { useLastActiveHeartbeat } from '@/features/social/presence';
+import { useTrialEndingPaywall } from '@/features/trial/api';
+import { useAuthStore } from '@/stores/authStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -66,6 +72,19 @@ export default function RootLayout() {
   });
 
   const { t } = useTranslation();
+
+  // Badge watcher — store değişimlerinde eligible rozetleri server'a yazar
+  useBadgeWatcher();
+
+  // Wallet migration — first launch'ta MMKV → DB one-way
+  useWalletMigration();
+
+  // Last-active heartbeat — sosyal kanıt (son 24h aktif sayısı) için DB bump
+  useLastActiveHeartbeat();
+
+  // Trial 1 gün/0 gün kala client-side paywall (push trigger'a ek olarak)
+  const trialUserId = useAuthStore((s) => s.user?.id);
+  useTrialEndingPaywall(trialUserId);
 
   // Network monitoring — getState() ile al, subscribe etme (döngü önler)
   useEffect(() => {
@@ -159,9 +178,20 @@ export default function RootLayout() {
             <Stack.Screen name="offline" options={{ headerShown: false }} />
             <Stack.Screen name="mic-denied" options={{ headerShown: false }} />
             <Stack.Screen name="squadron-pairing" options={{ headerShown: false }} />
+            <Stack.Screen name="community/index" options={{ headerShown: false }} />
+            <Stack.Screen name="community/[slug]" options={{ headerShown: false }} />
+            <Stack.Screen name="community/new-group" options={{ headerShown: false, presentation: 'modal' }} />
+            <Stack.Screen name="community/post/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="community/hashtag/[tag]" options={{ headerShown: false }} />
+            <Stack.Screen name="community/search" options={{ headerShown: false, presentation: 'modal' }} />
+            <Stack.Screen name="community/bookmarks" options={{ headerShown: false }} />
+            <Stack.Screen name="community/notifications" options={{ headerShown: false }} />
+            <Stack.Screen name="community/u/[username]" options={{ headerShown: false }} />
+            <Stack.Screen name="exam/icao4-sets" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-briefing" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="exam/icao4-live" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-result" options={{ headerShown: false }} />
+            <Stack.Screen name="exam/icao4-history" options={{ headerShown: false }} />
             <Stack.Screen name="exam/mock-studio" options={{ headerShown: false }} />
             {/* Modals — transparent overlay */}
             <Stack.Screen
@@ -190,6 +220,7 @@ export default function RootLayout() {
             <Stack.Screen name="settings/language" options={{ headerShown: true, headerTitle: 'Dil Seç' }} />
             <Stack.Screen name="quiz/[id]" options={{ headerShown: true, headerTitle: 'Quiz' }} />
           </Stack>
+          <PaywallTriggerSheet />
         </QueryClientProvider>
       </TamaguiProvider>
     </GestureHandlerRootView>

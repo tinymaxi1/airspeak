@@ -10,7 +10,8 @@
  * - Gold Exam Conditions card
  * - Sticky CTA "Begin exam" + ESTIMATED 20:00
  */
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +21,8 @@ import {
   Button3D,
   TopoBackground,
 } from '@/components/airspeak';
+import { useOnboardingStore } from '@/stores/onboardingStore';
+import { startOralSimulation, pickRandomOralPrompt } from '@/features/oral/api';
 
 // Descriptor names lokalize edilebilir; fakat ICAO terimleri (PRO/STR/VOC...) standart Pronunciation/Structure/...
 // Şimdilik kalan kısa İng. isimleri tutuyorum (havacılık standardı), sadece sectionN i18n.
@@ -34,6 +37,34 @@ const DESCRIPTORS = [
 
 export default function ICAOBriefingScreen() {
   const { t } = useTranslation();
+  const userLevel = useOnboardingStore((s) => s.placementResult?.level) ?? 'B1';
+  const [starting, setStarting] = useState(false);
+
+  async function onBegin() {
+    setStarting(true);
+    // 1. Simulation create
+    const sim = await startOralSimulation({ examId: 'icao4_oral' });
+    if (!sim.ok || !sim.simulationId) {
+      setStarting(false);
+      Alert.alert('Hata', sim.error ?? 'Sınav başlatılamadı');
+      return;
+    }
+    // 2. Rastgele prompt çek (kullanıcının seviyesine göre)
+    const prompt = await pickRandomOralPrompt({
+      difficulty: (userLevel as any) ?? 'B1',
+    });
+    if (!prompt) {
+      setStarting(false);
+      Alert.alert(
+        'Prompt yok',
+        'Bu seviye için aktif prompt bulunamadı. Admin\'e bildir.',
+      );
+      return;
+    }
+    setStarting(false);
+    // 3. Live ekrana yönlendir (params)
+    router.replace(`/exam/icao4-live?simulationId=${sim.simulationId}&promptId=${prompt.id}` as any);
+  }
   const SECTIONS = [
     { num: '01', name: t('screens.icao.section1'), mins: 3 },
     { num: '02', name: t('screens.icao.section2'), mins: 3 },
@@ -223,8 +254,8 @@ export default function ICAOBriefingScreen() {
         }}
       >
         <View style={{ padding: 16 }}>
-          <Button3D variant="primary" fullWidth onPress={() => router.push('/exam/icao4-live')}>
-            {t('screens.icao.begin')}
+          <Button3D variant="primary" fullWidth disabled={starting} onPress={onBegin}>
+            {starting ? 'Başlatılıyor…' : t('screens.icao.begin')}
           </Button3D>
           <Mono
             style={{

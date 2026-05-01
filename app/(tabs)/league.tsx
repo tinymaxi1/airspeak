@@ -1,345 +1,453 @@
 /**
- * League Screen — Captain tier leaderboard
+ * League Screen — DB-driven (Sprint 4B.3)
  *
- * Tasarım birebir (screens-other.jsx LeagueScreen):
- * - Gold tier header (navy ink) + Crown icon + "Captain TIER 4 OF 7"
- * - 7-tier track bar (Cadet → Star Capt)
- * - Top 3 podium (gold/silver/bronze)
- * - Leaderboard rows with country flags + you highlight
- * - Safe zone divider
+ * Source of truth: league_seasons + league_groups + league_memberships.
+ * NPC simulator silindi.
+ *
+ * - Üst: kullanıcının class rozeti (bronze..diamond)
+ * - Süre sayacı: aktif weekly season.end_date'ten
+ * - Leaderboard:
+ *   · Top 10 — green (promotion zone, Diamond hariç)
+ *   · Mid — normal
+ *   · Bottom 10 — red (demotion zone, Bronze hariç)
+ * - Boş state: lig'e atanmamış → "ilk dersini bitir"
  */
-import { ScrollView, View, Text, RefreshControl } from 'react-native';
-import { useMemo, useState, useCallback } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  Body,
-  Eyebrow,
-  Mono,
-  FONTS,
-  Avatar,
-  CoachMark,
-  EmptyState,
-} from '@/components/airspeak';
-import { useGamificationStore } from '@/stores/gamificationStore';
+import { router } from 'expo-router';
+import Animated, { FadeInUp } from 'react-native-reanimated';
+import { Body, Eyebrow, Mono, FONTS, Avatar, Button3D } from '@/components/airspeak';
 import { useAuthStore } from '@/stores/authStore';
-import { useCoachMarkStore } from '@/stores/coachMarkStore';
+import { showPaywall } from '@/stores/paywallStore';
 import {
-  buildLeaderboard,
-  getTierForXp,
-  getTierName,
-  getHoursUntilWeekEnd,
-  getWeekStartTimestamp,
-  type LeaguePlayer,
-} from '@/features/league/simulator';
+  useLeagueMembership,
+  useLeagueGroup,
+  type LeagueClass,
+  type LeagueLeaderboardEntry,
+} from '@/features/league/api';
+import { supabase } from '@/lib/supabase';
+import { ChevronRight } from 'lucide-react-native';
 
-const TIER_SHORTS = ['CADET', 'FO', 'SR FO', 'CAPT', 'SR CP', 'CHK', 'STAR'];
+const CLASS_META: Record<
+  LeagueClass,
+  { label: string; emoji: string; color: string; ringColor: string }
+> = {
+  bronze: { label: 'Bronz', emoji: '🥉', color: '#A87654', ringColor: '#C68B5C' },
+  silver: { label: 'Gümüş', emoji: '🥈', color: '#9AA0AB', ringColor: '#B7BCC6' },
+  gold: { label: 'Altın', emoji: '🥇', color: '#E0A82E', ringColor: '#F2C14E' },
+  sapphire: { label: 'Safir', emoji: '💙', color: '#1F4FB6', ringColor: '#3D6FD9' },
+  ruby: { label: 'Yakut', emoji: '❤️', color: '#B81F3D', ringColor: '#D63A57' },
+  emerald: { label: 'Zümrüt', emoji: '💚', color: '#1F8B4D', ringColor: '#3DAA68' },
+  diamond: { label: 'Elmas', emoji: '💎', color: '#1F8AB6', ringColor: '#3DAFD6' },
+};
+
+const CLASS_ORDER: LeagueClass[] = [
+  'bronze',
+  'silver',
+  'gold',
+  'sapphire',
+  'ruby',
+  'emerald',
+  'diamond',
+];
+
+function hoursUntil(iso: string): number {
+  const ms = new Date(iso).getTime() - Date.now();
+  return Math.max(0, Math.floor(ms / 3_600_000));
+}
 
 export default function LeagueScreen() {
   const { t } = useTranslation();
-  const totalXp = useGamificationStore((s) => s.totalXp);
   const user = useAuthStore((s) => s.user);
-  const coachSeen = useCoachMarkStore((s) => s.isSeen('league_first_open'));
-  const markCoachSeen = useCoachMarkStore((s) => s.markSeen);
-  const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 600);
-  }, []);
-
-  const userTier = getTierForXp(totalXp);
-  const tierNameLocal = getTierName(userTier);
-  const hoursLeft = getHoursUntilWeekEnd();
-
-  // Bu hafta kazanılan XP — basitleştirme: totalXp'in 1/4'ü (yaklaşık 1 hafta).
-  // Daha doğrusu için weekStart'tan beri kazanılan XP'i tutacak ayrı state gerekir.
-  const userWeekXp = Math.round(totalXp * 0.25);
-  const userName = user?.email?.split('@')[0]?.toUpperCase() ?? 'YOU';
-
-  const leaderboard = useMemo<LeaguePlayer[]>(
-    () =>
-      buildLeaderboard(
-        userWeekXp,
-        userName,
-        '🇹🇷',
-        userTier,
-      ),
-    // userWeekXp değiştikçe leaderboard yeniden hesaplanır
-    [userWeekXp, userName, userTier],
+  const { membership, group, loading: lMem, refresh: refreshMem } = useLeagueMembership(user?.id);
+  const { rows, loading: lGroup, refresh: refreshGroup } = useLeagueGroup(
+    group?.id,
+    user?.id,
   );
 
-  // Top 7 leaderboard'da göster
-  const PLAYERS = leaderboard.slice(0, 7);
-  const TIERS = TIER_SHORTS.map((short, i) => ({
-    name: getTierName(i),
-    short,
-    current: i === userTier,
-  }));
+  const [seasonEnd, setSeasonEnd] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Aktif weekly season.end_date — süre sayacı için
+  useEffect(() => {
+    if (!group?.season_id) return;
+    let mounted = true;
+    void supabase
+      .from('league_seasons')
+      .select('end_date')
+      .eq('id', group.season_id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (mounted && data) setSeasonEnd((data as any).end_date);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [group?.season_id]);
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await Promise.all([refreshMem(), refreshGroup()]);
+    setRefreshing(false);
+  }
+
+  const classMeta = group?.class_tier ? CLASS_META[group.class_tier] : null;
+  const totalMembers = rows.length;
+  const userRow = rows.find((r) => r.is_self) ?? null;
+  const myRank = userRow?.rank ?? null;
+
+  // Lig top 3'te → "ödülünü 2× al" paywall (cooldown 7 gün, sadece 1× görünür)
+  useEffect(() => {
+    if (myRank != null && myRank <= 3) {
+      const t = setTimeout(() => showPaywall('league_top3_celebration'), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [myRank]);
+
+  // Empty state — kullanıcı henüz lige atanmamış
+  if (!lMem && !membership) {
+    return <EmptyLeague />;
+  }
+
+  if (lMem || !group || !classMeta) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#E63946" />
+      </View>
+    );
+  }
+
+  const hoursLeft = seasonEnd ? hoursUntil(`${seasonEnd}T23:59:59Z`) : null;
+  const promoCutoff = group.class_tier === 'diamond' ? 0 : 10;
+  const demoCutoff = group.class_tier === 'bronze' ? 0 : 10;
+  const demoStartRank = totalMembers - demoCutoff + 1;
+
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
-      <View style={{ backgroundColor: '#F2C14E' }}>
+      {/* ═════ HEADER ═════ */}
+      <View style={{ backgroundColor: classMeta.color }}>
         <SafeAreaView edges={['top']}>
-          <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 18 }}>
+          <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 18 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
               <View
                 style={{
                   width: 64,
                   height: 64,
                   borderRadius: 14,
-                  backgroundColor: '#0A1430',
+                  backgroundColor: 'rgba(0,0,0,0.18)',
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderBottomWidth: 4,
-                  borderBottomColor: '#000',
+                  borderBottomColor: 'rgba(0,0,0,0.35)',
                 }}
               >
-                <Text style={{ fontSize: 36 }}>👑</Text>
+                <Text style={{ fontSize: 34 }}>{classMeta.emoji}</Text>
               </View>
-
               <View style={{ flex: 1 }}>
-                <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(10,20,48,0.7)' }}>
-                  {t('screens.league.tierDynamic', 'TIER {{n}} / 7', { n: userTier + 1 })}
+                <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.85)' }}>
+                  {classMeta.label.toUpperCase()} SINIFI
                 </Mono>
                 <Text
                   style={{
                     fontFamily: FONTS.display,
-                    fontSize: 28,
+                    fontSize: 26,
                     fontWeight: '700',
-                    color: '#0A1430',
-                    letterSpacing: -0.56,
-                    lineHeight: 28,
-                  }}
-                >
-                  {tierNameLocal}
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: FONTS.body700,
-                    fontSize: 13,
-                    color: '#0A1430',
+                    color: '#FFFFFF',
+                    letterSpacing: -0.5,
                     marginTop: 2,
                   }}
+                  numberOfLines={1}
                 >
-                  {t('screens.league.tierSubtitleDynamic', 'İlk 10 ilerleyecek · {{h}}sa kaldı', { h: hoursLeft })}
+                  {myRank != null ? `#${myRank}` : '—'} · {totalMembers} kişi
                 </Text>
-              </View>
-            </View>
-
-            {/* Tier track */}
-            <View style={{ flexDirection: 'row', gap: 4, marginTop: 14 }}>
-              {TIERS.map((tier, i) => (
-                <View key={tier.name} style={{ flex: 1, alignItems: 'center' }}>
-                  <View
+                {hoursLeft != null && (
+                  <Text
                     style={{
-                      height: 8,
-                      width: '100%',
-                      backgroundColor: i <= 3 ? '#0A1430' : 'rgba(0,0,0,0.18)',
-                      borderRadius: 4,
-                    }}
-                  />
-                  <Mono
-                    style={{
-                      fontSize: 8,
-                      color: tier.current ? '#0A1430' : 'rgba(0,0,0,0.4)',
-                      marginTop: 4,
-                      letterSpacing: 0.32,
+                      fontFamily: FONTS.body700,
+                      fontSize: 13,
+                      color: 'rgba(255,255,255,0.92)',
+                      marginTop: 2,
                     }}
                   >
-                    {tier.short}
-                  </Mono>
-                </View>
-              ))}
+                    {hoursLeft > 24
+                      ? `${Math.floor(hoursLeft / 24)} gün ${hoursLeft % 24} sa kaldı`
+                      : `${hoursLeft} sa kaldı`}
+                  </Text>
+                )}
+              </View>
             </View>
           </View>
         </SafeAreaView>
       </View>
 
-      <ScrollView
-        style={{ flex: 1 }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#F2C14E"
-            colors={['#F2C14E']}
-          />
-        }
+      {/* ═════ PERIOD NAV (Haftalık aktif, Aylık → /league/monthly) ═════ */}
+      <View
+        style={{
+          flexDirection: 'row',
+          backgroundColor: '#FFFFFF',
+          borderBottomWidth: 1,
+          borderBottomColor: '#EDEFF3',
+        }}
       >
-        {totalXp === 0 && (
-          <View style={{ padding: 16 }}>
-            <EmptyState
-              icon="🏁"
-              message={t(
-                'screens.league.zeroXpEmpty',
-                'XP kazanmak için ilk dersi tamamla. Lig haftada bir sıfırlanır.',
-              )}
-            />
-          </View>
-        )}
         <View
           style={{
-            backgroundColor: '#FFFFFF',
-            paddingHorizontal: 16,
-            paddingVertical: 20,
-            borderBottomWidth: 1,
-            borderBottomColor: '#DCE0E8',
+            flex: 1,
+            paddingVertical: 12,
+            alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: '#E63946',
           }}
         >
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', gap: 8 }}>
-            <Podium rank={2} name="M. Aydın" xp="4,205" color="#B8BFCC" h={64} />
-            <Podium rank={1} name="Captain Sky" xp="4,820" color="#F2C14E" h={88} crown />
-            <Podium rank={3} name="José L." xp="3,940" color="#FF7847" h={48} />
-          </View>
+          <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#E63946' }}>
+            Haftalık
+          </Text>
         </View>
+        <PeriodTabLink label="Aylık" route="/league/monthly" />
+        <PeriodTabLink label="Yıllık" route="/league/yearly" />
+        <PeriodTabLink label="Yarışmalar" route="/competitions" />
+      </View>
 
-        {/* NPC simulator disclaimer — gerçek kullanıcılarla yarış değil */}
-        <View
-          style={{
-            marginHorizontal: 16,
-            marginTop: 12,
-            backgroundColor: 'rgba(255,213,107,0.18)',
-            borderWidth: 1,
-            borderColor: 'rgba(242,193,78,0.6)',
-            borderRadius: 12,
-            padding: 12,
-            flexDirection: 'row',
-            gap: 8,
-          }}
-          accessibilityRole="alert"
-        >
-          <Text style={{ fontSize: 16 }}>ℹ️</Text>
-          <View style={{ flex: 1 }}>
-            <Mono style={{ fontSize: 10, color: '#7A5400', letterSpacing: 0.9 }}>
-              {t('screens.league.demoEyebrow', 'DEMO LİG')}
-            </Mono>
-            <Body color="#5A4500" style={{ fontSize: 12, marginTop: 2, lineHeight: 17 }}>
-              {t(
-                'screens.league.demoBody',
-                'Rakipler simulator NPC. Gerçek kullanıcılarla yarış Yıl 1 sonu açılır.',
-              )}
-            </Body>
-          </View>
-        </View>
-
-        <View style={{ padding: 16 }}>
-          {PLAYERS.map((p) => (
-            <View
-              key={p.rank}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                paddingVertical: 12,
-                paddingHorizontal: 14,
-                marginBottom: 6,
-                backgroundColor: p.you ? '#FFE4E7' : '#FFFFFF',
-                borderRadius: 14,
-                borderWidth: p.you ? 2 : 1.5,
-                borderColor: p.you ? '#E63946' : '#DCE0E8',
-              }}
-            >
-              <Mono
-                style={{
-                  fontSize: 14,
-                  fontWeight: '700',
-                  color: p.you ? '#E63946' : '#5A6478',
-                  width: 24,
-                }}
-              >
-                {p.rank}
-              </Mono>
-              <Avatar
-                initials={p.name.split(' ')[0]?.[0] ?? '?'}
-                color={p.you ? '#E63946' : '#0F1E47'}
-                size={36}
-              />
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#0E1116' }}>
-                  {p.you ? `${t('screens.league.you')} · ${p.name}` : p.name}
-                </Text>
-                <Mono style={{ fontSize: 11, color: '#8A93A6' }}>
-                  {p.country} · {p.xp.toLocaleString()} XP
+      {/* ═════ CLASS LADDER ═════ */}
+      <View style={{ paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#EDEFF3' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          {CLASS_ORDER.map((c) => {
+            const isCurrent = c === group.class_tier;
+            const meta = CLASS_META[c];
+            return (
+              <View key={c} style={{ alignItems: 'center', flex: 1 }}>
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 15,
+                    backgroundColor: isCurrent ? meta.color : '#F4F2EC',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: isCurrent ? 1 : 0.6,
+                  }}
+                >
+                  <Text style={{ fontSize: 14 }}>{meta.emoji}</Text>
+                </View>
+                <Mono
+                  style={{
+                    fontSize: 8,
+                    color: isCurrent ? meta.color : '#8A93A6',
+                    letterSpacing: 0.6,
+                    marginTop: 4,
+                    fontFamily: FONTS.mono700,
+                  }}
+                >
+                  {meta.label.toUpperCase().slice(0, 5)}
                 </Mono>
               </View>
-              {p.rank <= 3 && (
-                <Text style={{ fontSize: 18 }}>{p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : '🥉'}</Text>
-              )}
-            </View>
-          ))}
+            );
+          })}
+        </View>
+      </View>
 
-          <View
-            style={{
-              marginTop: 12,
-              padding: 8,
-              borderTopWidth: 2,
-              borderTopColor: '#2DBE6C',
-              borderStyle: 'dashed',
-              alignItems: 'center',
-            }}
-          >
-            <Mono style={{ fontSize: 11, color: '#2DBE6C', letterSpacing: 1.1 }}>
-              {t('screens.league.safeZone')}
-            </Mono>
-          </View>
+      {/* ═════ LEADERBOARD ═════ */}
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ padding: 16 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+          <Eyebrow>Sıralama</Eyebrow>
+          <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
+            {totalMembers} kişi
+          </Mono>
+        </View>
+
+        {lGroup && rows.length === 0 ? (
+          <ActivityIndicator color="#E63946" style={{ marginTop: 24 }} />
+        ) : (
+          rows.map((r, idx) => (
+            <LeaderboardRow
+              key={r.membership_id}
+              entry={r}
+              isPromotionZone={promoCutoff > 0 && (r.rank ?? idx + 1) <= promoCutoff}
+              isDemotionZone={demoCutoff > 0 && (r.rank ?? idx + 1) >= demoStartRank}
+              animDelay={idx * 30}
+            />
+          ))
+        )}
+
+        {/* Promotion / demotion zone divider'ları görsel olarak satırlarda — alt notu */}
+        <View style={{ marginTop: 16, padding: 12, backgroundColor: '#FFFFFF', borderRadius: 10, borderWidth: 1, borderColor: '#EDEFF3' }}>
+          <Body color="#5A6478" style={{ fontSize: 12, lineHeight: 18 }}>
+            Hafta sonunda <Text style={{ fontFamily: FONTS.body700, color: '#118040' }}>top 10 yükselir</Text>
+            {group.class_tier !== 'bronze' && (
+              <>
+                ,{' '}
+                <Text style={{ fontFamily: FONTS.body700, color: '#E63946' }}>son 10 düşer</Text>
+              </>
+            )}
+            . Top 3'e coin + birinciye haftalık şampiyon rozeti.
+          </Body>
         </View>
       </ScrollView>
-
-      {!coachSeen && (
-        <CoachMark
-          text="Ligde her hafta XP topla, 7 tier yüksel. Yıl 1 sonu gerçek kullanıcılarla yarışacaksın."
-          onDismiss={() => markCoachSeen('league_first_open')}
-          ctaLabel="Anladım ✈"
-        />
-      )}
     </View>
   );
 }
 
-function Podium({
-  rank,
-  name,
-  xp,
-  color,
-  h,
-  crown,
+// ─── Period tab link ──────────────────────────────────────────────────────
+function PeriodTabLink({
+  label,
+  route,
+  disabled,
 }: {
-  rank: number;
-  name: string;
-  xp: string;
-  color: string;
-  h: number;
-  crown?: boolean;
+  label: string;
+  route: string;
+  disabled?: boolean;
 }) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', gap: 6 }}>
-      {crown && <Text style={{ fontSize: 24 }}>👑</Text>}
-      <Avatar initials={name.split(' ')[0]?.[0] ?? '?'} color={color} size={48} />
-      <Text
-        style={{
-          fontFamily: FONTS.body700,
-          fontSize: 12,
-          color: '#0E1116',
-          textAlign: 'center',
-        }}
-      >
-        {name}
+    <TouchableOpacity
+      onPress={() => !disabled && router.push(route as any)}
+      activeOpacity={0.85}
+      disabled={disabled}
+      style={{
+        flex: 1,
+        paddingVertical: 12,
+        alignItems: 'center',
+        opacity: disabled ? 0.4 : 1,
+      }}
+    >
+      <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#5A6478' }}>
+        {label}
       </Text>
-      <Mono style={{ fontSize: 10, color: '#8A93A6' }}>{xp}</Mono>
-      <View
-        style={{
-          width: '100%',
-          height: h,
-          backgroundColor: color,
-          borderRadius: 8,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 4,
-        }}
-      >
-        <Text style={{ fontFamily: FONTS.display, fontSize: 24, fontWeight: '700', color: '#0A1430' }}>
-          {rank}
+    </TouchableOpacity>
+  );
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────
+function EmptyLeague() {
+  return (
+    <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', padding: 32 }}>
+      <View style={{ alignItems: 'center', gap: 14 }}>
+        <Text style={{ fontSize: 64 }}>🏁</Text>
+        <Text
+          style={{
+            fontFamily: FONTS.display,
+            fontSize: 22,
+            fontWeight: '700',
+            color: '#0F1E47',
+            textAlign: 'center',
+          }}
+        >
+          Lige hoş geldin
         </Text>
+        <Body color="#5A6478" style={{ fontSize: 14, textAlign: 'center', maxWidth: 280 }}>
+          İlk dersini tamamla — sistem seni rolüne ve seviyene uygun bir Bronz grubuna
+          yerleştirir. Haftalık yarış başlar.
+        </Body>
+        <View style={{ marginTop: 12, width: 220 }}>
+          <Button3D
+            variant="primary"
+            fullWidth
+            onPress={() => router.push('/(tabs)/learn')}
+          >
+            İlk dersine başla
+          </Button3D>
+        </View>
       </View>
     </View>
+  );
+}
+
+// ─── Leaderboard Row ──────────────────────────────────────────────────────
+function LeaderboardRow({
+  entry,
+  isPromotionZone,
+  isDemotionZone,
+  animDelay,
+}: {
+  entry: LeagueLeaderboardEntry;
+  isPromotionZone: boolean;
+  isDemotionZone: boolean;
+  animDelay: number;
+}) {
+  const initials = (entry.full_name ?? entry.username ?? 'PI').slice(0, 2).toUpperCase();
+  const displayName = entry.full_name ?? entry.username ?? 'Pilot';
+
+  const bg = entry.is_self
+    ? '#FFF1F2'
+    : isPromotionZone
+      ? '#F0FBF3'
+      : isDemotionZone
+        ? '#FFF5F5'
+        : '#FFFFFF';
+
+  const borderColor = entry.is_self
+    ? '#E63946'
+    : isPromotionZone
+      ? '#9CE0B0'
+      : isDemotionZone
+        ? '#F4B4B4'
+        : '#EDEFF3';
+
+  const rankColor = isPromotionZone
+    ? '#118040'
+    : isDemotionZone
+      ? '#B81F3D'
+      : '#5A6478';
+
+  return (
+    <Animated.View
+      entering={FadeInUp.delay(animDelay).duration(280)}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        padding: 12,
+        marginBottom: 8,
+        backgroundColor: bg,
+        borderRadius: 12,
+        borderWidth: entry.is_self ? 2 : 1,
+        borderColor,
+      }}
+    >
+      <View style={{ width: 28, alignItems: 'center' }}>
+        <Text
+          style={{
+            fontFamily: FONTS.display,
+            fontSize: 16,
+            fontWeight: '700',
+            color: rankColor,
+          }}
+        >
+          {entry.rank ?? '—'}
+        </Text>
+      </View>
+      <Avatar initials={initials} imageUrl={entry.avatar_url} size={36} color="#0F1E47" />
+      <View style={{ flex: 1 }}>
+        <Text
+          style={{
+            fontFamily: FONTS.body700,
+            fontSize: 14,
+            color: entry.is_self ? '#E63946' : '#0E1116',
+          }}
+          numberOfLines={1}
+        >
+          {entry.is_self ? `${displayName} (sen)` : displayName}
+        </Text>
+        <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.8, marginTop: 1 }}>
+          {entry.week_xp.toLocaleString('tr-TR')} XP
+        </Mono>
+      </View>
+      {(isPromotionZone || isDemotionZone) && (
+        <Mono
+          style={{
+            fontSize: 9,
+            color: rankColor,
+            letterSpacing: 1,
+            fontFamily: FONTS.mono700,
+          }}
+        >
+          {isPromotionZone ? '↑ TERFİ' : '↓ DÜŞÜŞ'}
+        </Mono>
+      )}
+    </Animated.View>
   );
 }

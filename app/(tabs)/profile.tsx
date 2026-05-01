@@ -1,12 +1,12 @@
 /**
  * Profile Screen — Pilot Logbook
  *
- * Tasarım birebir (screens-other.jsx Profile):
- * - Header: navy + avatar + "Captain Ekrem" + callsign + role
- * - Stats grid: XP / Streak / Level / Lessons (4 hücre)
- * - Heatmap: 7x12 grid (12 hafta) — green/red/empty
- * - Badges row (3-4 earned + locked)
- * - Settings link, Language link, Logout
+ * Sprint 3a refactor:
+ * - DynamicGreeting + Hero (avatar uploadable) — useProfile hook'tan beslenir
+ * - StatStrip (XP / Streak / Rozet) — Reanimated entry + count-up
+ * - LevelMap — XP bar + milestone marker
+ * - ActivityHeatmap (84 gün) — ayrı component, stagger entry
+ * - Badges + Settings + SignOut korunur
  */
 import { useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
@@ -14,42 +14,95 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
-import { useGamificationStore } from '@/stores/gamificationStore';
+import {
+  useGamificationStore,
+  calculateLevelFromXp,
+} from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
 import { useAirlines } from '@/features/content/api';
+import { useProfile } from '@/features/profile/useProfile';
 import {
-  HHero,
-  H2,
+  useUserExperiences,
+  useUserEducation,
+  useUserCertifications,
+  useUserTypeRatings,
+} from '@/features/profile/api';
+import { useBadgeTemplates, useUserBadges } from '@/features/badges/api';
+import { useUserXpSummary, useLeagueMembership } from '@/features/league/api';
+import { useUserChampionships } from '@/features/league/championships';
+import { LeagueChip } from '@/components/profile/LeagueChip';
+import { ChampionshipsSection } from '@/components/profile/ChampionshipsSection';
+import { Hero } from '@/components/profile/Hero';
+import { StatStrip } from '@/components/profile/StatStrip';
+import { LevelMap } from '@/components/profile/LevelMap';
+import { SkillRadar } from '@/components/oral/SkillRadar';
+import { IcaoTrend } from '@/components/oral/IcaoTrend';
+import { IcaoTimeline } from '@/components/oral/IcaoTimeline';
+import { useUserOralHistory, aggregateRubric } from '@/features/oral/api';
+import { useGoalsProgress, usePeerComparison } from '@/features/stats/api';
+import { PlacementCard } from '@/components/placement/PlacementCard';
+import {
+  ActivityHeatmap,
+  type HeatmapBucket,
+} from '@/components/profile/ActivityHeatmap';
+import { DynamicGreeting } from '@/components/profile/DynamicGreeting';
+import { SummaryCard } from '@/components/profile/SummaryCard';
+import {
+  BioSection,
+  ExperienceTimeline,
+  EducationSection,
+  CertificationsSection,
+  TypeRatingsSection,
+  AviationLevelSection,
+  SocialGrid,
+} from '@/components/profile/ProfileSections';
+import {
   Body,
   Eyebrow,
   Mono,
   FONTS,
-  Avatar,
   Button3D,
-  Card3D,
-  StreakChip,
 } from '@/components/airspeak';
 import { getCurrentLanguage } from '@/lib/i18n';
+
+const HEATMAP_DAYS = 84;
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
+  const { profile } = useProfile(user?.id);
   const role = useOnboardingStore((s) => s.role);
   const { data: airlines = [] } = useAirlines();
   const placement = useOnboardingStore((s) => s.placementResult);
-  const totalXp = useGamificationStore((s) => s.totalXp ?? 0);
-  const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
+  const localTotalXp = useGamificationStore((s) => s.totalXp ?? 0);
+  const localStreak = useGamificationStore((s) => s.currentStreak ?? 0);
+  // DB source of truth (Sprint 4B.2). Yoksa local fallback.
+  const { row: xpSummary } = useUserXpSummary(user?.id);
+  const { membership: lgMembership, group: lgGroup } = useLeagueMembership(user?.id);
+  const { rows: championships } = useUserChampionships(user?.id);
+  // Sprint 7.D.2 + 7.F — son 30 oral attempt (trend 8 hafta, timeline 8 satır)
+  const { rows: oralHistory } = useUserOralHistory(user?.id, 30);
+  const oralRubric = useMemo(() => aggregateRubric(oralHistory.slice(0, 10)), [oralHistory]);
+  // Sprint 3e.E — detaylı istatistik mini önizleme
+  const { goals } = useGoalsProgress(user?.id);
+  const { peer } = usePeerComparison(user?.id);
+  const totalXp = xpSummary?.total_xp ?? localTotalXp;
+  const currentStreak = localStreak; // streak DB henüz lazy sync — local first
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
-  // Selector method'a (yeni array döndüren) çağrı yapmak sonsuz render döngüsü
-  // tetikler. Sadece raw history alıp useMemo'da hesapla.
   const history = useLessonHistoryStore((s) => s.history);
-  const heatmapBuckets = useMemo(() => {
-    const HEATMAP_DAYS = 84; // 12 hafta × 7 gün
+  const { badges: badgeTemplates } = useBadgeTemplates();
+  const { rows: userBadges } = useUserBadges(user?.id);
+  const { rows: experiences } = useUserExperiences(user?.id);
+  const { rows: education } = useUserEducation(user?.id);
+  const { rows: certifications } = useUserCertifications(user?.id);
+  const { rows: typeRatings } = useUserTypeRatings(user?.id);
+
+  const heatmapBuckets = useMemo<HeatmapBucket[]>(() => {
     const map = new Map(history.map((e) => [e.date, e.count]));
-    const out: { date: string; count: number }[] = [];
+    const out: HeatmapBucket[] = [];
     const today = new Date();
     for (let i = HEATMAP_DAYS - 1; i >= 0; i--) {
       const d = new Date(today);
@@ -62,15 +115,20 @@ export default function ProfileScreen() {
     }
     return out;
   }, [history]);
+
   const activeDayCount = useMemo(
     () => history.filter((e) => e.count > 0).length,
     [history],
   );
+
   const lang = getCurrentLanguage();
 
-  const level = placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
-  const username = user?.email?.split('@')[0] ?? 'pilot';
-  const initials = username.slice(0, 2).toUpperCase();
+  const placementLevel =
+    placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
+  const username = profile?.username ?? user?.email?.split('@')[0] ?? 'pilot';
+  const displayName = profile?.full_name ?? username;
+  const initials = (displayName || username).slice(0, 2).toUpperCase();
+  const avatarUrl = profile?.avatar_url ?? null;
 
   const roleLabel = {
     pilot: 'Pilot',
@@ -79,6 +137,23 @@ export default function ProfileScreen() {
     ground: 'Ground Ops',
     student: 'Student',
   }[role ?? 'student'];
+
+  const xpLevel = calculateLevelFromXp(totalXp);
+
+  // Rozet sayısı — DB'den (gerçek user_badges count)
+  const earnedBadges = userBadges.length;
+  const earnedIdSet = useMemo(
+    () => new Set(userBadges.map((u) => u.badge_id)),
+    [userBadges],
+  );
+  const previewBadges = useMemo(() => {
+    if (badgeTemplates.length === 0) return [];
+    const earned = badgeTemplates.filter((b) => earnedIdSet.has(b.id));
+    if (earned.length >= 6) return earned.slice(0, 6);
+    // Earned + ilk locked'larla 6'a tamamla
+    const locked = badgeTemplates.filter((b) => !earnedIdSet.has(b.id));
+    return [...earned, ...locked].slice(0, 6);
+  }, [badgeTemplates, earnedIdSet]);
 
   const handleSignOut = () => {
     Alert.alert(t('screens.profile.signOut'), t('screens.profile.signOutConfirm'), [
@@ -102,148 +177,292 @@ export default function ProfileScreen() {
           <View
             style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 22 }}
             accessibilityRole="header"
-            accessibilityLabel={`${roleLabel}, ${username}, Level ${level}`}
+            accessibilityLabel={`${roleLabel}, ${displayName}, Level ${placementLevel}`}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-              <Avatar initials={initials} color="#E63946" size={64} />
-              <View style={{ flex: 1 }}>
-                <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
-                  {t('screens.profile.captain')}
-                </Mono>
-                <Text
-                  style={{
-                    fontFamily: FONTS.display,
-                    fontSize: 26,
-                    fontWeight: '700',
-                    color: '#FFFFFF',
-                    letterSpacing: -0.52,
-                    marginTop: 2,
-                    lineHeight: 28,
-                  }}
-                >
-                  {username}
-                </Text>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 6 }}>
-                  <View
-                    style={{
-                      backgroundColor: 'rgba(255,255,255,0.12)',
-                      paddingHorizontal: 8,
-                      paddingVertical: 2,
-                      borderRadius: 6,
-                    }}
-                  >
-                    <Mono style={{ fontSize: 11, color: '#FFFFFF', letterSpacing: 0.88 }}>
-                      {roleLabel}
-                    </Mono>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: '#F2C14E',
-                      paddingHorizontal: 8,
-                      paddingVertical: 2,
-                      borderRadius: 6,
-                    }}
-                  >
-                    <Mono style={{ fontSize: 11, color: '#0A1430', letterSpacing: 0.88 }}>
-                      LEVEL {level}
-                    </Mono>
-                  </View>
-                </View>
-              </View>
+            <View style={{ marginBottom: 10 }}>
+              <DynamicGreeting name={displayName} streak={currentStreak} />
             </View>
+            {user?.id ? (
+              <Hero
+                userId={user.id}
+                displayName={displayName}
+                avatarUrl={avatarUrl}
+                initials={initials}
+                roleLabel={roleLabel}
+                level={String(placementLevel)}
+              />
+            ) : null}
+            {lgGroup && (
+              <View style={{ marginTop: 12 }}>
+                <LeagueChip
+                  classTier={lgGroup.class_tier}
+                  rank={lgMembership?.rank ?? null}
+                />
+              </View>
+            )}
           </View>
         </SafeAreaView>
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* Stats grid — 4 cells */}
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 18 }}>
-          <StatCell label={t('screens.profile.xp')} value={totalXp.toLocaleString()} accent="#E63946" />
-          <StatCell label={t('screens.profile.streak')} value={`${currentStreak}d`} accent="#FF7847" />
-          <StatCell label={t('screens.profile.level')} value={level} accent="#0F1E47" />
-          <StatCell label={t('screens.profile.lessons')} value={String(completedCount)} accent="#2DBE6C" />
+        {/* Profesyonel özet + completion CTA */}
+        {profile && (
+          <View style={{ marginBottom: 18 }}>
+            <SummaryCard
+              position={profile.position}
+              company={profile.company}
+              baseAirport={profile.base_airport}
+              city={profile.city}
+              country={profile.country}
+              bioShort={profile.bio_short}
+              completionPercent={profile.profile_completion_percent}
+            />
+          </View>
+        )}
+
+        {/* Stat strip — 3 hücre */}
+        <View style={{ marginBottom: 18 }}>
+          <StatStrip
+            totalXp={totalXp}
+            currentStreak={currentStreak}
+            badgeCount={earnedBadges}
+            leagueRank={lgMembership?.rank ?? null}
+          />
         </View>
 
-        {/* Heatmap — 12 hafta x 7 gün, gerçek aktivite */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <Eyebrow>{t('screens.profile.flightLog')}</Eyebrow>
-          {activeDayCount > 0 && (
-            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
-              {t('screens.profile.activeDays', '{{n}} aktif gün · 84', { n: activeDayCount })}
-            </Mono>
-          )}
-        </View>
-        <Card3D style={{ marginTop: 8, marginBottom: 18, padding: 14 }}>
-          {activeDayCount === 0 ? (
-            <View style={{ alignItems: 'center', paddingVertical: 18, gap: 8 }}>
-              <Text style={{ fontSize: 32 }}>📅</Text>
-              <Body color="#5A6478" style={{ fontSize: 13, textAlign: 'center', maxWidth: 240 }}>
-                {t(
-                  'screens.profile.heatmapEmpty',
-                  'Henüz aktivite yok. İlk dersi tamamla, heatmap dolmaya başlasın.',
-                )}
-              </Body>
+        {/* Sprint 3e.E — Detaylı istatistik CTA + mini önizleme */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => router.push('/profile/stats' as any)}
+          style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: 14,
+            borderWidth: 1.5,
+            borderColor: '#DCE0E8',
+            borderBottomWidth: 4,
+            borderBottomColor: '#DCE0E8',
+            padding: 14,
+            marginBottom: 18,
+          }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <View
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 10,
+                backgroundColor: '#FFE4E7',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>📊</Text>
             </View>
-          ) : (
-            <>
-              <View style={{ gap: 4 }}>
-                {Array.from({ length: 7 }).map((_, dayIdx) => (
-                  <View key={dayIdx} style={{ flexDirection: 'row', gap: 4 }}>
-                    {Array.from({ length: 12 }).map((_, weekIdx) => {
-                      // 84 günlük dizi 12 hafta × 7 gün, eski → yeni
-                      // Grid'de satır = haftanın günü (0=Mon), kolon = hafta indexi
-                      const bucketIdx = weekIdx * 7 + dayIdx;
-                      const bucket = heatmapBuckets[bucketIdx];
-                      const count = bucket?.count ?? 0;
-                      const color = countToColor(count);
-                      return (
-                        <View
-                          key={weekIdx}
-                          style={{
-                            flex: 1,
-                            height: 14,
-                            borderRadius: 3,
-                            backgroundColor: color,
-                          }}
-                        />
-                      );
-                    })}
-                  </View>
-                ))}
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginTop: 10,
-                  alignItems: 'center',
-                }}
-              >
-                <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
-                  {t('screens.profile.less')}
-                </Mono>
-                <View style={{ flexDirection: 'row', gap: 3 }}>
-                  {['#EDEFF3', '#DDF7E6', '#4FD487', '#2DBE6C'].map((c) => (
-                    <View key={c} style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: c }} />
-                  ))}
-                </View>
-                <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 0.9 }}>
-                  {t('screens.profile.more')}
-                </Mono>
-              </View>
-            </>
-          )}
-        </Card3D>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: FONTS.body800, fontSize: 14, color: '#0E1116' }}>
+                Detaylı İstatistik
+              </Text>
+              <Mono style={{ fontSize: 9, color: '#8A93A6', letterSpacing: 0.9, marginTop: 2 }}>
+                XP TRENDİ · ÇALIŞMA SAATİ · AKRAN KIYASLAMASI
+              </Mono>
+            </View>
+            <Text style={{ fontSize: 18, color: '#8A93A6' }}>›</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 6,
+              paddingTop: 10,
+              borderTopWidth: 1,
+              borderTopColor: '#EDEFF3',
+            }}
+          >
+            <MiniStat
+              label="BU HAFTA"
+              value={goals ? `${goals.week_xp.toLocaleString('tr-TR')} XP` : '—'}
+              tone="#E63946"
+            />
+            <MiniStat
+              label="BUGÜN"
+              value={goals ? `${goals.today_minutes} dk` : '—'}
+              tone="#1F4FB6"
+            />
+            <MiniStat
+              label="AKRAN"
+              value={peer ? `%${Math.round(peer.week_xp_percentile)}` : '—'}
+              tone="#2DBE6C"
+            />
+          </View>
+        </TouchableOpacity>
 
-        {/* Badges — gerçek state'ten türetilir */}
-        <Eyebrow>{t('screens.profile.badges')}</Eyebrow>
+        {/* Sprint 3f.B — Placement testi durumu + retry */}
+        <View style={{ marginBottom: 18 }}>
+          <PlacementCard userId={user?.id} />
+        </View>
+
+        {/* Level map */}
+        <View style={{ marginBottom: 18 }}>
+          <LevelMap
+            level={xpLevel.level}
+            xpInLevel={xpLevel.xpInLevel}
+            xpToNextLevel={xpLevel.xpToNext}
+          />
+        </View>
+
+        {/* Sprint 4C — Şampiyonluklar (en son 3) */}
+        {championships.length > 0 && (
+          <View style={{ marginBottom: 18 }}>
+            <ChampionshipsSection rows={championships} />
+          </View>
+        )}
+
+        {/* Sprint 3c-B detay bölümleri */}
+        {profile?.bio_long ? (
+          <View style={{ marginBottom: 18 }}>
+            <BioSection bioLong={profile.bio_long} />
+          </View>
+        ) : null}
+
+        <View style={{ marginBottom: 18 }}>
+          <AviationLevelSection
+            icaoLevel={profile?.icao_english_level ?? null}
+            experienceYears={profile?.aviation_experience_years ?? null}
+          />
+        </View>
+
+        <View style={{ marginBottom: 18 }}>
+          <ExperienceTimeline items={experiences} />
+        </View>
+
+        <View style={{ marginBottom: 18 }}>
+          <EducationSection items={education} />
+        </View>
+
+        <View style={{ marginBottom: 18 }}>
+          <CertificationsSection items={certifications} />
+        </View>
+
+        {(role === 'pilot' || typeRatings.length > 0) && (
+          <View style={{ marginBottom: 18 }}>
+            <TypeRatingsSection items={typeRatings} />
+          </View>
+        )}
+
+        <View style={{ marginBottom: 18 }}>
+          <SocialGrid
+            linkedinUrl={profile?.linkedin_url ?? null}
+            instagram={profile?.instagram ?? null}
+            twitter={profile?.twitter ?? null}
+            youtube={profile?.youtube ?? null}
+            facebook={profile?.facebook ?? null}
+            website={profile?.website ?? null}
+          />
+        </View>
+
+        {/* Activity heatmap — 84 gün */}
+        <View style={{ marginBottom: 18 }}>
+          <ActivityHeatmap
+            buckets={heatmapBuckets}
+            activeDayCount={activeDayCount}
+            flightLogLabel={t('screens.profile.flightLog')}
+            activeDaysLabel={t(
+              'screens.profile.activeDays',
+              '{{n}} aktif gün · 84',
+              { n: activeDayCount },
+            )}
+            emptyLabel={t(
+              'screens.profile.heatmapEmpty',
+              'Henüz aktivite yok. İlk dersi tamamla, heatmap dolmaya başlasın.',
+            )}
+            lessLabel={t('screens.profile.less')}
+            moreLabel={t('screens.profile.more')}
+          />
+        </View>
+
+        {/* ICAO Skill Radar — son 10 oral attempt ortalaması (varsa) */}
+        {oralRubric && (
+          <>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Eyebrow>ICAO PERFORMANCE</Eyebrow>
+              <TouchableOpacity onPress={() => router.push('/exam/icao4-history' as any)} hitSlop={8}>
+                <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#E63946' }}>
+                  Geçmiş →
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderColor: '#DCE0E8',
+                padding: 16,
+                alignItems: 'center',
+                marginTop: 8,
+                marginBottom: 12,
+              }}
+            >
+              <SkillRadar rubric={oralRubric} size={200} />
+              <Mono style={{ fontSize: 9, color: '#8A93A6', letterSpacing: 0.9, marginTop: 6 }}>
+                SON {oralHistory.filter((r) => r.rubric).length} DENEMENİN ORTALAMASI · YEŞİL HALKA L4
+              </Mono>
+            </View>
+
+            {/* Trend (haftalık ortalama) */}
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderColor: '#DCE0E8',
+                padding: 14,
+                alignItems: 'center',
+                marginBottom: 12,
+              }}
+            >
+              <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.2, alignSelf: 'flex-start', marginBottom: 6 }}>
+                GELİŞİM TRENDİ (8 HAFTA)
+              </Mono>
+              <IcaoTrend attempts={oralHistory} weeks={8} />
+            </View>
+
+            {/* Timeline (son 8 attempt) */}
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderColor: '#DCE0E8',
+                padding: 14,
+                marginBottom: 18,
+              }}
+            >
+              <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.2, marginBottom: 10 }}>
+                ICAO SEVİYE GEÇMİŞİ
+              </Mono>
+              <IcaoTimeline attempts={oralHistory} limit={8} />
+            </View>
+          </>
+        )}
+
+        {/* Badges — DB'den ilk 6 (earned + locked'larla 6'a tamamlanır) */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Eyebrow>{t('screens.profile.badges')}</Eyebrow>
+          <TouchableOpacity onPress={() => router.push('/profile/badges')} hitSlop={8}>
+            <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#E63946' }}>
+              {t('screens.profile.badgesViewAll', 'Tümünü gör →')}
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8, marginBottom: 18 }}>
-          <BadgeCell emoji="🎙" name={t('screens.profile.badgeReadbackPro', 'Read-back Pro')} earned={completedCount >= 5} />
-          <BadgeCell emoji="🔥" name={t('screens.profile.badgeStreak', '7-gün streak')} earned={currentStreak >= 7} />
-          <BadgeCell emoji="✈" name={t('screens.profile.badgeLessons', '100 ders')} earned={completedCount >= 100} />
-          <BadgeCell emoji="🏆" name={t('screens.profile.badgeIcao', 'ICAO L4')} earned={(placement?.aviationEnglish?.label ?? '') === 'L4'} />
-          <BadgeCell emoji="👑" name={t('screens.profile.badgeLeague', 'Lig Captain')} earned={totalXp >= 4000} />
-          <BadgeCell emoji="⚡" name={t('screens.profile.badgeSpeed', 'XP 1000')} earned={totalXp >= 1000} />
+          {previewBadges.map((b) => (
+            <BadgeCell
+              key={b.id}
+              emoji={b.icon_emoji}
+              name={b.name_tr}
+              earned={earnedIdSet.has(b.id)}
+            />
+          ))}
         </View>
 
         {/* Settings rows */}
@@ -279,6 +498,28 @@ export default function ProfileScreen() {
             value={t('screens.profile.bookmarksDesc', 'Kaydettiğin vocab ve senaryolar')}
             onPress={() => router.push('/bookmarks')}
           />
+          <SettingsRow
+            icon="👥"
+            label={t('screens.profile.friends', 'Arkadaşlar')}
+            value={t('screens.profile.friendsDesc', 'Kullanıcı adıyla ekle, sıralamayı gör')}
+            onPress={() => router.push('/social/friends')}
+          />
+          <SettingsRow
+            icon="✈️"
+            label={t('screens.profile.squadrons', 'Squadrons')}
+            value={t('screens.profile.squadronsDesc', 'Squadron oluştur, katıl, takımca yarış')}
+            onPress={() => router.push('/social/squadrons')}
+          />
+          <SettingsRow
+            icon="💬"
+            label="Squadron Hub"
+            value={
+              (profile?.community_post_count ?? 0) > 0 || (profile?.community_follower_count ?? 0) > 0
+                ? `${profile?.community_post_count ?? 0} post · ${profile?.community_follower_count ?? 0} takipçi`
+                : 'Komünite — gruplar, postlar, tartışmalar'
+            }
+            onPress={() => router.push('/community' as any)}
+          />
         </View>
 
         {/* Sign out */}
@@ -290,41 +531,22 @@ export default function ProfileScreen() {
   );
 }
 
-function countToColor(count: number): string {
-  if (count <= 0) return '#EDEFF3';
-  if (count === 1) return '#DDF7E6';
-  if (count <= 3) return '#4FD487';
-  return '#2DBE6C';
-}
-
-function StatCell({ label, value, accent }: { label: string; value: string; accent: string }) {
+function MiniStat({ label, value, tone }: { label: string; value: string; tone: string }) {
   return (
     <View
       style={{
         flex: 1,
-        minWidth: '47%',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 14,
-        borderWidth: 1.5,
-        borderColor: '#DCE0E8',
-        borderBottomWidth: 4,
-        padding: 14,
+        backgroundColor: `${tone}11`,
+        borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 6,
+        alignItems: 'center',
       }}
     >
-      <Eyebrow>{label}</Eyebrow>
-      <Text
-        style={{
-          fontFamily: FONTS.display,
-          fontSize: 28,
-          fontWeight: '700',
-          color: accent,
-          letterSpacing: -0.56,
-          marginTop: 4,
-          lineHeight: 30,
-        }}
-      >
-        {value}
-      </Text>
+      <Text style={{ fontFamily: FONTS.body800, fontSize: 14, color: tone }}>{value}</Text>
+      <Mono style={{ fontSize: 8, color: '#8A93A6', letterSpacing: 0.8, marginTop: 2 }}>
+        {label}
+      </Mono>
     </View>
   );
 }

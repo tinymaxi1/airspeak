@@ -54,8 +54,8 @@ export default function GoalsScreen() {
       level: placement?.level ?? null,
       daily_goal: selected,
     });
-    // Goals sonra tour'a (ilk kez), sonra home
-    router.replace('/onboarding-tour');
+    // Goals → profile-setup (Sprint 3c-A) → tour → home
+    router.replace('/(auth)/onboarding/profile-setup');
   };
 
   return (
