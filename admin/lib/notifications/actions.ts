@@ -10,6 +10,7 @@
 import { revalidatePath } from 'next/cache';
 import { createServiceClient } from '@/lib/supabase/server';
 import { requireAdminRole } from '@/lib/auth/guard';
+import { broadcastSchema, formatZodError } from '@/lib/validation';
 
 export interface BroadcastPayload {
   audience: 'all' | 'free' | 'premium' | string; // 'role:pilot', 'level:B2'
@@ -25,9 +26,12 @@ export async function sendBroadcast(
   const profile = await requireAdminRole('super_admin');
   const supabase = createServiceClient();
 
-  if (!payload.title || !payload.body) {
-    return { ok: false, error: 'Başlık ve mesaj zorunlu' };
+  // Sprint 7.D — Zod validation
+  const parsed = broadcastSchema.safeParse(payload);
+  if (!parsed.success) {
+    return { ok: false, error: formatZodError(parsed.error) };
   }
+  payload = parsed.data;
 
   // Edge fn URL config
   const { data: edgeUrlRow } = await (supabase as any)
