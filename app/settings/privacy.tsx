@@ -56,13 +56,54 @@ export default function PrivacySettingsScreen() {
     }
   }
 
+  const [deletionStatus, setDeletionStatus] = useState<{
+    pending: boolean;
+    daysRemaining?: number;
+  }>({ pending: false });
+
+  useEffect(() => {
+    if (!userId) return;
+    void (async () => {
+      const { data } = await (supabase as any).rpc('get_account_deletion_status');
+      if (data?.pending) {
+        setDeletionStatus({
+          pending: true,
+          daysRemaining: data.days_remaining,
+        });
+      }
+    })();
+  }, [userId]);
+
   const handleExportData = () => {
     Alert.alert(
       t('settings.privacy.exportTitle', 'Verilerini İndir'),
-      t('settings.privacy.exportBody', 'Tüm verilerin JSON formatında 24 saat içinde email ile gönderilecek.'),
+      t(
+        'settings.privacy.exportBody',
+        'Tüm verilerin JSON formatında 24 saat içinde email ile gönderilecek.',
+      ),
       [
         { text: t('common.cancel', 'İptal'), style: 'cancel' },
-        { text: t('settings.privacy.requestExport', 'Talep gönder'), onPress: () => {} },
+        {
+          text: t('settings.privacy.requestExport', 'Talep gönder'),
+          onPress: async () => {
+            const { data, error } = await (supabase as any).rpc('request_data_export');
+            if (error) {
+              Alert.alert(t('common.error', 'Hata'), error.message);
+              return;
+            }
+            if (data?.ok === false) {
+              Alert.alert(
+                t('settings.privacy.exportTitle', 'Verilerini İndir'),
+                data.message ?? 'İstek alınamadı',
+              );
+              return;
+            }
+            Alert.alert(
+              t('common.success', 'Tamam'),
+              data?.message ?? 'İstek alındı. 24 saat içinde email gelecek.',
+            );
+          },
+        },
       ],
     );
   };
@@ -70,15 +111,60 @@ export default function PrivacySettingsScreen() {
   const handleDeleteAccount = () => {
     Alert.alert(
       t('settings.privacy.deleteTitle', 'Hesabı Sil'),
-      t('settings.privacy.deleteBody', 'Tüm verilerin 30 gün içinde kalıcı silinir. Bu işlem geri alınamaz.'),
+      t(
+        'settings.privacy.deleteBody',
+        'Tüm verilerin 30 gün sonra kalıcı silinir. Bu süre içinde giriş yaparak iptal edebilirsin.',
+      ),
       [
         { text: t('common.cancel', 'İptal'), style: 'cancel' },
         {
           text: t('settings.privacy.confirmDelete', 'Sil'),
           style: 'destructive',
           onPress: async () => {
-            await signOut();
-            router.replace('/(auth)/welcome');
+            const { data, error } = await (supabase as any).rpc('request_account_deletion');
+            if (error || data?.ok === false) {
+              Alert.alert(t('common.error', 'Hata'), error?.message ?? 'İşlem başarısız');
+              return;
+            }
+            Alert.alert(
+              t('settings.privacy.deletePendingTitle', 'Hesap silme talebi alındı'),
+              data?.message ??
+                '30 gün içinde giriş yaparak iptal edebilirsin. Aksi halde hesabın silinecek.',
+              [
+                {
+                  text: 'OK',
+                  onPress: async () => {
+                    await signOut();
+                    router.replace('/(auth)/welcome');
+                  },
+                },
+              ],
+            );
+          },
+        },
+      ],
+    );
+  };
+
+  const handleCancelDeletion = () => {
+    Alert.alert(
+      t('settings.privacy.cancelDeleteTitle', 'Silme talebini iptal et'),
+      t(
+        'settings.privacy.cancelDeleteBody',
+        'Hesabın aktif kalacak. Daha sonra tekrar talep edebilirsin.',
+      ),
+      [
+        { text: t('common.back', 'Geri'), style: 'cancel' },
+        {
+          text: t('common.confirm', 'Onayla'),
+          onPress: async () => {
+            const { data, error } = await (supabase as any).rpc('cancel_account_deletion');
+            if (error || data?.ok === false) {
+              Alert.alert(t('common.error', 'Hata'), error?.message ?? 'İşlem başarısız');
+              return;
+            }
+            setDeletionStatus({ pending: false });
+            Alert.alert(t('common.success', 'Tamam'), 'Hesap silme talebi iptal edildi.');
           },
         },
       ],
@@ -175,33 +261,51 @@ export default function PrivacySettingsScreen() {
             icon="📥"
             label={t('settings.privacy.export', 'Verilerimi indir (JSON)')}
             onPress={handleExportData}
-          />
-          <SettingsRow
-            icon="🔄"
-            label={t('settings.privacy.reset', 'İlerlemeyi sıfırla')}
-            onPress={() =>
-              Alert.alert(
-                t('settings.privacy.resetTitle', 'İlerleme sıfırla'),
-                t('settings.privacy.resetBody', 'Streak, XP, ders ilerlemen silinir. Hesabın kalır.'),
-                [
-                  { text: t('common.cancel', 'İptal'), style: 'cancel' },
-                  { text: t('settings.privacy.confirmReset', 'Sıfırla'), style: 'destructive' },
-                ],
-              )
-            }
             last
           />
         </View>
 
         <Eyebrow>{t('settings.privacy.danger', 'TEHLİKELİ ALAN')}</Eyebrow>
         <View style={{ marginTop: 8, paddingHorizontal: 4 }}>
-          <SettingsRow
-            icon="🗑"
-            label={t('settings.privacy.deleteAccount', 'Hesabı kalıcı sil')}
-            danger
-            onPress={handleDeleteAccount}
-            last
-          />
+          {deletionStatus.pending ? (
+            <>
+              <View
+                style={{
+                  backgroundColor: '#FFE4E7',
+                  borderRadius: 12,
+                  borderWidth: 1.5,
+                  borderColor: '#E63946',
+                  padding: 14,
+                  marginBottom: 8,
+                }}
+              >
+                <Text style={{ fontFamily: FONTS.body700, fontSize: 14, color: '#E63946' }}>
+                  {t('settings.privacy.pendingDeletion', 'Hesabın silinmek üzere')}
+                </Text>
+                <Body color="#5A6478" style={{ fontSize: 12, marginTop: 4 }}>
+                  {t(
+                    'settings.privacy.pendingDeletionBody',
+                    '{{days}} gün sonra kalıcı silinecek. İptal etmek için aşağıdan onayla.',
+                    { days: deletionStatus.daysRemaining ?? 30 },
+                  )}
+                </Body>
+              </View>
+              <SettingsRow
+                icon="↶"
+                label={t('settings.privacy.cancelDeletion', 'Silme talebini iptal et')}
+                onPress={handleCancelDeletion}
+                last
+              />
+            </>
+          ) : (
+            <SettingsRow
+              icon="🗑"
+              label={t('settings.privacy.deleteAccount', 'Hesabı kalıcı sil')}
+              danger
+              onPress={handleDeleteAccount}
+              last
+            />
+          )}
         </View>
 
         <Mono

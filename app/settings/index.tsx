@@ -70,6 +70,12 @@ export default function SettingsScreen() {
           onPress: () => router.push('/settings/profile-edit'),
         },
         {
+          icon: '🔐',
+          label: t('settings.account.title', 'Hesap'),
+          sub: t('settings.account.sub', 'Email & şifre değiştir'),
+          onPress: () => router.push('/settings/account'),
+        },
+        {
           icon: '🎯',
           label: t('screens.settings.target'),
           sub: t('screens.settings.targetDesc'),
@@ -79,7 +85,7 @@ export default function SettingsScreen() {
           icon: '✈',
           label: t('screens.settings.role'),
           sub: t('screens.settings.roleDesc'),
-          onPress: () => router.push('/(auth)/onboarding/role-select'),
+          onPress: () => router.push('/settings/role'),
         },
         {
           icon: '🪙',
@@ -143,6 +149,7 @@ export default function SettingsScreen() {
           label: t('screens.settings.deleteAccount'),
           sub: t('screens.settings.deleteAccountDesc'),
           danger: true,
+          onPress: () => router.push('/settings/privacy'),
         },
       ],
     },
