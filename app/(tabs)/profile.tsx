@@ -362,6 +362,12 @@ export default function ProfileScreen() {
             value={t('screens.profile.squadronsDesc', 'Squadron oluştur, katıl, takımca yarış')}
             onPress={() => router.push('/social/squadrons')}
           />
+          <SettingsRow
+            icon="💬"
+            label="Squadron Hub"
+            value="Komünite — gruplar, postlar, tartışmalar"
+            onPress={() => router.push('/community' as any)}
+          />
         </View>
 
         {/* Sign out */}
