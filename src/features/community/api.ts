@@ -638,3 +638,221 @@ export async function uploadPostImages(
   }
   return { ok: errors.length === 0, urls, errors };
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// 6.B.2 — Bookmarks + Hashtags + Search
+// ═══════════════════════════════════════════════════════════════════════
+
+export async function toggleBookmark(
+  postId: string,
+): Promise<{ ok: boolean; action?: 'added' | 'removed'; error?: string }> {
+  const { data, error } = await (supabase as any).rpc('toggle_community_bookmark', {
+    p_post_id: postId,
+  });
+  if (error) return { ok: false, error: error.message };
+  return data;
+}
+
+// Set of post IDs that the user has bookmarked (for toggle UI)
+export function useBookmarkSet(
+  userId: string | null | undefined,
+  postIds: string[],
+): { bookmarked: Set<string>; refresh: () => Promise<void> } {
+  const [bookmarked, setBookmarked] = useState<Set<string>>(new Set());
+  const idsKey = postIds.join(',');
+
+  const refresh = useCallback(async () => {
+    if (!userId || postIds.length === 0) {
+      setBookmarked(new Set());
+      return;
+    }
+    const { data } = await (supabase as any)
+      .from('community_bookmarks')
+      .select('post_id')
+      .eq('user_id', userId)
+      .in('post_id', postIds);
+    const set = new Set<string>();
+    for (const r of (data as any[]) ?? []) set.add(r.post_id);
+    setBookmarked(set);
+  }, [userId, idsKey]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { bookmarked, refresh };
+}
+
+// Kullanıcının bookmark'ladığı tüm postlar (full feed)
+export function useMyBookmarks(userId: string | null | undefined): {
+  rows: CommunityPost[];
+  loading: boolean;
+  refresh: () => Promise<void>;
+} {
+  const [rows, setRows] = useState<CommunityPost[]>([]);
+  const [loading, setLoading] = useState(!!userId);
+
+  const refresh = useCallback(async () => {
+    if (!userId) {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
+    const { data } = await (supabase as any)
+      .from('community_bookmarks')
+      .select(
+        'created_at, post:community_posts!inner(id, group_id, author_id, content, image_urls, pinned, comment_count, reaction_count, created_at, edited_at, status, author:profiles!community_posts_author_id_fkey(username, full_name, avatar_url))',
+      )
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    const mapped = ((data as any[]) ?? [])
+      .filter((r) => r.post && r.post.status === 'active')
+      .map((r): CommunityPost => {
+        const p = r.post;
+        return {
+          id: p.id,
+          group_id: p.group_id,
+          author_id: p.author_id,
+          content: p.content,
+          image_urls: p.image_urls ?? [],
+          pinned: !!p.pinned,
+          comment_count: p.comment_count ?? 0,
+          reaction_count: p.reaction_count ?? 0,
+          created_at: p.created_at,
+          edited_at: p.edited_at,
+          author_username: p.author?.username ?? null,
+          author_full_name: p.author?.full_name ?? null,
+          author_avatar_url: p.author?.avatar_url ?? null,
+        };
+      });
+    setRows(mapped);
+    setLoading(false);
+  }, [userId]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { rows, loading, refresh };
+}
+
+export interface TrendingHashtag {
+  tag: string;
+  usage_count: number;
+  last_used_at: string;
+}
+
+export function useTrendingHashtags(limit = 20, windowDays = 7): {
+  rows: TrendingHashtag[];
+  loading: boolean;
+  refresh: () => Promise<void>;
+} {
+  const [rows, setRows] = useState<TrendingHashtag[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    const { data } = await (supabase as any).rpc('get_trending_hashtags', {
+      p_limit: limit,
+      p_window_days: windowDays,
+    });
+    setRows((data as TrendingHashtag[]) ?? []);
+    setLoading(false);
+  }, [limit, windowDays]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { rows, loading, refresh };
+}
+
+// Hashtag feed
+export function usePostsByHashtag(tag: string | null | undefined, limit = 50): {
+  rows: CommunityPost[];
+  loading: boolean;
+  refresh: () => Promise<void>;
+} {
+  const [rows, setRows] = useState<CommunityPost[]>([]);
+  const [loading, setLoading] = useState(!!tag);
+
+  const refresh = useCallback(async () => {
+    if (!tag) {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
+    // Doğrudan SQL: get_posts_by_hashtag SETOF community_posts döndürür ama
+    // author join'i join'le ekleyelim (extra fetch).
+    const { data } = await (supabase as any)
+      .from('community_post_hashtags')
+      .select(
+        'post:community_posts!inner(id, group_id, author_id, content, image_urls, pinned, comment_count, reaction_count, created_at, edited_at, status, author:profiles!community_posts_author_id_fkey(username, full_name, avatar_url))',
+      )
+      .eq('tag', tag.toLowerCase())
+      .order('post(created_at)', { ascending: false })
+      .limit(limit);
+
+    const mapped = ((data as any[]) ?? [])
+      .filter((r) => r.post && r.post.status === 'active')
+      .map((r): CommunityPost => {
+        const p = r.post;
+        return {
+          id: p.id,
+          group_id: p.group_id,
+          author_id: p.author_id,
+          content: p.content,
+          image_urls: p.image_urls ?? [],
+          pinned: !!p.pinned,
+          comment_count: p.comment_count ?? 0,
+          reaction_count: p.reaction_count ?? 0,
+          created_at: p.created_at,
+          edited_at: p.edited_at,
+          author_username: p.author?.username ?? null,
+          author_full_name: p.author?.full_name ?? null,
+          author_avatar_url: p.author?.avatar_url ?? null,
+        };
+      });
+    setRows(mapped);
+    setLoading(false);
+  }, [tag, limit]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { rows, loading, refresh };
+}
+
+// Search community posts (ILIKE basit, FTS 6.D'de)
+export async function searchPosts(query: string, limit = 50): Promise<CommunityPost[]> {
+  if (!query.trim()) return [];
+  const { data } = await (supabase as any)
+    .from('community_posts')
+    .select(
+      'id, group_id, author_id, content, image_urls, pinned, comment_count, reaction_count, created_at, edited_at, status, author:profiles!community_posts_author_id_fkey(username, full_name, avatar_url)',
+    )
+    .eq('status', 'active')
+    .ilike('content', `%${query}%`)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  return ((data as any[]) ?? []).map(
+    (p): CommunityPost => ({
+      id: p.id,
+      group_id: p.group_id,
+      author_id: p.author_id,
+      content: p.content,
+      image_urls: p.image_urls ?? [],
+      pinned: !!p.pinned,
+      comment_count: p.comment_count ?? 0,
+      reaction_count: p.reaction_count ?? 0,
+      created_at: p.created_at,
+      edited_at: p.edited_at,
+      author_username: p.author?.username ?? null,
+      author_full_name: p.author?.full_name ?? null,
+      author_avatar_url: p.author?.avatar_url ?? null,
+    }),
+  );
+}

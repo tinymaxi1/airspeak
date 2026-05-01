@@ -54,6 +54,32 @@ export default function CommunityIndexScreen() {
             </Text>
           </View>
           <TouchableOpacity
+            onPress={() => router.push('/community/search' as any)}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: 'rgba(255,255,255,0.12)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>🔍</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push('/community/bookmarks' as any)}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: 'rgba(255,255,255,0.12)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>🔖</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => router.push('/community/new-group' as any)}
             style={{
               backgroundColor: 'rgba(255,255,255,0.12)',

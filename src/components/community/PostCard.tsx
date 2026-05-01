@@ -14,9 +14,11 @@ import {
   REACTION_KINDS,
   reactionEmoji,
   reactToggle,
+  toggleBookmark,
 } from '@/features/community/api';
 import { useAuthStore } from '@/stores/authStore';
-import { FONTS, Avatar, Mono, Body } from '@/components/airspeak';
+import { FONTS, Avatar, Mono } from '@/components/airspeak';
+import { RichText } from './RichText';
 
 const SCREEN_W = Dimensions.get('window').width;
 
@@ -32,16 +34,31 @@ function relTime(iso: string): string {
 interface Props {
   post: CommunityPost;
   myReactions?: Set<ReactionKind>;
+  bookmarked?: boolean;
   onReactionToggled?: (kind: ReactionKind, action: 'added' | 'removed') => void;
+  onBookmarkToggled?: (action: 'added' | 'removed') => void;
 }
 
-export function PostCard({ post, myReactions, onReactionToggled }: Props) {
+export function PostCard({
+  post,
+  myReactions,
+  bookmarked,
+  onReactionToggled,
+  onBookmarkToggled,
+}: Props) {
   const userId = useAuthStore((s) => s.user?.id);
 
   async function onReact(kind: ReactionKind) {
     if (!userId) return;
     const r = await reactToggle({ targetType: 'post', targetId: post.id, kind });
     if (r.ok && r.action) onReactionToggled?.(kind, r.action);
+  }
+
+  async function onBookmark(e: any) {
+    e?.stopPropagation?.();
+    if (!userId) return;
+    const r = await toggleBookmark(post.id);
+    if (r.ok && r.action) onBookmarkToggled?.(r.action);
   }
 
   return (
@@ -89,9 +106,8 @@ export function PostCard({ post, myReactions, onReactionToggled }: Props) {
         </View>
       </View>
 
-      <Body color="#0E1116" style={{ fontSize: 14, lineHeight: 21 }}>
-        {post.content}
-      </Body>
+      <RichText content={post.content} />
+
 
       {/* Image grid */}
       {post.image_urls.length > 0 && (
@@ -138,6 +154,9 @@ export function PostCard({ post, myReactions, onReactionToggled }: Props) {
             <Mono style={{ fontSize: 12, color: '#5A6478' }}>{post.reaction_count}</Mono>
           </View>
         )}
+        <TouchableOpacity onPress={onBookmark} style={{ marginLeft: 10, padding: 2 }}>
+          <Text style={{ fontSize: 16 }}>{bookmarked ? '🔖' : '📑'}</Text>
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );

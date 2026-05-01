@@ -182,6 +182,9 @@ export default function RootLayout() {
             <Stack.Screen name="community/[slug]" options={{ headerShown: false }} />
             <Stack.Screen name="community/new-group" options={{ headerShown: false, presentation: 'modal' }} />
             <Stack.Screen name="community/post/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="community/hashtag/[tag]" options={{ headerShown: false }} />
+            <Stack.Screen name="community/search" options={{ headerShown: false, presentation: 'modal' }} />
+            <Stack.Screen name="community/bookmarks" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-sets" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-briefing" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="exam/icao4-live" options={{ headerShown: false }} />

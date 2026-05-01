@@ -30,12 +30,14 @@ import {
   reactToggle,
   createComment,
   deletePost,
+  toggleBookmark,
   REACTION_KINDS,
   reactionEmoji,
   type CommunityPost,
   type ReactionKind,
 } from '@/features/community/api';
 import { CommentThread } from '@/components/community/CommentThread';
+import { RichText } from '@/components/community/RichText';
 import { supabase } from '@/lib/supabase';
 import { FONTS, Mono, Body, Avatar } from '@/components/airspeak';
 
@@ -58,6 +60,7 @@ export default function PostDetailScreen() {
   const [post, setPost] = useState<CommunityPost | null>(null);
   const [postLoading, setPostLoading] = useState(true);
   const [postReactions, setPostReactions] = useState<Set<ReactionKind>>(new Set());
+  const [bookmarked, setBookmarked] = useState(false);
 
   const { rows: comments, refresh: refreshComments } = useComments(postId);
   const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
@@ -115,9 +118,27 @@ export default function PostDetailScreen() {
     setPostReactions(set);
   }
 
+  async function loadBookmark() {
+    if (!userId || !postId) return;
+    const { data } = await (supabase as any)
+      .from('community_bookmarks')
+      .select('post_id')
+      .eq('user_id', userId)
+      .eq('post_id', postId)
+      .maybeSingle();
+    setBookmarked(!!data);
+  }
+
+  async function onToggleBookmark() {
+    if (!post) return;
+    const r = await toggleBookmark(post.id);
+    if (r.ok) setBookmarked(r.action === 'added');
+  }
+
   useEffect(() => {
     void loadPost();
     void loadMyPostReactions();
+    void loadBookmark();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId, userId]);
 
@@ -242,6 +263,9 @@ export default function PostDetailScreen() {
               {post.comment_count} yorum · {post.reaction_count} tepki
             </Text>
           </View>
+          <TouchableOpacity onPress={() => void onToggleBookmark()} style={{ marginRight: 8 }}>
+            <Text style={{ fontSize: 20 }}>{bookmarked ? '🔖' : '📑'}</Text>
+          </TouchableOpacity>
           {isOwn && (
             <TouchableOpacity onPress={confirmDeletePost}>
               <Text style={{ fontSize: 18, color: '#FFFFFF' }}>🗑</Text>
@@ -299,9 +323,8 @@ export default function PostDetailScreen() {
             </View>
           </View>
 
-          <Body color="#0E1116" style={{ fontSize: 15, lineHeight: 22 }}>
-            {post.content}
-          </Body>
+          <RichText content={post.content} baseStyle={{ fontSize: 15, lineHeight: 22 }} />
+
 
           {post.image_urls.length > 0 && (
             <View style={{ marginTop: 12, gap: 6 }}>

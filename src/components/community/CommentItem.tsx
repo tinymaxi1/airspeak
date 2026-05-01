@@ -30,6 +30,7 @@ import {
 } from '@/features/community/api';
 import { useAuthStore } from '@/stores/authStore';
 import { FONTS, Avatar, Mono } from '@/components/airspeak';
+import { RichText } from './RichText';
 
 function relTime(iso: string): string {
   const d = (Date.now() - new Date(iso).getTime()) / 1000;
@@ -177,9 +178,10 @@ export function CommentItem({
             </View>
           </View>
         ) : (
-          <Text style={{ fontFamily: FONTS.body, fontSize: 13, color: '#0E1116', lineHeight: 19 }}>
-            {comment.content}
-          </Text>
+          <RichText
+            content={comment.content}
+            baseStyle={{ fontSize: 13, lineHeight: 19 }}
+          />
         )}
 
         {!editing && (

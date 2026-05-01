@@ -26,6 +26,7 @@ import {
   usePosts,
   useGroupMembership,
   useUserReactions,
+  useBookmarkSet,
   joinGroup,
   leaveGroup,
 } from '@/features/community/api';
@@ -56,6 +57,7 @@ export default function GroupDetailScreen() {
     'post',
     postIds,
   );
+  const { bookmarked, refresh: refreshBookmarks } = useBookmarkSet(userId, postIds);
 
   const [composerOpen, setComposerOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -263,7 +265,9 @@ export default function GroupDetailScreen() {
               key={post.id}
               post={post}
               myReactions={myPostReactions.get(post.id)}
+              bookmarked={bookmarked.has(post.id)}
               onReactionToggled={() => void refreshReactions()}
+              onBookmarkToggled={() => void refreshBookmarks()}
             />
           ))
         )}
