@@ -356,6 +356,23 @@ Deno.serve(async (req) => {
     );
   }
 
+  // Sprint 7.C — Rate limit: 20/saat per user
+  const identity = (attempt as any).user_id
+    ? `u:${(attempt as any).user_id}`
+    : `ip:${(req.headers.get('x-forwarded-for') ?? '').split(',')[0]?.trim() || 'unknown'}`;
+  const { data: rl } = await client.rpc('check_rate_limit', {
+    p_bucket: 'oral-evaluate',
+    p_identity: identity,
+    p_max: 20,
+    p_window_seconds: 3600,
+  });
+  if (rl && (rl as any).ok === false) {
+    return new Response(JSON.stringify(rl), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   // 2. Prompt çek (context için)
   const { data: prompt } = await client
     .from('oral_exam_prompts')

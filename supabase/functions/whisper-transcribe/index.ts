@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
 
   const { data: attempt, error: attemptErr } = await client
     .from('oral_exam_attempts')
-    .select('id, audio_path, transcript')
+    .select('id, user_id, audio_path, transcript')
     .eq('id', body.attempt_id)
     .maybeSingle();
 
@@ -123,6 +123,23 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: 'attempt_not_found', detail: attemptErr?.message }),
       { status: 404, headers: { 'Content-Type': 'application/json' } },
     );
+  }
+
+  // Sprint 7.C — Rate limit: 20/saat per user
+  const identity = (attempt as any).user_id
+    ? `u:${(attempt as any).user_id}`
+    : `ip:${(req.headers.get('x-forwarded-for') ?? '').split(',')[0]?.trim() || 'unknown'}`;
+  const { data: rl } = await client.rpc('check_rate_limit', {
+    p_bucket: 'whisper',
+    p_identity: identity,
+    p_max: 20,
+    p_window_seconds: 3600,
+  });
+  if (rl && (rl as any).ok === false) {
+    return new Response(JSON.stringify(rl), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const { data: configRows } = await client.from('app_config').select('key, value').like('key', 'ai.%');

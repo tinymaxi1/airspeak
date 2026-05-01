@@ -813,6 +813,40 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
   );
 
+  // Sprint 7.C — Rate limit (per-IP, endpoint geneli 10/dk + broadcast 5/saat)
+  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0]?.trim() || 'unknown';
+  const ipIdent = `ip:${ip}`;
+
+  // Endpoint geneli — 10/dk per IP
+  const { data: rlGen } = await client.rpc('check_rate_limit', {
+    p_bucket: 'notification-trigger',
+    p_identity: ipIdent,
+    p_max: 10,
+    p_window_seconds: 60,
+  });
+  if (rlGen && (rlGen as any).ok === false) {
+    return new Response(JSON.stringify(rlGen), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Broadcast trigger için ek limit — 5/saat per IP (admin abuse koruması)
+  if (triggerId === 'broadcast') {
+    const { data: rlBcast } = await client.rpc('check_rate_limit', {
+      p_bucket: 'broadcast',
+      p_identity: ipIdent,
+      p_max: 5,
+      p_window_seconds: 3600,
+    });
+    if (rlBcast && (rlBcast as any).ok === false) {
+      return new Response(JSON.stringify(rlBcast), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+  }
+
   let body: Record<string, any> | undefined;
   let userIds: string[] | undefined;
   if (req.method === 'POST') {
