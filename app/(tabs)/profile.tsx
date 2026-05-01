@@ -38,6 +38,8 @@ import { ChampionshipsSection } from '@/components/profile/ChampionshipsSection'
 import { Hero } from '@/components/profile/Hero';
 import { StatStrip } from '@/components/profile/StatStrip';
 import { LevelMap } from '@/components/profile/LevelMap';
+import { SkillRadar } from '@/components/oral/SkillRadar';
+import { useUserOralHistory, aggregateRubric } from '@/features/oral/api';
 import {
   ActivityHeatmap,
   type HeatmapBucket,
@@ -77,6 +79,9 @@ export default function ProfileScreen() {
   const { row: xpSummary } = useUserXpSummary(user?.id);
   const { membership: lgMembership, group: lgGroup } = useLeagueMembership(user?.id);
   const { rows: championships } = useUserChampionships(user?.id);
+  // Sprint 7.D.2 — son 10 oral attempt rubric ortalaması
+  const { rows: oralHistory } = useUserOralHistory(user?.id, 10);
+  const oralRubric = useMemo(() => aggregateRubric(oralHistory), [oralHistory]);
   const totalXp = xpSummary?.total_xp ?? localTotalXp;
   const currentStreak = localStreak; // streak DB henüz lazy sync — local first
   const completedCount = useProgressStore((s) => s.completedLessonIds.length);
@@ -296,6 +301,37 @@ export default function ProfileScreen() {
             moreLabel={t('screens.profile.more')}
           />
         </View>
+
+        {/* ICAO Skill Radar — son 10 oral attempt ortalaması (varsa) */}
+        {oralRubric && (
+          <>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Eyebrow>ICAO PERFORMANCE</Eyebrow>
+              <TouchableOpacity onPress={() => router.push('/exam/icao4-history' as any)} hitSlop={8}>
+                <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#E63946' }}>
+                  Geçmiş →
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderColor: '#DCE0E8',
+                padding: 16,
+                alignItems: 'center',
+                marginTop: 8,
+                marginBottom: 18,
+              }}
+            >
+              <SkillRadar rubric={oralRubric} size={200} />
+              <Mono style={{ fontSize: 9, color: '#8A93A6', letterSpacing: 0.9, marginTop: 6 }}>
+                SON {oralHistory.filter((r) => r.rubric).length} DENEMENİN ORTALAMASI · YEŞİL HALKA L4
+              </Mono>
+            </View>
+          </>
+        )}
 
         {/* Badges — DB'den ilk 6 (earned + locked'larla 6'a tamamlanır) */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>

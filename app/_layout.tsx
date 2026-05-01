@@ -191,6 +191,7 @@ export default function RootLayout() {
             <Stack.Screen name="exam/icao4-briefing" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="exam/icao4-live" options={{ headerShown: false }} />
             <Stack.Screen name="exam/icao4-result" options={{ headerShown: false }} />
+            <Stack.Screen name="exam/icao4-history" options={{ headerShown: false }} />
             <Stack.Screen name="exam/mock-studio" options={{ headerShown: false }} />
             {/* Modals — transparent overlay */}
             <Stack.Screen
