@@ -5,6 +5,7 @@
  */
 import { useMemo, useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -58,6 +59,7 @@ function daysUntilMonthEnd(): number {
 }
 
 export default function MonthlyLeagueScreen() {
+  const c = usePalette();
   const user = useAuthStore((s) => s.user);
   const [tab, setTab] = useState<TabKey>('current');
 
@@ -65,7 +67,7 @@ export default function MonthlyLeagueScreen() {
   const prevDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#7C5CFF' }}>
         <View
           style={{

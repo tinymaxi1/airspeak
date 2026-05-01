@@ -3,6 +3,7 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { KeyboardAware } from '@/components/ui/KeyboardAware';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +19,7 @@ import {
 } from '@/components/airspeak';
 
 export default function LoginScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,7 +39,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <KeyboardAware style={{ backgroundColor: '#FAFAF7' }}>
+    <KeyboardAware style={{ backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

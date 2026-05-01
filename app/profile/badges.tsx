@@ -14,6 +14,7 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
@@ -53,6 +54,7 @@ const RARITY_RING: Record<BadgeRarity, string> = {
 };
 
 export default function BadgesScreen() {
+  const c = usePalette();
   const userId = useAuthStore((s) => s.user?.id);
   const { badges, loading } = useBadgeTemplates();
   const { rows: userBadges } = useUserBadges(userId);
@@ -87,7 +89,7 @@ export default function BadgesScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

@@ -2,6 +2,7 @@
  * Vocab Search & Browse — 1300+ aviation vocabulary search edip incele.
  */
 import { ScrollView, FlatList, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { useState, useMemo } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -53,6 +54,7 @@ function rowToTerm(r: VocabTermRow): VocabularyTerm {
 }
 
 export default function VocabScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const { data: vocabRows = [] } = useVocab(role);
@@ -86,7 +88,7 @@ export default function VocabScreen() {
   }, [allVocab, query, category]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

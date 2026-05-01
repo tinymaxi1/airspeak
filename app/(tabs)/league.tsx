@@ -325,6 +325,7 @@ function PeriodTabLink({
 
 // ─── Empty state ──────────────────────────────────────────────────────────
 function EmptyLeague() {
+  const c = usePalette();
   return (
     <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center', padding: 32 }}>
       <View style={{ alignItems: 'center', gap: 14 }}>

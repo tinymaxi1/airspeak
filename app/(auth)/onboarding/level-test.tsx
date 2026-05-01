@@ -8,6 +8,7 @@
  */
 import { useState, useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -58,6 +59,7 @@ const SEGMENTS: SegmentSpec[] = [
 type Step = 'intro' | 'segment' | 'segmentBreak';
 
 export default function LevelTestScreen() {
+  const c = usePalette();
   const { t, i18n } = useTranslation();
   const setPlacementResult = useOnboardingStore((s) => s.setPlacementResult);
   const role = useOnboardingStore((s) => s.role);
@@ -88,7 +90,7 @@ export default function LevelTestScreen() {
   // ═══════════════ INTRO ═══════════════
   if (step === 'intro') {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg }}>
         <SafeAreaView edges={['top']}>
           <View
             style={{
@@ -275,7 +277,7 @@ export default function LevelTestScreen() {
     }).length;
 
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg }}>
         <SafeAreaView edges={['top']}>
           <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
             <View style={{ height: 4, backgroundColor: '#DCE0E8', borderRadius: 2, overflow: 'hidden' }}>
@@ -481,7 +483,7 @@ export default function LevelTestScreen() {
   const isCorrect = selectedId === currentQuestion.correctId;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

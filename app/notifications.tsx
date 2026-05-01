@@ -19,6 +19,7 @@ import {
   Alert,
   FlatList,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -83,6 +84,7 @@ function relativeTime(iso: string): string {
 }
 
 export default function NotificationsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userId = useAuthStore((s) => s.user?.id);
   const { rows, loading, refresh, unreadCount } = useNotifications(userId);
@@ -112,7 +114,7 @@ export default function NotificationsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

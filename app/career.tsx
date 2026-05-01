@@ -9,6 +9,7 @@
  *   - Mock geçmiş (gelecek)
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,12 +24,13 @@ import { useAirlines } from '@/features/content/api';
 import { useSquadronStore } from '@/stores/squadronStore';
 
 export default function CareerHubScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const cohort = useSquadronStore((s) => s.getCurrentCohort());
   const { data: airlines = [] } = useAirlines();
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

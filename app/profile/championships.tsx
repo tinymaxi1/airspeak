@@ -5,6 +5,7 @@
  */
 import { useState, useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -40,6 +41,7 @@ function fmtPeriod(c: ChampionshipRow): string {
 }
 
 export default function ChampionshipsScreen() {
+  const c = usePalette();
   const user = useAuthStore((s) => s.user);
   const { rows, loading } = useUserChampionships(user?.id);
   const [filter, setFilter] = useState<FilterKey>('all');
@@ -56,7 +58,7 @@ export default function ChampionshipsScreen() {
   }, [rows]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

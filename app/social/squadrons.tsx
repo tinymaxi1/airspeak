@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -27,6 +28,7 @@ import {
 } from '@/features/social/api';
 
 export default function SquadronsScreen() {
+  const c = usePalette();
   const user = useAuthStore((s) => s.user);
   const { rows: mine, refresh: refreshMine } = useUserSquadrons(user?.id);
   const { rows: lb, loading: lbLoading } = useSquadronLeaderboard();
@@ -35,7 +37,7 @@ export default function SquadronsScreen() {
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#1F4FB6' }}>
         <View
           style={{
@@ -242,6 +244,7 @@ function CreateSquadronModal({
   onClose: () => void;
   onCreated: () => void;
 }) {
+  const c = usePalette();
   const [slug, setSlug] = useState('');
   const [name, setName] = useState('');
   const [emoji, setEmoji] = useState('✈️');
@@ -281,7 +284,7 @@ function CreateSquadronModal({
     >
       <View
         style={{
-          backgroundColor: '#FAFAF7',
+          backgroundColor: c.bg,
           borderTopLeftRadius: 22,
           borderTopRightRadius: 22,
           padding: 20,
@@ -384,6 +387,7 @@ function SearchSquadronModal({
   onClose: () => void;
   onJoined: () => void;
 }) {
+  const c = usePalette();
   const [q, setQ] = useState('');
   const [results, setResults] = useState<SquadronRow[]>([]);
 
@@ -422,7 +426,7 @@ function SearchSquadronModal({
     >
       <View
         style={{
-          backgroundColor: '#FAFAF7',
+          backgroundColor: c.bg,
           borderTopLeftRadius: 22,
           borderTopRightRadius: 22,
           padding: 20,

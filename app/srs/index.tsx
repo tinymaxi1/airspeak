@@ -10,6 +10,7 @@
  */
 import { useEffect, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -48,6 +49,7 @@ interface QualityOpt {
 }
 
 export default function SrsReviewScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const ensureCard = useSrsStore((s) => s.ensureCard);
   const reviewTerm = useSrsStore((s) => s.reviewTerm);
@@ -232,7 +234,7 @@ export default function SrsReviewScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <LessonChrome
           progress={(currentIdx / total) * 100}

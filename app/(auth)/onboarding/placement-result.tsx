@@ -13,6 +13,7 @@
  * - Sticky "Hadi başla" CTA → goals
  */
 import { ScrollView, View, Text } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -46,13 +47,14 @@ const DIMENSIONS: DimRow[] = [
 ];
 
 export default function PlacementResultScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const result = useOnboardingStore((s) => s.placementResult);
   const role = useOnboardingStore((s) => s.role);
 
   if (!result || !result.generalEnglish) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', padding: 24 }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center', padding: 24 }}>
         <Text style={{ fontSize: 64, textAlign: 'center', marginBottom: 16 }}>📋</Text>
         <H2 style={{ textAlign: 'center', marginBottom: 12 }}>Henüz test alınmamış</H2>
         <Body style={{ textAlign: 'center', marginBottom: 24 }}>
@@ -68,7 +70,7 @@ export default function PlacementResultScreen() {
   const overallLevel = result.generalEnglish?.label ?? result.level ?? 'B1';
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

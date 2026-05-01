@@ -10,6 +10,7 @@
  * - "Wait it out · 23:42" ghost
  */
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Svg, { Path } from 'react-native-svg';
@@ -20,6 +21,7 @@ import {
 } from '@/components/airspeak';
 
 export default function HeartRefillScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   return (
     <Pressable
@@ -33,7 +35,7 @@ export default function HeartRefillScreen() {
       <Pressable
         onPress={(e) => e.stopPropagation()}
         style={{
-          backgroundColor: '#FAFAF7',
+          backgroundColor: c.bg,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           padding: 24,

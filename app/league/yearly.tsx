@@ -5,6 +5,7 @@
  */
 import { useEffect, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInUp, ZoomIn } from 'react-native-reanimated';
@@ -110,12 +111,13 @@ function daysUntilYearEnd(): number {
 }
 
 export default function YearlyLeagueScreen() {
+  const c = usePalette();
   const user = useAuthStore((s) => s.user);
   const [tab, setTab] = useState<TabKey>('current');
   const prevYear = new Date().getFullYear() - 1;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#E0A82E' }}>
         <View
           style={{

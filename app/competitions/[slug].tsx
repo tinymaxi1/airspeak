@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -60,6 +61,7 @@ function timeLeft(endIso: string): string {
 }
 
 export default function CompetitionDetailScreen() {
+  const c = usePalette();
   const params = useLocalSearchParams<{ slug: string }>();
   const slug = typeof params.slug === 'string' ? params.slug : '';
   const user = useAuthStore((s) => s.user);
@@ -74,7 +76,7 @@ export default function CompetitionDetailScreen() {
 
   if (loading || !comp) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#E63946" />
       </View>
     );
@@ -127,7 +129,7 @@ export default function CompetitionDetailScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: accent }}>
         <View
           style={{
