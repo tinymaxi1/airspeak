@@ -45,9 +45,9 @@
 
 - **Ref**: `neinhbkdctjtyyoskxpg`
 - **Region**: AWS eu-central-1
-- **Branch git**: `claude/adoring-williamson-ccc1e5` (worktree)
-- **Worktree path**: `/Users/ozlemakcin/Desktop/thy app/.claude/worktrees/adoring-williamson-ccc1e5/`
-- **Main branch**: `main`
+- **Active branch**: `main` (worktree `claude/adoring-williamson-ccc1e5` 2026-05-01'de merge edildi — `8cfa073`)
+- **Worktree path**: `/Users/ozlemakcin/Desktop/thy app/.claude/worktrees/adoring-williamson-ccc1e5/` (history için duruyor; aktif iş ana root'ta)
+- **Ana proje root**: `/Users/ozlemakcin/Desktop/thy app/`
 
 ### Bilinen problemler
 
@@ -67,7 +67,25 @@ Sprint 5.D sonrası kullanıcı bunu yaptı (Sprint 5.D commit `f224e58` sonras�
 
 ## Tamamlanan sprintler (kronolojik)
 
-Hepsi commit edildi, branch'te. **Toplam 37 migration · 7 Edge Function · 23 admin sayfası.**
+Hepsi main branch'te. **Toplam 37 migration · 7 Edge Function · 28 admin sayfası.**
+
+İki paralel iş hattı 2026-05-01'de merge edildi (`8cfa073`):
+- **Faz 0-8 hattı** (admin paneli + content DB + monetization runtime control) — main üzerinde sıralı
+- **Sprint 3a-7 hattı** (community + oral + stats + placement) — `claude/adoring-williamson-ccc1e5` worktree'sinden merge
+
+### Faz 0-8 — Admin Paneli + İçerik DB Pipeline (TAMAM)
+
+| Faz | Commit | İçerik |
+|---|---|---|
+| 8 | `3531697` | Monetization & feature flags — admin runtime kontrol (paywall/freemium/ads/competitions admin'den toggle) |
+| 7 | `32a339e` | Versioning UI + settings sayfası + Vercel config |
+| 4+5+6 | `933303e` | Full CRUD (admin) + audio upload pipeline + user management |
+| 3 | `186d1b3` | Admin tree view + tablo listeleme (read-only Faz 0-3'ün son hali) |
+| 2 | `9a4297e` | Mobile DB-only refactor — 8 ekran TS seed yerine DB hook'larına bağlandı |
+| 1+2+3 | `f0b972e` | TS seed → Supabase migration + content katmanı + admin skeleton |
+| 0 | `c0c47a3` | Admin paneli iskeleti + içerik DB schema (5 migration: modules/units/lessons/exercises/vocab) |
+
+Bu hat **content authoring** odaklı — admin tarafından içerik girişi, mobile sadece DB tüketicisi.
 
 ### Sprint 1 — Temel altyapı (önceki repo)
 - profiles, user_settings, auth trigger
@@ -326,20 +344,23 @@ Kullanıcı henüz bunlardan hangisini istediğini belirtmedi. Sıraya konabilir
 
 7. **i18n genişletme** (16 dil mevcut, içerik çevirisi eksik)
 
-## Aktif worktree durumu
+## Aktif durum
 
 ```bash
 git status        # clean
-git log --oneline | head  # son commit: 0b3bcfe (Sprint 3f.B)
+git log --oneline | head  # son commit: 8cfa073 (merge worktree → main)
+git rev-parse HEAD  # 8cfa073
 ```
 
-37 migration uygulanmış, 7 Edge Function deploy edilmiş (notification-triggers son 6.B.1+6.C.1+6.D.1+5.D.3'te güncellendi).
+37 migration uygulanmış, 7 Edge Function deploy edilmiş. Main branch 109 commit ahead of `origin/main` (push edildikten sonra senkron olur).
 
 ## Hızlı komutlar
 
 ```bash
+# Ana proje root'una geç
+cd "/Users/ozlemakcin/Desktop/thy app"
+
 # Migration apply
-cd "/Users/ozlemakcin/Desktop/thy app/.claude/worktrees/adoring-williamson-ccc1e5"
 supabase db push --include-all
 
 # Edge function deploy
@@ -380,4 +401,6 @@ DEEPL_API_KEY=...
 
 ---
 
-**Son güncelleme**: Sprint 3f.B sonrası, commit `0b3bcfe`. Tarih: 2026-05-04.
+**Son güncelleme**: Worktree merge sonrası — main branch HEAD `8cfa073`. Tarih: 2026-05-01.
+
+**Tüm tamamlanan iş**: Faz 0-8 (admin/content pipeline) + Sprint 3a, 3e, 3f, 4, 5, 6, 7 (gamification, community, oral exam, stats, placement adaptive). Branch tek (`main`), worktree merge edildi, çakışma olmadı.
