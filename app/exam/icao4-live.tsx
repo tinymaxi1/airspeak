@@ -30,6 +30,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Mono, FONTS } from '@/components/airspeak';
+import { IcaoDisclaimer } from '@/components/legal/IcaoDisclaimer';
 import {
   startOralAttempt,
   submitOralAttempt,
@@ -320,6 +321,9 @@ export default function ICAO4LiveScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+        <View style={{ marginBottom: 12 }}>
+          <IcaoDisclaimer compact />
+        </View>
         {phase === 'loading' && (
           <View style={{ marginTop: 80, alignItems: 'center' }}>
             <ActivityIndicator color="#FFFFFF" />

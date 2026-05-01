@@ -12,6 +12,7 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { IcaoDisclaimer } from '@/components/legal/IcaoDisclaimer';
 import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -105,6 +106,9 @@ export default function ICAOBriefingScreen() {
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20 }}>
+        <View style={{ marginBottom: 14 }}>
+          <IcaoDisclaimer />
+        </View>
         <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 1.8 }}>
           {t('screens.icao.briefingSheet')}
         </Mono>

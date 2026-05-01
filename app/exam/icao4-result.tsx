@@ -31,6 +31,7 @@ import {
   requestOralReview,
   type OralRubric,
 } from '@/features/oral/api';
+import { IcaoDisclaimer } from '@/components/legal/IcaoDisclaimer';
 
 const DESCRIPTOR_META: { key: keyof OralRubric; code: string; name: string }[] = [
   { key: 'pronunciation', code: 'PRO', name: 'Pronunciation' },
@@ -168,6 +169,9 @@ export default function ICAO4ResultScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 24 }}
       >
+        <View style={{ marginBottom: 12 }}>
+          <IcaoDisclaimer compact />
+        </View>
         {/* Stamp result card */}
         <View
           style={{
