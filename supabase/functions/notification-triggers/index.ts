@@ -446,6 +446,97 @@ async function specialOffer(
   return messages.length;
 }
 
+/** 18. COMMENT REPLY — DB trigger çağırır, body { recipient_id, actor_id, comment_id, post_id, parent_id } */
+async function commentReply(
+  client: SupabaseClient,
+  body:
+    | {
+        recipient_id?: string;
+        actor_id?: string;
+        comment_id?: string;
+        post_id?: string;
+        parent_id?: string;
+      }
+    | undefined,
+): Promise<number> {
+  const recipient = body?.recipient_id;
+  if (!recipient) return 0;
+
+  // Actor profil + comment snippet
+  const [{ data: actor }, { data: comment }] = await Promise.all([
+    client.from('profiles').select('username, full_name').eq('id', body?.actor_id ?? '').maybeSingle(),
+    client.from('community_comments').select('content').eq('id', body?.comment_id ?? '').maybeSingle(),
+  ]);
+  const actorName =
+    (actor as any)?.full_name ?? (actor as any)?.username ?? 'Birisi';
+  const snippet = ((comment as any)?.content ?? '').slice(0, 100);
+  const isReplyOfComment = !!body?.parent_id;
+
+  const tokens = await getTokensForUsers(client, [recipient]);
+  if (tokens.length === 0) return 0;
+
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title: isReplyOfComment
+      ? `${actorName} yorumunu yanıtladı`
+      : `${actorName} postunu yorumladı`,
+    body: snippet,
+    data: {
+      kind: 'comment_reply',
+      post_id: body?.post_id,
+      comment_id: body?.comment_id,
+      parent_id: body?.parent_id,
+    },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  return messages.length;
+}
+
+/** 19. POST REACTION — DB trigger çağırır (kill switch açıksa), body { recipient_id, actor_id, post_id, kind } */
+async function postReaction(
+  client: SupabaseClient,
+  body:
+    | { recipient_id?: string; actor_id?: string; post_id?: string; kind?: string }
+    | undefined,
+): Promise<number> {
+  const recipient = body?.recipient_id;
+  if (!recipient) return 0;
+
+  const { data: actor } = await client
+    .from('profiles')
+    .select('username, full_name')
+    .eq('id', body?.actor_id ?? '')
+    .maybeSingle();
+  const actorName =
+    (actor as any)?.full_name ?? (actor as any)?.username ?? 'Birisi';
+
+  const KIND_EMOJI: Record<string, string> = {
+    like: '👍',
+    love: '❤️',
+    goal: '🎯',
+    thinking: '🤔',
+  };
+  const emoji = KIND_EMOJI[body?.kind ?? ''] ?? '✨';
+
+  const tokens = await getTokensForUsers(client, [recipient]);
+  if (tokens.length === 0) return 0;
+
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title: `${actorName} ${emoji} reaction verdi`,
+    body: 'Postuna tepki geldi.',
+    data: {
+      kind: 'post_reaction',
+      post_id: body?.post_id,
+      reaction_kind: body?.kind,
+    },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  return messages.length;
+}
+
 /** 17. MOD WARNING — DB trigger çağırır, body { kind, target_id, user_id } */
 async function modWarning(
   client: SupabaseClient,
@@ -595,6 +686,9 @@ const TRIGGERS: Record<string, (client: SupabaseClient, ctx: TriggerCtx) => Prom
   post_mention: (c, ctx) => postMention(c, ctx.body as any),
   // 6.C.1 moderation warning (DB trigger fires when status='hidden')
   mod_warning: (c, ctx) => modWarning(c, ctx.body as any),
+  // 6.D.1 comment_reply + post_reaction (DB triggers)
+  comment_reply: (c, ctx) => commentReply(c, ctx.body as any),
+  post_reaction: (c, ctx) => postReaction(c, ctx.body as any),
 };
 
 Deno.serve(async (req) => {
