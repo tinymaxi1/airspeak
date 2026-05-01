@@ -63,6 +63,20 @@ export default function PrivacySettingsScreen() {
     daysRemaining?: number;
   }>({ pending: false });
 
+  // Sprint 8.D — KVKK iletişim email'i app_config'ten oku
+  const [legalEmail, setLegalEmail] = useState<string>('kvkk@airspeak.io');
+  useEffect(() => {
+    void (async () => {
+      const { data } = await (supabase as any)
+        .from('app_config')
+        .select('value')
+        .eq('key', 'legal.contact_email')
+        .maybeSingle();
+      const v = data?.value;
+      if (typeof v === 'string') setLegalEmail(v.replace(/^"|"$/g, ''));
+    })();
+  }, []);
+
   useEffect(() => {
     if (!userId) return;
     void (async () => {
@@ -253,6 +267,11 @@ export default function PrivacySettingsScreen() {
             icon="🇹🇷"
             label={t('settings.privacy.kvkk', 'KVKK Aydınlatma Metni')}
             onPress={() => router.push('/legal/kvkk')}
+          />
+          <SettingsRow
+            icon="✉"
+            label={t('settings.privacy.kvkkContact', 'KVKK Başvurusu')}
+            onPress={() => Linking.openURL(`mailto:${legalEmail}?subject=KVKK%20Ba%C5%9Fvurusu`)}
             last
           />
         </View>
@@ -321,7 +340,8 @@ export default function PrivacySettingsScreen() {
         >
           {t(
             'settings.privacy.contact',
-            'Soru/şikayet: privacy@airspeak.io · KVKK temsilci için kvkk@airspeak.io',
+            `Soru/şikayet için: ${legalEmail}`,
+            { email: legalEmail },
           )}
         </Mono>
       </ScrollView>
