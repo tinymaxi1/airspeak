@@ -1,5 +1,11 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Text as RNText, TextInput as RNTextInput } from 'react-native';
+// Sprint 6.D — Dynamic Type cap (1.8) global default. Erişilebilirlik dengesi.
+(RNText as any).defaultProps = (RNText as any).defaultProps || {};
+(RNText as any).defaultProps.maxFontSizeMultiplier = 1.8;
+(RNTextInput as any).defaultProps = (RNTextInput as any).defaultProps || {};
+(RNTextInput as any).defaultProps.maxFontSizeMultiplier = 1.8;
 import { TamaguiProvider } from 'tamagui';
 import { QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';

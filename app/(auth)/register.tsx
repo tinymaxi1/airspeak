@@ -10,6 +10,7 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { KeyboardAware } from '@/components/ui/KeyboardAware';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -45,7 +46,7 @@ export default function RegisterScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <KeyboardAware style={{ backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{
@@ -192,7 +193,7 @@ export default function RegisterScreen() {
           {t('screens.register.terms')}
         </Body>
       </ScrollView>
-    </View>
+    </KeyboardAware>
   );
 }
 

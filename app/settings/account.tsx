@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import { Eyebrow, Mono, Body, FONTS, BackButton, Button3D } from '@/components/airspeak';
+import { KeyboardAware } from '@/components/ui/KeyboardAware';
 
 export default function AccountSettingsScreen() {
   const { t } = useTranslation();
@@ -101,7 +102,7 @@ export default function AccountSettingsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <KeyboardAware style={{ backgroundColor: '#FAFAF7' }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{
@@ -258,6 +259,6 @@ export default function AccountSettingsScreen() {
           </Button3D>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAware>
   );
 }

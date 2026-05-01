@@ -71,7 +71,7 @@ export function HHero({ children, color, style, ...rest }: TypoProps) {
 export function H1({ children, color, style, ...rest }: TypoProps) {
   return (
     <Text
-      maxFontSizeMultiplier={1.3}
+      maxFontSizeMultiplier={1.5}
       style={[
         {
           fontFamily: FONT_DISPLAY_700,
@@ -93,7 +93,7 @@ export function H1({ children, color, style, ...rest }: TypoProps) {
 export function H2({ children, color, style, ...rest }: TypoProps) {
   return (
     <Text
-      maxFontSizeMultiplier={1.3}
+      maxFontSizeMultiplier={1.5}
       style={[
         {
           fontFamily: FONT_BODY_800,
@@ -115,7 +115,7 @@ export function H2({ children, color, style, ...rest }: TypoProps) {
 export function H3({ children, color, style, ...rest }: TypoProps) {
   return (
     <Text
-      maxFontSizeMultiplier={1.4}
+      maxFontSizeMultiplier={1.6}
       style={[
         {
           fontFamily: FONT_BODY_700,
@@ -136,7 +136,7 @@ export function H3({ children, color, style, ...rest }: TypoProps) {
 export function Body({ children, color, style, ...rest }: TypoProps) {
   return (
     <Text
-      maxFontSizeMultiplier={1.5}
+      maxFontSizeMultiplier={1.8}
       style={[
         {
           fontFamily: FONT_BODY,
