@@ -12,6 +12,7 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -36,6 +37,7 @@ const DESCRIPTORS = [
 ];
 
 export default function ICAOBriefingScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userLevel = useOnboardingStore((s) => s.placementResult?.level) ?? 'B1';
   const [starting, setStarting] = useState(false);

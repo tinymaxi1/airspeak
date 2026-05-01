@@ -5,6 +5,7 @@
  * LockedCard pattern: kilitli setler blur + kilit ikonu, tap → paywall.
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -36,8 +37,9 @@ const SETS = [
 ];
 
 export default function Icao4SetsScreen() {
+  const c = usePalette();
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

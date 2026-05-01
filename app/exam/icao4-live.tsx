@@ -25,6 +25,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -59,6 +60,7 @@ const MAX_RECORDING_SECONDS = 90;
 const EVALUATION_TIMEOUT_MS = 30_000;
 
 export default function ICAO4LiveScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ simulationId: string; promptId: string }>();
   const simulationId = typeof params.simulationId === 'string' ? params.simulationId : '';

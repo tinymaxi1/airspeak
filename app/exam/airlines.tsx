@@ -11,6 +11,7 @@
  */
 import { useMemo, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -79,6 +80,7 @@ const ROLE_LABELS: Record<UserRole, string> = {
 };
 
 export default function AirlinesHubScreen() {
+  const c = usePalette();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const isPremium = useAuthStore((s) => s.isPremium);
   const [activeFilter, setActiveFilter] = useState<AirlineRegion | 'all'>('all');
@@ -110,7 +112,7 @@ export default function AirlinesHubScreen() {
 
   if (!role) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', padding: 24 }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center', padding: 24 }}>
         <Text style={{ fontSize: 64, textAlign: 'center', marginBottom: 16 }}>✈️</Text>
         <HHero style={{ textAlign: 'center', marginBottom: 8 }}>Önce rol seç</HHero>
         <Body color="#5A6478" style={{ textAlign: 'center', fontSize: 15 }}>
@@ -122,7 +124,7 @@ export default function AirlinesHubScreen() {
 
   if (isLoading && allAirlines.length === 0) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#E63946" />
         <Text style={{ marginTop: 12, color: '#5A6478' }}>Havayolları yükleniyor…</Text>
       </View>
@@ -134,7 +136,7 @@ export default function AirlinesHubScreen() {
   const roleLabel = ROLE_LABELS[role];
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 32 }}

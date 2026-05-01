@@ -8,6 +8,7 @@
  */
 import { useMemo, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
@@ -43,6 +44,7 @@ function bandColor(band: number | null | undefined): string {
 }
 
 export default function ICAO4HistoryScreen() {
+  const c = usePalette();
   const userId = useAuthStore((s) => s.user?.id);
   const { rows, loading, refresh } = useUserOralHistory(userId, 30);
   const [refreshing, setRefreshing] = useState(false);
@@ -64,7 +66,7 @@ export default function ICAO4HistoryScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

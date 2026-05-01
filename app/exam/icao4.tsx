@@ -1,4 +1,5 @@
 import { ScrollView, Pressable } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import {
   YStack,
   XStack,
@@ -45,6 +46,7 @@ const TASK_TYPES: { type: TaskType; emoji: string; titleTr: string; descTr: stri
 type Stage = 'menu' | 'briefing' | 'recording' | 'scoring' | 'result';
 
 export default function Icao4Screen() {
+  const c = usePalette();
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
   const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);

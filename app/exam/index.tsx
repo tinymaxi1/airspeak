@@ -8,6 +8,7 @@
  * Öğrenci: YDS, üniversite hazırlık, ICAO 4 önizleme
  */
 import { ScrollView } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { YStack, XStack, H2, H3, Paragraph, Card, Text, Button } from 'tamagui';
 import { router } from 'expo-router';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -18,6 +19,7 @@ import {
 import type { ExamDefinition } from '@/features/exams/types';
 
 export default function ExamHubScreen() {
+  const c = usePalette();
   const role = useOnboardingStore((s) => s.role);
   const examGroups = getExamsByCategory(role);
   const categories = Object.keys(examGroups);

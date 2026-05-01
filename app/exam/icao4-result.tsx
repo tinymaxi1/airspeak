@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -41,6 +42,7 @@ const DESCRIPTOR_META: { key: keyof OralRubric; code: string; name: string }[] =
 ];
 
 export default function ICAO4ResultScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ attemptId: string }>();
   const attemptId = typeof params.attemptId === 'string' ? params.attemptId : '';
@@ -79,7 +81,7 @@ export default function ICAO4ResultScreen() {
   // Loading veya henüz evaluated değil
   if (loading || !attempt || !evaluated) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg }}>
         <SafeAreaView edges={['top']}>
           <View
             style={{
@@ -141,7 +143,7 @@ export default function ICAO4ResultScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{
