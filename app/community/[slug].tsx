@@ -18,6 +18,7 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
@@ -44,6 +45,7 @@ const PRIVACY_LABEL: Record<string, string> = {
 };
 
 export default function GroupDetailScreen() {
+  const c = usePalette();
   const params = useLocalSearchParams<{ slug: string }>();
   const slug = typeof params.slug === 'string' ? params.slug : '';
   const userId = useAuthStore((s) => s.user?.id);
@@ -134,7 +136,7 @@ export default function GroupDetailScreen() {
 
   if (groupLoading && !group) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center' }}>
         <Body color="#5A6478" style={{ textAlign: 'center' }}>
           Yükleniyor…
         </Body>
@@ -144,7 +146,7 @@ export default function GroupDetailScreen() {
 
   if (!group) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg }}>
         <SafeAreaView edges={['top']}>
           <View style={{ padding: 16 }}>
             <TouchableOpacity onPress={() => router.back()}>
@@ -171,7 +173,7 @@ export default function GroupDetailScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

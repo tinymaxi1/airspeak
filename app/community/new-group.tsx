@@ -16,6 +16,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
@@ -30,6 +31,7 @@ const PRIVACIES: { id: GroupPrivacy; label: string; help: string; emoji: string 
 ];
 
 export default function NewGroupScreen() {
+  const c = usePalette();
   const isPremium = useAuthStore((s) => s.isPremium);
 
   const [slug, setSlug] = useState('');
@@ -103,7 +105,7 @@ export default function NewGroupScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#FAFAF7' }}
+      style={{ flex: 1, backgroundColor: c.bg }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={{ flex: 1 }}>

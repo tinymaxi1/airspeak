@@ -16,6 +16,7 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
@@ -42,6 +43,7 @@ interface UserHeader {
 }
 
 export default function CommunityUserProfileScreen() {
+  const c = usePalette();
   const params = useLocalSearchParams<{ username: string }>();
   const username = typeof params.username === 'string' ? params.username.toLowerCase() : '';
   const myUserId = useAuthStore((s) => s.user?.id);
@@ -101,7 +103,7 @@ export default function CommunityUserProfileScreen() {
 
   if (userLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center' }}>
         <Body color="#5A6478" style={{ textAlign: 'center' }}>
           Yükleniyor…
         </Body>
@@ -111,7 +113,7 @@ export default function CommunityUserProfileScreen() {
 
   if (!user) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg }}>
         <SafeAreaView edges={['top']}>
           <View style={{ padding: 16 }}>
             <TouchableOpacity onPress={() => router.back()}>
@@ -132,7 +134,7 @@ export default function CommunityUserProfileScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

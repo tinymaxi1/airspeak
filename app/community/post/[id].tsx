@@ -20,6 +20,7 @@ import {
   Dimensions,
   Keyboard,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -54,6 +55,7 @@ function relTime(iso: string): string {
 }
 
 export default function PostDetailScreen() {
+  const c = usePalette();
   const params = useLocalSearchParams<{ id: string }>();
   const postId = typeof params.id === 'string' ? params.id : '';
   const userId = useAuthStore((s) => s.user?.id);
@@ -219,7 +221,7 @@ export default function PostDetailScreen() {
 
   if (postLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center' }}>
         <Body color="#5A6478" style={{ textAlign: 'center' }}>
           Yükleniyor…
         </Body>
@@ -229,7 +231,7 @@ export default function PostDetailScreen() {
 
   if (!post) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg }}>
         <SafeAreaView edges={['top']}>
           <View style={{ padding: 16 }}>
             <TouchableOpacity onPress={() => router.back()}>
@@ -254,7 +256,7 @@ export default function PostDetailScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#FAFAF7' }}
+      style={{ flex: 1, backgroundColor: c.bg }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>

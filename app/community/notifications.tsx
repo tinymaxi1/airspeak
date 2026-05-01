@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -42,6 +43,7 @@ function relTime(iso: string): string {
 }
 
 export default function CommunityNotificationsScreen() {
+  const c = usePalette();
   const userId = useAuthStore((s) => s.user?.id);
   const { rows, loading, refresh, unreadCount } = useCommunityNotifications(userId);
   const [refreshing, setRefreshing] = useState(false);
@@ -72,7 +74,7 @@ export default function CommunityNotificationsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{
