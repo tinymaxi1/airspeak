@@ -43,6 +43,7 @@ import { IcaoTrend } from '@/components/oral/IcaoTrend';
 import { IcaoTimeline } from '@/components/oral/IcaoTimeline';
 import { useUserOralHistory, aggregateRubric } from '@/features/oral/api';
 import { useGoalsProgress, usePeerComparison } from '@/features/stats/api';
+import { PlacementCard } from '@/components/placement/PlacementCard';
 import {
   ActivityHeatmap,
   type HeatmapBucket,
@@ -293,6 +294,11 @@ export default function ProfileScreen() {
             />
           </View>
         </TouchableOpacity>
+
+        {/* Sprint 3f.B — Placement testi durumu + retry */}
+        <View style={{ marginBottom: 18 }}>
+          <PlacementCard userId={user?.id} />
+        </View>
 
         {/* Level map */}
         <View style={{ marginBottom: 18 }}>
