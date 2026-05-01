@@ -2,10 +2,14 @@ import { Tabs } from 'expo-router';
 import { useTheme } from 'tamagui';
 import { Home, BookOpen, Brain, Trophy, User } from '@tamagui/lucide-icons';
 import { useTranslation } from 'react-i18next';
+import { useAuthStore } from '@/stores/authStore';
+import { useUnreadCount } from '@/features/notifications/api';
 
 export default function TabsLayout() {
   const theme = useTheme();
   const { t } = useTranslation();
+  const userId = useAuthStore((s) => s.user?.id);
+  const unreadCount = useUnreadCount(userId);
 
   return (
     <Tabs
@@ -57,6 +61,8 @@ export default function TabsLayout() {
           title: t('tabs.profile', 'Profil'),
           tabBarIcon: ({ color }) => <User color={color} size={24} />,
           tabBarAccessibilityLabel: t('tabs.profile', 'Profil'),
+          tabBarBadge: unreadCount > 0 ? (unreadCount > 99 ? '99+' : unreadCount) : undefined,
+          tabBarBadgeStyle: { backgroundColor: '#E63946', color: '#FFFFFF', fontSize: 10 },
         }}
       />
     </Tabs>

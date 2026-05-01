@@ -26,6 +26,8 @@ import type { UserRole } from '@/types/profile';
 import { CompetitionBanner } from '@/components/competitions/CompetitionBanner';
 import { TrialCountdownChip } from '@/components/trial/TrialCountdownChip';
 import { LimitedOfferBanner } from '@/components/offers/LimitedOfferBanner';
+import { useAuthStore } from '@/stores/authStore';
+import { useUnreadCount } from '@/features/notifications/api';
 import {
   HHero,
   H2,
@@ -70,6 +72,8 @@ export default function HomeScreen() {
     setTimeout(() => setRefreshing(false), 600);
   }, []);
 
+  const userId = useAuthStore((s) => s.user?.id);
+  const unreadCount = useUnreadCount(userId);
   const streak = useGamificationStore((s) => s.currentStreak ?? 0);
   const hearts = useGamificationStore((s) => s.hearts ?? 5);
   const xp = useGamificationStore((s) => s.totalXp ?? 0);
@@ -173,20 +177,36 @@ export default function HomeScreen() {
                   }}
                 >
                   <Text style={{ fontSize: 18, color: '#FFFFFF' }}>🔔</Text>
-                  {/* Unread dot */}
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      width: 8,
-                      height: 8,
-                      borderRadius: 4,
-                      backgroundColor: '#E63946',
-                      borderWidth: 1.5,
-                      borderColor: '#0F1E47',
-                    }}
-                  />
+                  {/* Unread badge — sayı varsa göster */}
+                  {unreadCount > 0 && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 4,
+                        right: 4,
+                        minWidth: 16,
+                        height: 16,
+                        paddingHorizontal: 4,
+                        borderRadius: 8,
+                        backgroundColor: '#E63946',
+                        borderWidth: 1.5,
+                        borderColor: '#0F1E47',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: '#FFFFFF',
+                          fontSize: 9,
+                          fontWeight: '700',
+                          lineHeight: 11,
+                        }}
+                      >
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
                 <Avatar initials="EK" color="#E63946" size={44} />
               </View>
