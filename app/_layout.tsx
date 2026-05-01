@@ -47,6 +47,12 @@ import { useLastActiveHeartbeat } from '@/features/social/presence';
 import { useTrialEndingPaywall } from '@/features/trial/api';
 import { useAuthStore } from '@/stores/authStore';
 import { useThemeStore } from '@/stores/themeStore';
+import { NotificationBannerHost } from '@/components/notifications/NotificationBanner';
+import {
+  usePushResponseHandler,
+  useForegroundPushBanner,
+  useNotificationLogBanner,
+} from '@/features/notifications/listeners';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -98,6 +104,11 @@ export default function RootLayout() {
   // Trial 1 gün/0 gün kala client-side paywall (push trigger'a ek olarak)
   const trialUserId = useAuthStore((s) => s.user?.id);
   useTrialEndingPaywall(trialUserId);
+
+  // In-app notification banner: 3 listener — push tap, foreground push, realtime
+  usePushResponseHandler();
+  useForegroundPushBanner();
+  useNotificationLogBanner(trialUserId);
 
   // Network monitoring — getState() ile al, subscribe etme (döngü önler)
   useEffect(() => {
@@ -234,6 +245,7 @@ export default function RootLayout() {
             <Stack.Screen name="quiz/[id]" options={{ headerShown: true, headerTitle: 'Quiz' }} />
           </Stack>
           <PaywallTriggerSheet />
+          <NotificationBannerHost />
         </QueryClientProvider>
       </TamaguiProvider>
     </GestureHandlerRootView>
