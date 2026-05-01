@@ -14,11 +14,11 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
-  Image,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';

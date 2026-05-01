@@ -217,6 +217,10 @@ export default function NotificationsScreen() {
         <FlatList
           data={filtered}
           keyExtractor={(item) => `${item.source}-${item.id}`}
+          windowSize={7}
+          initialNumToRender={12}
+          maxToRenderPerBatch={10}
+          removeClippedSubviews
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

@@ -13,7 +13,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   TextInput,
   Alert,
   KeyboardAvoidingView,
@@ -21,6 +20,7 @@ import {
   Dimensions,
   Keyboard,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
@@ -354,7 +354,7 @@ export default function PostDetailScreen() {
                   key={u}
                   source={{ uri: u }}
                   style={{ width: '100%', height: SCREEN_W * 0.55, borderRadius: 10 }}
-                  resizeMode="cover"
+                  contentFit="cover"
                 />
               ))}
             </View>

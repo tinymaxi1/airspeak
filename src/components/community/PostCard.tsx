@@ -7,7 +7,8 @@
  * Reactions inline minimal (👍 ❤️ 🎯 🤔 toggle). Detay 6.A.3'te.
  */
 import { useState } from 'react';
-import { TouchableOpacity, View, Text, Image, Dimensions } from 'react-native';
+import { TouchableOpacity, View, Text, Dimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import {
   type CommunityPost,
@@ -191,7 +192,7 @@ function ImageGrid({ urls }: { urls: string[] }) {
       <Image
         source={{ uri: urls[0] }}
         style={{ width: cardWidth, height: cardWidth * 0.6, borderRadius: 10, marginTop: 10 }}
-        resizeMode="cover"
+        contentFit="cover"
       />
     );
   }
@@ -204,7 +205,7 @@ function ImageGrid({ urls }: { urls: string[] }) {
             key={u}
             source={{ uri: u }}
             style={{ width: s, height: s, borderRadius: 8 }}
-            resizeMode="cover"
+            contentFit="cover"
           />
         ))}
       </View>
@@ -219,7 +220,7 @@ function ImageGrid({ urls }: { urls: string[] }) {
           key={u + i}
           source={{ uri: u }}
           style={{ width: s, height: s, borderRadius: 8 }}
-          resizeMode="cover"
+          contentFit="cover"
         />
       ))}
     </View>
