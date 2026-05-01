@@ -6,6 +6,7 @@
  *
  * Reactions inline minimal (👍 ❤️ 🎯 🤔 toggle). Detay 6.A.3'te.
  */
+import { useState } from 'react';
 import { TouchableOpacity, View, Text, Image, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import {
@@ -19,6 +20,7 @@ import {
 import { useAuthStore } from '@/stores/authStore';
 import { FONTS, Avatar, Mono } from '@/components/airspeak';
 import { RichText } from './RichText';
+import { ReportDialog } from './ReportDialog';
 
 const SCREEN_W = Dimensions.get('window').width;
 
@@ -47,6 +49,8 @@ export function PostCard({
   onBookmarkToggled,
 }: Props) {
   const userId = useAuthStore((s) => s.user?.id);
+  const [reportOpen, setReportOpen] = useState(false);
+  const isOwn = userId === post.author_id;
 
   async function onReact(kind: ReactionKind) {
     if (!userId) return;
@@ -157,7 +161,25 @@ export function PostCard({
         <TouchableOpacity onPress={onBookmark} style={{ marginLeft: 10, padding: 2 }}>
           <Text style={{ fontSize: 16 }}>{bookmarked ? '🔖' : '📑'}</Text>
         </TouchableOpacity>
+        {!isOwn && (
+          <TouchableOpacity
+            onPress={(e) => {
+              e?.stopPropagation?.();
+              setReportOpen(true);
+            }}
+            style={{ marginLeft: 8, padding: 2 }}
+          >
+            <Text style={{ fontSize: 14 }}>🚩</Text>
+          </TouchableOpacity>
+        )}
       </View>
+
+      <ReportDialog
+        visible={reportOpen}
+        onClose={() => setReportOpen(false)}
+        targetType="community_post"
+        targetId={post.id}
+      />
     </TouchableOpacity>
   );
 }

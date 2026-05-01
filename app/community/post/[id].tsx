@@ -38,6 +38,7 @@ import {
 } from '@/features/community/api';
 import { CommentThread } from '@/components/community/CommentThread';
 import { RichText } from '@/components/community/RichText';
+import { ReportDialog } from '@/components/community/ReportDialog';
 import { supabase } from '@/lib/supabase';
 import { FONTS, Mono, Body, Avatar } from '@/components/airspeak';
 
@@ -61,6 +62,7 @@ export default function PostDetailScreen() {
   const [postLoading, setPostLoading] = useState(true);
   const [postReactions, setPostReactions] = useState<Set<ReactionKind>>(new Set());
   const [bookmarked, setBookmarked] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const { rows: comments, refresh: refreshComments } = useComments(postId);
   const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
@@ -170,8 +172,22 @@ export default function PostDetailScreen() {
     });
     setSubmitting(false);
     if (!r.ok) {
-      Alert.alert('Gönderilemedi', r.error ?? 'Tekrar deneyin.');
+      const msg =
+        r.error === 'banned_words_blocked'
+          ? 'Yorumun topluluk kurallarına uymuyor (yasaklı kelime).'
+          : r.error === 'rate_limited'
+            ? 'Çok hızlı yorum atıyorsun. Birkaç dakika bekle.'
+            : r.error === 'user_banned'
+              ? 'Hesabın askıya alınmış.'
+              : r.error ?? 'Tekrar deneyin.';
+      Alert.alert('Gönderilemedi', msg);
       return;
+    }
+    if ((r as any).auto_hidden) {
+      Alert.alert(
+        'İnceleme bekleniyor',
+        'Yorumun gönderildi ama mod ekibi inceleyene kadar gizli. Onaylanırsa yayınlanır.',
+      );
     }
     setReplyText('');
     setReplyParentId(null);
@@ -266,6 +282,11 @@ export default function PostDetailScreen() {
           <TouchableOpacity onPress={() => void onToggleBookmark()} style={{ marginRight: 8 }}>
             <Text style={{ fontSize: 20 }}>{bookmarked ? '🔖' : '📑'}</Text>
           </TouchableOpacity>
+          {!isOwn && (
+            <TouchableOpacity onPress={() => setReportOpen(true)} style={{ marginRight: 8 }}>
+              <Text style={{ fontSize: 18 }}>🚩</Text>
+            </TouchableOpacity>
+          )}
           {isOwn && (
             <TouchableOpacity onPress={confirmDeletePost}>
               <Text style={{ fontSize: 18, color: '#FFFFFF' }}>🗑</Text>
@@ -471,6 +492,13 @@ export default function PostDetailScreen() {
           </View>
         </SafeAreaView>
       </View>
+
+      <ReportDialog
+        visible={reportOpen}
+        onClose={() => setReportOpen(false)}
+        targetType="community_post"
+        targetId={post.id}
+      />
     </KeyboardAvoidingView>
   );
 }

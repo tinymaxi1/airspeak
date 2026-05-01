@@ -92,8 +92,24 @@ export function PostComposer({ groupId, visible, onClose, onSuccess }: Props) {
     const r = await createPost({ groupId, content: trimmed, imageUrls: urls });
     setSubmitting(false);
     if (!r.ok) {
-      Alert.alert('Gönderilemedi', r.error ?? 'Tekrar deneyin.');
+      const msg =
+        r.error === 'banned_words_blocked'
+          ? 'İçerik topluluk kurallarına uymuyor (yasaklı kelime).'
+          : r.error === 'rate_limited'
+            ? 'Çok hızlı post atıyorsun. Birkaç dakika bekle.'
+            : r.error === 'user_banned'
+              ? 'Hesabın askıya alınmış.'
+              : r.error === 'not_a_member'
+                ? 'Bu gruba üye değilsin.'
+                : r.error ?? 'Tekrar deneyin.';
+      Alert.alert('Gönderilemedi', msg);
       return;
+    }
+    if ((r as any).auto_hidden) {
+      Alert.alert(
+        'İnceleme bekleniyor',
+        'Postun gönderildi ama mod ekibi inceleyene kadar gizli. Onaylanırsa yayınlanır.',
+      );
     }
     reset();
     onClose();

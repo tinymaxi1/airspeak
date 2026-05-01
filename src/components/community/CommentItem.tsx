@@ -31,6 +31,7 @@ import {
 import { useAuthStore } from '@/stores/authStore';
 import { FONTS, Avatar, Mono } from '@/components/airspeak';
 import { RichText } from './RichText';
+import { ReportDialog } from './ReportDialog';
 
 function relTime(iso: string): string {
   const d = (Date.now() - new Date(iso).getTime()) / 1000;
@@ -68,6 +69,7 @@ export function CommentItem({
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(comment.content);
   const [busy, setBusy] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   async function onReact(kind: ReactionKind) {
     if (!userId) return;
@@ -238,9 +240,21 @@ export function CommentItem({
                 </TouchableOpacity>
               </>
             )}
+            {!isOwn && (
+              <TouchableOpacity onPress={() => setReportOpen(true)} style={{ marginLeft: 8 }}>
+                <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 0.8 }}>BILDIR</Mono>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
+
+      <ReportDialog
+        visible={reportOpen}
+        onClose={() => setReportOpen(false)}
+        targetType="community_comment"
+        targetId={comment.id}
+      />
 
       {children}
     </View>

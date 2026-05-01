@@ -825,6 +825,71 @@ export function usePostsByHashtag(tag: string | null | undefined, limit = 50): {
   return { rows, loading, refresh };
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// 6.C.3 — Reports + mention privacy
+// ═══════════════════════════════════════════════════════════════════════
+
+export type ReportTargetType = 'community_post' | 'community_comment' | 'community_group' | 'user_profile';
+export type ReportReason =
+  | 'harassment'
+  | 'spam'
+  | 'hate_speech'
+  | 'misinformation'
+  | 'sexual'
+  | 'violence'
+  | 'self_harm'
+  | 'impersonation'
+  | 'pii'
+  | 'illegal'
+  | 'copyright'
+  | 'offensive'
+  | 'other';
+
+export const REPORT_REASONS: { id: ReportReason; label: string }[] = [
+  { id: 'harassment', label: 'Taciz / hakaret' },
+  { id: 'spam', label: 'Spam / reklam' },
+  { id: 'hate_speech', label: 'Nefret söylemi' },
+  { id: 'misinformation', label: 'Yanlış bilgi' },
+  { id: 'sexual', label: 'Cinsel içerik' },
+  { id: 'violence', label: 'Şiddet' },
+  { id: 'self_harm', label: 'Kendine zarar' },
+  { id: 'impersonation', label: 'Sahtekarlık / başkası gibi davranma' },
+  { id: 'pii', label: 'Kişisel bilgi paylaşımı' },
+  { id: 'illegal', label: 'Yasadışı içerik' },
+  { id: 'copyright', label: 'Telif hakkı' },
+  { id: 'offensive', label: 'Saldırgan / rahatsız edici' },
+  { id: 'other', label: 'Diğer' },
+];
+
+export async function reportContent(args: {
+  targetType: ReportTargetType;
+  targetId: string;
+  reason: ReportReason;
+  comment?: string;
+}): Promise<{ ok: boolean; error?: string; count?: number; limit?: number }> {
+  const { data, error } = await (supabase as any).rpc('report_community_content', {
+    p_target_type: args.targetType,
+    p_target_id: args.targetId,
+    p_reason: args.reason,
+    p_comment: args.comment ?? null,
+  });
+  if (error) return { ok: false, error: error.message };
+  return data;
+}
+
+export async function updateMentionPrivacy(
+  privacy: 'all' | 'friends_only',
+): Promise<{ ok: boolean; error?: string }> {
+  const userId = (await supabase.auth.getUser()).data.user?.id;
+  if (!userId) return { ok: false, error: 'unauthenticated' };
+  const { error } = await (supabase as any)
+    .from('profiles')
+    .update({ mention_privacy: privacy })
+    .eq('id', userId);
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
 // Search community posts (ILIKE basit, FTS 6.D'de)
 export async function searchPosts(query: string, limit = 50): Promise<CommunityPost[]> {
   if (!query.trim()) return [];
