@@ -1,0 +1,340 @@
+[
+  {
+    "lesson_slug": "tech-m1-u01-l1",
+    "vocab": [
+      {
+        "term": "fuselage",
+        "term_tr": "gövde",
+        "ipa": "/ˈfjuː.zəl.ɑːʒ/",
+        "pos": "noun",
+        "definition": "The main body of an aircraft that holds passengers, crew and cargo",
+        "definition_tr": "Yolcuları, mürettebatı ve kargayu barındıran uçağın ana gövdesi",
+        "example": "The fuselage skin showed signs of corrosion near the door frame.",
+        "example_tr": "Kapı çerçevesinin yakınında gövde kaplamasında korozyon belirtileri görüldü.",
+        "difficulty": 1,
+        "tags": ["structure", "A0", "basic"]
+      },
+      {
+        "term": "wing",
+        "term_tr": "kanat",
+        "ipa": "/wɪŋ/",
+        "pos": "noun",
+        "definition": "The aerodynamic surface attached to the fuselage that generates lift",
+        "definition_tr": "Gövdeye bağlı, kaldırma kuvveti üreten aerodinamik yüzey",
+        "example": "The wing leading edge was inspected for bird strike damage.",
+        "example_tr": "Kanat ön kenarı kuş çarpması hasarı için incelendi.",
+        "difficulty": 1,
+        "tags": ["structure", "A0", "basic"]
+      },
+      {
+        "term": "empennage",
+        "term_tr": "kuyruk grubu",
+        "ipa": "/ˌɒm.pəˈnɑːʒ/",
+        "pos": "noun",
+        "definition": "The tail section of an aircraft including horizontal and vertical stabilisers",
+        "definition_tr": "Yatay ve dikey stabilizörleri içeren uçağın kuyruk bölümü",
+        "example": "The empennage was inspected for hail damage after the storm.",
+        "example_tr": "Fırtınanın ardından kuyruk grubu dolu hasarı için incelendi.",
+        "difficulty": 2,
+        "tags": ["structure", "A0", "basic"]
+      },
+      {
+        "term": "landing gear",
+        "term_tr": "iniş takımı",
+        "ipa": "/ˈlæn.dɪŋ ɡɪər/",
+        "pos": "noun phrase",
+        "definition": "The undercarriage used for takeoff, landing and ground movement",
+        "definition_tr": "Kalkış, iniş ve yer hareketi için kullanılan alt yapı",
+        "example": "The main landing gear tyre was replaced due to excessive wear.",
+        "example_tr": "Aşırı aşınma nedeniyle ana iniş takımı lastiği değiştirildi.",
+        "difficulty": 1,
+        "tags": ["structure", "A0", "basic"]
+      },
+      {
+        "term": "nacelle",
+        "term_tr": "motor yuvası",
+        "ipa": "/nəˈsɛl/",
+        "pos": "noun",
+        "definition": "The streamlined casing that surrounds and houses the engine",
+        "definition_tr": "Motoru çevreleyen ve barındıran aerodinamik kasa",
+        "example": "The nacelle cowling was opened for the scheduled engine inspection.",
+        "example_tr": "Programlı motor incelemesi için motor yuvası kapağı açıldı.",
+        "difficulty": 2,
+        "tags": ["structure", "A0", "engine"]
+      },
+      {
+        "term": "cockpit",
+        "term_tr": "kokpit",
+        "ipa": "/ˈkɒk.pɪt/",
+        "pos": "noun",
+        "definition": "The flight deck where pilots control the aircraft",
+        "definition_tr": "Pilotların uçağı kontrol ettiği uçuş güvertesi",
+        "example": "Access to the cockpit is restricted to authorised crew only.",
+        "example_tr": "Kokpite giriş yalnızca yetkili ekiple sınırlıdır.",
+        "difficulty": 1,
+        "tags": ["structure", "A0", "basic"]
+      },
+      {
+        "term": "airframe",
+        "term_tr": "uçak yapısı",
+        "ipa": "/ˈeər.freɪm/",
+        "pos": "noun",
+        "definition": "All structural components of an aircraft excluding the engine",
+        "definition_tr": "Motor hariç uçağın tüm yapısal bileşenleri",
+        "example": "The airframe heavy inspection is scheduled for next month.",
+        "example_tr": "Uçak yapısı ağır incelemesi önümüzdeki ay için planlandı.",
+        "difficulty": 2,
+        "tags": ["structure", "A0", "basic"]
+      },
+      {
+        "term": "skin panel",
+        "term_tr": "kaplama paneli",
+        "ipa": "/skɪn ˈpæn.əl/",
+        "pos": "noun phrase",
+        "definition": "The outer sheet metal or composite panels that form the aircraft surface",
+        "definition_tr": "Uçak yüzeyini oluşturan dış sac metal veya kompozit paneller",
+        "example": "Two skin panels on the lower fuselage were replaced after the ground damage.",
+        "example_tr": "Yer hasarının ardından alt gövdedeki iki kaplama paneli değiştirildi.",
+        "difficulty": 2,
+        "tags": ["structure", "A0", "basic"]
+      },
+      {
+        "term": "bulkhead",
+        "term_tr": "bölme perdesi",
+        "ipa": "/ˈbʊlk.hɛd/",
+        "pos": "noun",
+        "definition": "A structural wall inside the fuselage that divides sections and carries load",
+        "definition_tr": "Gövde içinde bölümleri ayıran ve yük taşıyan yapısal duvar",
+        "example": "The forward pressure bulkhead was repaired after the bird strike.",
+        "example_tr": "Kuş çarpmasının ardından ön basınç bölme perdesi onarıldı.",
+        "difficulty": 3,
+        "tags": ["structure", "A0", "advanced"]
+      },
+      {
+        "term": "frame",
+        "term_tr": "çerçeve",
+        "ipa": "/freɪm/",
+        "pos": "noun",
+        "definition": "A circular or semi-circular structural member that maintains the shape of the fuselage",
+        "definition_tr": "Gövdenin şeklini koruyan dairesel veya yarı dairesel yapısal eleman",
+        "example": "Three frames were found cracked during the structural inspection.",
+        "example_tr": "Yapısal inceleme sırasında üç çerçevede çatlak bulundu.",
+        "difficulty": 2,
+        "tags": ["structure", "A0", "basic"]
+      }
+    ],
+    "exercises": [
+      {
+        "type": "matching",
+        "sort": 1,
+        "prompt": "Match the aircraft components to their Turkish translations.",
+        "prompt_tr": "Uçak bileşenlerini Türkçe karşılıklarıyla eşleştir.",
+        "pairs": [
+          {"id": "p1", "left": "fuselage", "right": "gövde"},
+          {"id": "p2", "left": "wing", "right": "kanat"},
+          {"id": "p3", "left": "empennage", "right": "kuyruk grubu"},
+          {"id": "p4", "left": "landing gear", "right": "iniş takımı"},
+          {"id": "p5", "left": "cockpit", "right": "kokpit"}
+        ],
+        "explanation": "These are the five main structural sections found on every commercial aircraft.",
+        "explanation_tr": "Bunlar her ticari uçakta bulunan beş temel yapısal bölümdür."
+      },
+      {
+        "type": "true_false",
+        "sort": 2,
+        "prompt": "The empennage is located at the front of the aircraft near the cockpit.",
+        "prompt_tr": "Kuyruk grubu, uçağın ön kısmında kokpitin yakınında yer alır.",
+        "is_true": false,
+        "explanation": "Incorrect. The empennage is at the REAR (tail) of the aircraft. It includes the horizontal stabiliser, vertical stabiliser, elevators and rudder.",
+        "explanation_tr": "Yanlış. Kuyruk grubu uçağın ARKA kısmındadır. Yatay stabilizör, dikey stabilizör, elevatör ve dümeni içerir."
+      },
+      {
+        "type": "true_false",
+        "sort": 3,
+        "prompt": "The nacelle is the casing that surrounds and protects the engine.",
+        "prompt_tr": "Motor yuvası, motoru çevreleyen ve koruyan kasadır.",
+        "is_true": true,
+        "explanation": "Correct. The nacelle provides an aerodynamic housing for the engine and protects it from external damage.",
+        "explanation_tr": "Doğru. Motor yuvası motor için aerodinamik bir yuva sağlar ve dış hasardan korur."
+      },
+      {
+        "type": "ordering",
+        "sort": 4,
+        "prompt": "Put these aircraft sections in order from FRONT to REAR.",
+        "prompt_tr": "Bu uçak bölümlerini ÖNDEN ARKAYA doğru sırala.",
+        "options": [
+          {"id": "o1", "text": "Cockpit / nose"},
+          {"id": "o2", "text": "Forward fuselage"},
+          {"id": "o3", "text": "Centre fuselage"},
+          {"id": "o4", "text": "Aft fuselage"},
+          {"id": "o5", "text": "Empennage"}
+        ],
+        "correct_order": [0, 1, 2, 3, 4],
+        "explanation": "Aircraft are described from nose to tail. The cockpit is at the front, empennage at the rear.",
+        "explanation_tr": "Uçaklar burundan kuyruğa doğru tanımlanır. Kokpit önde, kuyruk grubu arkadadır."
+      }
+    ]
+  },
+  {
+    "lesson_slug": "tech-m1-u01-l2",
+    "vocab": [],
+    "exercises": [
+      {
+        "type": "listening",
+        "sort": 1,
+        "audio_url": null,
+        "transcript": "Lead technician to new apprentice: Right, before we start the walk-around, I want you to know the basic sections. We've got the fuselage — that's the main body where passengers sit. Up front is the cockpit where the pilots work. The wings stick out left and right — port is left, starboard is right. At the back we have the empennage — that's the tail section with the horizontal and vertical stabilisers. Underneath we have the landing gear — three legs: two main gear and one nose gear. And on the wings or fuselage you'll find the nacelles — that's where the engines live. Got all that?",
+        "prompt": "According to the lead technician, where are the nacelles located?",
+        "prompt_tr": "Baş teknisyene göre motor yuvaları nerede bulunur?",
+        "options": [
+          {"id": "a", "text": "At the rear of the fuselage"},
+          {"id": "b", "text": "On the wings or fuselage"},
+          {"id": "c", "text": "Underneath the aircraft"},
+          {"id": "d", "text": "At the front near the cockpit"}
+        ],
+        "correct_id": "b",
+        "explanation": "The lead tech says: 'on the wings or fuselage you'll find the nacelles — that's where the engines live.'",
+        "explanation_tr": "Baş teknisyen şöyle diyor: 'Kanatlarda veya gövdede motor yuvalarını bulacaksınız — motorlar orada bulunur.'"
+      },
+      {
+        "type": "listening",
+        "sort": 2,
+        "audio_url": null,
+        "transcript": "Maintenance controller on radio: All technicians, attention please. We have a ground damage report on Bravo Charlie seven-niner-four. The aircraft was clipped by a ground service vehicle on the port side. Damage is to the lower fuselage skin panels between frames fifteen and twenty. The starboard wing and empennage are clear. Landing gear shows no damage. Engineering is on site. Do not approach the aircraft without a safety brief.",
+        "prompt": "Which part of the aircraft was NOT damaged?",
+        "prompt_tr": "Uçağın hangi bölümü HASAR GÖRMEDI?",
+        "options": [
+          {"id": "a", "text": "Lower fuselage skin panels"},
+          {"id": "b", "text": "Port side fuselage"},
+          {"id": "c", "text": "Starboard wing and empennage"},
+          {"id": "d", "text": "Frames fifteen to twenty"}
+        ],
+        "correct_id": "c",
+        "explanation": "The controller specifically states 'the starboard wing and empennage are clear' — meaning no damage to those sections.",
+        "explanation_tr": "Kontrolör özellikle 'sağ kanat ve kuyruk grubu temiz' diyor — bu bölümlerde hasar olmadığı anlamına gelir."
+      },
+      {
+        "type": "true_false",
+        "sort": 3,
+        "prompt": "In the first dialogue, 'port' refers to the RIGHT side of the aircraft.",
+        "prompt_tr": "Birinci diyalogda 'port' uçağın SAĞ tarafını ifade eder.",
+        "is_true": false,
+        "explanation": "Incorrect. PORT is the LEFT side. STARBOARD is the RIGHT side. Remember: port and left both have four letters.",
+        "explanation_tr": "Yanlış. PORT sol taraftır. STARBOARD sağ taraftır. Hatırlatma: port ve sol kelimeleri her ikisi de dört harflidir (ing. port, left)."
+      }
+    ]
+  },
+  {
+    "lesson_slug": "tech-m1-u01-l3",
+    "vocab": [],
+    "exercises": [
+      {
+        "type": "fill_blank",
+        "sort": 1,
+        "prompt": "The ___ is the main body of the aircraft that contains the passenger cabin and cargo holds.",
+        "prompt_tr": "Yolcu kabini ve kargo bölmelerini içeren uçağın ana gövdesi ___ olarak adlandırılır.",
+        "options": [
+          {"id": "a", "text": "fuselage"},
+          {"id": "b", "text": "empennage"},
+          {"id": "c", "text": "nacelle"},
+          {"id": "d", "text": "bulkhead"}
+        ],
+        "correct_id": "a",
+        "explanation": "The fuselage is the central structural body of the aircraft containing all the main compartments.",
+        "explanation_tr": "Gövde, tüm ana bölümleri içeren uçağın merkezi yapısal gövdesidir."
+      },
+      {
+        "type": "fill_blank",
+        "sort": 2,
+        "prompt": "During the walk-around, the technician found a crack on the lower ___ between frames twelve and fourteen.",
+        "prompt_tr": "Dolaşım sırasında teknisyen, on iki ve on dört numaralı çerçeveler arasında alt ___ üzerinde bir çatlak buldu.",
+        "options": [
+          {"id": "a", "text": "fuselage skin"},
+          {"id": "b", "text": "empennage"},
+          {"id": "c", "text": "landing gear"},
+          {"id": "d", "text": "cockpit window"}
+        ],
+        "correct_id": "a",
+        "explanation": "Fuselage skin panels are identified by frame station numbers. Cracks between specific frames is standard defect reporting language.",
+        "explanation_tr": "Gövde kaplama panelleri çerçeve istasyon numaralarıyla tanımlanır. Belirli çerçeveler arasındaki çatlaklar standart arıza raporlama dilidir."
+      },
+      {
+        "type": "ordering",
+        "sort": 3,
+        "prompt": "Put these steps of an external walk-around in the correct order.",
+        "prompt_tr": "Bir dış dolaşım kontrolünün bu adımlarını doğru sıraya koy.",
+        "options": [
+          {"id": "o1", "text": "Start at the cockpit nose section"},
+          {"id": "o2", "text": "Inspect port wing and nacelles"},
+          {"id": "o3", "text": "Check empennage and control surfaces"},
+          {"id": "o4", "text": "Inspect starboard wing and nacelles"},
+          {"id": "o5", "text": "Check landing gear and fuselage underside"}
+        ],
+        "correct_order": [0, 1, 2, 3, 4],
+        "explanation": "Walk-arounds follow a consistent clockwise or anti-clockwise pattern. Starting at the nose and working around the aircraft ensures nothing is missed.",
+        "explanation_tr": "Dolaşım kontrolleri tutarlı bir saat yönünde veya saat yönünün tersine düzen izler. Burunda başlayıp uçağın etrafında çalışmak hiçbir şeyin gözden kaçırılmamasını sağlar."
+      },
+      {
+        "type": "speaking",
+        "sort": 4,
+        "target_text": "Walk-around complete on Golf Bravo three-six-seven. Fuselage exterior serviceable, no damage noted. Wings and nacelles inspected — no fuel leaks, no bird strike damage. Empennage control surfaces free and correct. Landing gear tyres and brakes serviceable. Aircraft ready for pre-flight.",
+        "prompt_tr": "Golf Bravo üç-altı-yedi'de dolaşım kontrolü tamamlandı. Gövde dış yüzeyi servis yapılabilir, hasar tespit edilmedi. Kanatlar ve motor yuvaları incelendi — yakıt sızıntısı yok, kuş çarpması hasarı yok. Kuyruk grubu kontrol yüzeyleri serbest ve doğru. İniş takımı lastikleri ve frenleri servis yapılabilir. Uçak ön uçuşa hazır.",
+        "explanation": "This is a standard verbal walk-around completion report. Clear, structured, uses correct component names and serviceable/unserviceable language.",
+        "explanation_tr": "Bu standart bir sözlü dolaşım kontrolü tamamlama raporudur. Net, yapılandırılmış, doğru bileşen adları ve servis yapılabilir/yapılamaz dili kullanıyor."
+      }
+    ]
+  },
+  {
+    "lesson_slug": "tech-m1-u01-l4",
+    "vocab": [],
+    "exercises": [
+      {
+        "type": "true_false",
+        "sort": 1,
+        "prompt": "A technician finds a dent on the lower fuselage skin. The correct action is to continue the inspection and report the finding at the end of the shift.",
+        "prompt_tr": "Bir teknisyen alt gövde kaplamasında bir çökme bulur. Doğru eylem incelemeye devam etmek ve vardiya sonunda bulguyu raporlamaktır.",
+        "is_true": false,
+        "explanation": "Incorrect. Any structural damage finding must be reported IMMEDIATELY to the crew chief or engineer. Damage assessment cannot wait until end of shift — the aircraft may not be airworthy.",
+        "explanation_tr": "Yanlış. Herhangi bir yapısal hasar bulgusu HEMEN ekip şefine veya mühendise bildirilmelidir. Hasar değerlendirmesi vardiya sonuna kadar bekleyemez — uçak uçuşa elverişli olmayabilir."
+      },
+      {
+        "type": "matching",
+        "sort": 2,
+        "prompt": "Match each damage type to the correct aircraft section.",
+        "prompt_tr": "Her hasar türünü doğru uçak bölümüyle eşleştir.",
+        "pairs": [
+          {"id": "p1", "left": "Tyre wear beyond limits", "right": "Landing gear"},
+          {"id": "p2", "left": "Leading edge dent from bird strike", "right": "Wing"},
+          {"id": "p3", "left": "Elevator hinge crack", "right": "Empennage"},
+          {"id": "p4", "left": "Door seal missing section", "right": "Fuselage"},
+          {"id": "p5", "left": "Cowling fastener missing", "right": "Nacelle"}
+        ],
+        "explanation": "Knowing which component belongs to which aircraft section is essential for accurate defect reporting.",
+        "explanation_tr": "Hangi bileşenin hangi uçak bölümüne ait olduğunu bilmek, doğru arıza raporlaması için çok önemlidir."
+      },
+      {
+        "type": "fill_blank",
+        "sort": 3,
+        "prompt": "Defect entry: 'During walk-around, found impact damage to ___ skin on the port side between frames 18 and 21. Approximately 3 cm dent, no crack visible. Reported to crew chief. Aircraft placed on ___.'",
+        "prompt_tr": "Arıza kaydı: 'Dolaşım sırasında, 18 ve 21 numaralı çerçeveler arasında sol tarafta ___ kaplamasında darbe hasarı bulundu. Yaklaşık 3 cm çökme, görünür çatlak yok. Ekip şefine bildirildi. Uçak ___ altına alındı.'",
+        "options": [
+          {"id": "a", "text": "fuselage"},
+          {"id": "b", "text": "wing"},
+          {"id": "c", "text": "ground stop"},
+          {"id": "d", "text": "inspection hold"}
+        ],
+        "correct_id": "a",
+        "explanation": "Fuselage skin damage identified by frame numbers is standard defect language. 'Ground stop' or 'inspection hold' means the aircraft cannot depart until cleared by engineering.",
+        "explanation_tr": "Çerçeve numaralarıyla tanımlanan gövde kaplama hasarı standart arıza dilidir. 'Yer durdurma' veya 'inceleme bekletme' uçağın mühendislik tarafından onaylanana kadar kalkamayacağı anlamına gelir."
+      },
+      {
+        "type": "speaking",
+        "sort": 4,
+        "target_text": "Crew chief, I have a defect to report. During the walk-around on Echo Charlie four-two-one, I found a dent on the lower fuselage skin, port side, between frames eighteen and twenty-one. The dent measures approximately three centimetres. No visible cracking. I have not touched the area. The aircraft is grounded pending your inspection.",
+        "prompt_tr": "Ekip şefi, bildirmem gereken bir arıza var. Echo Charlie dört-iki-bir'de dolaşım sırasında, sol tarafta on sekiz ve yirmi bir numaralı çerçeveler arasında alt gövde kaplamasında bir çökme buldum. Çökme yaklaşık üç santimetre ölçüyor. Görünür çatlak yok. Bölgeye dokunmadım. Uçak incelemeniz beklenirken yerde bekletiliyor.",
+        "explanation": "This is a formal defect report using correct aviation terminology. Key phrases: port side, frames, measures approximately, pending inspection, aircraft grounded.",
+        "explanation_tr": "Bu doğru havacılık terminolojisi kullanan resmi bir arıza raporudur. Anahtar ifadeler: sol taraf, çerçeveler, yaklaşık ölçüyor, inceleme beklenirken, uçak yerde."
+      }
+    ]
+  }
+]
