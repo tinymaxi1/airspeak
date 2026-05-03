@@ -20,6 +20,10 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "AirSpeak telaffuz alıştırmaları ve AI konuşma pratiği için mikrofona ihtiyaç duyar.",
         "NSSpeechRecognitionUsageDescription": "AirSpeak konuşmanı yazıya çevirip ICAO seviye 4 değerlendirmesi yapar.",
+        "NSCameraUsageDescription": "Profil avatarın için fotoğraf çekmek istediğinde kamera izni gerekir.",
+        "NSPhotoLibraryUsageDescription": "Profil avatarın ve topluluk gönderilerinde fotoğraf seçmen için galeri izni gerekir.",
+        "NSPhotoLibraryAddUsageDescription": "Topluluk gönderindeki görselleri galerine kaydetmen için izin gerekir.",
+        "NSUserTrackingUsageDescription": "AirSpeak'i ve sana özel reklamları geliştirmek için cihaz tanımlayıcına ihtiyaç duyar. İzin vermesen de uygulama tam çalışır.",
         "ITSAppUsesNonExemptEncryption": false
       },
       "config": {
