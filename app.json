@@ -41,7 +41,10 @@
         "RECORD_AUDIO",
         "MODIFY_AUDIO_SETTINGS",
         "INTERNET",
-        "VIBRATE"
+        "VIBRATE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "com.google.android.gms.permission.AD_ID"
       ],
       "edgeToEdgeEnabled": true
     },
@@ -95,9 +98,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": ""
+        "projectId": "684b9eaf-123f-4145-89a9-89b235aecb46"
       }
     },
-    "owner": "airspeak"
+    "owner": "mirissaapss"
   }
 }
