@@ -12,6 +12,7 @@
 import { revalidatePath } from 'next/cache';
 import { createServiceClient } from '@/lib/supabase/server';
 import { requireAdminRole } from '@/lib/auth/guard';
+import { bannedWordSchema, formatZodError } from '@/lib/validation';
 
 async function logAdmin(
   supabase: ReturnType<typeof createServiceClient>,
@@ -110,16 +111,18 @@ export async function createBannedWord(
 ): Promise<{ ok: boolean; id?: string; error?: string }> {
   const profile = await requireAdminRole('editor');
   const supabase = createServiceClient();
-  const word = payload.word.trim().toLowerCase();
-  if (word.length < 2 || word.length > 80) {
-    return { ok: false, error: 'word: 2-80 karakter' };
+  // Sprint 7.D — Zod validation
+  const parsed = bannedWordSchema.safeParse(payload);
+  if (!parsed.success) {
+    return { ok: false, error: formatZodError(parsed.error) };
   }
+  const { word, severity, category } = parsed.data;
   const { data, error } = await (supabase as any)
     .from('community_banned_words')
     .insert({
       word,
-      severity: payload.severity,
-      category: payload.category,
+      severity,
+      category,
       created_by: profile.id,
     })
     .select('id')

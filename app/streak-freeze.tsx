@@ -7,6 +7,7 @@
  */
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, Pressable, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Svg, { Path, Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
@@ -20,6 +21,7 @@ import { useGamificationStore } from '@/stores/gamificationStore';
 import { useWallet, applyStreakFreeze } from '@/features/wallet/api';
 
 export default function StreakFreezeScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userId = useAuthStore((s) => s.user?.id);
   const { wallet } = useWallet(userId);
@@ -56,7 +58,7 @@ export default function StreakFreezeScreen() {
       <Pressable
         onPress={(e) => e.stopPropagation()}
         style={{
-          backgroundColor: '#FAFAF7',
+          backgroundColor: c.bg,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           padding: 24,

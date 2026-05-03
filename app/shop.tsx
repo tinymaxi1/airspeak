@@ -6,6 +6,7 @@
  * - extra_heart / heart_full / xp_boost — local store (hearts MMKV).
  */
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,6 +27,7 @@ const INVENTORY_FIELD: Partial<Record<ShopItem['type'], 'streak_freezes_inventor
 };
 
 export default function ShopScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userId = useAuthStore((s) => s.user?.id);
   const { wallet } = useWallet(userId);
@@ -123,7 +125,7 @@ export default function ShopScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

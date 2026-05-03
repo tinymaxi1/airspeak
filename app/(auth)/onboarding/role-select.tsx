@@ -11,6 +11,7 @@
  * - Sticky CTA: "Continue →"
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -56,6 +57,7 @@ const ROLES: RoleSpec[] = [
 ];
 
 export default function RoleSelectScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const setRole = useOnboardingStore((s) => s.setRole);
   const currentRole = useOnboardingStore((s) => s.role);
@@ -68,7 +70,7 @@ export default function RoleSelectScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         {/* Top bar */}
         <View

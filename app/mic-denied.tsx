@@ -10,6 +10,7 @@
  * - Open settings primary + Type my answer ghost
  */
 import { Linking } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -18,10 +19,11 @@ import Svg, { Line } from 'react-native-svg';
 import { Mono, FONTS, Button3D } from '@/components/airspeak';
 
 export default function MicDeniedScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const STEPS = [t('screens.micDenied.step1'), t('screens.micDenied.step2'), t('screens.micDenied.step3')];
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

@@ -1,7 +1,9 @@
-import { ScrollView, View, Text, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAndroidBack } from '@/lib/useAndroidBack';
 import { CelebrationOverlay } from '@/components/ui/CelebrationOverlay';
 import {
   LessonChrome,
@@ -30,6 +32,7 @@ import { addCoins as addCoinsServer } from '@/features/wallet/api';
 import { showPaywall } from '@/stores/paywallStore';
 
 export default function LessonScreen() {
+  const c = usePalette();
   const params = useLocalSearchParams<{ id: string }>();
   const lessonSlug = typeof params.id === 'string' ? params.id : '';
 
@@ -89,10 +92,25 @@ export default function LessonScreen() {
   const total = exercises.length;
   const exercise = exercises[currentIdx];
 
+  // Android hardware back: ders ortasında onay sor (progress kaybolmasın)
+  const onAndroidBack = useCallback(() => {
+    if (currentIdx === 0) return false;
+    Alert.alert(
+      'Dersten çık?',
+      'İlerlemen kaydedildi, daha sonra kaldığın yerden devam edebilirsin.',
+      [
+        { text: 'Devam et', style: 'cancel' },
+        { text: 'Çık', style: 'destructive', onPress: () => router.back() },
+      ],
+    );
+    return true;
+  }, [currentIdx]);
+  useAndroidBack(onAndroidBack);
+
   // ─────────── Loading / not found ───────────
   if (isLoading || (!lesson && !error)) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.bg }}>
         <ActivityIndicator size="large" color="#E63946" />
         <Text style={{ marginTop: 12, color: '#5A6478', fontSize: 13 }}>
           Ders yükleniyor…
@@ -103,7 +121,7 @@ export default function LessonScreen() {
 
   if (error || !lesson || total === 0) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7', padding: 24 }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.bg, padding: 24 }}>
         <Text style={{ fontSize: 64, marginBottom: 16 }}>✈️</Text>
         <Text style={{ fontSize: 18, fontWeight: '700', color: '#0E1116', marginBottom: 8 }}>
           Ders bulunamadı
@@ -132,7 +150,7 @@ export default function LessonScreen() {
   // Freemium limit aşıldıysa paywall göster (ders ortasında değil, başlangıçta)
   if (!lessonLimit.allowed && currentIdx === 0 && !persisted?.startedAt) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAF7', padding: 24 }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.bg, padding: 24 }}>
         <Text style={{ fontSize: 64, marginBottom: 16 }}>👑</Text>
         <Text style={{ fontSize: 20, fontWeight: '700', color: '#0E1116', marginBottom: 8, textAlign: 'center' }}>
           Bugünkü ücretsiz dersleri tamamladın
@@ -268,7 +286,7 @@ export default function LessonScreen() {
     })[type] ?? type;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <LessonChrome
           progress={(currentIdx / total) * 100}

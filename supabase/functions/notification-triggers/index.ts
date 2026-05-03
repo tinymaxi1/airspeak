@@ -37,10 +37,64 @@ interface PushPayload {
 
 const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
 
+async function logPushMessages(messages: PushPayload[]): Promise<void> {
+  // Sprint 5.A — her gönderimi notification_log'a yaz (token → user_id lookup)
+  if (messages.length === 0) return;
+  const url = Deno.env.get('SUPABASE_URL');
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!url || !key) return;
+
+  try {
+    const logClient = createClient(url, key, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const tokens = Array.from(new Set(messages.map((m) => m.to)));
+    const { data: tokenRows } = await logClient
+      .from('push_tokens')
+      .select('token, user_id')
+      .in('token', tokens);
+
+    const tokenToUser = new Map<string, string>(
+      ((tokenRows as any[]) ?? []).map((r) => [r.token as string, r.user_id as string]),
+    );
+
+    type LogEntry = {
+      user_id: string;
+      type: string;
+      title: string;
+      body: string;
+      data: Record<string, unknown>;
+      channel: 'push';
+    };
+    const logs: LogEntry[] = [];
+    for (const m of messages) {
+      const userId = tokenToUser.get(m.to);
+      if (!userId) continue;
+      logs.push({
+        user_id: userId,
+        type: ((m.data as any)?.kind as string) ?? 'unknown',
+        title: m.title,
+        body: m.body,
+        data: m.data ?? {},
+        channel: 'push',
+      });
+    }
+
+    if (logs.length === 0) return;
+    const { error } = await logClient.from('notification_log').insert(logs);
+    if (error) console.error('[notification_log] insert', error.message);
+  } catch (e) {
+    console.error('[notification_log] failed', e);
+  }
+}
+
 async function sendExpoPush(messages: PushPayload[]): Promise<void> {
   if (messages.length === 0) return;
 
-  // Expo limit: 100 message per request
+  // 1) Log to notification_log (best-effort, push'tan bağımsız)
+  await logPushMessages(messages);
+
+  // 2) Expo Push Service'e gönder — limit 100/request
   for (let i = 0; i < messages.length; i += 100) {
     const batch = messages.slice(i, i + 100);
     const response = await fetch(EXPO_PUSH_URL, {
@@ -631,6 +685,54 @@ async function postMention(
   return messages.length;
 }
 
+/** ADMIN BROADCAST — Sprint 5.E
+ *  body: { user_ids?: string[], audience?: 'all'|'free'|'premium'|'role:X'|'level:Y',
+ *          title, body, kind?, data? }
+ *  audience verilirse user_ids türetilir. Aksi halde body.user_ids kullanılır. */
+async function broadcast(
+  client: SupabaseClient,
+  body: any,
+): Promise<number> {
+  const title = (body?.title as string) ?? '';
+  const message = (body?.body as string) ?? '';
+  const kind = (body?.kind as string) ?? 'broadcast';
+  const extraData = (body?.data as Record<string, unknown>) ?? {};
+  if (!title || !message) return 0;
+
+  let userIds: string[] = Array.isArray(body?.user_ids) ? body.user_ids : [];
+
+  if (userIds.length === 0 && body?.audience) {
+    const audience = body.audience as string;
+    let q = client.from('profiles').select('id');
+    if (audience === 'free') {
+      q = q.is('premium_until', null);
+    } else if (audience === 'premium') {
+      q = q.gt('premium_until', new Date().toISOString());
+    } else if (audience.startsWith('role:')) {
+      q = q.eq('role', audience.slice(5));
+    } else if (audience.startsWith('level:')) {
+      q = q.eq('level', audience.slice(6));
+    }
+    const { data } = await q;
+    userIds = ((data as any[]) ?? []).map((r) => r.id);
+  }
+
+  if (userIds.length === 0) return 0;
+
+  const tokens = await getTokensForUsers(client, userIds);
+  if (tokens.length === 0) return 0;
+
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title,
+    body: message,
+    data: { kind, ...extraData },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  return messages.length;
+}
+
 /** 14. TRIAL WIN-BACK — trial bitmiş + 3 gün geçmiş + status expired */
 async function trialWinback(client: SupabaseClient): Promise<number> {
   const threeDaysAgo = new Date(Date.now() - 3 * 86400e3);
@@ -689,6 +791,8 @@ const TRIGGERS: Record<string, (client: SupabaseClient, ctx: TriggerCtx) => Prom
   // 6.D.1 comment_reply + post_reaction (DB triggers)
   comment_reply: (c, ctx) => commentReply(c, ctx.body as any),
   post_reaction: (c, ctx) => postReaction(c, ctx.body as any),
+  // 5.E admin broadcast
+  broadcast: (c, ctx) => broadcast(c, ctx.body as any),
 };
 
 Deno.serve(async (req) => {
@@ -708,6 +812,40 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_URL') ?? '',
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
   );
+
+  // Sprint 7.C — Rate limit (per-IP, endpoint geneli 10/dk + broadcast 5/saat)
+  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0]?.trim() || 'unknown';
+  const ipIdent = `ip:${ip}`;
+
+  // Endpoint geneli — 10/dk per IP
+  const { data: rlGen } = await client.rpc('check_rate_limit', {
+    p_bucket: 'notification-trigger',
+    p_identity: ipIdent,
+    p_max: 10,
+    p_window_seconds: 60,
+  });
+  if (rlGen && (rlGen as any).ok === false) {
+    return new Response(JSON.stringify(rlGen), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Broadcast trigger için ek limit — 5/saat per IP (admin abuse koruması)
+  if (triggerId === 'broadcast') {
+    const { data: rlBcast } = await client.rpc('check_rate_limit', {
+      p_bucket: 'broadcast',
+      p_identity: ipIdent,
+      p_max: 5,
+      p_window_seconds: 3600,
+    });
+    if (rlBcast && (rlBcast as any).ok === false) {
+      return new Response(JSON.stringify(rlBcast), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+  }
 
   let body: Record<string, any> | undefined;
   let userIds: string[] | undefined;

@@ -3,6 +3,7 @@
  */
 import { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert, Linking, Switch } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,11 +27,13 @@ import {
 } from '@/components/airspeak';
 
 export default function PrivacySettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const userId = useAuthStore((s) => s.user?.id);
   const [friendsOnlyMentions, setFriendsOnlyMentions] = useState(false);
   const [mentionLoading, setMentionLoading] = useState(true);
   const [deletionStatus, setDeletionStatus] = useState<AccountDeletionStatus | null>(null);
+  const [legalEmail, setLegalEmail] = useState<string>('kvkk@airspeak.io');
 
   async function refreshDeletionStatus() {
     const s = await getAccountDeletionStatus();
@@ -61,6 +64,19 @@ export default function PrivacySettingsScreen() {
     };
   }, [userId]);
 
+  // Sprint 8.D — KVKK iletişim email'i app_config'ten oku
+  useEffect(() => {
+    void (async () => {
+      const { data } = await (supabase as any)
+        .from('app_config')
+        .select('value')
+        .eq('key', 'legal.contact_email')
+        .maybeSingle();
+      const v = data?.value;
+      if (typeof v === 'string') setLegalEmail(v.replace(/^"|"$/g, ''));
+    })();
+  }, []);
+
   async function onToggleMentionPrivacy(next: boolean) {
     setFriendsOnlyMentions(next); // optimistic
     const r = await updateMentionPrivacy(next ? 'friends_only' : 'all');
@@ -73,10 +89,33 @@ export default function PrivacySettingsScreen() {
   const handleExportData = () => {
     Alert.alert(
       t('settings.privacy.exportTitle', 'Verilerini İndir'),
-      t('settings.privacy.exportBody', 'Tüm verilerin JSON formatında 24 saat içinde email ile gönderilecek.'),
+      t(
+        'settings.privacy.exportBody',
+        'Tüm verilerin JSON formatında 24 saat içinde email ile gönderilecek.',
+      ),
       [
         { text: t('common.cancel', 'İptal'), style: 'cancel' },
-        { text: t('settings.privacy.requestExport', 'Talep gönder'), onPress: () => {} },
+        {
+          text: t('settings.privacy.requestExport', 'Talep gönder'),
+          onPress: async () => {
+            const { data, error } = await (supabase as any).rpc('request_data_export');
+            if (error) {
+              Alert.alert(t('common.error', 'Hata'), error.message);
+              return;
+            }
+            if (data?.ok === false) {
+              Alert.alert(
+                t('settings.privacy.exportTitle', 'Verilerini İndir'),
+                data.message ?? 'İstek alınamadı',
+              );
+              return;
+            }
+            Alert.alert(
+              t('common.success', 'Tamam'),
+              data?.message ?? 'İstek alındı. 24 saat içinde email gelecek.',
+            );
+          },
+        },
       ],
     );
   };
@@ -162,7 +201,7 @@ export default function PrivacySettingsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{
@@ -230,17 +269,22 @@ export default function PrivacySettingsScreen() {
           <SettingsRow
             icon="📜"
             label={t('settings.privacy.policy', 'Gizlilik Politikası')}
-            onPress={() => Linking.openURL('https://airspeak.io/privacy')}
+            onPress={() => router.push('/legal/privacy')}
           />
           <SettingsRow
             icon="📋"
             label={t('settings.privacy.terms', 'Kullanım Şartları')}
-            onPress={() => Linking.openURL('https://airspeak.io/terms')}
+            onPress={() => router.push('/legal/terms')}
           />
           <SettingsRow
             icon="🇹🇷"
             label={t('settings.privacy.kvkk', 'KVKK Aydınlatma Metni')}
-            onPress={() => Linking.openURL('https://airspeak.io/kvkk')}
+            onPress={() => router.push('/legal/kvkk')}
+          />
+          <SettingsRow
+            icon="✉"
+            label={t('settings.privacy.kvkkContact', 'KVKK Başvurusu')}
+            onPress={() => Linking.openURL(`mailto:${legalEmail}?subject=KVKK%20Ba%C5%9Fvurusu`)}
             last
           />
         </View>
@@ -251,20 +295,6 @@ export default function PrivacySettingsScreen() {
             icon="📥"
             label={t('settings.privacy.export', 'Verilerimi indir (JSON)')}
             onPress={handleExportData}
-          />
-          <SettingsRow
-            icon="🔄"
-            label={t('settings.privacy.reset', 'İlerlemeyi sıfırla')}
-            onPress={() =>
-              Alert.alert(
-                t('settings.privacy.resetTitle', 'İlerleme sıfırla'),
-                t('settings.privacy.resetBody', 'Streak, XP, ders ilerlemen silinir. Hesabın kalır.'),
-                [
-                  { text: t('common.cancel', 'İptal'), style: 'cancel' },
-                  { text: t('settings.privacy.confirmReset', 'Sıfırla'), style: 'destructive' },
-                ],
-              )
-            }
             last
           />
         </View>
@@ -330,7 +360,8 @@ export default function PrivacySettingsScreen() {
         >
           {t(
             'settings.privacy.contact',
-            'Soru/şikayet: privacy@airspeak.io · KVKK temsilci için kvkk@airspeak.io',
+            `Soru/şikayet için: ${legalEmail}`,
+            { email: legalEmail },
           )}
         </Mono>
       </ScrollView>

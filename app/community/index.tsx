@@ -6,6 +6,7 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
@@ -15,6 +16,7 @@ import { GroupCard } from '@/components/community/GroupCard';
 import { FONTS, Mono, Body } from '@/components/airspeak';
 
 export default function CommunityIndexScreen() {
+  const c = usePalette();
   const userId = useAuthStore((s) => s.user?.id);
   const [tab, setTab] = useState<'mine' | 'discover'>(userId ? 'mine' : 'discover');
   const { rows: myRows, loading: myLoading } = useMyGroups(userId);
@@ -32,7 +34,7 @@ export default function CommunityIndexScreen() {
   const loading = tab === 'mine' ? myLoading : allLoading;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

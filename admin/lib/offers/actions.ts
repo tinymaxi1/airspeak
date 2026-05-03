@@ -12,6 +12,7 @@
 import { revalidatePath } from 'next/cache';
 import { createServiceClient } from '@/lib/supabase/server';
 import { requireAdminRole } from '@/lib/auth/guard';
+import { offerSchema, formatZodError } from '@/lib/validation';
 
 export type OfferAudience =
   | 'all'
@@ -54,24 +55,9 @@ async function logAdmin(
 }
 
 function validatePayload(p: OfferPayload): string | null {
-  if (!/^[a-z0-9_-]+$/.test(p.code)) {
-    return 'code: küçük harf, rakam, _ ya da -';
-  }
-  if (new Date(p.ends_at) <= new Date(p.starts_at)) {
-    return 'ends_at, starts_at sonrası olmalı';
-  }
-  const hasPricing =
-    p.monthly_price_try != null ||
-    p.yearly_price_try != null ||
-    p.lifetime_price_try != null ||
-    p.discount_percent != null;
-  if (!hasPricing) {
-    return 'En az bir tier override veya discount_percent olmalı';
-  }
-  if (p.discount_percent != null && (p.discount_percent < 1 || p.discount_percent > 90)) {
-    return 'discount_percent 1-90 arası olmalı';
-  }
-  return null;
+  // Sprint 7.D — Zod validation
+  const parsed = offerSchema.safeParse(p);
+  return parsed.success ? null : formatZodError(parsed.error);
 }
 
 export async function createOffer(

@@ -4,6 +4,7 @@
  * Tek search bar, 4 farklı kaynaktan canlı sonuç gösterir.
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { useState, useMemo } from 'react';
 import { router, type Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +35,7 @@ interface SearchResult {
 }
 
 export default function SearchScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const { data: vocabRows = [] } = useVocab(role);
@@ -125,7 +127,7 @@ export default function SearchScreen() {
   }, [query, vocabRows, airlineRows]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

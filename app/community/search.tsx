@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Keyboard,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
@@ -27,6 +28,7 @@ import { PostCard } from '@/components/community/PostCard';
 import { FONTS, Mono, Body } from '@/components/airspeak';
 
 export default function CommunitySearchScreen() {
+  const c = usePalette();
   const userId = useAuthStore((s) => s.user?.id);
   const [query, setQuery] = useState('');
   const [searching, setSearching] = useState(false);
@@ -60,7 +62,7 @@ export default function CommunitySearchScreen() {
   }, [query]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

@@ -8,6 +8,7 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -39,6 +40,7 @@ const GOALS: GoalOption[] = [
 ];
 
 export default function GoalsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const placement = useOnboardingStore((s) => s.placementResult);
   const role = useOnboardingStore((s) => s.role);
@@ -59,7 +61,7 @@ export default function GoalsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

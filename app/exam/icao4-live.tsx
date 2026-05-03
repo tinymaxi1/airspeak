@@ -15,7 +15,8 @@
  *   - Edge fn unreachable → submit_oral_attempt yine yapılır, 'evaluating' takılırsa
  *     mobile timeout (30sn) + retry button.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAndroidBack } from '@/lib/useAndroidBack';
 import {
   ScrollView,
   View,
@@ -24,10 +25,12 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Mono, FONTS } from '@/components/airspeak';
+import { IcaoDisclaimer } from '@/components/legal/IcaoDisclaimer';
 import {
   startOralAttempt,
   submitOralAttempt,
@@ -58,6 +61,7 @@ const MAX_RECORDING_SECONDS = 90;
 const EVALUATION_TIMEOUT_MS = 30_000;
 
 export default function ICAO4LiveScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ simulationId: string; promptId: string }>();
   const simulationId = typeof params.simulationId === 'string' ? params.simulationId : '';
@@ -71,6 +75,23 @@ export default function ICAO4LiveScreen() {
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [meteringDb, setMeteringDb] = useState<number | null>(null);
+
+  // Android hardware back: aktif kayıt/upload sırasında onay sor
+  const onAndroidBack = useCallback(() => {
+    if (phase === 'recording' || phase === 'uploading' || phase === 'submitting' || phase === 'evaluating') {
+      Alert.alert(
+        'Sınavdan çık?',
+        'Aktif kayıt iptal olur ve değerlendirme yapılmaz.',
+        [
+          { text: 'Devam', style: 'cancel' },
+          { text: 'Çık', style: 'destructive', onPress: () => router.back() },
+        ],
+      );
+      return true;
+    }
+    return false;
+  }, [phase]);
+  useAndroidBack(onAndroidBack);
 
   const stt = useOralSTT();
   const recordingFileUri = useRef<string | null>(null);
@@ -300,6 +321,9 @@ export default function ICAO4LiveScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+        <View style={{ marginBottom: 12 }}>
+          <IcaoDisclaimer compact />
+        </View>
         {phase === 'loading' && (
           <View style={{ marginTop: 80, alignItems: 'center' }}>
             <ActivityIndicator color="#FFFFFF" />

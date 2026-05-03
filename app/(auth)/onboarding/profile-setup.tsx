@@ -6,6 +6,7 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,6 +31,7 @@ function defaultCallsign(name: string, email?: string | null): string {
 }
 
 export default function ProfileSetupScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { profile } = useProfile(user?.id);
@@ -74,7 +76,7 @@ export default function ProfileSetupScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

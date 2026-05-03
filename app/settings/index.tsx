@@ -9,10 +9,12 @@
  * - AIRSPEAK v2.4.1 · BUILD footer
  */
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
+import { useThemeStore } from '@/stores/themeStore';
 import { signOut } from '@/features/auth/api';
 import { nativeCrash } from '@/lib/sentry';
 import {
@@ -34,9 +36,17 @@ interface RowDef {
 }
 
 export default function SettingsScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const username = user?.email?.split('@')[0] ?? 'pilot';
+  const themePref = useThemeStore((s) => s.theme);
+  const themeLabel =
+    themePref === 'system'
+      ? t('screens.settings.auto')
+      : themePref === 'dark'
+        ? t('settings.appearance.dark', 'Karanlık')
+        : t('settings.appearance.light', 'Aydınlık');
 
   const handleSignOut = () => {
     Alert.alert(t('screens.settings.signOut'), t('screens.profile.signOutConfirm'), [
@@ -63,6 +73,12 @@ export default function SettingsScreen() {
           onPress: () => router.push('/settings/profile-edit'),
         },
         {
+          icon: '🔐',
+          label: t('settings.account.title', 'Hesap'),
+          sub: t('settings.account.sub', 'Email & şifre değiştir'),
+          onPress: () => router.push('/settings/account'),
+        },
+        {
           icon: '🎯',
           label: t('screens.settings.target'),
           sub: t('screens.settings.targetDesc'),
@@ -72,7 +88,7 @@ export default function SettingsScreen() {
           icon: '✈',
           label: t('screens.settings.role'),
           sub: t('screens.settings.roleDesc'),
-          onPress: () => router.push('/(auth)/onboarding/role-select'),
+          onPress: () => router.push('/settings/role'),
         },
         {
           icon: '🪙',
@@ -93,10 +109,30 @@ export default function SettingsScreen() {
     {
       title: t('screens.settings.groupLearning'),
       rows: [
-        { icon: '⚡', label: t('screens.settings.dailyPlan'), sub: t('screens.settings.dailyPlanDesc') },
-        { icon: '🔔', label: t('screens.settings.reminders'), sub: t('screens.settings.remindersDesc') },
-        { icon: '🎧', label: t('screens.settings.audio'), sub: t('screens.settings.audioDesc') },
-        { icon: '🎙', label: t('screens.settings.microphone'), sub: t('screens.settings.microphoneDesc') },
+        {
+          icon: '⚡',
+          label: t('screens.settings.dailyPlan'),
+          sub: t('screens.settings.dailyPlanDesc'),
+          onPress: () => router.push('/settings/daily-plan'),
+        },
+        {
+          icon: '🔔',
+          label: t('screens.settings.reminders'),
+          sub: t('screens.settings.remindersDesc'),
+          onPress: () => router.push('/settings/notifications'),
+        },
+        {
+          icon: '🎧',
+          label: t('screens.settings.audio'),
+          sub: t('screens.settings.audioDesc'),
+          onPress: () => router.push('/settings/audio'),
+        },
+        {
+          icon: '🎙',
+          label: t('screens.settings.microphone'),
+          sub: t('screens.settings.microphoneDesc'),
+          onPress: () => router.push('/settings/microphone'),
+        },
       ],
     },
     {
@@ -106,8 +142,9 @@ export default function SettingsScreen() {
           icon: '✦',
           label: t('screens.settings.appearance'),
           sub: t('screens.settings.appearanceDesc'),
-          right: t('screens.settings.auto'),
+          right: themeLabel,
           rightTone: 'mono',
+          onPress: () => router.push('/settings/appearance'),
         },
         {
           icon: '🌐',
@@ -159,13 +196,14 @@ export default function SettingsScreen() {
           label: t('screens.settings.deleteAccount'),
           sub: t('screens.settings.deleteAccountDesc'),
           danger: true,
+          onPress: () => router.push('/settings/privacy'),
         },
       ],
     },
   ];
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

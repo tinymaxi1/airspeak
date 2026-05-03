@@ -11,6 +11,7 @@
  * - Join cohort + I'm flying solo
  */
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +27,7 @@ import { useSquadronStore } from '@/stores/squadronStore';
 import { findCohortByCode, normalizeCode, COHORTS } from '@/features/squadron/cohorts';
 
 export default function SquadronPairingScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const joinCohort = useSquadronStore((s) => s.joinCohort);
   const [input, setInput] = useState('');
@@ -62,7 +64,7 @@ export default function SquadronPairingScreen() {
     }
   }
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

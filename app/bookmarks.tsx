@@ -4,6 +4,7 @@
  * Vocab terimleri ve AI senaryoları iki sekme. Boşsa empty state gösterir.
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { useState, useMemo } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +25,7 @@ import type { UserRole } from '@/types/profile';
 type Tab = 'vocab' | 'scenario';
 
 export default function BookmarksScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const [tab, setTab] = useState<Tab>('vocab');
@@ -47,7 +49,7 @@ export default function BookmarksScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

@@ -10,6 +10,7 @@
  */
 import { useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -71,6 +72,7 @@ import { getCurrentLanguage } from '@/lib/i18n';
 const HEATMAP_DAYS = 84;
 
 export default function ProfileScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { profile } = useProfile(user?.id);
@@ -170,7 +172,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       {/* ═══════ NAVY HEADER ═══════ */}
       <View style={{ backgroundColor: '#0F1E47', position: 'relative' }}>
         <SafeAreaView edges={['top']}>

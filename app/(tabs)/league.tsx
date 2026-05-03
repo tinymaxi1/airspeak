@@ -14,6 +14,7 @@
  */
 import { useEffect, useState, useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -59,6 +60,7 @@ function hoursUntil(iso: string): number {
 }
 
 export default function LeagueScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { membership, group, loading: lMem, refresh: refreshMem } = useLeagueMembership(user?.id);
@@ -113,7 +115,7 @@ export default function LeagueScreen() {
 
   if (lMem || !group || !classMeta) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#E63946" />
       </View>
     );
@@ -125,7 +127,7 @@ export default function LeagueScreen() {
   const demoStartRank = totalMembers - demoCutoff + 1;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       {/* ═════ HEADER ═════ */}
       <View style={{ backgroundColor: classMeta.color }}>
         <SafeAreaView edges={['top']}>
@@ -323,8 +325,9 @@ function PeriodTabLink({
 
 // ─── Empty state ──────────────────────────────────────────────────────────
 function EmptyLeague() {
+  const c = usePalette();
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7', justifyContent: 'center', padding: 32 }}>
+    <View style={{ flex: 1, backgroundColor: c.bg, justifyContent: 'center', padding: 32 }}>
       <View style={{ alignItems: 'center', gap: 14 }}>
         <Text style={{ fontSize: 64 }}>🏁</Text>
         <Text

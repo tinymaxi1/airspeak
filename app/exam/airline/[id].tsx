@@ -9,6 +9,7 @@
  */
 import { useState } from 'react';
 import { ScrollView, ActivityIndicator } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { YStack, XStack, H2, H3, Paragraph, Card, Text, Button, Progress } from 'tamagui';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -62,6 +63,7 @@ function pickInterview(
 }
 
 export default function AirlineDetailScreen() {
+  const c = usePalette();
   const params = useLocalSearchParams<{ id: string }>();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const [view, setView] = useState<'overview' | 'mock'>('overview');

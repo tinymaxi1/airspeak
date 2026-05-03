@@ -10,6 +10,7 @@
  * - Sticky bottom: Skip + Try again red CTA
  */
 import { ScrollView, View, Text, TouchableOpacity, Alert, Pressable } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Audio } from 'expo-av';
@@ -53,6 +54,7 @@ interface Phoneme {
 }
 
 export default function PronunciationScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ id: string }>();
   const sentence = (PRONUNCIATION_SENTENCES.find((s) => s.id === params.id) ??
@@ -207,7 +209,7 @@ export default function PronunciationScreen() {
   const weakPhoneme = weakIdx >= 0 ? phonemes[weakIdx] : null;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{

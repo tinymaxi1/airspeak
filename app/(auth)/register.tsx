@@ -10,10 +10,14 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
+import { KeyboardAware } from '@/components/ui/KeyboardAware';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signUpWithEmail } from '@/features/auth/api';
+import { mapAuthError } from '@/lib/authErrors';
+import { supabase } from '@/lib/supabase';
 import {
   HHero,
   Eyebrow,
@@ -24,28 +28,50 @@ import {
 } from '@/components/airspeak';
 
 export default function RegisterScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  // Sprint 8.B — Onaylar
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedKvkk, setAcceptedKvkk] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
 
   async function handleRegister() {
     if (!email || !password || password.length < 6) {
       Alert.alert('Eksik bilgi', 'Geçerli e-posta ve en az 6 karakter şifre.');
       return;
     }
-    setLoading(true);
-    const { error } = await signUpWithEmail(email, password);
-    setLoading(false);
-    if (error) {
-      Alert.alert('Hata', error.message);
+    if (!acceptedTerms || !acceptedKvkk) {
+      Alert.alert(
+        'Onay gerekli',
+        'Devam etmek için Kullanım Koşulları, Gizlilik Politikası ve KVKK Aydınlatma Metni\'ni kabul etmelisin.',
+      );
       return;
     }
+    setLoading(true);
+    const { error } = await signUpWithEmail(email, password);
+    if (error) {
+      setLoading(false);
+      const f = mapAuthError(error);
+      Alert.alert(f.title, f.message);
+      return;
+    }
+    // Onayları DB'ye yaz (best-effort — trigger handle_new_user önce profile oluşturur)
+    await (supabase as any)
+      .rpc('record_signup_consents', {
+        p_terms: acceptedTerms,
+        p_kvkk: acceptedKvkk,
+        p_marketing: marketingConsent,
+      })
+      .catch(() => undefined);
+    setLoading(false);
     router.replace('/(auth)/onboarding/role-select');
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <KeyboardAware style={{ backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{
@@ -157,8 +183,65 @@ export default function RegisterScreen() {
           </View>
         </View>
 
-        <View style={{ marginTop: 24 }}>
-          <Button3D variant="primary" fullWidth onPress={handleRegister} disabled={loading}>
+        {/* Sprint 8.B — Yasal onaylar */}
+        <View style={{ marginTop: 18, gap: 12 }}>
+          <ConsentRow
+            checked={acceptedTerms}
+            onToggle={() => setAcceptedTerms((v) => !v)}
+            required
+            content={
+              <Text style={{ fontSize: 13, color: '#3A4254', lineHeight: 18 }}>
+                <Text
+                  style={{ color: '#0F1E47', textDecorationLine: 'underline' }}
+                  onPress={() => router.push('/legal/terms')}
+                >
+                  Kullanım Koşulları
+                </Text>
+                {' ve '}
+                <Text
+                  style={{ color: '#0F1E47', textDecorationLine: 'underline' }}
+                  onPress={() => router.push('/legal/privacy')}
+                >
+                  Gizlilik Politikası
+                </Text>
+                {'\'nı okudum, kabul ediyorum.'}
+              </Text>
+            }
+          />
+          <ConsentRow
+            checked={acceptedKvkk}
+            onToggle={() => setAcceptedKvkk((v) => !v)}
+            required
+            content={
+              <Text style={{ fontSize: 13, color: '#3A4254', lineHeight: 18 }}>
+                <Text
+                  style={{ color: '#0F1E47', textDecorationLine: 'underline' }}
+                  onPress={() => router.push('/legal/kvkk')}
+                >
+                  KVKK Aydınlatma Metni
+                </Text>
+                {'\'ni okudum, kişisel verilerimin işlenmesini kabul ediyorum.'}
+              </Text>
+            }
+          />
+          <ConsentRow
+            checked={marketingConsent}
+            onToggle={() => setMarketingConsent((v) => !v)}
+            content={
+              <Text style={{ fontSize: 13, color: '#3A4254', lineHeight: 18 }}>
+                Kampanya ve fırsatlardan e-posta / push ile haberdar olmak istiyorum (opsiyonel).
+              </Text>
+            }
+          />
+        </View>
+
+        <View style={{ marginTop: 18 }}>
+          <Button3D
+            variant="primary"
+            fullWidth
+            onPress={handleRegister}
+            disabled={loading || !acceptedTerms || !acceptedKvkk}
+          >
             {loading ? t('screens.register.loading') : t('screens.register.board')}
           </Button3D>
         </View>
@@ -192,7 +275,7 @@ export default function RegisterScreen() {
           {t('screens.register.terms')}
         </Body>
       </ScrollView>
-    </View>
+    </KeyboardAware>
   );
 }
 
@@ -278,6 +361,50 @@ function PasswordField({
         </TouchableOpacity>
       </View>
     </View>
+  );
+}
+
+function ConsentRow({
+  checked,
+  onToggle,
+  content,
+  required,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+  content: React.ReactNode;
+  required?: boolean;
+}) {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={onToggle}
+      style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}
+    >
+      <View
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 5,
+          borderWidth: 2,
+          borderColor: checked ? '#0F1E47' : '#B8BFCC',
+          backgroundColor: checked ? '#0F1E47' : 'transparent',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: 1,
+        }}
+      >
+        {checked && (
+          <Text style={{ color: '#FFD56B', fontSize: 13, fontWeight: '700', lineHeight: 14 }}>✓</Text>
+        )}
+      </View>
+      <View style={{ flex: 1 }}>
+        {content}
+        {required && (
+          <Text style={{ fontSize: 11, color: '#E63946', marginTop: 2 }}>* Zorunlu</Text>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 }
 

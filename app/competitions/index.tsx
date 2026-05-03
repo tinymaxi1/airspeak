@@ -4,6 +4,7 @@
  * Banner kart + tema + süre sayacı + Katıl/Detay butonları.
  */
 import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -34,10 +35,11 @@ function hoursLeft(endIso: string): { value: number; unit: 'sa' | 'gün' } {
 }
 
 export default function CompetitionsScreen() {
+  const c = usePalette();
   const { rows, loading, refresh } = useActiveCompetitions();
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

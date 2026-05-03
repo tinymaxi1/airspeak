@@ -15,11 +15,12 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { supabase } from './supabase';
 
-// Foreground'da gelen bildirim banner görünür olsun
+// Foreground'da custom in-app banner gösteriliyor (Sprint 5.C),
+// sistem banner kapalı — çift gösterimi önler. Background'da sistem zaten gösterir.
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldShowBanner: true,
+    shouldShowAlert: false,
+    shouldShowBanner: false,
     shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: true,

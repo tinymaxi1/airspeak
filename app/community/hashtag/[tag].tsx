@@ -6,6 +6,7 @@
  */
 import { useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,6 +20,7 @@ import { PostCard } from '@/components/community/PostCard';
 import { FONTS, Mono, Body } from '@/components/airspeak';
 
 export default function HashtagFeedScreen() {
+  const c = usePalette();
   const params = useLocalSearchParams<{ tag: string }>();
   const tag = typeof params.tag === 'string' ? params.tag.toLowerCase() : '';
   const userId = useAuthStore((s) => s.user?.id);
@@ -40,7 +42,7 @@ export default function HashtagFeedScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

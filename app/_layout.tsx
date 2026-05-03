@@ -1,10 +1,17 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Text as RNText, TextInput as RNTextInput } from 'react-native';
+// Sprint 6.D — Dynamic Type cap (1.8) global default. Erişilebilirlik dengesi.
+(RNText as any).defaultProps = (RNText as any).defaultProps || {};
+(RNText as any).defaultProps.maxFontSizeMultiplier = 1.8;
+(RNTextInput as any).defaultProps = (RNTextInput as any).defaultProps || {};
+(RNTextInput as any).defaultProps.maxFontSizeMultiplier = 1.8;
 import { TamaguiProvider } from 'tamagui';
 import { QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { useEffect } from 'react';
 import {
   PlusJakartaSans_400Regular,
@@ -46,6 +53,13 @@ import { useWalletMigration } from '@/features/wallet/useWalletMigration';
 import { useLastActiveHeartbeat } from '@/features/social/presence';
 import { useTrialEndingPaywall } from '@/features/trial/api';
 import { useAuthStore } from '@/stores/authStore';
+import { useThemeStore } from '@/stores/themeStore';
+import { NotificationBannerHost } from '@/components/notifications/NotificationBanner';
+import {
+  usePushResponseHandler,
+  useForegroundPushBanner,
+  useNotificationLogBanner,
+} from '@/features/notifications/listeners';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,7 +68,19 @@ initAnalytics();
 initI18n();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const systemColorScheme = useColorScheme();
+  const themePref = useThemeStore((s) => s.theme);
+  const hydrateTheme = useThemeStore((s) => s.hydrateFromDb);
+  const userId = useAuthStore((s) => s.user?.id);
+
+  // Tema seçimi: 'system' → cihaz scheme; aksi halde kullanıcı seçimi
+  const colorScheme: 'light' | 'dark' =
+    themePref === 'system' ? (systemColorScheme ?? 'light') : themePref;
+
+  // Login sonrası DB'den theme hydrate et
+  useEffect(() => {
+    if (userId) void hydrateTheme(userId);
+  }, [userId, hydrateTheme]);
 
   // AirSpeak design system: Plus Jakarta Sans (gövde) + Space Grotesk (display) + JetBrains Mono (eyebrow/data)
   const [fontsLoaded] = usePlusJakartaSans({
@@ -85,6 +111,11 @@ export default function RootLayout() {
   // Trial 1 gün/0 gün kala client-side paywall (push trigger'a ek olarak)
   const trialUserId = useAuthStore((s) => s.user?.id);
   useTrialEndingPaywall(trialUserId);
+
+  // In-app notification banner: 3 listener — push tap, foreground push, realtime
+  usePushResponseHandler();
+  useForegroundPushBanner();
+  useNotificationLogBanner(trialUserId);
 
   // Network monitoring — getState() ile al, subscribe etme (döngü önler)
   useEffect(() => {
@@ -161,7 +192,8 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <TamaguiProvider config={config} defaultTheme={colorScheme ?? 'light'}>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <TamaguiProvider config={config} defaultTheme={colorScheme}>
         <QueryClientProvider client={queryClient}>
           <StatusBar style="auto" />
           <Stack
@@ -187,6 +219,9 @@ export default function RootLayout() {
             <Stack.Screen name="settings/index" options={{ headerShown: false }} />
             <Stack.Screen name="settings/profile" options={{ headerShown: false }} />
             <Stack.Screen name="settings/privacy" options={{ headerShown: false }} />
+            <Stack.Screen name="legal/privacy" options={{ headerShown: false }} />
+            <Stack.Screen name="legal/terms" options={{ headerShown: false }} />
+            <Stack.Screen name="legal/kvkk" options={{ headerShown: false }} />
             <Stack.Screen name="settings/help" options={{ headerShown: false }} />
             <Stack.Screen name="notifications" options={{ headerShown: false }} />
             <Stack.Screen name="offline" options={{ headerShown: false }} />
@@ -235,8 +270,10 @@ export default function RootLayout() {
             <Stack.Screen name="quiz/[id]" options={{ headerShown: true, headerTitle: 'Quiz' }} />
           </Stack>
           <PaywallTriggerSheet />
+          <NotificationBannerHost />
         </QueryClientProvider>
       </TamaguiProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

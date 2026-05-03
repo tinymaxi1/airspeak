@@ -4,7 +4,8 @@
  * Privacy badge: open / closed / secret / premium (lock ikon + renk).
  * Member count + post count + emoji + banner (varsa).
  */
-import { TouchableOpacity, View, Text, Image } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import type { CommunityGroup, GroupPrivacy } from '@/features/community/api';
 import { FONTS, Mono, Body } from '@/components/airspeak';

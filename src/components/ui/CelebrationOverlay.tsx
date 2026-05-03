@@ -15,6 +15,7 @@ import Animated, {
   withDelay,
   Easing,
 } from 'react-native-reanimated';
+import { useReducedMotion } from '@/lib/useReducedMotion';
 
 interface CelebrationOverlayProps {
   emoji: string;
@@ -31,23 +32,36 @@ export function CelebrationOverlay({
   visible,
   onComplete,
 }: CelebrationOverlayProps) {
+  const reduceMotion = useReducedMotion();
   const scale = useSharedValue(0);
   const opacity = useSharedValue(0);
   const emojiScale = useSharedValue(0);
 
   useEffect(() => {
     if (visible) {
-      opacity.value = withTiming(1, { duration: 200 });
-      scale.value = withSpring(1, { damping: 8, stiffness: 120 });
-      emojiScale.value = withSequence(
-        withTiming(1.3, { duration: 300, easing: Easing.out(Easing.cubic) }),
-        withSpring(1, { damping: 6 }),
-      );
+      if (reduceMotion) {
+        // Anlık fade-in, scale animasyonu yok
+        opacity.value = 1;
+        scale.value = 1;
+        emojiScale.value = 1;
+      } else {
+        opacity.value = withTiming(1, { duration: 200 });
+        scale.value = withSpring(1, { damping: 8, stiffness: 120 });
+        emojiScale.value = withSequence(
+          withTiming(1.3, { duration: 300, easing: Easing.out(Easing.cubic) }),
+          withSpring(1, { damping: 6 }),
+        );
+      }
       const timer = setTimeout(() => {
-        opacity.value = withTiming(0, { duration: 300 });
-        scale.value = withTiming(0.8, { duration: 300 });
+        if (reduceMotion) {
+          opacity.value = 0;
+          scale.value = 0.8;
+        } else {
+          opacity.value = withTiming(0, { duration: 300 });
+          scale.value = withTiming(0.8, { duration: 300 });
+        }
         if (onComplete) {
-          setTimeout(onComplete, 350);
+          setTimeout(onComplete, reduceMotion ? 50 : 350);
         }
       }, 2000);
       return () => clearTimeout(timer);
@@ -57,7 +71,7 @@ export function CelebrationOverlay({
       emojiScale.value = 0;
     }
     return undefined;
-  }, [visible]);
+  }, [visible, reduceMotion]);
 
   const containerStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,

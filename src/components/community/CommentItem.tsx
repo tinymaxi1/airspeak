@@ -14,11 +14,11 @@ import { useState } from 'react';
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   Alert,
   TextInput,
 } from 'react-native';
+import { Image } from 'expo-image';
 import {
   type CommunityComment,
   type ReactionKind,

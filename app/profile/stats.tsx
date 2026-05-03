@@ -24,6 +24,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
@@ -49,6 +50,7 @@ function fmtWeekLabel(iso: string): string {
 }
 
 export default function ProfileStatsScreen() {
+  const c = usePalette();
   const userId = useAuthStore((s) => s.user?.id);
   const { profile } = useProfile(userId);
   const tz = profile?.timezone ?? 'Europe/Istanbul';
@@ -105,7 +107,7 @@ export default function ProfileStatsScreen() {
   }, [dow]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{
@@ -285,9 +287,11 @@ function GoalsEditModal({
     else Alert.alert('Hata', r.error ?? 'Kaydedilemedi');
   }
 
+  const c = usePalette();
+
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#FAFAF7' }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1, backgroundColor: c.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <SafeAreaView style={{ flex: 1 }}>
           <View
             style={{

@@ -11,6 +11,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -33,6 +34,7 @@ import {
 } from '@/features/social/api';
 
 export default function FriendsScreen() {
+  const c = usePalette();
   const user = useAuthStore((s) => s.user);
   const { rows, loading, refresh } = useFriends(user?.id);
   const [username, setUsername] = useState('');
@@ -91,7 +93,7 @@ export default function FriendsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
           style={{

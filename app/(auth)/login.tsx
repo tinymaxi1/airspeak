@@ -3,10 +3,13 @@
  */
 import { useState } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { usePalette } from '@/lib/usePalette';
+import { KeyboardAware } from '@/components/ui/KeyboardAware';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmail } from '@/features/auth/api';
+import { mapAuthError } from '@/lib/authErrors';
 import {
   HHero,
   Eyebrow,
@@ -17,6 +20,7 @@ import {
 } from '@/components/airspeak';
 
 export default function LoginScreen() {
+  const c = usePalette();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +31,8 @@ export default function LoginScreen() {
     const { error } = await signInWithEmail(email || 'mock@airspeak.io', password || 'mock1234');
     setLoading(false);
     if (error) {
-      Alert.alert('Hata', error.message);
+      const f = mapAuthError(error);
+      Alert.alert(f.title, f.message);
       return;
     }
     // Index'e yönlendir — onboarding tamamlanmış mı diye orada karar verilir
@@ -36,7 +41,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#FAFAF7' }}>
+    <KeyboardAware style={{ backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']}>
         <View
           style={{
@@ -147,7 +152,7 @@ export default function LoginScreen() {
           </Button3D>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAware>
   );
 }
 
