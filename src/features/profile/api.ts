@@ -204,7 +204,7 @@ export async function upsertProfileFields(
   userId: string,
   patch: Record<string, unknown>,
 ): Promise<{ ok: boolean; error?: string }> {
-  const { error } = await supabase.from('profiles').update(patch).eq('id', userId);
+  const { error } = await supabase.from('profiles').update(patch as never).eq('id', userId);
   if (error) return { ok: false, error: error.message };
   return { ok: true };
 }

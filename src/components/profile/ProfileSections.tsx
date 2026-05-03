@@ -13,11 +13,6 @@ import {
   GraduationCap,
   Award,
   Plane,
-  Linkedin,
-  Instagram,
-  Twitter,
-  Youtube,
-  Facebook,
   Globe,
 } from 'lucide-react-native';
 import type {
@@ -541,11 +536,11 @@ export function SocialGrid({
   website: string | null;
 }) {
   const links = [
-    { key: 'linkedin', icon: Linkedin, color: '#0A66C2', url: buildLink('linkedin', linkedinUrl ?? '') },
-    { key: 'instagram', icon: Instagram, color: '#E4405F', url: buildLink('instagram', instagram ?? '') },
-    { key: 'twitter', icon: Twitter, color: '#000000', url: buildLink('twitter', twitter ?? '') },
-    { key: 'youtube', icon: Youtube, color: '#FF0000', url: buildLink('youtube', youtube ?? '') },
-    { key: 'facebook', icon: Facebook, color: '#1877F2', url: buildLink('facebook', facebook ?? '') },
+    { key: 'linkedin', icon: Globe, color: '#0A66C2', url: buildLink('linkedin', linkedinUrl ?? '') },
+    { key: 'instagram', icon: Globe, color: '#E4405F', url: buildLink('instagram', instagram ?? '') },
+    { key: 'twitter', icon: Globe, color: '#000000', url: buildLink('twitter', twitter ?? '') },
+    { key: 'youtube', icon: Globe, color: '#FF0000', url: buildLink('youtube', youtube ?? '') },
+    { key: 'facebook', icon: Globe, color: '#1877F2', url: buildLink('facebook', facebook ?? '') },
     { key: 'website', icon: Globe, color: '#5A6478', url: buildLink('website', website ?? '') },
   ].filter((l) => l.url);
 
