@@ -143,9 +143,9 @@ export function LessonListWithPreview({ lessons, role, moduleSlug, unitSlug }: P
                 <StatusActions
                   table="lessons"
                   id={l.id}
-                  status={l.status}
+                  status={l.status as 'draft' | 'review' | 'published' | 'archived'}
                   revalidate={[`/tree/${role}/${moduleSlug}/${unitSlug}`]}
-                  label={l.title_tr ?? l.title}
+                  label={l.title_tr ?? l.title ?? undefined}
                   canDelete
                 />
                 <Link
