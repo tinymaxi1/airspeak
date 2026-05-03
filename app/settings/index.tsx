@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/stores/authStore';
 import { signOut } from '@/features/auth/api';
+import { nativeCrash } from '@/lib/sentry';
 import {
   Eyebrow,
   Mono,
@@ -126,6 +127,30 @@ export default function SettingsScreen() {
         },
       ],
     },
+    ...(__DEV__
+      ? [
+          {
+            title: 'DEVELOPER',
+            rows: [
+              {
+                icon: '🐛',
+                label: 'Crash test (DEV)',
+                sub: 'Sentry native crash — sadece DEV ortamında görünür',
+                onPress: () => {
+                  Alert.alert(
+                    'Crash test',
+                    'Uygulama çökecek. Production build\'inde Sentry\'ye event gönderir.',
+                    [
+                      { text: 'İptal', style: 'cancel' },
+                      { text: 'Çök', style: 'destructive', onPress: () => nativeCrash() },
+                    ],
+                  );
+                },
+              },
+            ] as RowDef[],
+          },
+        ]
+      : []),
     {
       rows: [
         { icon: '✕', label: t('screens.settings.signOut'), danger: true, onPress: handleSignOut },

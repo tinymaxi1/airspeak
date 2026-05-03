@@ -9,7 +9,7 @@
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import { identify, resetAnalytics, track } from '@/lib/posthog';
-import { setUser } from '@/lib/sentry';
+import { identifyUser, clearUser } from '@/lib/sentry';
 import { unregisterPushToken } from '@/lib/notifications';
 import * as mockAuth from './mockAuth';
 
@@ -23,7 +23,7 @@ export async function signUpWithEmail(email: string, password: string) {
     useAuthStore.getState().setSession(data.session);
     track('auth_signed_up', { method: 'email' });
     identify(data.session.user.id, { email });
-    setUser({ id: data.session.user.id, email });
+    identifyUser({ id: data.session.user.id });
   }
   return { data, error };
 }
@@ -36,7 +36,7 @@ export async function signInWithEmail(email: string, password: string) {
     useAuthStore.getState().setSession(data.session);
     track('auth_logged_in', { method: 'email' });
     identify(data.session.user.id, { email });
-    setUser({ id: data.session.user.id, email });
+    identifyUser({ id: data.session.user.id });
   }
   return { data, error };
 }
@@ -64,7 +64,7 @@ export async function signOut() {
   if (!error) {
     useAuthStore.getState().reset();
     resetAnalytics();
-    setUser(null);
+    clearUser();
   }
   return { error };
 }

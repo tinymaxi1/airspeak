@@ -95,6 +95,13 @@
           "iosAppId": "ca-app-pub-3940256099942544~1458002511",
           "userTrackingUsageDescription": "AirSpeak'i ve sana özel reklamları geliştirmek için cihaz tanımlayıcına ihtiyaç duyar. İzin vermesen de uygulama tam çalışır."
         }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "airspeak",
+          "project": "react-native"
+        }
       ]
     ],
     "experiments": {

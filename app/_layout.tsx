@@ -28,7 +28,7 @@ import config from '../tamagui.config';
 import { queryClient } from '@/lib/queryClient';
 import { initI18n } from '@/lib/i18n';
 import { initAnalytics } from '@/lib/posthog';
-import { initSentry } from '@/lib/sentry';
+import { initSentry, identifyUser, clearUser } from '@/lib/sentry';
 import { useTranslation } from 'react-i18next';
 import {
   requestPermission as requestNotifPermission,
@@ -122,15 +122,29 @@ export default function RootLayout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fontsLoaded]);
 
-  // Push token: Supabase'e sync (login sonrası)
+  // Push token + Sentry user identify: Supabase'e sync (login sonrası)
   useEffect(() => {
     if (!fontsLoaded) return;
     const sync = () => {
       syncPushTokenToSupabase().catch((e) => console.warn('Push token sync failed', e));
     };
+    // Initial: zaten oturum açıksa Sentry'ye user'ı bildir
+    const initialUser = useAuthStore.getState().user;
+    const initialProfile = useAuthStore.getState().profile;
+    if (initialUser) {
+      identifyUser({ id: initialUser.id, role: initialProfile?.role ?? null });
+    }
     sync();
-    const { data } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') sync();
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        sync();
+        if (session?.user) {
+          const role = useAuthStore.getState().profile?.role ?? null;
+          identifyUser({ id: session.user.id, role });
+        }
+      } else if (event === 'SIGNED_OUT') {
+        clearUser();
+      }
     });
     return () => data.subscription.unsubscribe();
   }, [fontsLoaded]);
