@@ -78,7 +78,13 @@
           "color": "#2E7CD6"
         }
       ],
-      "expo-speech-recognition"
+      "expo-speech-recognition",
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "AirSpeak'i ve sana özel reklamları geliştirmek için cihaz tanımlayıcına ihtiyaç duyar. İzin vermesen de uygulama tam çalışır."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
