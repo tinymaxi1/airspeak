@@ -1205,7 +1205,9 @@ function ModerationTab({
 
   const [premiumDays, setPremiumDays] = useState(30);
   const [banReason, setBanReason] = useState('');
-  const [adminRoleSel, setAdminRoleSel] = useState(profile.admin_role ?? 'reviewer');
+  const [adminRoleSel, setAdminRoleSel] = useState<'super_admin' | 'editor' | 'reviewer'>(
+    (profile.admin_role as 'super_admin' | 'editor' | 'reviewer') ?? 'reviewer',
+  );
 
   function applyPremium(days: number | null) {
     startTransition(async () => {
@@ -1236,7 +1238,7 @@ function ModerationTab({
       } else toast.error(r.error);
     });
   }
-  function applyAdminRole(role: string | null) {
+  function applyAdminRole(role: 'super_admin' | 'editor' | 'reviewer' | null) {
     startTransition(async () => {
       const r = await setAdminRole(profile.id, role);
       if (r.ok) {
@@ -1331,7 +1333,7 @@ function ModerationTab({
           <div className="flex items-center gap-2 flex-wrap">
             <Select
               value={adminRoleSel}
-              onChange={(e) => setAdminRoleSel(e.target.value)}
+              onChange={(e) => setAdminRoleSel(e.target.value as 'super_admin' | 'editor' | 'reviewer')}
               className="w-44"
             >
               <option value="reviewer">Reviewer</option>

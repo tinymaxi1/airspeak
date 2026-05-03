@@ -72,15 +72,15 @@ function InterviewForm({ mode, initial, onClose }: Props) {
       star_template_tr: form.star_template_tr,
       good_answer_points_tr: form.good_answer_points_tr
         .split('\n')
-        .map((s) => s.trim())
+        .map((s: string) => s.trim())
         .filter(Boolean),
       red_flags_tr: form.red_flags_tr
         .split('\n')
-        .map((s) => s.trim())
+        .map((s: string) => s.trim())
         .filter(Boolean),
       tips_tr: form.tips_tr
         .split('\n')
-        .map((s) => s.trim())
+        .map((s: string) => s.trim())
         .filter(Boolean),
     };
 

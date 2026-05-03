@@ -102,6 +102,7 @@ export function Sidebar({
             <Link
               key={item.href}
               href={item.href}
+              prefetch
               className={cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                 isActive
@@ -119,6 +120,7 @@ export function Sidebar({
       <div className="p-3 border-t border-white/10">
         <Link
           href="/settings"
+          prefetch
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10"
         >
           <Settings className="w-4 h-4" />

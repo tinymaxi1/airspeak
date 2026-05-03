@@ -32,7 +32,7 @@ export function Header({ profile }: { profile: AdminProfile }) {
   const role = profile.admin_role;
   const initials = (profile.full_name ?? profile.username ?? 'A')
     .split(' ')
-    .map((s) => s[0])
+    .map((s: string) => s[0])
     .join('')
     .slice(0, 2)
     .toUpperCase();
