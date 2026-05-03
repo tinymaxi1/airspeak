@@ -6,7 +6,13 @@ import { ScrollView, View, Text, TouchableOpacity, Alert, Linking, Switch } from
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { signOut } from '@/features/auth/api';
+import {
+  signOut,
+  requestAccountDeletion,
+  cancelAccountDeletion,
+  getAccountDeletionStatus,
+  type AccountDeletionStatus,
+} from '@/features/auth/api';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import { updateMentionPrivacy } from '@/features/community/api';
@@ -24,6 +30,12 @@ export default function PrivacySettingsScreen() {
   const userId = useAuthStore((s) => s.user?.id);
   const [friendsOnlyMentions, setFriendsOnlyMentions] = useState(false);
   const [mentionLoading, setMentionLoading] = useState(true);
+  const [deletionStatus, setDeletionStatus] = useState<AccountDeletionStatus | null>(null);
+
+  async function refreshDeletionStatus() {
+    const s = await getAccountDeletionStatus();
+    setDeletionStatus(s);
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -41,6 +53,8 @@ export default function PrivacySettingsScreen() {
         setFriendsOnlyMentions((data as any)?.mention_privacy === 'friends_only');
         setMentionLoading(false);
       }
+      const s = await getAccountDeletionStatus();
+      if (mounted) setDeletionStatus(s);
     })();
     return () => {
       mounted = false;
@@ -70,15 +84,77 @@ export default function PrivacySettingsScreen() {
   const handleDeleteAccount = () => {
     Alert.alert(
       t('settings.privacy.deleteTitle', 'Hesabı Sil'),
-      t('settings.privacy.deleteBody', 'Tüm verilerin 30 gün içinde kalıcı silinir. Bu işlem geri alınamaz.'),
+      t(
+        'settings.privacy.deleteBody',
+        'Tüm verilerin 30 gün içinde kalıcı silinir. Bu süre içinde tekrar giriş yaparak vazgeçebilirsin.',
+      ),
       [
         { text: t('common.cancel', 'İptal'), style: 'cancel' },
         {
           text: t('settings.privacy.confirmDelete', 'Sil'),
           style: 'destructive',
           onPress: async () => {
-            await signOut();
-            router.replace('/(auth)/welcome');
+            const r = await requestAccountDeletion();
+            if (r.error || !r.scheduledFor) {
+              Alert.alert(
+                t('common.error', 'Hata'),
+                t(
+                  'settings.privacy.deleteFailed',
+                  'Silme talebi oluşturulamadı. Lütfen tekrar dene.',
+                ),
+              );
+              return;
+            }
+            Alert.alert(
+              t('settings.privacy.deleteScheduledTitle', 'Silme talebi alındı'),
+              t(
+                'settings.privacy.deleteScheduledBody',
+                'Hesabın 30 gün sonra kalıcı silinecek. Çıkış yapılıyor.',
+              ),
+              [
+                {
+                  text: t('common.ok', 'Tamam'),
+                  onPress: async () => {
+                    await signOut();
+                    router.replace('/(auth)/welcome');
+                  },
+                },
+              ],
+            );
+          },
+        },
+      ],
+    );
+  };
+
+  const handleCancelDeletion = () => {
+    Alert.alert(
+      t('settings.privacy.cancelDeleteTitle', 'Silmeyi durdur'),
+      t(
+        'settings.privacy.cancelDeleteBody',
+        'Hesap silme talebini iptal etmek istediğine emin misin?',
+      ),
+      [
+        { text: t('common.cancel', 'İptal'), style: 'cancel' },
+        {
+          text: t('settings.privacy.confirmCancelDelete', 'Vazgeç'),
+          onPress: async () => {
+            const r = await cancelAccountDeletion();
+            if (!r.ok) {
+              Alert.alert(
+                t('common.error', 'Hata'),
+                r.error ?? t('settings.privacy.cancelDeleteFailed', 'İşlem başarısız.'),
+              );
+              return;
+            }
+            await refreshDeletionStatus();
+            Alert.alert(
+              t('settings.privacy.cancelDeleteSuccessTitle', 'Talep iptal edildi'),
+              t(
+                'settings.privacy.cancelDeleteSuccessBody',
+                'Hesabın silinmeyecek. İyi ki vazgeçtin.',
+              ),
+            );
           },
         },
       ],
@@ -194,15 +270,54 @@ export default function PrivacySettingsScreen() {
         </View>
 
         <Eyebrow>{t('settings.privacy.danger', 'TEHLİKELİ ALAN')}</Eyebrow>
-        <View style={{ marginTop: 8, paddingHorizontal: 4 }}>
-          <SettingsRow
-            icon="🗑"
-            label={t('settings.privacy.deleteAccount', 'Hesabı kalıcı sil')}
-            danger
-            onPress={handleDeleteAccount}
-            last
-          />
-        </View>
+        {deletionStatus ? (
+          <View style={{ marginTop: 8, paddingHorizontal: 4 }}>
+            <View
+              style={{
+                backgroundColor: '#FFF5F0',
+                borderRadius: 12,
+                borderWidth: 1.5,
+                borderColor: '#E5564B',
+                padding: 14,
+              }}
+            >
+              <Text style={{ fontFamily: FONTS.body800, fontSize: 15, color: '#A82E25' }}>
+                {t('settings.privacy.deletionPendingTitle', 'Silme talebi bekliyor')}
+              </Text>
+              <Body color="#A82E25" style={{ fontSize: 13, marginTop: 4, lineHeight: 19 }}>
+                {t('settings.privacy.deletionPendingBody', {
+                  defaultValue:
+                    'Hesabın {{days}} gün sonra kalıcı silinecek. Vazgeçmek için aşağıdaki butona bas.',
+                  days: deletionStatus.days_remaining,
+                })}
+              </Body>
+              <TouchableOpacity
+                onPress={handleCancelDeletion}
+                style={{
+                  marginTop: 12,
+                  backgroundColor: '#A82E25',
+                  paddingVertical: 10,
+                  borderRadius: 8,
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ fontFamily: FONTS.body800, fontSize: 14, color: '#FFFFFF' }}>
+                  {t('settings.privacy.cancelDeletionButton', 'Silmekten Vazgeç')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <View style={{ marginTop: 8, paddingHorizontal: 4 }}>
+            <SettingsRow
+              icon="🗑"
+              label={t('settings.privacy.deleteAccount', 'Hesabı kalıcı sil')}
+              danger
+              onPress={handleDeleteAccount}
+              last
+            />
+          </View>
+        )}
 
         <Mono
           style={{

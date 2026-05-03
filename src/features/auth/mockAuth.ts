@@ -123,3 +123,80 @@ export async function signOut() {
   useAuthStore.getState().reset();
   return { error: null };
 }
+
+// ============================================================================
+// Account deletion mock — MMKV'de pending durum tutar
+// ============================================================================
+
+const DELETION_KEY = 'mock-deletion-request';
+const COOLDOWN_DAYS = 30;
+
+interface MockDeletionRequest {
+  user_id: string;
+  requested_at: string;
+  scheduled_for: string;
+  status: 'pending' | 'cancelled' | 'processed';
+}
+
+function getDeletionKey(userId: string): string {
+  return `${DELETION_KEY}:${userId}`;
+}
+
+export async function requestAccountDeletion() {
+  const userId = useAuthStore.getState().user?.id;
+  if (!userId) return { scheduledFor: null, error: 'not_authenticated' };
+
+  const now = new Date();
+  const sched = new Date(now.getTime() + COOLDOWN_DAYS * 24 * 3600 * 1000);
+  const req: MockDeletionRequest = {
+    user_id: userId,
+    requested_at: now.toISOString(),
+    scheduled_for: sched.toISOString(),
+    status: 'pending',
+  };
+  storage.set(getDeletionKey(userId), JSON.stringify(req));
+  track('account_deletion_requested');
+  return { scheduledFor: sched, error: null };
+}
+
+export async function cancelAccountDeletion() {
+  const userId = useAuthStore.getState().user?.id;
+  if (!userId) return { ok: false, error: 'not_authenticated' };
+
+  const raw = storage.getString(getDeletionKey(userId));
+  if (!raw) return { ok: false, error: null };
+
+  try {
+    const req = JSON.parse(raw) as MockDeletionRequest;
+    if (req.status !== 'pending') return { ok: false, error: null };
+    req.status = 'cancelled';
+    storage.set(getDeletionKey(userId), JSON.stringify(req));
+    track('account_deletion_cancelled');
+    return { ok: true, error: null };
+  } catch {
+    return { ok: false, error: 'parse_error' };
+  }
+}
+
+export async function getAccountDeletionStatus() {
+  const userId = useAuthStore.getState().user?.id;
+  if (!userId) return null;
+
+  const raw = storage.getString(getDeletionKey(userId));
+  if (!raw) return null;
+
+  try {
+    const req = JSON.parse(raw) as MockDeletionRequest;
+    if (req.status !== 'pending') return null;
+
+    const sched = new Date(req.scheduled_for);
+    const days = Math.max(0, Math.ceil((sched.getTime() - Date.now()) / (24 * 3600 * 1000)));
+    return {
+      requested_at: req.requested_at,
+      scheduled_for: req.scheduled_for,
+      days_remaining: days,
+    };
+  } catch {
+    return null;
+  }
+}

@@ -68,3 +68,51 @@ export async function signOut() {
   }
   return { error };
 }
+
+// ============================================================================
+// Account deletion — Apple App Store Guideline 5.1.1(v) zorunlu
+// Backend: profiles.deletion_requested_at + 30 gün grace + Edge fn cron hard delete
+// (migration 32 + 33 + Edge fn process-account-deletions)
+// ============================================================================
+
+export interface AccountDeletionStatus {
+  requested_at: string;
+  scheduled_for: string;
+  days_remaining: number;
+}
+
+export async function requestAccountDeletion(): Promise<{
+  scheduledFor: Date | null;
+  error: string | null;
+}> {
+  if (USE_MOCK) return mockAuth.requestAccountDeletion();
+
+  const { data, error } = await (supabase.rpc as any)('request_account_deletion');
+  if (error) return { scheduledFor: null, error: error.message };
+  const result = data as { ok?: boolean; grace_until?: string; error?: string } | null;
+  if (!result?.ok) return { scheduledFor: null, error: result?.error ?? 'unknown' };
+  track('account_deletion_requested');
+  return {
+    scheduledFor: result.grace_until ? new Date(result.grace_until) : null,
+    error: null,
+  };
+}
+
+export async function cancelAccountDeletion(): Promise<{ ok: boolean; error: string | null }> {
+  if (USE_MOCK) return mockAuth.cancelAccountDeletion();
+
+  const { data, error } = await (supabase.rpc as any)('cancel_account_deletion');
+  if (error) return { ok: false, error: error.message };
+  const result = data as { ok?: boolean; error?: string } | null;
+  if (!result?.ok) return { ok: false, error: result?.error ?? null };
+  track('account_deletion_cancelled');
+  return { ok: true, error: null };
+}
+
+export async function getAccountDeletionStatus(): Promise<AccountDeletionStatus | null> {
+  if (USE_MOCK) return mockAuth.getAccountDeletionStatus();
+
+  const { data, error } = await (supabase.rpc as any)('get_account_deletion_status');
+  if (error || !data) return null;
+  return data as AccountDeletionStatus;
+}
