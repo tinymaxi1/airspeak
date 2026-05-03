@@ -167,48 +167,72 @@ export type Database = {
       aviation_glossary: {
         Row: {
           abbreviation: string | null
+          audio_url: string | null
           category: string
           created_at: string
           definition_en: string | null
           definition_tr: string | null
+          difficulty: number
           example_usage: string | null
           frequency: number
           icao_reference: string | null
           id: string
+          image_url: string | null
+          ipa: string | null
+          is_public: boolean
           is_verified: boolean
+          pos: string | null
+          related_terms: string[]
           source: string
+          tags: Json
           term_en: string
           term_tr: string | null
           updated_at: string
         }
         Insert: {
           abbreviation?: string | null
+          audio_url?: string | null
           category: string
           created_at?: string
           definition_en?: string | null
           definition_tr?: string | null
+          difficulty?: number
           example_usage?: string | null
           frequency?: number
           icao_reference?: string | null
           id?: string
+          image_url?: string | null
+          ipa?: string | null
+          is_public?: boolean
           is_verified?: boolean
+          pos?: string | null
+          related_terms?: string[]
           source?: string
+          tags?: Json
           term_en: string
           term_tr?: string | null
           updated_at?: string
         }
         Update: {
           abbreviation?: string | null
+          audio_url?: string | null
           category?: string
           created_at?: string
           definition_en?: string | null
           definition_tr?: string | null
+          difficulty?: number
           example_usage?: string | null
           frequency?: number
           icao_reference?: string | null
           id?: string
+          image_url?: string | null
+          ipa?: string | null
+          is_public?: boolean
           is_verified?: boolean
+          pos?: string | null
+          related_terms?: string[]
           source?: string
+          tags?: Json
           term_en?: string
           term_tr?: string | null
           updated_at?: string
@@ -4373,6 +4397,13 @@ export type Database = {
         }[]
       }
       get_effective_pricing: { Args: { p_offer_code?: string }; Returns: Json }
+      get_glossary_categories: {
+        Args: never
+        Returns: {
+          category: string
+          term_count: number
+        }[]
+      }
       get_next_placement_question: {
         Args: {
           p_answered_ids: string[]
@@ -4602,6 +4633,35 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      search_glossary: {
+        Args: {
+          p_abbreviations_only?: boolean
+          p_category?: string
+          p_lang?: string
+          p_limit?: number
+          p_max_difficulty?: number
+          p_min_difficulty?: number
+          p_offset?: number
+          p_query?: string
+        }
+        Returns: {
+          abbreviation: string
+          audio_url: string
+          category: string
+          definition_en: string
+          definition_tr: string
+          difficulty: number
+          example_usage: string
+          frequency: number
+          icao_reference: string
+          id: string
+          ipa: string
+          is_verified: boolean
+          pos: string
+          term_en: string
+          term_tr: string
+        }[]
       }
       send_friend_request: { Args: { p_username: string }; Returns: Json }
       set_marketing_consent: { Args: { p_enabled: boolean }; Returns: Json }
