@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { useTheme } from 'tamagui';
-import { Home, BookOpen, Brain, Trophy, User } from '@tamagui/lucide-icons';
+import { Home, BookOpen, Brain, Trophy, User, Library } from '@tamagui/lucide-icons';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/stores/authStore';
 import { useUnreadCount } from '@/features/notifications/api';
@@ -45,6 +45,14 @@ export default function TabsLayout() {
           title: t('tabs.practice', 'Pratik'),
           tabBarIcon: ({ color }) => <Brain color={color} size={24} />,
           tabBarAccessibilityLabel: t('tabs.practice', 'Pratik'),
+        }}
+      />
+      <Tabs.Screen
+        name="dictionary"
+        options={{
+          title: t('tabs.dictionary', 'Sözlük'),
+          tabBarIcon: ({ color }) => <Library color={color} size={24} />,
+          tabBarAccessibilityLabel: t('tabs.dictionary', 'Sözlük'),
         }}
       />
       <Tabs.Screen
