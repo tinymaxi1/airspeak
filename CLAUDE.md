@@ -306,17 +306,68 @@ Bu sayede dev/test/prod aynı kodla çalışır, kullanıcı (admin) Anthropic A
 - ⚠️ Sprint 7 sonrası: Admin panel `/admin/ai` üzerinden Anthropic + OpenAI API key gir + Test'le. Admin'de UI hazır, kullanıcı ne zaman aktive ederse o zaman gerçek AI çalışır.
 - ⚠️ Sprint 6.B.1 sonrası: notification-triggers Edge Function deploy etmesi gerekti. Kullanıcı `supabase functions deploy notification-triggers --project-ref neinhbkdctjtyyoskxpg` çalıştırdı.
 
+## Sprint 8 — Store Submit Hazırlığı (DEVAM EDİYOR, 2026-05-04)
+
+iOS/Android production submit için altyapı.
+
+| Sub | Durum | İçerik |
+|---|---|---|
+| 8.A.2 | ✅ | iOS Info.plist permission descriptions |
+| 8.A.3 | ✅ | App Tracking Transparency iskelet |
+| 8.B.1 | ✅ | Sentry crash monitoring (v6.10 — v8 Xcode 26.4 C++ profiler issue) |
+| 8.C.1-3 | ✅ | EAS init + env vars + react-native-google-mobile-ads plugin aktif |
+| 13.B.1 | ✅ | eas.json android.production: buildType=app-bundle, submit.track=internal |
+| 13.B.2 | ⚠️ | Android production .aab build — versionCode 3, in queue (free tier ~10dk). İlk build Sentry token eksikliği nedeniyle fail oldu, SENTRY_AUTH_TOKEN EAS secret eklendi. |
+
+## Sprint 11 — Aviation Glossary (DEVAM, 2026-05-04)
+
+Kullanıcı-yüzeyli sözlük. 50K terim hedefi.
+
+- 11.A — Schema extension + 6. mobile tab "Sözlük"
+- 11.B.1-11 — Bulk import 9 batch, **921 terim** (50K hedef: %1.84)
+- ~/airspeak/glossary/ standalone Python duplicate detection (5 conflict level: EXACT, NORMALIZED, FUZZY, ABBREV, INTRA-BATCH)
+- Admin RegistryStatus widget + GlossaryForm duplicate check
+- Validator import-glossary.mjs içinde gate
+
+## Sprint 12 — Unit Intro + Lesson Theory (TAMAM, 2026-05-04)
+
+Ders öncesi anlatım sistemi (Duolingo/Babbel benzeri).
+
+| Sub | Commit | İçerik |
+|---|---|---|
+| 12.A | `8556cce` | Migration 50: lessons.theory_md/_en/image_url + units.intro_md/_en + lesson_type 'theory' enum |
+| 12.B | `b28e5b5` | Theory ders tipi mobile (types + api left join + theory.tsx + Markdown component + lesson/[id] redirect) |
+| 12.C | `54d6252` | Unit intro modal mobile (zustand+MMKV store seenUnitIds + UnitIntroModal + learn.tsx wiring + "i" buton) |
+| 12.D | `be9bfc5` | Admin formlar (UnitForm intro alanları + LessonForm theory tipi conditional) |
+
+**Önemli**: useLesson hook `exercises!inner` → `exercises` (left join) — theory dersi exercise olmasa da döner. Markdown renderer custom (~90 satır, 0 dependency): `## başlık`, `**bold**`, `*italic*`, `- bullet`, paragraf.
+
+İçerik henüz boş — DB'de intro_md/theory_md hep NULL. Seed gerekiyor.
+
+## Sprint 13.A — RevenueCat IAP (TAMAM, 2026-05-04)
+
+iOS test key konfigüre edildi (`test_bepbobVLqibOscaAJFmISTcTuMv`), Android key + RevenueCat dashboard config + App Store Connect IAP product'ları kullanıcının yapacağı manuel görevler.
+
+| Sub | Commit | İçerik |
+|---|---|---|
+| 13.A.1 | `f2638bc` | Migration 51: profiles.revenuecat_app_user_id + 5 app_config seed (revenuecat.ios/android/webhook + iap.entitlement_id="pro" + iap.product_ids) + RLS revenuecat.* admin-only + category_check kaldırıldı |
+| 13.A.2-5 | `2d608f5` | src/lib/iap.ts (initIap/linkUser/purchase/restore/sync) + _layout.tsx hooks + paywall.tsx purchase flow + AppState foreground sync + restore butonu |
+| 13.A.6 | `8a39a1e` | Edge Function `revenuecat-webhook` (deploy edildi) — 12 RC event mapping → revenue_events + premium_until + subscription_status |
+| 13.A.7 | `5a70f2d` | Admin IAP UI (lib/iap/actions.ts + components/iap/IapSettingsForm.tsx + revenue/page.tsx genişletildi) |
+
+**Mock-first**: app_config'te key boşsa SDK init etmez, paywall "Yakında aktif" gösterir. Webhook secret boşsa Edge fn 200 with reason='webhook_disabled'. iOS test key ve webhook secret (`d5c63162ca...`) DB'ye yazıldı (PostgREST üzerinden direkt patch — commit'lenmedi). RevenueCat dashboard'da webhook URL: `https://neinhbkdctjtyyoskxpg.supabase.co/functions/v1/revenuecat-webhook` Authorization: `Bearer <secret>`.
+
 ## Kalan / önerilen sprintler
 
-Kullanıcı henüz bunlardan hangisini istediğini belirtmedi. Sıraya konabilir:
-
-1. **RevenueCat IAP entegrasyonu** (Sprint 5'te 6'ya bırakılmıştı, 6'da 7'ye, 7'de 8'e — şimdi sprint başlamadı)
-   - `setPremium(true)` mock yerine gerçek IAP
-   - `subscription_status` sync
-   - Apple/Google receipt validation
-   - `revenue_events` integration
-
-2. **Sprint 8 — DM/Chat** (Sprint 6'da 7'ye bırakılmıştı, 7'de 8'e bırakılmıştı)
+1. **Android build tamamlanması** — queue'da; bittiğinde .aab Play Console internal testing'e
+2. **iOS production build** — Apple Developer hesabı + EAS iOS profile + provisioning
+3. **App Store Connect IAP product** — 3 product oluşturma (annual/monthly/student)
+4. **RevenueCat dashboard config** — entitlement "pro" + offering "default" + product mapping
+5. **Sprint 12 içerik seed** — DB'de unit intro + theory dersleri henüz boş
+6. **Glossary batch'leri** — 921/50K (%1.84), kategori bazlı devam
+7. **AdMob production app ID + ad unit ID** — şu an Google test ID'leri
+8. **expo-updates (OTA)** — `npx expo install expo-updates` + `eas update:configure`
+9. **Sprint 8 — DM/Chat** (Sprint 6'da 7'ye bırakılmıştı, 7'de 8'e bırakılmıştı)
    - 1:1 mesajlaşma
    - Group chat (squadron/community group içinde)
    - Realtime broadcast channel
@@ -344,15 +395,15 @@ Kullanıcı henüz bunlardan hangisini istediğini belirtmedi. Sıraya konabilir
 
 7. **i18n genişletme** (16 dil mevcut, içerik çevirisi eksik)
 
-## Aktif durum
+## Aktif durum (2026-05-04)
 
 ```bash
-git status        # clean
-git log --oneline | head  # son commit: 8cfa073 (merge worktree → main)
-git rev-parse HEAD  # 8cfa073
+git log --oneline | head  # son commit: f4ffcd1 (Sprint 13.B.1 eas.json android profile)
 ```
 
-37 migration uygulanmış, 7 Edge Function deploy edilmiş. Main branch 109 commit ahead of `origin/main` (push edildikten sonra senkron olur).
+**51 migration** uygulanmış (son: 20260504000051_revenuecat_iap), **8 Edge Function** deploy edilmiş (son eklenen: revenuecat-webhook). Main branch `origin/main` ile senkron.
+
+Açık background süreç: EAS Android production build queue'da (build ID `2d9d6927-0f2e-49b7-bd4d-9b792af01666`, versionCode 3).
 
 ## Hızlı komutlar
 
@@ -401,6 +452,6 @@ DEEPL_API_KEY=...
 
 ---
 
-**Son güncelleme**: Worktree merge sonrası — main branch HEAD `8cfa073`. Tarih: 2026-05-01.
+**Son güncelleme**: 2026-05-04 — Sprint 13.A (RevenueCat IAP) + Sprint 12 (Theory + Unit Intro) + Sprint 11.B.11 (glossary batch 9, 921 terim) tamamlandı. main HEAD `f4ffcd1`.
 
-**Tüm tamamlanan iş**: Faz 0-8 (admin/content pipeline) + Sprint 3a, 3e, 3f, 4, 5, 6, 7 (gamification, community, oral exam, stats, placement adaptive). Branch tek (`main`), worktree merge edildi, çakışma olmadı.
+**Tüm tamamlanan iş**: Faz 0-8 (admin/content pipeline) + Sprint 3a, 3e, 3f, 4, 5, 6, 7 (gamification, community, oral exam, stats, placement adaptive) + Sprint 8.A.2/A.3/B.1/C.1-3 (store hazırlık) + Sprint 11.A/B.1-11 (glossary 921 terim) + Sprint 12.A-D (theory + unit intro) + Sprint 13.A.1-7 (RevenueCat IAP) + Sprint 13.B.1 (eas.json Android profil).

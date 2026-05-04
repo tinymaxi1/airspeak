@@ -16,7 +16,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.airspeak.mobile",
-      "buildNumber": "1",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "AirSpeak telaffuz alıştırmaları ve AI konuşma pratiği için mikrofona ihtiyaç duyar.",
         "NSSpeechRecognitionUsageDescription": "AirSpeak konuşmanı yazıya çevirip ICAO seviye 4 değerlendirmesi yapar.",
@@ -32,7 +31,6 @@
     },
     "android": {
       "package": "app.airspeak.mobile",
-      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo/adaptive-icon.png",
         "backgroundColor": "#0F2D5C"
