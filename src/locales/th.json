@@ -102,9 +102,9 @@
   "tabs": {
     "home": "บ้าน",
     "learn": "เรียน",
-    "practice": "ฝึก",
     "league": "สันนิบาต",
-    "profile": "โพรไฟล์"
+    "profile": "โพรไฟล์",
+    "community": "ชุมชน"
   },
   "home": {
     "greeting": "ยินดีต้อนรับ นักบิน!",

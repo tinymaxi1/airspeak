@@ -168,7 +168,7 @@ export default function PracticeScreen() {
           </Body>
           <TouchableOpacity
             activeOpacity={0.85}
-            onPress={() => router.push('/(tabs)/practice')}
+            onPress={() => router.push('/practice')}
             style={{
               marginTop: 12,
               backgroundColor: '#FFFFFF',

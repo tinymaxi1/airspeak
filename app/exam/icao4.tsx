@@ -451,8 +451,8 @@ export default function Icao4Screen() {
             >
               Başka görev dene
             </Button>
-            <Button variant="outlined" onPress={() => router.replace('/(tabs)/practice')}>
-              Pratik tab'ına dön
+            <Button variant="outlined" onPress={() => router.replace('/practice')}>
+              Pratik ekranına dön
             </Button>
           </YStack>
         </YStack>

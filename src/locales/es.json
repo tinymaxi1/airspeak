@@ -102,9 +102,9 @@
   "tabs": {
     "home": "Inicio",
     "learn": "Aprenda",
-    "practice": "Práctica",
     "league": "Liga",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "community": "Comunidad"
   },
   "home": {
     "greeting": "¡Bienvenido, aviador!",

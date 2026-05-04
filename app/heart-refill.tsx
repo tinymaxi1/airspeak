@@ -167,7 +167,7 @@ export default function HeartRefillScreen() {
             activeOpacity={0.85}
             onPress={() => {
               router.back();
-              router.push('/(tabs)/practice');
+              router.push('/practice');
             }}
             style={{
               backgroundColor: '#FFFFFF',

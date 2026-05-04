@@ -102,9 +102,9 @@
   "tabs": {
     "home": "خانه Home Home",
     "learn": "یادگیری Learn Learn Learn",
-    "practice": "تمرین تمرین تمرین",
     "league": "لیگ لیگ",
-    "profile": "پروفایل پروفایل پروفایل پروفایل"
+    "profile": "پروفایل پروفایل پروفایل پروفایل",
+    "community": "انجمن"
   },
   "home": {
     "greeting": "خوش آمدی، هوانورد!",

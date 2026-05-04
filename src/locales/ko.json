@@ -102,9 +102,9 @@
   "tabs": {
     "home": "홈",
     "learn": "배워보세요",
-    "practice": "연습",
     "league": "리그",
-    "profile": "프로필"
+    "profile": "프로필",
+    "community": "커뮤니티"
   },
   "home": {
     "greeting": "환영합니다, 항공인!",

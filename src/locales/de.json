@@ -102,9 +102,9 @@
   "tabs": {
     "home": "Startseite",
     "learn": "Erfahren Sie",
-    "practice": "Übung",
     "league": "Liga",
-    "profile": "Profil"
+    "profile": "Profil",
+    "community": "Community"
   },
   "home": {
     "greeting": "Willkommen, Crew!",

@@ -224,6 +224,8 @@ function RootLayoutInner() {
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             {/* Custom-chrome ekranlar — hepsi kendi SafeArea + top bar'ını yönetiyor */}
+            <Stack.Screen name="practice" options={{ headerShown: false }} />
+            <Stack.Screen name="dictionary" options={{ headerShown: false }} />
             <Stack.Screen name="lesson/[id]" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="paywall" options={{ presentation: 'modal', headerShown: false }} />
             <Stack.Screen name="conversation/index" options={{ headerShown: false }} />

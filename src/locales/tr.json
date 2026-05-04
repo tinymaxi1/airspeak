@@ -102,9 +102,9 @@
   "tabs": {
     "home": "Ana sayfa",
     "learn": "Öğren",
-    "practice": "Pratik",
     "league": "Lig",
-    "profile": "Profil"
+    "profile": "Profil",
+    "community": "Topluluk"
   },
   "home": {
     "greeting": "Hoş geldin, havacı!",

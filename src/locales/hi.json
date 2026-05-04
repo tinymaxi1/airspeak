@@ -102,9 +102,9 @@
   "tabs": {
     "home": "घर",
     "learn": "सीखिए",
-    "practice": "अभ्यास",
     "league": "लीग",
-    "profile": "प्रोफ़ाइल"
+    "profile": "प्रोफ़ाइल",
+    "community": "समुदाय"
   },
   "home": {
     "greeting": "स्वागत है, विमानचालक!",

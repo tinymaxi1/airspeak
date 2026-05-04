@@ -102,9 +102,9 @@
   "tabs": {
     "home": "首页",
     "learn": "学习",
-    "practice": "练习",
     "league": "联赛",
-    "profile": "个人简介"
+    "profile": "个人简介",
+    "community": "社区"
   },
   "home": {
     "greeting": "欢迎,航空人!",

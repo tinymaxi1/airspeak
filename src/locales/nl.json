@@ -102,9 +102,9 @@
   "tabs": {
     "home": "Home",
     "learn": "Meer informatie",
-    "practice": "Oefenen",
     "league": "Competitie",
-    "profile": "Profiel"
+    "profile": "Profiel",
+    "community": "Community"
   },
   "home": {
     "greeting": "Welkom, luchtvaarder!",

@@ -102,9 +102,9 @@
   "tabs": {
     "home": "ホーム",
     "learn": "学ぶ",
-    "practice": "練習",
     "league": "リーグ",
-    "profile": "プロフィール"
+    "profile": "プロフィール",
+    "community": "コミュニティ"
   },
   "home": {
     "greeting": "ようこそ、航空人!",

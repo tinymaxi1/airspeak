@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { useTheme } from 'tamagui';
-import { Home, BookOpen, Brain, Trophy, User, Library } from '@tamagui/lucide-icons';
+import { Home, BookOpen, Trophy, User, Users } from '@tamagui/lucide-icons';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/stores/authStore';
 import { useUnreadCount } from '@/features/notifications/api';
@@ -40,27 +40,19 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="practice"
-        options={{
-          title: t('tabs.practice', 'Pratik'),
-          tabBarIcon: ({ color }) => <Brain color={color} size={24} />,
-          tabBarAccessibilityLabel: t('tabs.practice', 'Pratik'),
-        }}
-      />
-      <Tabs.Screen
-        name="dictionary"
-        options={{
-          title: t('tabs.dictionary', 'Sözlük'),
-          tabBarIcon: ({ color }) => <Library color={color} size={24} />,
-          tabBarAccessibilityLabel: t('tabs.dictionary', 'Sözlük'),
-        }}
-      />
-      <Tabs.Screen
         name="league"
         options={{
           title: t('tabs.league', 'Lig'),
           tabBarIcon: ({ color }) => <Trophy color={color} size={24} />,
           tabBarAccessibilityLabel: t('tabs.league', 'Lig'),
+        }}
+      />
+      <Tabs.Screen
+        name="community"
+        options={{
+          title: t('tabs.community', 'Topluluk'),
+          tabBarIcon: ({ color }) => <Users color={color} size={24} />,
+          tabBarAccessibilityLabel: t('tabs.community', 'Topluluk'),
         }}
       />
       <Tabs.Screen

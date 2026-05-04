@@ -102,9 +102,9 @@
   "tabs": {
     "home": "Rumah",
     "learn": "Belajarlah",
-    "practice": "Praktek",
     "league": "Liga",
-    "profile": "Profile"
+    "profile": "Profile",
+    "community": "Komuniti"
   },
   "home": {
     "greeting": "Selamat datang, penerbang!",
