@@ -16,8 +16,10 @@
  * Duplicate term_en (case-insensitive) → atlanır, hata olarak sayılmaz.
  */
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { homedir } from 'node:os';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -32,6 +34,36 @@ const file = process.argv[2];
 if (!file) {
   console.error('❌ Kullanım: node --env-file=admin/.env.local scripts/import-glossary.mjs <file.json>');
   process.exit(1);
+}
+
+// ─── Pre-flight: glossary registry validation ──────────────────────────
+// ~/airspeak/glossary/validate_batch.py varsa, import öncesi conflict kontrol.
+// Exit 0 = clean → devam. Exit 1 = blocking → import iptal. Exit 2 = error.
+// SKIP_GLOSSARY_VALIDATE=1 env ile bypass edilebilir (acil durum).
+const validatorPath = resolve(homedir(), 'airspeak/glossary/validate_batch.py');
+if (existsSync(validatorPath) && process.env.SKIP_GLOSSARY_VALIDATE !== '1') {
+  console.log('🛡  Glossary registry validation — duplicate detection');
+  console.log(`   ${validatorPath}`);
+  const result = spawnSync('python3', [validatorPath, resolve(file)], {
+    stdio: 'inherit',
+  });
+  if (result.status === 1) {
+    console.error('\n⛔ Import iptal — registry conflict var. Yukarıdaki çakışmaları düzelt veya');
+    console.error('   SKIP_GLOSSARY_VALIDATE=1 node ... ile bypass et (acil durumlar için).');
+    process.exit(1);
+  }
+  if (result.status === 2) {
+    console.error('\n⚠  Validator internal hata (exit 2) — schema/parse problemi. Lütfen düzelt.');
+    process.exit(2);
+  }
+  if (result.status !== 0) {
+    console.error(`\n⚠  Validator beklenmedik exit kodu: ${result.status}. Devam ediliyor.`);
+  }
+  console.log(''); // boşluk satırı
+} else if (process.env.SKIP_GLOSSARY_VALIDATE === '1') {
+  console.log('⚠  SKIP_GLOSSARY_VALIDATE=1 — registry validation atlandı');
+} else {
+  console.log('ℹ  ~/airspeak/glossary/validate_batch.py yok — validation atlandı');
 }
 
 // Kategori mapping (JSON kaynağı → DB enum)
