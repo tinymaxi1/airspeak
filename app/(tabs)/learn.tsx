@@ -19,7 +19,9 @@ import Svg, { Path, Circle } from 'react-native-svg';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useLessonProgressStore } from '@/stores/lessonProgressStore';
+import { useUnitIntroStore } from '@/stores/unitIntroStore';
 import { useModules } from '@/features/content/api';
+import { UnitIntroModal } from '@/components/learn/UnitIntroModal';
 import type { UserRole } from '@/types/profile';
 import {
   HHero,
@@ -60,6 +62,10 @@ export default function LearnScreen() {
   const { data: modules = [], isLoading: modulesLoading, refetch } = useModules(role);
   const activeModule = modules[0]; // Şimdilik ilk modül
   const [activeUnitIdx, setActiveUnitIdx] = useState(0);
+  // Sprint 12 — unit intro modal
+  const isUnitIntroSeen = useUnitIntroStore((s) => s.isSeen);
+  const markUnitIntroSeen = useUnitIntroStore((s) => s.markSeen);
+  const [introOpen, setIntroOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -176,6 +182,26 @@ export default function LearnScreen() {
                 </Mono>
               </View>
 
+              {/* Sprint 12 — Intro tekrar açma butonu (sadece intro_md doluysa) */}
+              {activeUnit?.intro_md && (
+                <TouchableOpacity
+                  onPress={() => setIntroOpen(true)}
+                  hitSlop={10}
+                  accessibilityLabel="Ünite girişini tekrar göster"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 16,
+                    backgroundColor: 'rgba(0,0,0,0.18)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: 4,
+                  }}
+                >
+                  <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '700' }}>i</Text>
+                </TouchableOpacity>
+              )}
+
               {/* UNIT badge */}
               <View
                 style={{
@@ -266,7 +292,13 @@ export default function LearnScreen() {
               <TouchableOpacity
                 key={u.id}
                 activeOpacity={0.85}
-                onPress={() => setActiveUnitIdx(i)}
+                onPress={() => {
+                  setActiveUnitIdx(i);
+                  // Sprint 12 — ilk tıklamada intro modal'ı aç (intro_md doluysa)
+                  if (u.intro_md && !isUnitIntroSeen(u.id)) {
+                    setIntroOpen(true);
+                  }
+                }}
                 style={{
                   height: 36,
                   paddingHorizontal: 14,
@@ -467,6 +499,20 @@ export default function LearnScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Sprint 12 — Unit intro modal */}
+      <UnitIntroModal
+        unit={activeUnit ?? null}
+        visible={introOpen}
+        onClose={() => {
+          if (activeUnit) markUnitIntroSeen(activeUnit.id);
+          setIntroOpen(false);
+        }}
+        onStart={() => {
+          if (activeUnit) markUnitIntroSeen(activeUnit.id);
+          setIntroOpen(false);
+        }}
+      />
     </View>
   );
 }
