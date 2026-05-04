@@ -12,3 +12,4 @@ export * from './primitives';
 export * from './brand';
 export * from './lesson';
 export * from './composites';
+export * from './Markdown';

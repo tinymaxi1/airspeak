@@ -7,7 +7,7 @@
  */
 
 export type ContentStatus = 'draft' | 'review' | 'published' | 'archived';
-export type LessonType = 'vocabulary' | 'dialogue' | 'listening' | 'pronunciation' | 'quiz' | 'reading' | 'speaking';
+export type LessonType = 'vocabulary' | 'dialogue' | 'listening' | 'pronunciation' | 'quiz' | 'reading' | 'speaking' | 'theory';
 export type ExerciseType =
   | 'vocab-mc'
   | 'fill-blank'
@@ -61,6 +61,9 @@ export interface UnitRow extends ContentBase {
   description_tr: string | null;
   badge: string | null;
   sort: number;
+  // Sprint 12 — ünite girişinde modal'da gösterilen tanıtım metni (markdown)
+  intro_md: string | null;
+  intro_md_en: string | null;
 }
 
 export interface LessonRow extends ContentBase {
@@ -73,6 +76,10 @@ export interface LessonRow extends ContentBase {
   estimated_minutes: number;
   is_premium: boolean;
   sort: number;
+  // Sprint 12 — type=theory için anlatım içeriği (markdown)
+  theory_md: string | null;
+  theory_md_en: string | null;
+  theory_image_url: string | null;
 }
 
 export interface ExerciseOption {

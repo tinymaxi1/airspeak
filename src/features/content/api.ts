@@ -116,9 +116,10 @@ export function useLesson(lessonSlug: string | null | undefined) {
     gcTime: ONE_HOUR,
     queryFn: async (): Promise<LessonWithExercises | null> => {
       if (!lessonSlug) return null;
+      // Theory tipi dersler için exercises olmayabilir → left join
       const { data, error } = await supabase
         .from('lessons')
-        .select(`*, exercises!inner(*)`)
+        .select(`*, exercises(*)`)
         .eq('slug', lessonSlug)
         .eq('status', 'published')
         .single();

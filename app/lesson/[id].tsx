@@ -61,6 +61,14 @@ export default function LessonScreen() {
   const { data: lesson, isLoading, error } = useLesson(lessonSlug);
   const exercises: ExerciseRow[] = lesson?.exercises ?? [];
 
+  // Sprint 12 — Theory tipi dersler için ayrı ekrana yönlendir.
+  // Egzersiz mantığı theory için geçerli değil; replace ile history'de iz bırakma.
+  useEffect(() => {
+    if (lesson?.type === 'theory') {
+      router.replace({ pathname: '/lesson/theory', params: { id: lessonSlug } });
+    }
+  }, [lesson?.type, lessonSlug]);
+
   // ─────────── Local UI state ───────────
   const initialIdx = persisted?.currentIdx ?? 0;
   const initialCorrect = persisted?.correctCount ?? 0;
@@ -108,7 +116,8 @@ export default function LessonScreen() {
   useAndroidBack(onAndroidBack);
 
   // ─────────── Loading / not found ───────────
-  if (isLoading || (!lesson && !error)) {
+  // Theory tipi dersler redirect bekliyor; "ders bulunamadı" yerine spinner göster.
+  if (isLoading || (!lesson && !error) || lesson?.type === 'theory') {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.bg }}>
         <ActivityIndicator size="large" color="#E63946" />
