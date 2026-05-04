@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Text as RNText, TextInput as RNTextInput } from 'react-native';
+import { Text as RNText, TextInput as RNTextInput, AppState } from 'react-native';
 // Sprint 6.D — Dynamic Type cap (1.8) global default. Erişilebilirlik dengesi.
 (RNText as any).defaultProps = (RNText as any).defaultProps || {};
 (RNText as any).defaultProps.maxFontSizeMultiplier = 1.8;
@@ -36,6 +36,7 @@ import { queryClient } from '@/lib/queryClient';
 import { initI18n } from '@/lib/i18n';
 import { initAnalytics } from '@/lib/posthog';
 import { initSentry, identifyUser, clearUser } from '@/lib/sentry';
+import { initIap, linkIapUser, logOutIap, syncPremiumFromIap } from '@/lib/iap';
 import { useTranslation } from 'react-i18next';
 import {
   requestPermission as requestNotifPermission,
@@ -66,6 +67,7 @@ SplashScreen.preventAutoHideAsync();
 initSentry();
 initAnalytics();
 initI18n();
+void initIap();
 
 export default function RootLayout() {
   const systemColorScheme = useColorScheme();
@@ -164,6 +166,8 @@ export default function RootLayout() {
     const initialProfile = useAuthStore.getState().profile;
     if (initialUser) {
       identifyUser({ id: initialUser.id, role: initialProfile?.role ?? null });
+      // Sprint 13.A.2 — IAP user link + premium sync (mock-first: key yoksa no-op)
+      void linkIapUser(initialUser.id).then(() => syncPremiumFromIap());
     }
     sync();
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
@@ -172,13 +176,26 @@ export default function RootLayout() {
         if (session?.user) {
           const role = useAuthStore.getState().profile?.role ?? null;
           identifyUser({ id: session.user.id, role });
+          void linkIapUser(session.user.id).then(() => syncPremiumFromIap());
         }
       } else if (event === 'SIGNED_OUT') {
         clearUser();
+        void logOutIap();
       }
     });
     return () => data.subscription.unsubscribe();
   }, [fontsLoaded]);
+
+  // Sprint 13.A.4 — App foreground'a gelince premium durumunu IAP'tan sync et.
+  // Kullanıcı dışarıda satın alım yaptıysa veya cihazlar arası senkron için.
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active' && useAuthStore.getState().user) {
+        void syncPremiumFromIap();
+      }
+    });
+    return () => sub.remove();
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded) {

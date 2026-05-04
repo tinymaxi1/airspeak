@@ -9,12 +9,13 @@
  * - 3 plan cards (Annual selected w/ BEST VALUE, Monthly, Student)
  * - Sticky CTA "Start 7-day trial"
  */
-import { useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Defs, RadialGradient, Stop, Circle } from 'react-native-svg';
+import type { PurchasesPackage } from 'react-native-purchases';
 import { track } from '@/lib/posthog';
 import {
   Hero,
@@ -25,6 +26,12 @@ import {
   Button3D,
   TopoBackground,
 } from '@/components/airspeak';
+import {
+  getOfferings,
+  purchasePackage,
+  restorePurchases,
+  isIapConfigured,
+} from '@/lib/iap';
 
 interface PlanData {
   id: 'annual' | 'monthly' | 'student';
@@ -37,25 +44,118 @@ interface PlanData {
 // PLANS — translation keys via plan id
 const PLAN_IDS: PlanData['id'][] = ['annual', 'monthly', 'student'];
 
+// product_id → plan id mapping (App Store Connect ürünleriyle uyumlu)
+const PRODUCT_TO_PLAN: Record<string, PlanData['id']> = {
+  airspeak_pro_annual: 'annual',
+  airspeak_pro_monthly: 'monthly',
+  airspeak_pro_student: 'student',
+};
+
 const FEATURE_KEYS = ['feat1', 'feat2', 'feat3', 'feat4', 'feat5', 'feat6'];
 const FEATURE_HAS_FREE = [true, true, true, false, false, false];
 
 export default function PaywallScreen() {
   const { t } = useTranslation();
   const [selectedPlan, setSelectedPlan] = useState<PlanData['id']>('annual');
+  const [busy, setBusy] = useState(false);
+  const [pkgs, setPkgs] = useState<PurchasesPackage[]>([]);
+  const iapReady = isIapConfigured();
 
-  const plans: PlanData[] = PLAN_IDS.map((id) => ({
-    id,
-    name: t(`screens.paywall.${id}`),
-    price: t(`screens.paywall.${id}Price`),
-    sub: t(`screens.paywall.${id}Sub`),
-    badge: id === 'annual' ? t('screens.paywall.bestValue') : undefined,
-  }));
+  // Sprint 13.A.3 — RevenueCat offerings (mock-first; key boşsa null)
+  useEffect(() => {
+    if (!iapReady) return;
+    void getOfferings().then((o) => {
+      if (o?.packages) setPkgs(o.packages);
+    });
+  }, [iapReady]);
 
-  const handleSubscribe = () => {
+  const plans: PlanData[] = PLAN_IDS.map((id) => {
+    const live = pkgs.find(
+      (p) => PRODUCT_TO_PLAN[p.product.identifier] === id,
+    );
+    return {
+      id,
+      name: t(`screens.paywall.${id}`),
+      // Live price varsa onu kullan, yoksa hardcoded i18n fallback
+      price: live?.product.priceString ?? t(`screens.paywall.${id}Price`),
+      sub: t(`screens.paywall.${id}Sub`),
+      badge: id === 'annual' ? t('screens.paywall.bestValue') : undefined,
+    };
+  });
+
+  const handleSubscribe = async () => {
     track('paywall_subscribe', { plan: selectedPlan });
-    // TODO: RevenueCat purchase flow
+
+    // Mock-first: IAP yapılandırılmamışsa kullanıcıya bildir
+    if (!iapReady) {
+      Alert.alert(
+        t('screens.paywall.comingSoonTitle', { defaultValue: 'Yakında aktif' }),
+        t('screens.paywall.comingSoonBody', {
+          defaultValue:
+            'Pro üyelik kısa süre içinde aktif edilecek. Şimdilik tüm temel özellikler ücretsiz.',
+        }),
+        [{ text: 'OK', onPress: () => router.back() }],
+      );
+      return;
+    }
+
+    const pkg = pkgs.find(
+      (p) => PRODUCT_TO_PLAN[p.product.identifier] === selectedPlan,
+    );
+    if (!pkg) {
+      Alert.alert('Hata', 'Seçilen plan App Store ürün listesinde bulunamadı.');
+      return;
+    }
+
+    setBusy(true);
+    const r = await purchasePackage(pkg);
+    setBusy(false);
+
+    if (r.cancelled) return; // sessiz geç
+    if (!r.ok) {
+      Alert.alert(
+        t('screens.paywall.errorTitle', { defaultValue: 'Satın alma başarısız' }),
+        r.error ?? 'Bilinmeyen hata',
+      );
+      return;
+    }
+    // Başarılı — DB sync iap.ts içinde yapıldı, kapanıp ana ekrana
+    track('paywall_purchase_success', { plan: selectedPlan });
     router.back();
+  };
+
+  const handleRestore = async () => {
+    if (!iapReady) {
+      Alert.alert(
+        t('screens.paywall.comingSoonTitle', { defaultValue: 'Yakında aktif' }),
+        t('screens.paywall.restoreUnavailable', {
+          defaultValue: 'IAP henüz aktif değil; geri yükleme yapılamaz.',
+        }),
+      );
+      return;
+    }
+    setBusy(true);
+    const r = await restorePurchases();
+    setBusy(false);
+    if (!r.ok) {
+      Alert.alert('Hata', r.error ?? 'Geri yükleme başarısız');
+      return;
+    }
+    if (r.hasEntitlement) {
+      track('paywall_restore_success');
+      Alert.alert(
+        t('screens.paywall.restoredTitle', { defaultValue: 'Geri yüklendi' }),
+        t('screens.paywall.restoredBody', { defaultValue: 'Pro üyeliğin aktif edildi.' }),
+        [{ text: 'OK', onPress: () => router.back() }],
+      );
+    } else {
+      Alert.alert(
+        t('screens.paywall.restoreNothingTitle', { defaultValue: 'Aktif üyelik bulunamadı' }),
+        t('screens.paywall.restoreNothingBody', {
+          defaultValue: 'Bu Apple ID/Google hesabında geçerli Pro üyelik yok.',
+        }),
+      );
+    }
   };
 
   return (
@@ -93,7 +193,7 @@ export default function PaywallScreen() {
           <TouchableOpacity onPress={() => router.back()}>
             <Text style={{ fontSize: 24, color: 'rgba(255,255,255,0.7)' }}>✕</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleRestore} disabled={busy}>
             <Text style={{ fontFamily: FONTS.body600, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
               {t('screens.paywall.restore')}
             </Text>
@@ -251,11 +351,18 @@ export default function PaywallScreen() {
             <Button3D
               variant="primary"
               fullWidth
+              disabled={busy}
               onPress={handleSubscribe}
               style={{ backgroundColor: '#FFD56B', borderBottomColor: '#F2C14E' }}
               textStyle={{ color: '#0A1430' }}
             >
-              {t('screens.paywall.cta')}
+              {busy ? (
+                <ActivityIndicator color="#0A1430" />
+              ) : !iapReady ? (
+                t('screens.paywall.comingSoonCta', { defaultValue: 'Yakında aktif' })
+              ) : (
+                t('screens.paywall.cta')
+              )}
             </Button3D>
           </View>
         </SafeAreaView>
