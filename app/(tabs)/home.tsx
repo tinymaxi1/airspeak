@@ -164,6 +164,21 @@ export default function HomeScreen() {
                 >
                   <Text style={{ fontSize: 18, color: '#FFFFFF' }}>🔍</Text>
                 </TouchableOpacity>
+                {/* Dictionary — Sprint 14.A.2 */}
+                <TouchableOpacity
+                  onPress={() => router.push('/dictionary')}
+                  accessibilityLabel={t('a11y.dictionary', 'Sözlük')}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: 'rgba(255,255,255,0.08)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Text style={{ fontSize: 18, color: '#FFFFFF' }}>📖</Text>
+                </TouchableOpacity>
                 {/* Notifications */}
                 <TouchableOpacity
                   onPress={() => router.push('/notifications')}
