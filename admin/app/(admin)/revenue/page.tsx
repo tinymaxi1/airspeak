@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireAdminRole } from '@/lib/auth/guard';
-import { Crown, TrendingUp, Users, Calendar, DollarSign } from 'lucide-react';
+import { Crown, TrendingUp, Users, Calendar, DollarSign, Settings } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { getIapConfig } from '@/lib/iap/actions';
+import { IapSettingsForm } from '@/components/iap/IapSettingsForm';
 
 interface PremiumUser {
   id: string;
@@ -65,7 +67,7 @@ async function getMetrics() {
 
 export default async function RevenuePage() {
   await requireAdminRole('editor');
-  const m = await getMetrics();
+  const [m, iapRows] = await Promise.all([getMetrics(), getIapConfig()]);
 
   const conversionRate = m.totalUsers > 0
     ? ((m.activePremium / m.totalUsers) * 100).toFixed(1)
@@ -192,6 +194,26 @@ export default async function RevenuePage() {
           </tbody>
         </table>
       </div>
+
+      {/* Sprint 13.A.7 — RevenueCat / IAP yapılandırması */}
+      <section className="bg-secondary/30 border border-border rounded-xl p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <Settings className="w-5 h-5 text-airspeak-navy" />
+          <h2 className="font-bold text-lg">RevenueCat / IAP Yapılandırması</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          API key'leri RevenueCat dashboard'dan alıp buraya gir. Boş olduğu sürece mobil uygulamada
+          paywall "Yakında aktif" gösterir; uygulama çökmez (mock-first).
+        </p>
+        <IapSettingsForm rows={iapRows} />
+        <div className="text-xs text-muted-foreground bg-white border border-border rounded-lg p-3 space-y-1">
+          <p className="font-semibold">Webhook kurulumu</p>
+          <p>1. RevenueCat → Integrations → Webhooks → New webhook</p>
+          <p>2. URL: <code className="bg-secondary px-1 rounded">https://&lt;project-ref&gt;.supabase.co/functions/v1/revenuecat-webhook</code></p>
+          <p>3. Authorization header: <code className="bg-secondary px-1 rounded">Bearer &lt;webhook_secret&gt;</code></p>
+          <p>4. Edge function deploy: <code className="bg-secondary px-1 rounded">supabase functions deploy revenuecat-webhook --project-ref &lt;ref&gt;</code></p>
+        </div>
+      </section>
     </div>
   );
 }
