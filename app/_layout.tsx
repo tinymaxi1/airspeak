@@ -35,7 +35,8 @@ import config from '../tamagui.config';
 import { queryClient } from '@/lib/queryClient';
 import { initI18n } from '@/lib/i18n';
 import { initAnalytics } from '@/lib/posthog';
-import { initSentry, identifyUser, clearUser } from '@/lib/sentry';
+import { initSentry, identifyUser, clearUser, SentryErrorBoundary, sentryWrap } from '@/lib/sentry';
+import { ErrorFallback } from '@/components/ErrorFallback';
 import { initIap, linkIapUser, logOutIap, syncPremiumFromIap } from '@/lib/iap';
 import { useTranslation } from 'react-i18next';
 import {
@@ -69,7 +70,7 @@ initAnalytics();
 initI18n();
 void initIap();
 
-export default function RootLayout() {
+function RootLayoutInner() {
   const systemColorScheme = useColorScheme();
   const themePref = useThemeStore((s) => s.theme);
   const hydrateTheme = useThemeStore((s) => s.hydrateFromDb);
@@ -208,6 +209,7 @@ export default function RootLayout() {
   }
 
   return (
+    <SentryErrorBoundary fallback={(props) => <ErrorFallback {...props} />}>
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <TamaguiProvider config={config} defaultTheme={colorScheme}>
@@ -292,5 +294,10 @@ export default function RootLayout() {
       </TamaguiProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
+    </SentryErrorBoundary>
   );
 }
+
+// Sprint 13.A.8 — Sentry.wrap: native crashes + JS errors otomatik raporlanır.
+// SentryErrorBoundary fallback UI sağlar; wrap routing/native layer'ı kapsar.
+export default sentryWrap(RootLayoutInner);

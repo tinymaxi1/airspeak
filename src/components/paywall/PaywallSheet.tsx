@@ -5,6 +5,7 @@
  */
 import { Modal, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { useAppConfig } from '@/features/config/api';
 import { useAuthStore } from '@/stores/authStore';
 import { useTrialStatus, startTrial } from '@/features/trial/api';
@@ -69,15 +70,17 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
 
   const recommended = cfg['paywall.recommended_tier'];
 
-  // TODO: gerçek IAP entegrasyonu (Apple/Google) - şimdilik mock
-  // (Sprint 6'da RevenueCat tier purchase'larını yönetecek; trial DB-side gerçek)
+  // Sprint 13.A.8 — sheet'ten satın alma yapılmaz; asıl paywall ekranına yönlendir.
+  // Apple Guideline 3.1.1: tüm in-app satın alma StoreKit (RevenueCat) üzerinden olmalı.
   const handlePurchase = (_tierId: 'monthly' | 'yearly' | 'lifetime') => {
-    // Aktif offer varsa claim (audit log)
     if (offer?.code) void claimOffer(offer.code);
-    setPremium(true);
     onClose();
+    // Modal kapandıktan sonra navigation
+    setTimeout(() => router.push('/paywall'), 50);
   };
 
+  // Trial backend-driven; mock gating yok — başarılı olursa server premium_until set eder,
+  // _layout.tsx'teki syncPremiumFromIap zincirin bağlandığında hydrate olur.
   const handleStartTrial = async () => {
     const res = await startTrial();
     if (!res.ok) {
@@ -89,6 +92,7 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
       );
       return;
     }
+    // Trial DB'de aktif edildi — local state'i sync et, kullanıcı app'i kullanmaya devam etsin
     setPremium(true);
     onClose();
   };

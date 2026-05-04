@@ -50,3 +50,5 @@ export function clearUser(): void {
 export const captureException = Sentry.captureException;
 export const captureMessage = Sentry.captureMessage;
 export const nativeCrash = Sentry.nativeCrash;
+export const SentryErrorBoundary = Sentry.ErrorBoundary;
+export const sentryWrap = Sentry.wrap;

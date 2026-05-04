@@ -61,7 +61,8 @@
             "deploymentTarget": "15.1"
           },
           "android": {
-            "minSdkVersion": 24
+            "minSdkVersion": 24,
+            "kotlinVersion": "1.9.25"
           }
         }
       ],

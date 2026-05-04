@@ -65,6 +65,7 @@ export default function CompetitionDetailScreen() {
   const params = useLocalSearchParams<{ slug: string }>();
   const slug = typeof params.slug === 'string' ? params.slug : '';
   const user = useAuthStore((s) => s.user);
+  const isPremium = useAuthStore((s) => s.isPremium);
   const coins = useGamificationStore((s) => s.coins ?? 0);
   const spendCoins = useGamificationStore((s) => s.spendCoins);
 
@@ -90,8 +91,17 @@ export default function CompetitionDetailScreen() {
 
   async function handleJoin() {
     if (!user?.id || !comp) return;
-    if (comp.is_premium) {
-      // TODO: paywall check
+    // Sprint 13.A.8 — Premium yarışmaya free kullanıcı giremez; paywall'a yönlendir.
+    if (comp.is_premium && !isPremium) {
+      Alert.alert(
+        'Pro üyelik gerekli',
+        'Bu yarışmaya katılmak için Pro üyelik gerekli.',
+        [
+          { text: 'Vazgeç', style: 'cancel' },
+          { text: "Pro'ya geç →", onPress: () => router.push('/paywall') },
+        ],
+      );
+      return;
     }
     if (comp.entry_cost_coin > 0) {
       if (coins < comp.entry_cost_coin) {
