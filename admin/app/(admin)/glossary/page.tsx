@@ -8,6 +8,7 @@ import { BookMarked } from 'lucide-react';
 import { GlossaryRowActions } from '@/components/glossary/GlossaryRowActions';
 import { CreateGlossaryButton } from '@/components/glossary/GlossaryForm';
 import { GlossaryFilter } from '@/components/glossary/GlossaryFilter';
+import { RegistryStatus } from '@/components/glossary/RegistryStatus';
 
 const CAT_LABEL: Record<string, string> = {
   phraseology: 'Frazeoloji',
@@ -91,6 +92,10 @@ export default async function GlossaryPage({
         </div>
         {canEdit && <CreateGlossaryButton />}
       </div>
+
+      {/* Sprint 11.B.7 — Registry status: ~/airspeak/glossary/term_registry.json
+          ile DB count'unu kıyaslar, drift varsa uyarı verir. */}
+      <RegistryStatus />
 
       <GlossaryFilter categories={CAT_LABEL} initial={sp} />
 
