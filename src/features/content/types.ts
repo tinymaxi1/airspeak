@@ -21,7 +21,11 @@ export type ExerciseType =
   // Sprint 10.A — yeni tipler
   | 'matching'
   | 'ordering'
-  | 'true_false';
+  | 'true_false'
+  // Sprint 14.B.2 — DB'de mevcut alternatif spelling'ler
+  | 'fill_blank'
+  | 'listening'
+  | 'speaking';
 
 /** Sprint 10.A — matching tipi için pair item */
 export interface ExercisePair {

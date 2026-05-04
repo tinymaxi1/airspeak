@@ -15,6 +15,14 @@ import {
 } from '@/components/airspeak';
 import { useLesson } from '@/features/content/api';
 import type { ExerciseRow } from '@/features/content/types';
+import {
+  FillBlankExercise,
+  MatchingExercise,
+  OrderingExercise,
+  ListeningExercise,
+  SpeakingExercise,
+  TrueFalseExercise,
+} from '@/components/lesson/exercises';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useQuestsStore } from '@/stores/questsStore';
@@ -182,20 +190,41 @@ export default function LessonScreen() {
     );
   }
 
-  const isCorrect = selected === exercise.correct_id;
+  // MCQ default isCorrect; custom egzersizler kendi hesapladıkları değeri verir.
+  const mcqIsCorrect = selected === exercise.correct_id;
+  const [customIsCorrect, setCustomIsCorrect] = useState<boolean | null>(null);
+  const isCorrect = customIsCorrect ?? mcqIsCorrect;
   const dbOptions = (exercise.options ?? []) as { id: string; text: string }[];
 
+  // Sprint 14.B.2 — custom egzersiz tipleri (kendi UI'ları + Cevapla buton'ları)
+  const CUSTOM_TYPES = new Set([
+    'fill-blank',
+    'fill_blank',
+    'matching',
+    'match',
+    'ordering',
+    'order',
+    'listening',
+    'listening-mc',
+    'speaking',
+    'pronunciation-record',
+    'true_false',
+  ]);
+  const isCustomType = CUSTOM_TYPES.has(exercise.type);
+
   // ─────────── Handlers ───────────
-  const handleAnswer = () => {
-    if (!selected) return;
+  const handleAnswer = (forcedCorrect?: boolean) => {
+    if (forcedCorrect === undefined && !selected) return;
+    const correct = forcedCorrect ?? mcqIsCorrect;
+    if (forcedCorrect !== undefined) setCustomIsCorrect(forcedCorrect);
     setShowFeedback(true);
-    const quality = isCorrect ? 4 : 1;
+    const quality = correct ? 4 : 1;
     if (exercise.vocab_term_id) {
       // SRS update via vocab_term_id (DB row id'si)
       reviewTerm(exercise.vocab_term_id, quality);
     }
 
-    if (isCorrect) {
+    if (correct) {
       addXp(10, 'lesson_exercise');
       setCorrectCount((c) => c + 1);
       track('exercise_answered', {
@@ -279,6 +308,7 @@ export default function LessonScreen() {
     }
     setSelected(null);
     setShowFeedback(false);
+    setCustomIsCorrect(null);
   };
 
   const exerciseTypeLabel = (type: string) =>
@@ -306,65 +336,116 @@ export default function LessonScreen() {
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
         <ASEyebrow>{exerciseTypeLabel(exercise.type)}</ASEyebrow>
-        <Text
-          style={{
-            fontFamily: 'SpaceGrotesk_700Bold',
-            fontSize: 24,
-            fontWeight: '700',
-            color: '#0E1116',
-            marginTop: 6,
-            lineHeight: 29,
-            letterSpacing: -0.48,
-          }}
-        >
-          {exercise.prompt_tr ?? exercise.prompt ?? ''}
-        </Text>
 
-        <View style={{ gap: 10, marginTop: 20 }}>
-          {dbOptions.map((opt) => {
-            const isSelected = selected === opt.id;
-            const showAsCorrect = showFeedback && opt.id === exercise.correct_id;
-            const showAsWrong = showFeedback && isSelected && !showAsCorrect;
-            const optState: 'idle' | 'correct' | 'wrong' = showAsCorrect
-              ? 'correct'
-              : showAsWrong
-                ? 'wrong'
-                : 'idle';
-
-            return (
-              <LessonOptionCard
-                key={opt.id}
-                letter={opt.id}
-                text={opt.text}
-                selected={isSelected}
-                state={optState}
-                onPress={() => !showFeedback && setSelected(opt.id)}
+        {/* Sprint 14.B.2 — exercise type switch */}
+        {isCustomType ? (
+          <View style={{ marginTop: 12 }}>
+            {(exercise.type === 'fill-blank' || exercise.type === 'fill_blank') && (
+              <FillBlankExercise
+                exercise={exercise}
+                showFeedback={showFeedback}
+                onSubmit={(c) => handleAnswer(c)}
               />
-            );
-          })}
-        </View>
-
-        {showFeedback && (
-          <View style={{ marginTop: 16 }}>
-            <LessonFeedbackInline
-              state={isCorrect ? 'correct' : 'wrong'}
-              message={exercise.explanation_tr ?? exercise.explanation ?? ''}
-            />
+            )}
+            {(exercise.type === 'matching' || exercise.type === 'match') && (
+              <MatchingExercise
+                exercise={exercise}
+                showFeedback={showFeedback}
+                onSubmit={(c) => handleAnswer(c)}
+              />
+            )}
+            {(exercise.type === 'ordering' || exercise.type === 'order') && (
+              <OrderingExercise
+                exercise={exercise}
+                showFeedback={showFeedback}
+                onSubmit={(c) => handleAnswer(c)}
+              />
+            )}
+            {(exercise.type === 'listening' || exercise.type === 'listening-mc') && (
+              <ListeningExercise
+                exercise={exercise}
+                showFeedback={showFeedback}
+                onSubmit={(c) => handleAnswer(c)}
+              />
+            )}
+            {(exercise.type === 'speaking' || exercise.type === 'pronunciation-record') && (
+              <SpeakingExercise
+                exercise={exercise}
+                showFeedback={showFeedback}
+                onSubmit={(c) => handleAnswer(c)}
+              />
+            )}
+            {exercise.type === 'true_false' && (
+              <TrueFalseExercise
+                exercise={exercise}
+                showFeedback={showFeedback}
+                onSubmit={(c) => handleAnswer(c)}
+              />
+            )}
           </View>
+        ) : (
+          <>
+            <Text
+              style={{
+                fontFamily: 'SpaceGrotesk_700Bold',
+                fontSize: 24,
+                fontWeight: '700',
+                color: '#0E1116',
+                marginTop: 6,
+                lineHeight: 29,
+                letterSpacing: -0.48,
+              }}
+            >
+              {exercise.prompt_tr ?? exercise.prompt ?? ''}
+            </Text>
+
+            <View style={{ gap: 10, marginTop: 20 }}>
+              {dbOptions.map((opt) => {
+                const isSelected = selected === opt.id;
+                const showAsCorrect = showFeedback && opt.id === exercise.correct_id;
+                const showAsWrong = showFeedback && isSelected && !showAsCorrect;
+                const optState: 'idle' | 'correct' | 'wrong' = showAsCorrect
+                  ? 'correct'
+                  : showAsWrong
+                    ? 'wrong'
+                    : 'idle';
+
+                return (
+                  <LessonOptionCard
+                    key={opt.id}
+                    letter={opt.id}
+                    text={opt.text}
+                    selected={isSelected}
+                    state={optState}
+                    onPress={() => !showFeedback && setSelected(opt.id)}
+                  />
+                );
+              })}
+            </View>
+
+            {showFeedback && (
+              <View style={{ marginTop: 16 }}>
+                <LessonFeedbackInline
+                  state={isCorrect ? 'correct' : 'wrong'}
+                  message={exercise.explanation_tr ?? exercise.explanation ?? ''}
+                />
+              </View>
+            )}
+          </>
         )}
       </ScrollView>
 
       <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
         <View style={{ padding: 16 }}>
-          {!showFeedback ? (
-            <Button3D variant="primary" fullWidth disabled={!selected} onPress={handleAnswer}>
+          {!showFeedback && !isCustomType ? (
+            <Button3D variant="primary" fullWidth disabled={!selected} onPress={() => handleAnswer()}>
               Cevapla
             </Button3D>
-          ) : (
+          ) : showFeedback ? (
             <Button3D variant="primary" fullWidth onPress={handleNext}>
               {currentIdx + 1 >= total ? 'Dersi bitir →' : 'Sonraki egzersiz →'}
             </Button3D>
-          )}
+          ) : null}
         </View>
       </SafeAreaView>
 
