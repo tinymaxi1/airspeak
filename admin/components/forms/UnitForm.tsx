@@ -23,6 +23,8 @@ interface UnitFormProps {
     description?: string | null;
     description_tr?: string | null;
     badge?: string | null;
+    intro_md?: string | null;
+    intro_md_en?: string | null;
   };
   onClose: () => void;
 }
@@ -37,6 +39,8 @@ export function UnitForm({ mode, moduleId, moduleSlug, role, initial, onClose }:
     description: initial?.description ?? '',
     description_tr: initial?.description_tr ?? '',
     badge: initial?.badge ?? '',
+    intro_md: initial?.intro_md ?? '',
+    intro_md_en: initial?.intro_md_en ?? '',
   });
 
   function submit(e: React.FormEvent) {
@@ -58,6 +62,8 @@ export function UnitForm({ mode, moduleId, moduleSlug, role, initial, onClose }:
             description: form.description,
             description_tr: form.description_tr,
             badge: form.badge,
+            intro_md: form.intro_md || null,
+            intro_md_en: form.intro_md_en || null,
             sort: form.number,
             status: 'draft',
           },
@@ -79,6 +85,8 @@ export function UnitForm({ mode, moduleId, moduleSlug, role, initial, onClose }:
             description: form.description,
             description_tr: form.description_tr,
             badge: form.badge,
+            intro_md: form.intro_md || null,
+            intro_md_en: form.intro_md_en || null,
           },
           [`/tree/${role}/${moduleSlug}`],
         );
@@ -145,6 +153,37 @@ export function UnitForm({ mode, moduleId, moduleSlug, role, initial, onClose }:
             onChange={(e) => setForm({ ...form, description_tr: e.target.value })}
             rows={2}
           />
+        </div>
+
+        <div className="border-t border-border pt-4">
+          <h3 className="text-sm font-semibold mb-1">Ünite Girişi</h3>
+          <p className="text-xs text-muted-foreground mb-3">
+            Mobilde üniteye ilk tıklandığında modal'da gösterilir. Markdown desteği:
+            <code className="text-[11px] bg-secondary px-1 rounded mx-0.5">## başlık</code>
+            <code className="text-[11px] bg-secondary px-1 rounded mx-0.5">**kalın**</code>
+            <code className="text-[11px] bg-secondary px-1 rounded mx-0.5">- bullet</code>
+            · paragraflar boş satırla ayrılır. Boş bırakılabilir.
+          </p>
+          <div className="space-y-3">
+            <div>
+              <Label>Giriş metni (TR)</Label>
+              <Textarea
+                value={form.intro_md ?? ''}
+                onChange={(e) => setForm({ ...form, intro_md: e.target.value })}
+                rows={5}
+                placeholder={'## Bu ünitede ne öğreneceksin\n\nKısa anlatım…\n\n- Madde 1\n- Madde 2'}
+              />
+            </div>
+            <div>
+              <Label>Giriş metni (EN)</Label>
+              <Textarea
+                value={form.intro_md_en ?? ''}
+                onChange={(e) => setForm({ ...form, intro_md_en: e.target.value })}
+                rows={5}
+                placeholder={'## What you will learn\n\nShort intro…'}
+              />
+            </div>
+          </div>
         </div>
       </div>
 

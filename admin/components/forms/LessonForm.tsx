@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
-import { Input, Label, Select } from '@/components/ui/Input';
+import { Input, Label, Select, Textarea } from '@/components/ui/Input';
 import { DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/Dialog';
 import { createRow, updateRow } from '@/lib/content/actions';
 import { uniqueSlug } from '@/lib/content/slug';
@@ -17,6 +17,7 @@ const LESSON_TYPES = [
   { id: 'quiz', label: '⭐ Quiz' },
   { id: 'reading', label: '📰 Reading' },
   { id: 'speaking', label: '🗣 Speaking' },
+  { id: 'theory', label: '📚 Theory (anlatım)' },
 ];
 
 interface LessonFormProps {
@@ -35,6 +36,9 @@ interface LessonFormProps {
     xp?: number;
     estimated_minutes?: number;
     is_premium?: boolean;
+    theory_md?: string | null;
+    theory_md_en?: string | null;
+    theory_image_url?: string | null;
   };
   onClose: () => void;
 }
@@ -58,6 +62,9 @@ export function LessonForm({
     xp: initial?.xp ?? 10,
     estimated_minutes: initial?.estimated_minutes ?? 5,
     is_premium: initial?.is_premium ?? false,
+    theory_md: initial?.theory_md ?? '',
+    theory_md_en: initial?.theory_md_en ?? '',
+    theory_image_url: initial?.theory_image_url ?? '',
   });
 
   function submit(e: React.FormEvent) {
@@ -78,9 +85,12 @@ export function LessonForm({
             title: form.title,
             title_tr: form.title_tr,
             type: form.type,
-            xp: form.xp,
+            xp: form.type === 'theory' ? 5 : form.xp,
             estimated_minutes: form.estimated_minutes,
             is_premium: form.is_premium,
+            theory_md: form.type === 'theory' ? form.theory_md || null : null,
+            theory_md_en: form.type === 'theory' ? form.theory_md_en || null : null,
+            theory_image_url: form.type === 'theory' ? form.theory_image_url || null : null,
             sort: form.number - 1,
             status: 'draft',
           },
@@ -100,9 +110,12 @@ export function LessonForm({
             title: form.title,
             title_tr: form.title_tr,
             type: form.type,
-            xp: form.xp,
+            xp: form.type === 'theory' ? 5 : form.xp,
             estimated_minutes: form.estimated_minutes,
             is_premium: form.is_premium,
+            theory_md: form.type === 'theory' ? form.theory_md || null : null,
+            theory_md_en: form.type === 'theory' ? form.theory_md_en || null : null,
+            theory_image_url: form.type === 'theory' ? form.theory_image_url || null : null,
           },
           [path, `${path}/${initial.slug}`],
         );
@@ -120,7 +133,9 @@ export function LessonForm({
       <DialogHeader>
         <DialogTitle>{mode === 'create' ? 'Yeni Ders' : 'Dersi Düzenle'}</DialogTitle>
         <DialogDescription>
-          Ders 5–10 sıralı egzersizten oluşur. Egzersizleri ders açıldıktan sonra ekleyeceksin.
+          {form.type === 'theory'
+            ? 'Theory dersi: kullanıcıya markdown anlatım gösterir, egzersiz içermez. +5 XP otomatik.'
+            : 'Ders 5–10 sıralı egzersizden oluşur. Egzersizleri ders açıldıktan sonra ekleyeceksin.'}
         </DialogDescription>
       </DialogHeader>
 
@@ -179,26 +194,82 @@ export function LessonForm({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <Label>XP</Label>
-            <Input
-              type="number"
-              min={0}
-              value={form.xp}
-              onChange={(e) => setForm({ ...form, xp: Number(e.target.value) })}
-            />
+        {form.type === 'theory' ? (
+          <>
+            <div>
+              <Label>Tahmini süre (dk)</Label>
+              <Input
+                type="number"
+                min={1}
+                value={form.estimated_minutes}
+                onChange={(e) => setForm({ ...form, estimated_minutes: Number(e.target.value) })}
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Theory dersi tamamlandığında otomatik <strong>+5 XP</strong> verilir (egzersiz yok).
+              </p>
+            </div>
+
+            <div className="border-t border-border pt-4">
+              <h3 className="text-sm font-semibold mb-1">Anlatım İçeriği</h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                Markdown:
+                <code className="text-[11px] bg-secondary px-1 rounded mx-0.5">## başlık</code>
+                <code className="text-[11px] bg-secondary px-1 rounded mx-0.5">**kalın**</code>
+                <code className="text-[11px] bg-secondary px-1 rounded mx-0.5">- bullet</code>
+                · paragraflar boş satırla ayrılır.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <Label>Ders Anlatımı (TR)</Label>
+                  <Textarea
+                    value={form.theory_md ?? ''}
+                    onChange={(e) => setForm({ ...form, theory_md: e.target.value })}
+                    rows={8}
+                    placeholder={'## Türbin Motor Nasıl Çalışır?\n\nKısa paragraf…\n\n**1. Fan**\nMotorun önündeki büyük kanatçıklar.'}
+                  />
+                </div>
+                <div>
+                  <Label>Ders Anlatımı (EN)</Label>
+                  <Textarea
+                    value={form.theory_md_en ?? ''}
+                    onChange={(e) => setForm({ ...form, theory_md_en: e.target.value })}
+                    rows={8}
+                    placeholder={'## How a Turbine Engine Works\n\nShort paragraph…'}
+                  />
+                </div>
+                <div>
+                  <Label>Görsel URL (opsiyonel)</Label>
+                  <Input
+                    value={form.theory_image_url ?? ''}
+                    onChange={(e) => setForm({ ...form, theory_image_url: e.target.value })}
+                    placeholder="https://…/turbine-diagram.png"
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>XP</Label>
+              <Input
+                type="number"
+                min={0}
+                value={form.xp}
+                onChange={(e) => setForm({ ...form, xp: Number(e.target.value) })}
+              />
+            </div>
+            <div>
+              <Label>Tahmini süre (dk)</Label>
+              <Input
+                type="number"
+                min={1}
+                value={form.estimated_minutes}
+                onChange={(e) => setForm({ ...form, estimated_minutes: Number(e.target.value) })}
+              />
+            </div>
           </div>
-          <div>
-            <Label>Tahmini süre (dk)</Label>
-            <Input
-              type="number"
-              min={1}
-              value={form.estimated_minutes}
-              onChange={(e) => setForm({ ...form, estimated_minutes: Number(e.target.value) })}
-            />
-          </div>
-        </div>
+        )}
       </div>
 
       <DialogFooter>
