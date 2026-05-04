@@ -263,6 +263,55 @@ export default function LearnScreen() {
         </SafeAreaView>
       </View>
 
+      {/* Sprint 14.A.3 — Segment: Dersler / Pratik */}
+      <View
+        style={{
+          flexDirection: 'row',
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          gap: 8,
+          backgroundColor: '#FFFFFF',
+          borderBottomWidth: 1,
+          borderBottomColor: '#DCE0E8',
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            paddingVertical: 8,
+            borderRadius: 999,
+            backgroundColor: '#0F1E47',
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#FFFFFF' }}
+          >
+            Dersler
+          </Text>
+        </View>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => router.push('/practice')}
+          accessibilityLabel="Pratik ekranını aç"
+          style={{
+            flex: 1,
+            paddingVertical: 8,
+            borderRadius: 999,
+            backgroundColor: '#FFFFFF',
+            borderWidth: 1.5,
+            borderColor: '#DCE0E8',
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0E1116' }}
+          >
+            Pratik
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 24 }}

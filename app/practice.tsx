@@ -73,6 +73,47 @@ export default function PracticeScreen() {
             {t('screens.practice.title')}
           </Text>
         </View>
+        {/* Sprint 14.A.3 — Segment: Dersler / Pratik (learn ile symmetric) */}
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingHorizontal: 16,
+            paddingBottom: 10,
+            gap: 8,
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => router.replace('/(tabs)/learn')}
+            accessibilityLabel="Derslere dön"
+            style={{
+              flex: 1,
+              paddingVertical: 8,
+              borderRadius: 999,
+              backgroundColor: '#FFFFFF',
+              borderWidth: 1.5,
+              borderColor: '#DCE0E8',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0E1116' }}>
+              Dersler
+            </Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              flex: 1,
+              paddingVertical: 8,
+              borderRadius: 999,
+              backgroundColor: '#0F1E47',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#FFFFFF' }}>
+              Pratik
+            </Text>
+          </View>
+        </View>
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }}>
