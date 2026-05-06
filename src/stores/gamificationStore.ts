@@ -212,16 +212,27 @@ export const useGamificationStore = create<GamificationState>()(
       },
 
       refillHearts: () => {
+        // Sprint 14.B.3 — saatte 1 can dolar (max 5).
+        // Fraction'ı koru: kalan dakikalar bir sonraki regen'e devreder
+        // (örn. 75 dk geçtiyse +1 heart + 15 dk kredi).
         const now = Date.now();
         const last = get().lastHeartRefill;
-        const diffMinutes = Math.floor((now - last) / 60000);
-        const refillIntervalMin = 30;
-        const refillCount = Math.floor(diffMinutes / refillIntervalMin);
-        if (refillCount === 0) return;
         const current = get().hearts;
         const max = get().maxHearts;
+        if (current >= max) return;
+
+        const REFILL_INTERVAL_MS = 60 * 60 * 1000; // 60 dakika
+        const elapsedMs = now - last;
+        if (elapsedMs < REFILL_INTERVAL_MS) return;
+
+        const refillCount = Math.floor(elapsedMs / REFILL_INTERVAL_MS);
+        if (refillCount === 0) return;
+
         const newHearts = Math.min(current + refillCount, max);
-        set({ hearts: newHearts, lastHeartRefill: now });
+        // Fraction'ı koru: kullanılmamış dakikalar bir sonraki refill için saklanır
+        const remainderMs = elapsedMs - refillCount * REFILL_INTERVAL_MS;
+        const newLastRefill = now - remainderMs;
+        set({ hearts: newHearts, lastHeartRefill: newLastRefill });
       },
 
       addCoins: (amount, reason) => {

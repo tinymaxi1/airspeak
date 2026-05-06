@@ -12,7 +12,7 @@
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle, Rect, Defs, RadialGradient, Stop } from 'react-native-svg';
@@ -79,6 +79,12 @@ export default function HomeScreen() {
   const streak = useGamificationStore((s) => s.currentStreak ?? 0);
   const hearts = useGamificationStore((s) => s.hearts ?? 5);
   const xp = useGamificationStore((s) => s.totalXp ?? 0);
+  const refillHearts = useGamificationStore((s) => s.refillHearts);
+
+  // Sprint 14.B.3 — Home her açılışında heart regen kontrolü
+  useEffect(() => {
+    refillHearts();
+  }, [refillHearts]);
   const level = placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
 
   // İlk kullanıcı kontrolü: hiç ders tamamlamadı + XP 0

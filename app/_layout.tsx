@@ -187,12 +187,17 @@ function RootLayoutInner() {
     return () => data.subscription.unsubscribe();
   }, [fontsLoaded]);
 
-  // Sprint 13.A.4 — App foreground'a gelince premium durumunu IAP'tan sync et.
-  // Kullanıcı dışarıda satın alım yaptıysa veya cihazlar arası senkron için.
+  // Sprint 13.A.4 + 14.B.3 — App foreground'a gelince premium + heart regen sync.
   useEffect(() => {
+    // Initial mount: heart regen tek seferlik kontrol
+    useGamificationStore.getState().refillHearts();
     const sub = AppState.addEventListener('change', (state) => {
-      if (state === 'active' && useAuthStore.getState().user) {
-        void syncPremiumFromIap();
+      if (state === 'active') {
+        if (useAuthStore.getState().user) {
+          void syncPremiumFromIap();
+        }
+        // Heart regen — login durumundan bağımsız
+        useGamificationStore.getState().refillHearts();
       }
     });
     return () => sub.remove();
