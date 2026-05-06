@@ -160,6 +160,21 @@ export default function LessonScreen() {
         total={total}
         exercises={exercises}
         lessonSlug={lessonSlug}
+        lessonType={lesson?.type ?? null}
+        onRetry={() => {
+          // Sprint 14.B.4 — quiz başarısız sonrası tekrar dene
+          setCurrentIdx(0);
+          setCorrectCount(0);
+          setSelected(null);
+          setShowFeedback(false);
+          setCustomIsCorrect(null);
+          saveProgress(lessonSlug, {
+            currentIdx: 0,
+            correctCount: 0,
+            startedAt: Date.now(),
+            totalCount: total,
+          });
+        }}
       />
     );
   }
@@ -250,51 +265,61 @@ export default function LessonScreen() {
     const nextCorrect = isCorrect ? correctCount + 1 : correctCount;
 
     if (isLast) {
-      addXp(50, 'lesson_completed');
-      // Coins: server-side authoritative (DB realtime → useWallet'i günceller)
-      void addCoinsServer({ amount: 10, reason: 'lesson_completed', source: 'lesson_completed' });
-      recordDailyActivity();
-      recordHistoryActivity('lesson');
-      bumpDaily('lessons_completed');
-      void bumpServerUsage('lessons_completed');
       const score = Math.round((nextCorrect / total) * 100);
-      markLessonCompleted(lessonSlug, score);
-      // DB sync: user_lesson_progress + user_xp_summary + streak + lazy lig assign
-      // Background — UI'yı blokla­ma. Response gelince store'u DB ground truth ile sync.
-      if (lesson?.id) {
-        const lessonDbId = lesson.id;
-        void bumpUserXp({
-          lessonId: lessonDbId,
-          score,
-          xp: 50,
-        }).then((r) => {
-          if (r.ok && r.current_streak !== undefined) {
-            useGamificationStore.getState().syncFromServer({
-              currentStreak: r.current_streak,
-            });
-            // Streak 3+ gün milestone → freeze offer paywall (cooldown 7gün)
-            if (r.current_streak >= 3) {
-              setTimeout(() => showPaywall('streak_milestone_3d'), 1200);
+      // Sprint 14.B.4 — quiz tipi için %70 geçme notu
+      const QUIZ_PASS_THRESHOLD = 70;
+      const isQuizFailed = lesson?.type === 'quiz' && score < QUIZ_PASS_THRESHOLD;
+
+      if (!isQuizFailed) {
+        // Başarılı tamamlama — XP/coin/streak/completion
+        addXp(50, 'lesson_completed');
+        void addCoinsServer({ amount: 10, reason: 'lesson_completed', source: 'lesson_completed' });
+        recordDailyActivity();
+        recordHistoryActivity('lesson');
+        bumpDaily('lessons_completed');
+        void bumpServerUsage('lessons_completed');
+        markLessonCompleted(lessonSlug, score);
+        if (lesson?.id) {
+          const lessonDbId = lesson.id;
+          void bumpUserXp({
+            lessonId: lessonDbId,
+            score,
+            xp: 50,
+          }).then((r) => {
+            if (r.ok && r.current_streak !== undefined) {
+              useGamificationStore.getState().syncFromServer({
+                currentStreak: r.current_streak,
+              });
+              if (r.current_streak >= 3) {
+                setTimeout(() => showPaywall('streak_milestone_3d'), 1200);
+              }
             }
-          }
+          });
+        }
+        recordRecentActivity({
+          type: 'lesson',
+          refId: lessonSlug,
+          titleTr: lesson.title_tr ?? lesson.title,
+          subtitleTr: `${nextCorrect}/${total} doğru`,
+          score,
+        });
+        incrementQuest('complete_lessons', 1);
+        incrementQuest('streak_check', 1);
+        markLessonProgressCompleted(lessonSlug);
+        track('lesson_completed', {
+          lesson_id: lessonSlug,
+          score: nextCorrect,
+          total,
+        });
+      } else {
+        // Quiz başarısız — completion YAZMA, sadece track
+        track('quiz_failed', {
+          lesson_id: lessonSlug,
+          score,
+          total,
+          threshold: QUIZ_PASS_THRESHOLD,
         });
       }
-      recordRecentActivity({
-        type: 'lesson',
-        refId: lessonSlug,
-        titleTr: lesson.title_tr ?? lesson.title,
-        subtitleTr: `${nextCorrect}/${total} doğru`,
-        score,
-      });
-      incrementQuest('complete_lessons', 1);
-      incrementQuest('streak_check', 1);
-      // Lesson progress'i tamamlandı işaretle (currentIdx 0'a sıfırlanır)
-      markLessonProgressCompleted(lessonSlug);
-      track('lesson_completed', {
-        lesson_id: lessonSlug,
-        score: nextCorrect,
-        total,
-      });
       // currentIdx total'a setlenir → exercise undefined → LessonComplete render
       setCurrentIdx(currentIdx + 1);
     } else {
@@ -465,19 +490,140 @@ function LessonComplete({
   total,
   exercises,
   lessonSlug: _lessonSlug,
+  lessonType,
+  onRetry,
 }: {
   correctCount: number;
   total: number;
   exercises: ExerciseRow[];
   lessonSlug: string;
+  lessonType: string | null;
+  onRetry: () => void;
 }) {
   const percent = Math.round((correctCount / total) * 100);
-  const xpEarned = correctCount * 10 + 50;
+  const QUIZ_PASS_THRESHOLD = 70;
+  const isQuiz = lessonType === 'quiz';
+  const isQuizFailed = isQuiz && percent < QUIZ_PASS_THRESHOLD;
+  const xpEarned = isQuizFailed ? 0 : correctCount * 10 + 50;
   const isPerfect = correctCount === total;
   const uniqueTermCount = useMemo(
     () => new Set(exercises.map((e) => e.vocab_term_id).filter(Boolean)).size,
     [exercises],
   );
+
+  // Sprint 14.B.4 — Quiz başarısız → ayrı ekran
+  if (isQuizFailed) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#0F1E47',
+          justifyContent: 'center',
+          padding: 24,
+          gap: 20,
+        }}
+      >
+        <View style={{ alignItems: 'center', gap: 12 }}>
+          <Text style={{ fontSize: 72 }}>📕</Text>
+          <Text
+            style={{
+              fontFamily: 'JetBrainsMono_500Medium',
+              fontSize: 11,
+              letterSpacing: 1.98,
+              color: 'rgba(255,255,255,0.7)',
+              textTransform: 'uppercase',
+            }}
+          >
+            QUIZ · BAŞARISIZ
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'SpaceGrotesk_700Bold',
+              fontSize: 32,
+              fontWeight: '700',
+              color: '#FFFFFF',
+              letterSpacing: -0.96,
+              textAlign: 'center',
+              lineHeight: 36,
+            }}
+          >
+            Daha fazla pratik gerek
+          </Text>
+        </View>
+
+        <View
+          style={{
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            borderRadius: 14,
+            padding: 18,
+            gap: 8,
+          }}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text
+              style={{
+                fontFamily: 'PlusJakartaSans_500Medium',
+                fontSize: 13,
+                color: 'rgba(255,255,255,0.7)',
+              }}
+            >
+              Geçme notu
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'PlusJakartaSans_700Bold',
+                fontSize: 13,
+                color: '#FFFFFF',
+              }}
+            >
+              %{QUIZ_PASS_THRESHOLD}
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text
+              style={{
+                fontFamily: 'PlusJakartaSans_500Medium',
+                fontSize: 13,
+                color: 'rgba(255,255,255,0.7)',
+              }}
+            >
+              Senin skorun
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'PlusJakartaSans_700Bold',
+                fontSize: 18,
+                color: '#FF8B95',
+              }}
+            >
+              %{percent}
+            </Text>
+          </View>
+          <Text
+            style={{
+              fontFamily: 'PlusJakartaSans_400Regular',
+              fontSize: 12,
+              color: 'rgba(255,255,255,0.55)',
+              marginTop: 6,
+              lineHeight: 17,
+            }}
+          >
+            Quiz'i geçmek için soruların en az %{QUIZ_PASS_THRESHOLD}'ini doğru
+            cevaplaman gerek. Önceki dersleri tekrar gözden geçir, sonra tekrar dene.
+          </Text>
+        </View>
+
+        <View style={{ gap: 10 }}>
+          <Button3D variant="primary" fullWidth onPress={onRetry}>
+            Tekrar Dene
+          </Button3D>
+          <Button3D variant="ghost" fullWidth onPress={() => router.replace('/(tabs)/learn')}>
+            Geri Dön
+          </Button3D>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View
