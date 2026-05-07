@@ -3,7 +3,7 @@
     "name": "AirSpeak",
     "slug": "airspeak",
     "version": "0.1.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/logo/app-icon-1024.png",
     "scheme": "airspeak",
     "userInterfaceStyle": "automatic",
@@ -23,7 +23,19 @@
         "NSPhotoLibraryUsageDescription": "Profil avatarın ve topluluk gönderilerinde fotoğraf seçmen için galeri izni gerekir.",
         "NSPhotoLibraryAddUsageDescription": "Topluluk gönderindeki görselleri galerine kaydetmen için izin gerekir.",
         "NSUserTrackingUsageDescription": "AirSpeak'i ve sana özel reklamları geliştirmek için cihaz tanımlayıcına ihtiyaç duyar. İzin vermesen de uygulama tam çalışır.",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIRequiresFullScreen": false,
+        "UISupportedInterfaceOrientations": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ],
+        "UISupportedInterfaceOrientations~ipad": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationPortraitUpsideDown",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ]
       },
       "config": {
         "usesNonExemptEncryption": false
