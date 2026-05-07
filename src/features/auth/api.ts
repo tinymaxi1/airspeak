@@ -13,7 +13,9 @@ import { identifyUser, clearUser } from '@/lib/sentry';
 import { unregisterPushToken } from '@/lib/notifications';
 import * as mockAuth from './mockAuth';
 
-const USE_MOCK = process.env.EXPO_PUBLIC_USE_MOCK_AUTH !== 'false';
+// Sprint 14.B.5 — Default kapalı (production-safe). Sadece env'de explicit
+// 'true' ise mock auth açılır. Production build'inde env yoksa mock asla devreye girmez.
+const USE_MOCK = process.env.EXPO_PUBLIC_USE_MOCK_AUTH === 'true';
 
 export async function signUpWithEmail(email: string, password: string) {
   if (USE_MOCK) return mockAuth.signUpWithEmail(email, password);
