@@ -495,7 +495,7 @@ export function ProgressBar({
 }: {
   value: number;
   max?: number;
-  color?: 'red' | 'navy' | 'gold' | 'green';
+  color?: 'red' | 'navy' | 'gold' | 'green' | 'sky';
   height?: number;
 }) {
   const COLORS = {
@@ -503,6 +503,7 @@ export function ProgressBar({
     navy: '#0F1E47',
     gold: '#F2C14E',
     green: '#2DBE6C',
+    sky: '#2EA8FF',
   };
   const pct = Math.min(100, Math.max(0, (value / max) * 100));
 

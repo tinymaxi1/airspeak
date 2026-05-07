@@ -117,7 +117,8 @@ export default function RoleSelectScreen() {
                   borderRadius: 14,
                   borderWidth: isSelected ? 2.5 : 1.5,
                   borderColor: isSelected ? r.accent : '#DCE0E8',
-                  borderBottomWidth: 4,
+                  // Tasarım: selected 4px + accent shadow, unselected 3px + border-strong
+                  borderBottomWidth: isSelected ? 4 : 3,
                   borderBottomColor: isSelected ? r.accent : '#B8BFCC',
                   padding: 14,
                   flexDirection: 'row',

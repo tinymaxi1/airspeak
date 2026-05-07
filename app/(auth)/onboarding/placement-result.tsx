@@ -35,16 +35,27 @@ interface DimRow {
   name: string;
   code: string;
   scoreKey: 'generalEnglish' | 'aviationEnglish' | 'aviationKnowledge' | 'communication';
-  color: 'red' | 'navy' | 'gold' | 'green';
+  color: 'red' | 'navy' | 'gold' | 'green' | 'sky';
   accentHex: string;
 }
 
 const DIMENSIONS: DimRow[] = [
-  { name: 'dimGen', code: 'GEN', scoreKey: 'generalEnglish', color: 'navy', accentHex: '#2EA8FF' },
+  // Block 2 sonrası: GEN dim color navy → sky (tasarım intent: sky-500 #2EA8FF)
+  { name: 'dimGen', code: 'GEN', scoreKey: 'generalEnglish', color: 'sky', accentHex: '#2EA8FF' },
   { name: 'dimAve', code: 'AVE', scoreKey: 'aviationEnglish', color: 'red', accentHex: '#E63946' },
   { name: 'dimKno', code: 'KNO', scoreKey: 'aviationKnowledge', color: 'gold', accentHex: '#F2C14E' },
   { name: 'dimCom', code: 'COM', scoreKey: 'communication', color: 'green', accentHex: '#2DBE6C' },
 ];
+
+// Designer onayı Block 2.A: 4 stub grid (GATE/SCORE/ROLE/ROUTE) cut-line altında
+function StubMono({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={{ flex: 1 }}>
+      <Mono style={{ fontSize: 9, letterSpacing: 0.81, color: '#8A93A6' }}>{label}</Mono>
+      <Mono style={{ fontSize: 14, fontWeight: '700', color: '#0E1116', marginTop: 2 }}>{value}</Mono>
+    </View>
+  );
+}
 
 export default function PlacementResultScreen() {
   const c = usePalette();
@@ -217,6 +228,32 @@ export default function PlacementResultScreen() {
               </Body>
             </View>
           </View>
+
+          {/* Cut line dashed (boarding pass perforation) */}
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderStyle: 'dashed',
+              borderColor: '#DCE0E8',
+              marginHorizontal: 16,
+            }}
+          />
+
+          {/* 4-stub grid: GATE / SCORE / ROLE / ROUTE — Block 2.A */}
+          <View style={{ padding: 14, flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={{ width: '50%', paddingBottom: 8 }}>
+              <StubMono label="GATE" value="A1" />
+            </View>
+            <View style={{ width: '50%', paddingBottom: 8 }}>
+              <StubMono label="SCORE" value={`${result.totalScore ?? '—'}/100`} />
+            </View>
+            <View style={{ width: '50%' }}>
+              <StubMono label="ROLE" value={(role ?? 'pilot').toUpperCase()} />
+            </View>
+            <View style={{ width: '50%' }}>
+              <StubMono label="ROUTE" value="14W" />
+            </View>
+          </View>
         </View>
 
         {/* ═══════════ 4 DIMENSION BARS ═══════════ */}
@@ -226,6 +263,9 @@ export default function PlacementResultScreen() {
             const dim = result[d.scoreKey];
             const score = dim?.score ?? 0;
             const label = dim?.label ?? '—';
+            // confidence: 'low' | 'medium' | 'high' → 'CONF: LOW' / 'MED' / 'HIGH'
+            const confLabel =
+              dim?.confidence === 'high' ? 'HIGH' : dim?.confidence === 'low' ? 'LOW' : 'MED';
             return (
               <View
                 key={d.code}
@@ -241,34 +281,57 @@ export default function PlacementResultScreen() {
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    alignItems: 'baseline',
-                    marginBottom: 8,
+                    alignItems: 'center',
+                    marginBottom: 10,
+                    gap: 12,
                   }}
                 >
-                  <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-                    <Text style={{ fontFamily: FONTS.body800, fontSize: 15, color: '#0E1116' }}>
-                      {t(`screens.placementResult.${d.name}`)}
-                    </Text>
-                    <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 1 }}>
-                      {d.code}
-                    </Mono>
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-                    <Text
-                      style={{
-                        fontFamily: FONTS.display,
-                        fontSize: 24,
-                        fontWeight: '700',
-                        color: d.accentHex,
-                        letterSpacing: -0.48,
-                      }}
-                    >
-                      {label}
-                    </Text>
-                    <Mono style={{ fontSize: 11, color: '#8A93A6' }}>{score}%</Mono>
-                  </View>
+                  <Mono
+                    style={{
+                      fontSize: 11,
+                      fontWeight: '700',
+                      color: d.accentHex,
+                      letterSpacing: 1.1,
+                    }}
+                  >
+                    {d.code}
+                  </Mono>
+                  <Text
+                    style={{
+                      fontFamily: FONTS.body700,
+                      fontSize: 14,
+                      color: '#0E1116',
+                      flex: 1,
+                    }}
+                  >
+                    {t(`screens.placementResult.${d.name}`)}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: FONTS.display,
+                      fontSize: 22,
+                      fontWeight: '700',
+                      color: '#0E1116',
+                      letterSpacing: -0.44,
+                    }}
+                  >
+                    {label}
+                  </Text>
                 </View>
                 <ProgressBar value={score} color={d.color} height={8} />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: 6,
+                  }}
+                >
+                  <Body color="#5A6478" style={{ fontSize: 11 }}>
+                    {score}/100
+                  </Body>
+                  <Mono style={{ fontSize: 11, color: '#5A6478' }}>CONF: {confLabel}</Mono>
+                </View>
               </View>
             );
           })}

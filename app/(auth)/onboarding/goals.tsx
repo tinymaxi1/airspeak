@@ -106,12 +106,14 @@ export default function GoalsScreen() {
                 activeOpacity={0.85}
                 onPress={() => setSelected(g.mins)}
                 style={{
-                  backgroundColor: sel ? '#FFE4E7' : '#FFFFFF',
+                  // Tasarım: bg-2 (#FFFFFF) — selected/unselected aynı bg, ayrım sadece border + 3D shadow
+                  backgroundColor: '#FFFFFF',
                   borderRadius: 14,
                   borderWidth: sel ? 2.5 : 1.5,
                   borderColor: sel ? '#E63946' : '#DCE0E8',
-                  borderBottomWidth: 4,
-                  borderBottomColor: sel ? '#E63946' : '#DCE0E8',
+                  // Tasarım: selected 4px + red shadow, unselected 3px + border-strong
+                  borderBottomWidth: sel ? 4 : 3,
+                  borderBottomColor: sel ? '#E63946' : '#B8BFCC',
                   padding: 14,
                   flexDirection: 'row',
                   alignItems: 'center',
