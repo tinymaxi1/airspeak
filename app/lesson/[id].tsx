@@ -1,4 +1,6 @@
 import { ScrollView, View, Text, ActivityIndicator, Alert } from 'react-native';
+import Svg, { Path, Circle } from 'react-native-svg';
+import * as Haptics from 'expo-haptics';
 import { usePalette } from '@/lib/usePalette';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -12,6 +14,10 @@ import {
   Button3D,
   Eyebrow as ASEyebrow,
   CoachMark,
+  TopoBackground,
+  FONTS,
+  Mono,
+  Body,
 } from '@/components/airspeak';
 import { useLesson } from '@/features/content/api';
 import type { ExerciseRow } from '@/features/content/types';
@@ -243,6 +249,12 @@ export default function LessonScreen() {
       reviewTerm(exercise.vocab_term_id, quality);
     }
 
+    // Block 1.C — Hibrit feedback: immediate haptic
+    // (200ms sticky strip + tint CTA bar görsel olarak aşağıda render edilir)
+    Haptics.notificationAsync(
+      correct ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Error,
+    ).catch(() => {});
+
     if (correct) {
       addXp(10, 'lesson_exercise');
       setCorrectCount((c) => c + 1);
@@ -464,7 +476,25 @@ export default function LessonScreen() {
         )}
       </ScrollView>
 
-      <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
+      {/* Block 1.C — Hibrit feedback CTA bar:
+          showFeedback'te 4px üst strip (green-500 / red-500) + bg subtle tint
+          (green-100 / red-50). Yanlış = öğrenme noktası, full red bg değil. */}
+      <SafeAreaView
+        edges={['bottom']}
+        style={{
+          borderTopWidth: showFeedback ? 4 : 1,
+          borderTopColor: showFeedback
+            ? isCorrect
+              ? '#2DBE6C'
+              : '#E63946'
+            : '#DCE0E8',
+          backgroundColor: showFeedback
+            ? isCorrect
+              ? '#DDF7E6'
+              : '#FFE4E7'
+            : 'transparent',
+        }}
+      >
         <View style={{ padding: 16 }}>
           {!showFeedback && !isCustomType ? (
             <Button3D variant="primary" fullWidth disabled={!selected} onPress={() => handleAnswer()}>
@@ -629,16 +659,54 @@ function LessonComplete({
     );
   }
 
+  // Block 2.A — Cinematic landing
+  // Streak + duration için store'lardan oku
+  const currentStreak = useGamificationStore((s) => s.currentStreak ?? 0);
+  const persistedProgress = useLessonProgressStore((s) => s.byLessonSlug[_lessonSlug]);
+  const startedAt = persistedProgress?.startedAt;
+  const durationSec = startedAt ? Math.max(1, Math.round((Date.now() - startedAt) / 1000)) : null;
+  const durationStr = durationSec
+    ? `${Math.floor(durationSec / 60)}:${String(durationSec % 60).padStart(2, '0')}`
+    : '—';
+
+  const accuracyPct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+  const isPerfectFlag = correctCount === total && total > 0;
+
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#0F1E47',
-        justifyContent: 'center',
-        padding: 24,
-        gap: 24,
-      }}
-    >
+    <View style={{ flex: 1, backgroundColor: '#0A1430' }}>
+      {/* Topo + arc path + plane SVG (cinematic bg) */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} pointerEvents="none">
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.6 }}>
+          <TopoBackground />
+        </View>
+        <Svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 393 700"
+          preserveAspectRatio="xMidYMid slice"
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+        >
+          {/* Dashed flight path */}
+          <Path
+            d="M-20 600 Q 196 200 410 100"
+            stroke="rgba(255,255,255,0.4)"
+            strokeWidth={1.5}
+            strokeDasharray="4 6"
+            fill="none"
+          />
+          {/* Origin point */}
+          <Circle cx={-20} cy={600} r={6} fill="white" opacity={0.5} />
+          {/* Plane mid-flight (rotated -32deg) */}
+          <Path
+            d="M196 320 L200 348 L212 344 L212 352 L196 348 L180 352 L180 344 L192 348 Z"
+            fill="#FF5A66"
+            transform="translate(-12 -12) rotate(-32 196 320)"
+          />
+          {/* Destination golden circle */}
+          <Circle cx={410} cy={100} r={8} fill="#F2C14E" />
+        </Svg>
+      </View>
+
       <CelebrationOverlay
         emoji={isPerfect ? '🏆' : '🎉'}
         title={isPerfect ? 'Mükemmel!' : 'Tebrikler!'}
@@ -646,128 +714,173 @@ function LessonComplete({
         visible={true}
       />
 
-      <View style={{ alignItems: 'center', gap: 12 }}>
-        <Text style={{ fontSize: 80 }}>{isPerfect ? '🏆' : '✈'}</Text>
-        <Text
-          style={{
-            fontFamily: 'JetBrainsMono_500Medium',
-            fontSize: 12,
-            letterSpacing: 2.16,
-            color: 'rgba(255,255,255,0.7)',
-            textTransform: 'uppercase',
-          }}
-        >
-          TOUCHDOWN ✦ DERS TAMAM
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'SpaceGrotesk_700Bold',
-            fontSize: 38,
-            fontWeight: '700',
-            color: '#FFFFFF',
-            letterSpacing: -1.14,
-            textAlign: 'center',
-            lineHeight: 40,
-          }}
-        >
-          {isPerfect ? 'Mükemmel iniş.' : 'Güvenli iniş.'}
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_500Medium',
-            fontSize: 15,
-            color: 'rgba(255,255,255,0.85)',
-            textAlign: 'center',
-          }}
-        >
-          {correctCount} / {total} doğru • %{percent}
-        </Text>
-      </View>
+      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
+        <View style={{ flex: 1, padding: 24, justifyContent: 'flex-end' }}>
+          {/* Hero block */}
+          <View style={{ marginBottom: 16 }}>
+            <Mono color="#FF5A66" style={{ fontSize: 11, letterSpacing: 1.98 }}>
+              LANDED · DERS TAMAM
+            </Mono>
+            <Text
+              style={{
+                fontFamily: FONTS.display,
+                fontSize: 48,
+                fontWeight: '700',
+                lineHeight: 46,
+                letterSpacing: -1.44,
+                color: '#FFFFFF',
+                marginTop: 8,
+              }}
+            >
+              Touchdown.{'\n'}
+              <Text style={{ color: '#FFD56B' }}>+{xpEarned} XP</Text>
+            </Text>
+          </View>
 
-      <View
+          {/* 3-stat card grid */}
+          <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
+            <CompleteStat
+              icon="🎯"
+              label="ACCURACY"
+              value={`${accuracyPct}%`}
+            />
+            <CompleteStat
+              icon="⚡"
+              label="STREAK"
+              value={String(currentStreak)}
+              suffix="gün"
+            />
+            <CompleteStat
+              icon="⏱"
+              label="TIME"
+              value={durationStr}
+            />
+          </View>
+
+          {/* Bonus row — perfect lesson veya yeni terim */}
+          {(isPerfectFlag || uniqueTermCount > 0) && (
+            <View
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.06)',
+                borderWidth: 1,
+                borderColor: 'rgba(255,255,255,0.14)',
+                borderRadius: 14,
+                padding: 14,
+                marginBottom: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+              }}
+            >
+              <View
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  backgroundColor: '#F2C14E',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{ fontSize: 22, color: '#0A1430' }}>★</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: FONTS.body800, fontSize: 14, color: '#FFFFFF' }}>
+                  {isPerfectFlag
+                    ? `Mükemmel ders · ${total}/${total} doğru`
+                    : `${uniqueTermCount} yeni terim · +10 🪙 coin`}
+                </Text>
+                <Body color="rgba(255,255,255,0.7)" style={{ fontSize: 12, marginTop: 2 }}>
+                  {isPerfectFlag ? '+25 XP perfect bonus dahil' : 'SRS kartlarına eklendi'}
+                </Body>
+              </View>
+            </View>
+          )}
+
+          {/* 2 CTA */}
+          <View style={{ gap: 10 }}>
+            <Button3D
+              variant="primary"
+              fullWidth
+              onPress={() => router.replace('/(tabs)/learn')}
+            >
+              Sonraki ders →
+            </Button3D>
+            <Button3D
+              variant="ghost"
+              fullWidth
+              onPress={() => router.replace('/(tabs)/home')}
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(255,255,255,0.2)',
+                borderBottomWidth: 0,
+              }}
+              textStyle={{ color: '#FFFFFF', textTransform: 'none', fontWeight: '600' }}
+            >
+              Map'e dön
+            </Button3D>
+          </View>
+        </View>
+      </SafeAreaView>
+    </View>
+  );
+}
+
+// ─────────────────────────────────────────────
+// CompleteStat — 3-card grid stat (Block 2.A)
+// ─────────────────────────────────────────────
+function CompleteStat({
+  icon,
+  label,
+  value,
+  suffix,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  suffix?: string;
+}) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: 'rgba(255,255,255,0.06)',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.14)',
+        borderRadius: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 12,
+      }}
+    >
+      <Text style={{ fontSize: 18, color: '#FF5A66', marginBottom: 4 }}>{icon}</Text>
+      <Text
         style={{
-          backgroundColor: '#E63946',
-          borderRadius: 14,
-          padding: 20,
-          alignItems: 'center',
-          borderBottomWidth: 4,
-          borderBottomColor: '#C8202E',
+          fontFamily: FONTS.display,
+          fontSize: 22,
+          fontWeight: '700',
+          lineHeight: 22,
+          letterSpacing: -0.44,
+          color: '#FFFFFF',
         }}
       >
-        <Text
-          style={{
-            fontFamily: 'JetBrainsMono_500Medium',
-            fontSize: 11,
-            letterSpacing: 1.8,
-            color: 'rgba(255,255,255,0.85)',
-            textTransform: 'uppercase',
-          }}
-        >
-          KAZANILAN XP
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'SpaceGrotesk_700Bold',
-            fontSize: 56,
-            fontWeight: '700',
-            color: '#FFFFFF',
-            letterSpacing: -1.68,
-            lineHeight: 56,
-            marginTop: 4,
-          }}
-        >
-          +{xpEarned}
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_700Bold',
-            fontSize: 13,
-            color: 'rgba(255,255,255,0.85)',
-            marginTop: 4,
-          }}
-        >
-          +10 🪙 coin
-        </Text>
-      </View>
-
-      <View
+        {value}
+        {suffix ? (
+          <Text style={{ fontSize: 11, fontWeight: '600', color: 'rgba(255,255,255,0.6)' }}>
+            {' '}
+            {suffix}
+          </Text>
+        ) : null}
+      </Text>
+      <Mono
         style={{
-          backgroundColor: 'rgba(255,255,255,0.08)',
-          borderRadius: 14,
-          padding: 16,
-          borderWidth: 1,
-          borderColor: 'rgba(255,255,255,0.12)',
-          gap: 4,
+          fontSize: 9,
+          color: 'rgba(255,255,255,0.6)',
+          letterSpacing: 1.08,
+          marginTop: 4,
         }}
       >
-        <Text
-          style={{
-            fontFamily: 'JetBrainsMono_500Medium',
-            fontSize: 11,
-            letterSpacing: 1.8,
-            color: 'rgba(255,255,255,0.65)',
-            textTransform: 'uppercase',
-          }}
-        >
-          BU UÇUŞTA YENİ
-        </Text>
-        <Text style={{ fontFamily: 'PlusJakartaSans_700Bold', fontSize: 17, color: '#FFFFFF' }}>
-          {uniqueTermCount} terim · {exercises.length} egzersiz
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'PlusJakartaSans_400Regular',
-            fontSize: 13,
-            color: 'rgba(255,255,255,0.65)',
-          }}
-        >
-          Tekrar açarsan baştan başlarsın — ders şimdi tamamlanmış sayılır.
-        </Text>
-      </View>
-
-      <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/home')}>
-        Ana sayfaya dön →
-      </Button3D>
+        {label}
+      </Mono>
     </View>
   );
 }

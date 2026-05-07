@@ -12,7 +12,14 @@
  */
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { Button3D, FONTS, LessonFeedbackInline } from '@/components/airspeak';
+import {
+  Button3D,
+  FONTS,
+  LessonFeedbackInline,
+  LessonATCBubble,
+  LessonHintBanner,
+  Eyebrow,
+} from '@/components/airspeak';
 import {
   ensureAudioPermission,
   prepareForRecording,
@@ -56,54 +63,103 @@ export function SpeakingExercise({ exercise, showFeedback, onSubmit }: ExerciseP
     onSubmit(correct);
   }
 
+  // Block 3.C — Conditional rich UI
+  // exercise.context (ATC mesajı) varsa → ATC bubble + hint banner mode
+  // Yoksa → generic "BUNU SÖYLE" mode (tüm speaking exercise için ortak)
+  const atcMessage = (exercise as { context?: string }).context;
+  const isReadback = !!atcMessage;
+
   return (
     <View>
-      {/* Target text — büyük, vurgulu */}
-      <View
-        style={{
-          backgroundColor: '#0F1E47',
-          borderRadius: 14,
-          padding: 20,
-          marginBottom: 16,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: FONTS.mono,
-            fontSize: 10,
-            color: 'rgba(255,255,255,0.7)',
-            letterSpacing: 1.4,
-            marginBottom: 8,
-          }}
-        >
-          BUNU SÖYLE
-        </Text>
-        <Text
-          style={{
-            fontFamily: FONTS.display,
-            fontSize: 22,
-            fontWeight: '700',
-            color: '#FFFFFF',
-            lineHeight: 30,
-            letterSpacing: -0.44,
-          }}
-        >
-          {targetText}
-        </Text>
-        {promptTr && promptTr !== targetText && (
+      {isReadback ? (
+        // ─── ReadBack rich UI ───
+        <>
+          <Eyebrow accent>READ-BACK · LIVE MIC</Eyebrow>
           <Text
             style={{
-              marginTop: 10,
-              fontFamily: FONTS.body,
-              fontSize: 13,
-              color: 'rgba(255,255,255,0.7)',
-              fontStyle: 'italic',
+              fontFamily: FONTS.display,
+              fontSize: 22,
+              fontWeight: '700',
+              color: '#0E1116',
+              marginTop: 6,
+              lineHeight: 27,
+              letterSpacing: -0.44,
+              marginBottom: 18,
             }}
           >
-            {promptTr}
+            {targetText || 'Read back the ATC clearance.'}
           </Text>
-        )}
-      </View>
+
+          <LessonATCBubble message={atcMessage!} />
+
+          <View style={{ marginTop: 18 }}>
+            <LessonHintBanner>
+              Standart read-back: callsign → komut → frekans
+            </LessonHintBanner>
+          </View>
+
+          {promptTr && promptTr !== targetText && (
+            <Text
+              style={{
+                marginTop: 14,
+                fontFamily: FONTS.body,
+                fontSize: 13,
+                color: '#5A6478',
+                fontStyle: 'italic',
+              }}
+            >
+              {promptTr}
+            </Text>
+          )}
+        </>
+      ) : (
+        // ─── Generic "BUNU SÖYLE" mode ───
+        <View
+          style={{
+            backgroundColor: '#0F1E47',
+            borderRadius: 14,
+            padding: 20,
+            marginBottom: 16,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: FONTS.mono,
+              fontSize: 10,
+              color: 'rgba(255,255,255,0.7)',
+              letterSpacing: 1.4,
+              marginBottom: 8,
+            }}
+          >
+            BUNU SÖYLE
+          </Text>
+          <Text
+            style={{
+              fontFamily: FONTS.display,
+              fontSize: 22,
+              fontWeight: '700',
+              color: '#FFFFFF',
+              lineHeight: 30,
+              letterSpacing: -0.44,
+            }}
+          >
+            {targetText}
+          </Text>
+          {promptTr && promptTr !== targetText && (
+            <Text
+              style={{
+                marginTop: 10,
+                fontFamily: FONTS.body,
+                fontSize: 13,
+                color: 'rgba(255,255,255,0.7)',
+                fontStyle: 'italic',
+              }}
+            >
+              {promptTr}
+            </Text>
+          )}
+        </View>
+      )}
 
       {/* Mic button */}
       <View style={{ alignItems: 'center', paddingVertical: 24 }}>
