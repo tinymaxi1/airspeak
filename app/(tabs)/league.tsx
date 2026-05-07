@@ -20,6 +20,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { Body, Eyebrow, Mono, FONTS, Avatar, Button3D } from '@/components/airspeak';
+import { TabletShell } from '@/components/tablet';
 import { useAuthStore } from '@/stores/authStore';
 import { showPaywall } from '@/stores/paywallStore';
 import {
@@ -146,6 +147,7 @@ export default function LeagueScreen() {
   const demoStartRank = totalMembers - demoCutoff + 1;
 
   return (
+    <TabletShell background={c.bg}>
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       {/* ═════ HEADER ═════ */}
       <View style={{ backgroundColor: classMeta.color }}>
@@ -310,6 +312,7 @@ export default function LeagueScreen() {
         </View>
       </ScrollView>
     </View>
+    </TabletShell>
   );
 }
 

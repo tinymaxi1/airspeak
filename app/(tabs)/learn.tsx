@@ -33,6 +33,7 @@ import {
   Button3D,
   ProgressBar,
 } from '@/components/airspeak';
+import { TabletShell } from '@/components/tablet';
 
 interface TreeNode {
   id: string; // lesson id (gerçek)
@@ -134,6 +135,7 @@ export default function LearnScreen() {
   }
 
   return (
+    <TabletShell background={c.bg}>
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       {/* ═══════════ HEADER — Red boarding pass ═══════════ */}
       <View style={{ backgroundColor: '#E63946', position: 'relative', overflow: 'hidden' }}>
@@ -599,6 +601,7 @@ export default function LearnScreen() {
         }}
       />
     </View>
+    </TabletShell>
   );
 }
 

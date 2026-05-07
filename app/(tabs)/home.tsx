@@ -40,6 +40,7 @@ import {
   Button3D,
   Card3D,
 } from '@/components/airspeak';
+import { TabletShell } from '@/components/tablet';
 
 export default function HomeScreen() {
   const c = usePalette();
@@ -91,6 +92,7 @@ export default function HomeScreen() {
   const isFirstTime = completedIds.length === 0 && xp === 0;
 
   return (
+    <TabletShell background={c.bg}>
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       {/* ═══════════ HEADER — navy topo strip ═══════════ */}
       <View style={{ backgroundColor: '#0F1E47', position: 'relative', overflow: 'hidden' }}>
@@ -731,6 +733,7 @@ export default function HomeScreen() {
         </Card3D>
       </ScrollView>
     </View>
+    </TabletShell>
   );
 }
 

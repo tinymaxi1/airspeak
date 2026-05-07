@@ -67,6 +67,7 @@ import {
   FONTS,
   Button3D,
 } from '@/components/airspeak';
+import { TabletShell } from '@/components/tablet';
 import { getCurrentLanguage } from '@/lib/i18n';
 
 const HEATMAP_DAYS = 84;
@@ -190,6 +191,7 @@ export default function ProfileScreen() {
   };
 
   return (
+    <TabletShell background={c.bg}>
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       {/* ═══════ NAVY HEADER ═══════ */}
       <View style={{ backgroundColor: '#0F1E47', position: 'relative' }}>
@@ -576,6 +578,7 @@ export default function ProfileScreen() {
         )}
       </ScrollView>
     </View>
+    </TabletShell>
   );
 }
 

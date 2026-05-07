@@ -19,6 +19,7 @@ import {
 import { useCommunityNotifications } from '@/features/community/notifications';
 import { GroupCard } from '@/components/community/GroupCard';
 import { FONTS, Mono, Body, TopoBackground } from '@/components/airspeak';
+import { TabletShell } from '@/components/tablet';
 
 export default function CommunityIndexScreen() {
   const c = usePalette();
@@ -49,6 +50,7 @@ export default function CommunityIndexScreen() {
   const loading = tab === 'mine' ? myLoading : allLoading;
 
   return (
+    <TabletShell background={c.bg}>
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#0F1E47' }}>
         <View
@@ -427,5 +429,6 @@ export default function CommunityIndexScreen() {
         <Text style={{ fontSize: 28, color: '#FFFFFF', lineHeight: 28 }}>+</Text>
       </TouchableOpacity>
     </View>
+    </TabletShell>
   );
 }
