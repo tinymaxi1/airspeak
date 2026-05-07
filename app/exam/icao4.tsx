@@ -105,7 +105,7 @@ export default function Icao4Screen() {
         continuous: true,
       });
     } catch (err) {
-      console.warn('STT start failed', err);
+      if (__DEV__) console.warn('STT start failed', err);
       // Fallback: Audio.Recording (sadece süre bazlı heuristic)
       try {
         const { granted } = await Audio.requestPermissionsAsync();
@@ -162,7 +162,7 @@ export default function Icao4Screen() {
         setTimeout(() => showPaywall('icao_oral_first_task_done'), 1500);
       }
     } catch (err) {
-      console.warn('Scoring failed', err);
+      if (__DEV__) console.warn('Scoring failed', err);
       setStage('briefing');
     }
   }

@@ -119,6 +119,6 @@ export async function bumpServerUsage(
   try {
     await supabase.rpc('bump_daily_usage', { field, amount });
   } catch (e) {
-    console.warn('[bumpServerUsage] failed', e);
+    if (__DEV__) console.warn('[bumpServerUsage] failed', e);
   }
 }

@@ -56,7 +56,7 @@ export function usePushResponseHandler() {
       try {
         router.push(route as any);
       } catch (e) {
-        console.warn('[notif response route]', e);
+        if (__DEV__) console.warn('[notif response route]', e);
       }
     });
     return () => sub.remove();

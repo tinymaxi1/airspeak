@@ -45,7 +45,7 @@ try {
   isAvailable = true;
 } catch {
   // Expo Go fallback — stub
-  console.warn('[speechRecognition] Native module unavailable (Expo Go?) — STT stub mode');
+  if (__DEV__) console.warn('[speechRecognition] Native module unavailable (Expo Go?) — STT stub mode');
   ModuleImpl = {
     requestPermissionsAsync: async () => ({ granted: false }),
     start: () => undefined,

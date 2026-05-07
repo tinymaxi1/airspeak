@@ -154,7 +154,7 @@ export default function ConversationScreen() {
         contextualStrings: currentTurn?.expectedReadback.split(/\s+/).filter(Boolean),
       });
     } catch (err) {
-      console.warn('STT start failed', err);
+      if (__DEV__) console.warn('STT start failed', err);
       // Fallback: kullanıcının konuştuğunu kabul et, expected readback'i kullan
       finalTranscriptRef.current = currentTurn?.expectedReadback ?? '';
       setStage('recording');

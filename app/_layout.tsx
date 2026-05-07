@@ -145,7 +145,7 @@ function RootLayoutInner() {
           morningBody: t('notif.morningBody', 'Bugünkü uçuş planın hazır. 15 dk yeter.'),
           eveningTitle: t('notif.eveningTitle', '🔥 Streak\'in tehlikede'),
           eveningBody: t('notif.eveningBody', 'Bugün hâlâ pratik yapmadın. 1 ders streak\'i kurtarır.'),
-        }).catch((e) => console.warn('Notif schedule failed', e)),
+        }).catch((e) => { if (__DEV__) console.warn('Notif schedule failed', e); }),
         updateStreakDangerNotification(lastActivityDate, {
           title: t('notif.dangerTitle', '⚠ Son 90 dk!'),
           body: t('notif.dangerBody', 'Streak kırılmasın diye 1 hızlı pratik yeter.'),
@@ -160,7 +160,7 @@ function RootLayoutInner() {
   useEffect(() => {
     if (!fontsLoaded) return;
     const sync = () => {
-      syncPushTokenToSupabase().catch((e) => console.warn('Push token sync failed', e));
+      syncPushTokenToSupabase().catch((e) => { if (__DEV__) console.warn('Push token sync failed', e); });
     };
     // Initial: zaten oturum açıksa Sentry'ye user'ı bildir
     const initialUser = useAuthStore.getState().user;

@@ -115,7 +115,7 @@ export default function DictionaryScreen() {
       });
       if (cancelled) return;
       if (error) {
-        console.warn('Dictionary search error:', error);
+        if (__DEV__) console.warn('Dictionary search error:', error);
         setItems([]);
       } else {
         setItems((data as GlossaryItem[]) ?? []);

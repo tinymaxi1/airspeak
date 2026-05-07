@@ -464,7 +464,7 @@ export default function LevelTestScreen() {
         },
         questionsAnswered: newAllAnswers.length,
         testDurationSeconds: durationSec ?? undefined,
-      }).catch((e) => console.warn('finalizePlacement failed:', e));
+      }).catch((e) => { if (__DEV__) console.warn('finalizePlacement failed:', e); });
       router.replace('/(auth)/onboarding/placement-result');
     } else if (isLastInSegment) {
       setStep('segmentBreak');

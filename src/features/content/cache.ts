@@ -21,7 +21,7 @@ export function setCache<T>(key: string, data: T): void {
     const entry: CachedEntry<T> = { data, cachedAt: Date.now() };
     storage.set(CACHE_PREFIX + key, JSON.stringify(entry));
   } catch (e) {
-    console.warn('[content cache] set failed', key, e);
+    if (__DEV__) console.warn('[content cache] set failed', key, e);
   }
 }
 
@@ -33,7 +33,7 @@ export function getCache<T>(key: string, maxAge: number = TTL_MS): T | null {
     if (Date.now() - entry.cachedAt > maxAge) return null;
     return entry.data;
   } catch (e) {
-    console.warn('[content cache] get failed', key, e);
+    if (__DEV__) console.warn('[content cache] get failed', key, e);
     return null;
   }
 }

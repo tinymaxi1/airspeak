@@ -82,7 +82,7 @@ export default function PronunciationScreen() {
   });
 
   useSpeechRecognitionEvent('error', (event) => {
-    console.warn('STT error', event.error, event.message);
+    if (__DEV__) console.warn('STT error', event.error, event.message);
   });
 
   useSpeechRecognitionEvent('end', async () => {
@@ -154,7 +154,7 @@ export default function PronunciationScreen() {
           contextualStrings: sentence.text.split(/\s+/).filter(Boolean),
         });
       } catch (err) {
-        console.warn('STT start failed', err);
+        if (__DEV__) console.warn('STT start failed', err);
         // Fallback: expo-av audio kayıt + heuristic
         try {
           const { granted } = await Audio.requestPermissionsAsync();

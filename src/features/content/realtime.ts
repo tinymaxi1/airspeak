@@ -41,7 +41,7 @@ export function subscribeContentRealtime(queryClient: QueryClient): () => void {
             queryClient.invalidateQueries({ queryKey: ['content'] });
           }
         } catch (e) {
-          console.warn('[content realtime] invalidation error', e);
+          if (__DEV__) console.warn('[content realtime] invalidation error', e);
         }
       },
     );
@@ -49,7 +49,7 @@ export function subscribeContentRealtime(queryClient: QueryClient): () => void {
 
   channel.subscribe((status: string) => {
     if (status === 'SUBSCRIBED') {
-      console.log('[content realtime] connected');
+      if (__DEV__) console.log('[content realtime] connected');
     }
   });
 

@@ -35,7 +35,7 @@ export function Hero({
       setBusy(false);
       if (!r.ok && r.error && r.error !== 'cancelled') {
         // Toast yerine Alert kullanılabilir; şimdilik sessiz fail.
-        console.warn('avatar upload', r.error);
+        if (__DEV__) console.warn('avatar upload', r.error);
       }
     });
     setBusy(true);

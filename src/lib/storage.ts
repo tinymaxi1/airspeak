@@ -27,10 +27,10 @@ try {
     delete: (k) => mmkv.delete(k),
     clearAll: () => mmkv.clearAll(),
   };
-  console.log('[storage] Using MMKV (native)');
+  if (__DEV__) console.log('[storage] Using MMKV (native)');
 } catch (error) {
   // Expo Go fallback — in-memory (uygulama kapanınca data kaybolur)
-  console.warn('[storage] MMKV unavailable (Expo Go?) — using in-memory fallback');
+  if (__DEV__) console.warn('[storage] MMKV unavailable (Expo Go?) — using in-memory fallback');
   const memoryStore = new Map<string, string>();
   storageImpl = {
     getString: (k) => memoryStore.get(k),

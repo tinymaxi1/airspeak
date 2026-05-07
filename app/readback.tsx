@@ -110,7 +110,7 @@ export default function ReadbackDrillScreen() {
         contextualStrings: current?.expectedReadback.split(/\s+/).filter(Boolean),
       });
     } catch (err) {
-      console.warn('STT failed', err);
+      if (__DEV__) console.warn('STT failed', err);
       finalTranscriptRef.current = current?.expectedReadback ?? '';
       setStage('recording');
       setTimeout(evaluateClearance, 1000);
