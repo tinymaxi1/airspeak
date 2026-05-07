@@ -10,7 +10,7 @@
  */
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
-import { router, type Href } from 'expo-router';
+import { router, useLocalSearchParams, type Href } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -52,7 +52,16 @@ const DRILLS: Drill[] = [
 export default function PracticeScreen() {
   const c = usePalette();
   const { t } = useTranslation();
-  const [filter, setFilter] = useState<DrillCategory>('all');
+  // URL param ile preset (örn. Home'dan "Listen & decode" → ?category=listening)
+  const params = useLocalSearchParams<{ category?: string }>();
+  const initialFilter: DrillCategory =
+    params.category === 'speaking' ||
+    params.category === 'listening' ||
+    params.category === 'vocab' ||
+    params.category === 'emergency'
+      ? params.category
+      : 'all';
+  const [filter, setFilter] = useState<DrillCategory>(initialFilter);
 
   const FILTER_CHIPS: { label: string; value: DrillCategory }[] = [
     { label: t('screens.practice.filterAll'), value: 'all' },
