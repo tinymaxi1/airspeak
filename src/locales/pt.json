@@ -717,7 +717,8 @@
     "sayAgain": "Say again, Turkish 1453.",
     "youSpeaking": "🎙 YOU — SPEAK",
     "complete": "SCENARIO COMPLETE",
-    "avgScore": "avg match · {{turns}} turns"
+    "avgScore": "avg match · {{turns}} turns",
+    "hint": "Hint"
   },
   "tour": {
     "skip": "Skip",

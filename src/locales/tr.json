@@ -717,7 +717,8 @@
     "sayAgain": "Say again, Turkish 1453.",
     "youSpeaking": "🎙 SEN — KONUŞ",
     "complete": "SENARYO TAMAM",
-    "avgScore": "ortalama eşleşme · {{turns}} turn"
+    "avgScore": "ortalama eşleşme · {{turns}} turn",
+    "hint": "İpucu"
   },
   "tour": {
     "skip": "Atla",

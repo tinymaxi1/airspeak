@@ -12,7 +12,16 @@
  *
  * Sıfır API maliyeti — tüm zekâ pattern matching.
  */
-import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Animated,
+  Easing,
+  ActivityIndicator,
+} from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
@@ -66,10 +75,96 @@ export default function ConversationScreen() {
   const [stage, setStage] = useState<Stage>('briefing');
   const [recognized, setRecognized] = useState('');
   const [scores, setScores] = useState<number[]>([]);
+  // Block 1.C — Lightning hint progressive disclosure (silenceMs > 4000 → fade)
+  const [showHint, setShowHint] = useState(false);
+  // Block 1.C — Mic recording pulse animation (1.0 ↔ 1.2, 1.5s loop)
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  // Block 1.C — Headset pulse during ATC speaking (green dot opacity 1 ↔ 0.4)
+  const headsetPulseAnim = useRef(new Animated.Value(1)).current;
 
   const finalTranscriptRef = useRef('');
 
   const currentTurn: DialogTurn | undefined = scenario?.turns[turnIdx];
+
+  // Block 1.C — Lightning hint timer: awaiting-mic'te 4s sonra fade-in
+  useEffect(() => {
+    setShowHint(false);
+    if (stage === 'awaiting-mic') {
+      const t = setTimeout(() => setShowHint(true), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [stage]);
+
+  // Block 1.C — Mic pulse animation (recording sırasında)
+  useEffect(() => {
+    if (stage === 'recording') {
+      const loop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.18,
+            duration: 750,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 750,
+            easing: Easing.in(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      loop.start();
+      return () => loop.stop();
+    }
+    pulseAnim.setValue(1);
+  }, [stage, pulseAnim]);
+
+  // Block 1.C — Headset pulse (listening-atc stage)
+  useEffect(() => {
+    if (stage === 'listening-atc') {
+      const loop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(headsetPulseAnim, { toValue: 0.4, duration: 600, useNativeDriver: true }),
+          Animated.timing(headsetPulseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+        ]),
+      );
+      loop.start();
+      return () => loop.stop();
+    }
+    headsetPulseAnim.setValue(1);
+  }, [stage, headsetPulseAnim]);
+
+  // Block 1.C — Headset: ATC mesajını tekrar dinle
+  function replayCurrentAtc() {
+    if (currentTurn?.atcUtterance) {
+      Speech.stop();
+      Speech.speak(currentTurn.atcUtterance, { language: 'en-US', rate: 0.9 });
+    }
+  }
+
+  // Block 1.C — Lightning: hint Alert (sadece awaiting-mic + currentTurn.hintTr)
+  function showHintAlert() {
+    if (currentTurn?.hintTr) {
+      Alert.alert(t('conversation.hint', 'İpucu'), currentTurn.hintTr);
+    }
+  }
+
+  // Block 1.C — Mic primary: stage'e göre handler
+  function onMicPress() {
+    if (stage === 'briefing') startScenario();
+    else if (stage === 'awaiting-mic') startRecording();
+    else if (stage === 'recording') {
+      try {
+        const r = ExpoSpeechRecognitionModule.stop();
+        if (r && typeof (r as Promise<void>).catch === 'function') {
+          (r as Promise<void>).catch(() => evaluateTurn());
+        }
+      } catch {
+        evaluateTurn();
+      }
+    }
+  }
 
   // STT events
   useSpeechRecognitionEvent('result', (event) => {
@@ -427,63 +522,168 @@ export default function ConversationScreen() {
         )}
       </ScrollView>
 
-      {/* Action area */}
+      {/* Block 1.C — Hibrit dock: Headset (sol) + Mic 64px (orta) + Lightning (sağ) */}
       <SafeAreaView
         edges={['bottom']}
         style={{
-          backgroundColor: '#0F1E47',
+          backgroundColor: '#0A1430',
           borderTopWidth: 1,
-          borderTopColor: 'rgba(255,255,255,0.08)',
+          borderTopColor: '#14275F',
         }}
       >
-        <View style={{ padding: 14 }}>
-          {stage === 'briefing' && (
-            <Button3D variant="primary" fullWidth onPress={startScenario}>
-              {t('conversation.start', 'Senaryoya başla ✈')}
-            </Button3D>
-          )}
-          {stage === 'listening-atc' && (
-            <View style={{ alignItems: 'center', paddingVertical: 14 }}>
-              <Mono style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', letterSpacing: 1.32 }}>
-                🔊 ATC KONUŞUYOR — DİNLE
-              </Mono>
-            </View>
-          )}
-          {stage === 'awaiting-mic' && (
-            <Button3D variant="primary" fullWidth onPress={startRecording}>
-              {t('conversation.tapToSpeak', '🎙 Cevap için bas')}
-            </Button3D>
-          )}
-          {stage === 'recording' && (
-            <Button3D
-              variant="primary"
-              fullWidth
-              onPress={async () => {
-                try {
-                  await ExpoSpeechRecognitionModule.stop();
-                } catch {
-                  evaluateTurn();
-                }
-              }}
-            >
-              {t('conversation.tapToFinish', '⏹ Bitir')}
-            </Button3D>
-          )}
-          {stage === 'evaluating' && (
-            <View style={{ alignItems: 'center', paddingVertical: 14 }}>
-              <Mono style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', letterSpacing: 1.32 }}>
-                ⏳ DEĞERLENDİRİLİYOR
-              </Mono>
-            </View>
-          )}
-          {stage === 'done' && (
+        {stage === 'done' ? (
+          <View style={{ padding: 14 }}>
             <Button3D variant="primary" fullWidth onPress={() => router.replace('/(tabs)/home')}>
               {t('conversation.backHome', 'Ana sayfa →')}
             </Button3D>
-          )}
-        </View>
+          </View>
+        ) : (
+          <View
+            style={{
+              minHeight: 96,
+              paddingHorizontal: 24,
+              paddingVertical: 12,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            {/* HEADSET — sol 48px (ATC tekrar dinle) */}
+            <Animated.View style={{ opacity: stage === 'listening-atc' ? headsetPulseAnim : 1 }}>
+              <DockSideButton
+                icon="🎧"
+                disabled={
+                  stage === 'recording' ||
+                  stage === 'briefing' ||
+                  stage === 'evaluating'
+                }
+                pulseRing={stage === 'listening-atc'}
+                onPress={replayCurrentAtc}
+                accessibilityLabel="ATC mesajını tekrar dinle"
+              />
+            </Animated.View>
+
+            {/* MIC — orta 64px primary */}
+            <View style={{ alignItems: 'center', gap: 6 }}>
+              <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+                <TouchableOpacity
+                  disabled={
+                    stage === 'listening-atc' || stage === 'evaluating'
+                  }
+                  onPress={onMicPress}
+                  activeOpacity={0.85}
+                  accessibilityLabel={
+                    stage === 'briefing'
+                      ? 'Senaryoyu başlat'
+                      : stage === 'recording'
+                        ? 'Kaydı bitir'
+                        : 'Cevap için bas'
+                  }
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 32,
+                    backgroundColor:
+                      stage === 'listening-atc' || stage === 'evaluating'
+                        ? 'rgba(255,255,255,0.08)'
+                        : '#E63946',
+                    borderBottomWidth: 4,
+                    borderBottomColor:
+                      stage === 'listening-atc' || stage === 'evaluating'
+                        ? 'rgba(255,255,255,0.04)'
+                        : '#C8202E',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: stage === 'listening-atc' || stage === 'evaluating' ? 0.5 : 1,
+                  }}
+                >
+                  {stage === 'evaluating' ? (
+                    <ActivityIndicator color="#FFFFFF" />
+                  ) : (
+                    <Text style={{ fontSize: 26, color: '#FFFFFF' }}>
+                      {stage === 'recording' ? '⏹' : stage === 'briefing' ? '✈' : '🎤'}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </Animated.View>
+              <Mono
+                style={{
+                  fontSize: 10,
+                  color: 'rgba(255,255,255,0.7)',
+                  letterSpacing: 1.2,
+                  textAlign: 'center',
+                }}
+              >
+                {stage === 'briefing'
+                  ? 'BAŞLAT'
+                  : stage === 'listening-atc'
+                    ? 'DİNLE'
+                    : stage === 'awaiting-mic'
+                      ? 'CEVAP İÇİN BAS'
+                      : stage === 'recording'
+                        ? 'DİNLİYOR…'
+                        : 'DEĞERLENDİRİLİYOR…'}
+              </Mono>
+            </View>
+
+            {/* LIGHTNING — sağ 48px (conditional fade-in: 4s sonra awaiting-mic) */}
+            {showHint && stage === 'awaiting-mic' && currentTurn?.hintTr ? (
+              <DockSideButton
+                icon="⚡"
+                ghost
+                onPress={showHintAlert}
+                accessibilityLabel="İpucu göster"
+              />
+            ) : (
+              <View style={{ width: 48 }} />
+            )}
+          </View>
+        )}
       </SafeAreaView>
     </View>
+  );
+}
+
+// ─────────────────────────────────────────────
+// DockSideButton — Block 1.C: Headset & Lightning side instruments
+// ─────────────────────────────────────────────
+function DockSideButton({
+  icon,
+  disabled = false,
+  ghost = false,
+  pulseRing = false,
+  onPress,
+  accessibilityLabel,
+}: {
+  icon: string;
+  disabled?: boolean;
+  ghost?: boolean;
+  pulseRing?: boolean;
+  onPress: () => void;
+  accessibilityLabel: string;
+}) {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.85}
+      disabled={disabled}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ disabled }}
+      style={{
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        backgroundColor: ghost ? 'transparent' : 'rgba(255,255,255,0.08)',
+        borderWidth: ghost ? 1.5 : pulseRing ? 1.5 : 0,
+        borderColor: pulseRing ? '#4FD487' : 'rgba(255,255,255,0.18)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: disabled ? 0.35 : 1,
+      }}
+    >
+      <Text style={{ fontSize: 20, color: '#FFFFFF' }}>{icon}</Text>
+    </TouchableOpacity>
   );
 }
 
