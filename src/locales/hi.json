@@ -126,7 +126,16 @@
   },
   "league": {
     "title": "लीग",
-    "subtitle": "साप्ताहिक लीडरबोर्ड - टियर्स पर चढ़ना, इनाम अर्जित करना"
+    "subtitle": "साप्ताहिक लीडरबोर्ड - टियर्स पर चढ़ना, इनाम अर्जित करना",
+    "tier": {
+      "bronze": "Cadet",
+      "silver": "First Officer",
+      "gold": "Senior FO",
+      "sapphire": "Captain",
+      "ruby": "Senior Captain",
+      "emerald": "Check Captain",
+      "diamond": "Star Captain"
+    }
   },
   "profile": {
     "title": "प्रोफ़ाइल",
@@ -356,7 +365,10 @@
       "signOutConfirm": "Are you sure?",
       "cancel": "Cancel",
       "career": "Career Hub",
-      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron"
+      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron",
+      "tabLogbook": "Logbook",
+      "tabProfile": "Profile",
+      "tabHangar": "Hangar"
     },
     "league": {
       "tier": "4 of 7",

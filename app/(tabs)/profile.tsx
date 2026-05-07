@@ -8,10 +8,10 @@
  * - ActivityHeatmap (84 gün) — ayrı component, stagger entry
  * - Badges + Settings + SignOut korunur
  */
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -125,6 +125,24 @@ export default function ProfileScreen() {
 
   const lang = getCurrentLanguage();
 
+  // Block 2.C — 3-tab hibrit (designer onayı)
+  // URL state /?tab=logbook|profile|hangar — paylaşılabilir + analytics granular
+  // B2B account default 'profile' (fleet ops manager pilot dossier'ını bir tıkta görsün)
+  type ProfileTab = 'logbook' | 'profile' | 'hangar';
+  const params = useLocalSearchParams<{ tab?: string }>();
+  const isB2B = (profile as { account_type?: string } | null)?.account_type === 'b2b';
+  const initialTab: ProfileTab =
+    params.tab === 'logbook' || params.tab === 'profile' || params.tab === 'hangar'
+      ? (params.tab as ProfileTab)
+      : isB2B
+        ? 'profile'
+        : 'logbook';
+  const [tab, setTab] = useState<ProfileTab>(initialTab);
+  // URL sync — tab değişince /profile?tab=logbook
+  useEffect(() => {
+    router.setParams({ tab });
+  }, [tab]);
+
   const placementLevel =
     placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
   const username = profile?.username ?? user?.email?.split('@')[0] ?? 'pilot';
@@ -206,7 +224,27 @@ export default function ProfileScreen() {
         </SafeAreaView>
       </View>
 
+      {/* Block 2.C — Tab segmented control: Logbook / Profile / Hangar */}
+      <View
+        style={{
+          flexDirection: 'row',
+          backgroundColor: '#FFFFFF',
+          borderBottomWidth: 1,
+          borderBottomColor: '#EDEFF3',
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          gap: 6,
+        }}
+      >
+        <ProfileTab label={t('screens.profile.tabLogbook', 'Logbook')} active={tab === 'logbook'} onPress={() => setTab('logbook')} />
+        <ProfileTab label={t('screens.profile.tabProfile', 'Profil')} active={tab === 'profile'} onPress={() => setTab('profile')} />
+        <ProfileTab label={t('screens.profile.tabHangar', 'Hangar')} active={tab === 'hangar'} onPress={() => setTab('hangar')} />
+      </View>
+
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+        {/* Logbook + Profile tab'larında ortak içerik (v1.0 — v1.1'de ayrılacak) */}
+        {tab !== 'hangar' && (
+          <>
         {/* Profesyonel özet + completion CTA */}
         {profile && (
           <View style={{ marginBottom: 18 }}>
@@ -467,6 +505,12 @@ export default function ProfileScreen() {
           ))}
         </View>
 
+          </>
+        )}
+
+        {/* Hangar tab — settings + utilities */}
+        {tab === 'hangar' && (
+          <>
         {/* Settings rows */}
         <Eyebrow>{t('screens.profile.account')}</Eyebrow>
         <View style={{ marginTop: 8, gap: 8, marginBottom: 18 }}>
@@ -528,8 +572,51 @@ export default function ProfileScreen() {
         <Button3D variant="ghost" fullWidth onPress={handleSignOut}>
           {t('screens.profile.signOut')}
         </Button3D>
+          </>
+        )}
       </ScrollView>
     </View>
+  );
+}
+
+// ─────────────────────────────────────────────
+// ProfileTab — Block 2.C segmented control
+// ─────────────────────────────────────────────
+function ProfileTab({
+  label,
+  active,
+  onPress,
+}: {
+  label: string;
+  active: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={onPress}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: active }}
+      style={{
+        flex: 1,
+        paddingVertical: 8,
+        borderRadius: 999,
+        backgroundColor: active ? '#0F1E47' : 'transparent',
+        borderWidth: 1.5,
+        borderColor: active ? '#0F1E47' : '#DCE0E8',
+        alignItems: 'center',
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: FONTS.body700,
+          fontSize: 13,
+          color: active ? '#FFFFFF' : '#0E1116',
+        }}
+      >
+        {label}
+      </Text>
+    </TouchableOpacity>
   );
 }
 

@@ -126,7 +126,16 @@
   },
   "league": {
     "title": "리그",
-    "subtitle": "주간 순위표 — 등급을 올리고 보상을 받으세요"
+    "subtitle": "주간 순위표 — 등급을 올리고 보상을 받으세요",
+    "tier": {
+      "bronze": "Cadet",
+      "silver": "First Officer",
+      "gold": "Senior FO",
+      "sapphire": "Captain",
+      "ruby": "Senior Captain",
+      "emerald": "Check Captain",
+      "diamond": "Star Captain"
+    }
   },
   "profile": {
     "title": "프로필",
@@ -356,7 +365,10 @@
       "signOutConfirm": "Are you sure?",
       "cancel": "Cancel",
       "career": "Career Hub",
-      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron"
+      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron",
+      "tabLogbook": "Logbook",
+      "tabProfile": "Profile",
+      "tabHangar": "Hangar"
     },
     "league": {
       "tier": "7단계 중 4단계",

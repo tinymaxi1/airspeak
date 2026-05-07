@@ -126,7 +126,16 @@
   },
   "league": {
     "title": "Liga",
-    "subtitle": "Papan peringkat mingguan — naik level, dapatkan hadiah"
+    "subtitle": "Papan peringkat mingguan — naik level, dapatkan hadiah",
+    "tier": {
+      "bronze": "Cadet",
+      "silver": "First Officer",
+      "gold": "Senior FO",
+      "sapphire": "Captain",
+      "ruby": "Senior Captain",
+      "emerald": "Check Captain",
+      "diamond": "Star Captain"
+    }
   },
   "profile": {
     "title": "Profil",
@@ -356,7 +365,10 @@
       "signOutConfirm": "Are you sure?",
       "cancel": "Cancel",
       "career": "Career Hub",
-      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron"
+      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron",
+      "tabLogbook": "Logbook",
+      "tabProfile": "Profile",
+      "tabHangar": "Hangar"
     },
     "league": {
       "tier": "TINGKAT 4 DARI 7",

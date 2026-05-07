@@ -126,7 +126,16 @@
   },
   "league": {
     "title": "لیگ لیگ",
-    "subtitle": "Weekly Leaderboard - صعود کراوات، کسب پاداش"
+    "subtitle": "Weekly Leaderboard - صعود کراوات، کسب پاداش",
+    "tier": {
+      "bronze": "Cadet",
+      "silver": "First Officer",
+      "gold": "Senior FO",
+      "sapphire": "Captain",
+      "ruby": "Senior Captain",
+      "emerald": "Check Captain",
+      "diamond": "Star Captain"
+    }
   },
   "profile": {
     "title": "پروفایل پروفایل پروفایل پروفایل",
@@ -356,7 +365,10 @@
       "signOutConfirm": "Are you sure?",
       "cancel": "Cancel",
       "career": "Career Hub",
-      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron"
+      "careerDesc": "ICAO 4 · {{count}} airlines · Squadron",
+      "tabLogbook": "Logbook",
+      "tabProfile": "Profile",
+      "tabHangar": "Hangar"
     },
     "league": {
       "tier": "4 از 7",

@@ -31,18 +31,37 @@ import {
 import { supabase } from '@/lib/supabase';
 import { ChevronRight } from 'lucide-react-native';
 
+// Block 1.A — Aviation tier nomenclature (designer onayı)
+// Backend tier_id: 'bronze'|'silver'|... enum literal SABİT (DB migration yok)
+// Frontend tierLabel(id, t) ile aviation isimlerine çevirir.
+// Color + emoji görsel kimlik korunur — semantic değişiklik label-only.
 const CLASS_META: Record<
   LeagueClass,
-  { label: string; emoji: string; color: string; ringColor: string }
+  { emoji: string; color: string; ringColor: string }
 > = {
-  bronze: { label: 'Bronz', emoji: '🥉', color: '#A87654', ringColor: '#C68B5C' },
-  silver: { label: 'Gümüş', emoji: '🥈', color: '#9AA0AB', ringColor: '#B7BCC6' },
-  gold: { label: 'Altın', emoji: '🥇', color: '#E0A82E', ringColor: '#F2C14E' },
-  sapphire: { label: 'Safir', emoji: '💙', color: '#1F4FB6', ringColor: '#3D6FD9' },
-  ruby: { label: 'Yakut', emoji: '❤️', color: '#B81F3D', ringColor: '#D63A57' },
-  emerald: { label: 'Zümrüt', emoji: '💚', color: '#1F8B4D', ringColor: '#3DAA68' },
-  diamond: { label: 'Elmas', emoji: '💎', color: '#1F8AB6', ringColor: '#3DAFD6' },
+  bronze: { emoji: '🎓', color: '#A87654', ringColor: '#C68B5C' },        // Cadet
+  silver: { emoji: '✈', color: '#9AA0AB', ringColor: '#B7BCC6' },        // First Officer
+  gold: { emoji: '✈', color: '#E0A82E', ringColor: '#F2C14E' },          // Senior FO
+  sapphire: { emoji: '👨‍✈️', color: '#1F4FB6', ringColor: '#3D6FD9' },     // Captain
+  ruby: { emoji: '🌟', color: '#B81F3D', ringColor: '#D63A57' },         // Senior Captain
+  emerald: { emoji: '🎖', color: '#1F8B4D', ringColor: '#3DAA68' },      // Check Captain
+  diamond: { emoji: '🏆', color: '#1F8AB6', ringColor: '#3DAFD6' },      // Star Captain
 };
+
+// EN fallback aviation tier names (i18n key league.tier.<id> ile çözülür)
+const TIER_FALLBACK_EN: Record<LeagueClass, string> = {
+  bronze: 'Cadet',
+  silver: 'First Officer',
+  gold: 'Senior FO',
+  sapphire: 'Captain',
+  ruby: 'Senior Captain',
+  emerald: 'Check Captain',
+  diamond: 'Star Captain',
+};
+
+function tierLabel(id: LeagueClass, t: (k: string, fb: string) => string): string {
+  return t(`league.tier.${id}`, TIER_FALLBACK_EN[id]);
+}
 
 const CLASS_ORDER: LeagueClass[] = [
   'bronze',
@@ -149,7 +168,7 @@ export default function LeagueScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.85)' }}>
-                  {classMeta.label.toUpperCase()} SINIFI
+                  {group?.class_tier ? tierLabel(group.class_tier, t).toUpperCase() : ''} TIER
                 </Mono>
                 <Text
                   style={{
@@ -241,7 +260,7 @@ export default function LeagueScreen() {
                     fontFamily: FONTS.mono700,
                   }}
                 >
-                  {meta.label.toUpperCase().slice(0, 5)}
+                  {tierLabel(c, t).toUpperCase().slice(0, 5)}
                 </Mono>
               </View>
             );

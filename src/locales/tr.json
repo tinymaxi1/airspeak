@@ -126,7 +126,16 @@
   },
   "league": {
     "title": "Lig",
-    "subtitle": "Haftalık sıralama — tier yüksel, ödül kazan"
+    "subtitle": "Haftalık sıralama — tier yüksel, ödül kazan",
+    "tier": {
+      "bronze": "Öğrenci Pilot",
+      "silver": "İkinci Pilot",
+      "gold": "Kıdemli İkinci Pilot",
+      "sapphire": "Kaptan",
+      "ruby": "Kıdemli Kaptan",
+      "emerald": "Eğitmen Kaptan",
+      "diamond": "Yıldız Kaptan"
+    }
   },
   "profile": {
     "title": "Profil",
@@ -356,7 +365,10 @@
       "signOutConfirm": "Emin misin?",
       "cancel": "Vazgeç",
       "career": "Kariyer Merkezi",
-      "careerDesc": "ICAO 4 · {{count}} havayolu · Squadron"
+      "careerDesc": "ICAO 4 · {{count}} havayolu · Squadron",
+      "tabLogbook": "Logbook",
+      "tabProfile": "Profil",
+      "tabHangar": "Hangar"
     },
     "league": {
       "tier": "TIER 4 / 7",
