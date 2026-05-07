@@ -215,17 +215,18 @@ export default function ICAO4ResultScreen() {
               {passed ? 'OPERATIONAL · ICAO ANNEX 1' : 'BELOW OPERATIONAL · KEEP TRAINING'}
             </Mono>
 
-            {/* PASSED/FAILED stamp */}
+            {/* PASSED/FAILED stamp — Phase 7 auto-fix: 64→80px (tasarım 92, kart sıkışmasın diye 80) */}
             <View
               style={{
                 position: 'absolute',
-                top: 16,
-                right: 16,
-                width: 64,
-                height: 64,
-                borderRadius: 32,
+                top: 12,
+                right: 12,
+                width: 80,
+                height: 80,
+                borderRadius: 40,
                 borderWidth: 3,
                 borderColor: passed ? '#2DBE6C' : '#E63946',
+                backgroundColor: passed ? 'rgba(45,190,108,0.08)' : 'rgba(230,57,70,0.08)',
                 alignItems: 'center',
                 justifyContent: 'center',
                 transform: [{ rotate: '-8deg' }],
@@ -233,10 +234,19 @@ export default function ICAO4ResultScreen() {
             >
               <Text
                 style={{
-                  fontFamily: FONTS.body800,
-                  fontSize: 11,
+                  fontSize: 22,
                   color: passed ? '#2DBE6C' : '#E63946',
-                  letterSpacing: 1.4,
+                  marginBottom: 2,
+                }}
+              >
+                {passed ? '✓' : '✕'}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: FONTS.body800,
+                  fontSize: 10,
+                  color: passed ? '#2DBE6C' : '#E63946',
+                  letterSpacing: 1.2,
                 }}
               >
                 {passed ? 'PASSED' : 'RETRY'}
@@ -311,14 +321,14 @@ export default function ICAO4ResultScreen() {
                 <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#0E1116', width: 110 }}>
                   {d.name}
                 </Text>
-                <View style={{ flex: 1, flexDirection: 'row', gap: 2, height: 8 }}>
+                <View style={{ flex: 1, flexDirection: 'row', gap: 3, height: 16 }}>
                   {[1, 2, 3, 4, 5, 6].map((b) => (
                     <View
                       key={b}
                       style={{
                         flex: 1,
-                        height: 8,
-                        borderRadius: 2,
+                        height: 16,
+                        borderRadius: 3,
                         backgroundColor:
                           b <= score
                             ? score >= 4
