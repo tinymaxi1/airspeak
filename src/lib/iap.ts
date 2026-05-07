@@ -1,18 +1,24 @@
 /**
- * RevenueCat IAP service — Sprint 13.A.2
+ * RevenueCat IAP service — Sprint 13.A + 13.A.9
  *
- * Mock-first: app_config'te API key boşsa tüm fonksiyonlar no-op döner.
- * Admin /admin/iap'tan key girilince otomatik aktif olur.
+ * Mock-first: API key boşsa tüm fonksiyonlar no-op döner.
+ * Key kaynak öncelik: ENV → app_config DB → boş (mock).
  *
  * Akış:
- * - Module load: initIap() — config çeker + Purchases.configure
- * - Login: linkIapUser(userId) — RevenueCat'e Supabase user.id'yi App User ID olarak bağlar
+ * - Module load: initIap() — supabase'den entitlement/product_ids çeker, key env'den
+ * - Login: initRevenueCat(userId) — Purchases.configure + appUserID
+ *   (önceden initIap + linkIapUser ayrı idi; tek API'ye birleştirildi)
  * - Logout: logOutIap()
- * - Paywall: purchaseProduct(productId) → entitlement aktive olunca DB sync
+ * - Paywall: purchasePackage(pkg) veya purchaseStoreProduct(product) → DB sync
  * - App focus: syncPremiumFromIap() — getCustomerInfo + DB premium_until update
  */
 import { Platform } from 'react-native';
-import Purchases, { type CustomerInfo, type PurchasesPackage } from 'react-native-purchases';
+import Purchases, {
+  LOG_LEVEL,
+  type CustomerInfo,
+  type PurchasesPackage,
+  type PurchasesStoreProduct,
+} from 'react-native-purchases';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import * as Sentry from '@sentry/react-native';
@@ -27,13 +33,66 @@ export function isIapConfigured(): boolean {
 }
 
 /**
- * Module-load init — Supabase'den RevenueCat key + entitlement çeker.
- * Key boşsa SDK init etmez (mock-first).
+ * Platform'a göre RevenueCat API key seçer.
+ * Önce ENV (Sprint 13.A.9 — kullanıcı env-driven istedi),
+ * sonra Supabase app_config (admin'den runtime override).
+ */
+function pickApiKey(cfg: Record<string, unknown>): string | null {
+  if (Platform.OS === 'ios') {
+    const env = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
+    if (env && env.length > 0) return env;
+    const dbKey = cfg['revenuecat.ios_api_key'] as string | undefined;
+    return dbKey && dbKey.length > 0 ? dbKey : null;
+  }
+  const env = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY;
+  if (env && env.length > 0) return env;
+  const dbKey = cfg['revenuecat.android_api_key'] as string | undefined;
+  return dbKey && dbKey.length > 0 ? dbKey : null;
+}
+
+/**
+ * Module-load init — entitlement/product_ids'i Supabase'den çeker.
+ * Configure işlemi initRevenueCat(userId) ile login sonrası yapılır.
  */
 export async function initIap(): Promise<void> {
   if (initialized) return;
   initialized = true;
 
+  try {
+    const { data: rows } = await supabase
+      .from('app_config')
+      .select('key, value')
+      .in('key', ['iap.entitlement_id', 'iap.product_ids']);
+
+    const cfg = Object.fromEntries((rows ?? []).map((r: any) => [r.key, r.value]));
+    entitlementId = (cfg['iap.entitlement_id'] as string | undefined) ?? 'pro';
+    productIds = (cfg['iap.product_ids'] as string[] | undefined) ?? [];
+  } catch (e) {
+    Sentry.captureException(e, { tags: { module: 'iap', op: 'initConfig' } });
+  }
+}
+
+/**
+ * Sprint 13.A.9 — Login sonrası tek seferlik RevenueCat init.
+ * Purchases.configure + appUserID birlikte; mock-first guard.
+ *
+ * Önceden: initIap() (configure'lu) + linkIapUser() (logIn'li) ayrıydı.
+ * Yeni: tek fonksiyon, Platform.OS'a göre env key alır.
+ */
+export async function initRevenueCat(userId: string): Promise<void> {
+  if (configured) {
+    // Zaten configure edilmiş — sadece user değiştir
+    try {
+      await Purchases.logIn(userId);
+      await persistAppUserId(userId);
+    } catch (e) {
+      Sentry.captureException(e, { tags: { module: 'iap', op: 'logIn' } });
+    }
+    return;
+  }
+
+  // entitlement/product_ids hâlâ DB'den (admin runtime override)
+  let cfg: Record<string, unknown> = {};
   try {
     const { data: rows } = await supabase
       .from('app_config')
@@ -44,46 +103,45 @@ export async function initIap(): Promise<void> {
         'iap.entitlement_id',
         'iap.product_ids',
       ]);
-
-    const cfg = Object.fromEntries((rows ?? []).map((r: any) => [r.key, r.value]));
-    const key =
-      Platform.OS === 'ios'
-        ? (cfg['revenuecat.ios_api_key'] as string | undefined)
-        : (cfg['revenuecat.android_api_key'] as string | undefined);
-
+    cfg = Object.fromEntries((rows ?? []).map((r: any) => [r.key, r.value]));
     entitlementId = (cfg['iap.entitlement_id'] as string | undefined) ?? 'pro';
     productIds = (cfg['iap.product_ids'] as string[] | undefined) ?? [];
+  } catch {
+    // sessizce mock'a düş
+  }
 
-    if (!key || typeof key !== 'string' || key.length === 0) {
-      // Mock-first: key yoksa SDK init etme
-      configured = false;
-      return;
-    }
+  const key = pickApiKey(cfg);
+  if (!key) {
+    if (__DEV__) console.log('[iap] RevenueCat key yok — mock mode');
+    configured = false;
+    return;
+  }
 
-    Purchases.configure({ apiKey: key });
+  try {
+    if (__DEV__) Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+    Purchases.configure({ apiKey: key, appUserID: userId });
     configured = true;
+    await persistAppUserId(userId);
   } catch (e) {
-    Sentry.captureException(e, { tags: { module: 'iap' } });
+    Sentry.captureException(e, { tags: { module: 'iap', op: 'configure' } });
     configured = false;
   }
 }
 
+async function persistAppUserId(userId: string): Promise<void> {
+  // Webhook lookup için DB'ye yaz
+  await supabase
+    .from('profiles')
+    .update({ revenuecat_app_user_id: userId } as never)
+    .eq('id', userId);
+}
+
 /**
- * Login sonrası RevenueCat'e Supabase user.id'yi App User ID olarak bağla.
- * Webhook bu ID ile gelir → DB lookup için profiles.revenuecat_app_user_id'ye yazılır.
+ * @deprecated initRevenueCat(userId) kullan — Sprint 13.A.9'dan sonra.
+ * Geriye dönük uyumluluk için tutuluyor; logIn + persist sarmalı.
  */
 export async function linkIapUser(userId: string): Promise<void> {
-  if (!configured) return;
-  try {
-    await Purchases.logIn(userId);
-    // DB'ye yaz (webhook lookup'ı için)
-    await supabase
-      .from('profiles')
-      .update({ revenuecat_app_user_id: userId } as never)
-      .eq('id', userId);
-  } catch (e) {
-    Sentry.captureException(e, { tags: { module: 'iap', op: 'linkUser' } });
-  }
+  await initRevenueCat(userId);
 }
 
 export async function logOutIap(): Promise<void> {
@@ -134,6 +192,42 @@ export async function purchasePackage(pkg: PurchasesPackage): Promise<{
     if (e?.userCancelled) return { ok: false, cancelled: true };
     Sentry.captureException(e, { tags: { module: 'iap', op: 'purchase' } });
     return { ok: false, error: e?.message ?? 'unknown' };
+  }
+}
+
+/**
+ * Sprint 13.A.9 — Direct product satın alma (offering olmasa da).
+ * Bir StoreProduct nesnesini purchase eder.
+ */
+export async function purchaseStoreProduct(product: PurchasesStoreProduct): Promise<{
+  ok: boolean;
+  mock?: boolean;
+  cancelled?: boolean;
+  error?: string;
+  customerInfo?: CustomerInfo;
+}> {
+  if (!configured) return { ok: false, mock: true };
+  try {
+    const { customerInfo } = await Purchases.purchaseStoreProduct(product);
+    await syncPremiumFromCustomerInfo(customerInfo);
+    return { ok: true, customerInfo };
+  } catch (e: any) {
+    if (e?.userCancelled) return { ok: false, cancelled: true };
+    Sentry.captureException(e, { tags: { module: 'iap', op: 'purchaseStoreProduct' } });
+    return { ok: false, error: e?.message ?? 'unknown' };
+  }
+}
+
+/**
+ * Product ID listesinden StoreProduct'ları fetch et (offering setup'sız).
+ */
+export async function getStoreProducts(ids?: string[]): Promise<PurchasesStoreProduct[]> {
+  if (!configured) return [];
+  try {
+    return await Purchases.getProducts(ids ?? productIds);
+  } catch (e) {
+    Sentry.captureException(e, { tags: { module: 'iap', op: 'getProducts' } });
+    return [];
   }
 }
 

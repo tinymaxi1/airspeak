@@ -29,9 +29,12 @@ import {
 import {
   getOfferings,
   purchasePackage,
+  purchaseStoreProduct,
+  getStoreProducts,
   restorePurchases,
   isIapConfigured,
 } from '@/lib/iap';
+import type { PurchasesStoreProduct } from 'react-native-purchases';
 
 interface PlanData {
   id: 'annual' | 'monthly' | 'student';
@@ -62,22 +65,35 @@ export default function PaywallScreen() {
   const iapReady = isIapConfigured();
 
   // Sprint 13.A.3 — RevenueCat offerings (mock-first; key boşsa null)
+  // Sprint 13.A.9 — Direct StoreProducts fallback (offering setup yoksa)
+  const [storeProducts, setStoreProducts] = useState<PurchasesStoreProduct[]>([]);
+
   useEffect(() => {
     if (!iapReady) return;
-    void getOfferings().then((o) => {
-      if (o?.packages) setPkgs(o.packages);
+    void getOfferings().then(async (o) => {
+      if (o?.packages && o.packages.length > 0) {
+        setPkgs(o.packages);
+      } else {
+        // Offering yoksa direct product ID listesinden çek
+        const direct = await getStoreProducts();
+        setStoreProducts(direct);
+      }
     });
   }, [iapReady]);
 
   const plans: PlanData[] = PLAN_IDS.map((id) => {
-    const live = pkgs.find(
+    const livePkg = pkgs.find(
       (p) => PRODUCT_TO_PLAN[p.product.identifier] === id,
     );
+    const liveProduct = storeProducts.find(
+      (p) => PRODUCT_TO_PLAN[p.identifier] === id,
+    );
+    const livePriceString = livePkg?.product.priceString ?? liveProduct?.priceString;
     return {
       id,
       name: t(`screens.paywall.${id}`),
       // Live price varsa onu kullan, yoksa hardcoded i18n fallback
-      price: live?.product.priceString ?? t(`screens.paywall.${id}Price`),
+      price: livePriceString ?? t(`screens.paywall.${id}Price`),
       sub: t(`screens.paywall.${id}Sub`),
       badge: id === 'annual' ? t('screens.paywall.bestValue') : undefined,
     };
@@ -99,16 +115,27 @@ export default function PaywallScreen() {
       return;
     }
 
+    // Önce offering package'ı ara (preferred, RevenueCat dashboard'da setup edilmişse)
     const pkg = pkgs.find(
       (p) => PRODUCT_TO_PLAN[p.product.identifier] === selectedPlan,
     );
-    if (!pkg) {
-      Alert.alert('Hata', 'Seçilen plan App Store ürün listesinde bulunamadı.');
+    // Yoksa direct StoreProduct fallback
+    const directProduct = storeProducts.find(
+      (p) => PRODUCT_TO_PLAN[p.identifier] === selectedPlan,
+    );
+
+    if (!pkg && !directProduct) {
+      Alert.alert(
+        'Hata',
+        'Seçilen plan App Store ürün listesinde bulunamadı. RevenueCat ya da App Store Connect ürün ayarlarını kontrol et.',
+      );
       return;
     }
 
     setBusy(true);
-    const r = await purchasePackage(pkg);
+    const r = pkg
+      ? await purchasePackage(pkg)
+      : await purchaseStoreProduct(directProduct!);
     setBusy(false);
 
     if (r.cancelled) return; // sessiz geç

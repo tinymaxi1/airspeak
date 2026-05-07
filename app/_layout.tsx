@@ -37,7 +37,7 @@ import { initI18n } from '@/lib/i18n';
 import { initAnalytics } from '@/lib/posthog';
 import { initSentry, identifyUser, clearUser, SentryErrorBoundary, sentryWrap } from '@/lib/sentry';
 import { ErrorFallback } from '@/components/ErrorFallback';
-import { initIap, linkIapUser, logOutIap, syncPremiumFromIap } from '@/lib/iap';
+import { initIap, initRevenueCat, logOutIap, syncPremiumFromIap } from '@/lib/iap';
 import { useTranslation } from 'react-i18next';
 import {
   requestPermission as requestNotifPermission,
@@ -168,7 +168,7 @@ function RootLayoutInner() {
     if (initialUser) {
       identifyUser({ id: initialUser.id, role: initialProfile?.role ?? null });
       // Sprint 13.A.2 — IAP user link + premium sync (mock-first: key yoksa no-op)
-      void linkIapUser(initialUser.id).then(() => syncPremiumFromIap());
+      void initRevenueCat(initialUser.id).then(() => syncPremiumFromIap());
     }
     sync();
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
@@ -177,7 +177,7 @@ function RootLayoutInner() {
         if (session?.user) {
           const role = useAuthStore.getState().profile?.role ?? null;
           identifyUser({ id: session.user.id, role });
-          void linkIapUser(session.user.id).then(() => syncPremiumFromIap());
+          void initRevenueCat(session.user.id).then(() => syncPremiumFromIap());
         }
       } else if (event === 'SIGNED_OUT') {
         clearUser();

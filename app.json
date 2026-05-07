@@ -42,6 +42,13 @@
         "VIBRATE",
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
+        "com.google.android.gms.permission.AD_ID",
+        "RECORD_AUDIO",
+        "MODIFY_AUDIO_SETTINGS",
+        "INTERNET",
+        "VIBRATE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
         "com.google.android.gms.permission.AD_ID"
       ]
     },
@@ -114,6 +121,12 @@
         "projectId": "684b9eaf-123f-4145-89a9-89b235aecb46"
       }
     },
-    "owner": "mirissaapss"
+    "owner": "mirissaapss",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/684b9eaf-123f-4145-89a9-89b235aecb46"
+    }
   }
 }
