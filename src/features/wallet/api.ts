@@ -7,6 +7,7 @@
  * - useCoinTransactions(userId) — audit history
  */
 import { useEffect, useState } from 'react';
+import * as Sentry from '@sentry/react-native';
 import { supabase } from '@/lib/supabase';
 
 export interface WalletRow {
@@ -149,7 +150,13 @@ export async function addCoins(args: {
     p_source: args.source ?? 'other',
     p_metadata: args.metadata ?? null,
   });
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    Sentry.captureException(new Error(error.message), {
+      tags: { function: 'addCoins', source: args.source ?? 'other' },
+      extra: { amount: args.amount, reason: args.reason },
+    });
+    return { ok: false, error: error.message };
+  }
   return data;
 }
 

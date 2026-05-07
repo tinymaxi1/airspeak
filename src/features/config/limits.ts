@@ -2,6 +2,7 @@
  * Daily limit checker — config + counter karşılaştırır.
  * Premium kullanıcı için her zaman izin verir.
  */
+import * as Sentry from '@sentry/react-native';
 import { useAppConfig } from './api';
 import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -119,6 +120,10 @@ export async function bumpServerUsage(
   try {
     await supabase.rpc('bump_daily_usage', { field, amount });
   } catch (e) {
+    Sentry.captureException(e, {
+      tags: { function: 'bumpServerUsage', field },
+      extra: { amount },
+    });
     if (__DEV__) console.warn('[bumpServerUsage] failed', e);
   }
 }

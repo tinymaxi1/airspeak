@@ -9,6 +9,7 @@
  * - useLeagueGroup: group içindeki tüm üyeler (leaderboard) — realtime.
  */
 import { useEffect, useState } from 'react';
+import * as Sentry from '@sentry/react-native';
 import { supabase } from '@/lib/supabase';
 
 const TTL_MS = 5 * 60 * 1000;
@@ -91,7 +92,13 @@ export async function bumpUserXp(args: {
     p_xp: args.xp,
     p_time_spent: args.timeSpentSec ?? null,
   });
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    Sentry.captureException(new Error(error.message), {
+      tags: { function: 'bumpUserXp' },
+      extra: { lessonId: args.lessonId, score: args.score, xp: args.xp },
+    });
+    return { ok: false, error: error.message };
+  }
   return data as BumpResult;
 }
 
