@@ -1,11 +1,10 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Text as RNText, TextInput as RNTextInput, AppState } from 'react-native';
-// Sprint 6.D — Dynamic Type cap (1.8) global default. Erişilebilirlik dengesi.
-(RNText as any).defaultProps = (RNText as any).defaultProps || {};
-(RNText as any).defaultProps.maxFontSizeMultiplier = 1.8;
-(RNTextInput as any).defaultProps = (RNTextInput as any).defaultProps || {};
-(RNTextInput as any).defaultProps.maxFontSizeMultiplier = 1.8;
+import { AppState } from 'react-native';
+// Sprint 6.D / 14.B.5 — Dynamic Type cap zaten typography primitive'lerde
+// (HHero/H2/Body/Mono → maxFontSizeMultiplier prop'lu). React 19'da
+// function component defaultProps deprecated; class component'ler için
+// hâlâ çalışır ama uyarı verir — bu yüzden global atama kaldırıldı.
 import { TamaguiProvider } from 'tamagui';
 import { QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
