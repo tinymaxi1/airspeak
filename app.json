@@ -112,7 +112,8 @@
           "organization": "airspeak",
           "project": "react-native"
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,
