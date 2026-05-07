@@ -763,5 +763,13 @@
   "a11y": {
     "search": "Ara",
     "notifications": "Bildirimler"
+  },
+  "vocab": {
+    "eyebrow": "VOCAB · ICAO 4 · {{count}} TERİM",
+    "title": "Sözlük",
+    "searchPlaceholder": "kelime, anlam, tanım ara...",
+    "allCategories": "TÜMÜ",
+    "noResults": "\"{{q}}\" için sonuç bulunamadı",
+    "masterySummary": "{{m}} / {{n}} ÖĞRENİLDİ"
   }
 }

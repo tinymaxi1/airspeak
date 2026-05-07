@@ -170,21 +170,9 @@ export default function HomeScreen() {
                 >
                   <Text style={{ fontSize: 18, color: '#FFFFFF' }}>🔍</Text>
                 </TouchableOpacity>
-                {/* Dictionary — Sprint 14.A.2 */}
-                <TouchableOpacity
-                  onPress={() => router.push('/dictionary')}
-                  accessibilityLabel={t('a11y.dictionary', 'Sözlük')}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
-                    backgroundColor: 'rgba(255,255,255,0.08)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Text style={{ fontSize: 18, color: '#FFFFFF' }}>📖</Text>
-                </TouchableOpacity>
+                {/* Phase 4 Block 1.A — Dictionary 📖 silindi
+                    (Vocab artık Learn 3-segment'in tek primary gateway'i;
+                    iki erişim yolu UX borç idi) */}
                 {/* Notifications */}
                 <TouchableOpacity
                   onPress={() => router.push('/notifications')}

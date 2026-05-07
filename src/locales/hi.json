@@ -758,5 +758,13 @@
   "a11y": {
     "search": "Search",
     "notifications": "Notifications"
+  },
+  "vocab": {
+    "eyebrow": "VOCAB · ICAO 4 · {{count}} WORDS",
+    "title": "Glossary",
+    "searchPlaceholder": "search word, meaning, definition...",
+    "allCategories": "ALL",
+    "noResults": "No results for \"{{q}}\"",
+    "masterySummary": "{{m}} / {{n}} MASTERED"
   }
 }

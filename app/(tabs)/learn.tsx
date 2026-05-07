@@ -263,33 +263,42 @@ export default function LearnScreen() {
         </SafeAreaView>
       </View>
 
-      {/* Sprint 14.A.3 — Segment: Dersler / Pratik */}
+      {/* Phase 4 Block 1.A — 3-segment: Lessons / Practice / Vocab
+          Tasarım: paper-2 bg + ink active (dark) + ink-500 inactive
+          Vocab Header gateway 📖 silindi (Home), tek primary path bu segment */}
       <View
         style={{
           flexDirection: 'row',
-          paddingHorizontal: 16,
-          paddingVertical: 10,
-          gap: 8,
-          backgroundColor: '#FFFFFF',
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          gap: 6,
+          backgroundColor: '#F4F2EC',
           borderBottomWidth: 1,
           borderBottomColor: '#DCE0E8',
         }}
       >
+        {/* Lessons — active (current screen) */}
         <View
           style={{
             flex: 1,
             paddingVertical: 8,
-            borderRadius: 999,
-            backgroundColor: '#0F1E47',
+            paddingHorizontal: 4,
+            borderRadius: 8,
+            backgroundColor: '#0E1116',
+            borderWidth: 1,
+            borderColor: '#0E1116',
+            flexDirection: 'row',
             alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
           }}
         >
-          <Text
-            style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#FFFFFF' }}
-          >
-            Dersler
+          <Text style={{ fontSize: 14 }}>✈</Text>
+          <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#FFFFFF', letterSpacing: 0.24 }}>
+            Lessons
           </Text>
         </View>
+        {/* Practice — deeplink */}
         <TouchableOpacity
           activeOpacity={0.85}
           onPress={() => router.push('/practice')}
@@ -297,17 +306,44 @@ export default function LearnScreen() {
           style={{
             flex: 1,
             paddingVertical: 8,
-            borderRadius: 999,
-            backgroundColor: '#FFFFFF',
-            borderWidth: 1.5,
+            paddingHorizontal: 4,
+            borderRadius: 8,
+            backgroundColor: 'transparent',
+            borderWidth: 1,
             borderColor: '#DCE0E8',
+            flexDirection: 'row',
             alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
           }}
         >
-          <Text
-            style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0E1116' }}
-          >
-            Pratik
+          <Text style={{ fontSize: 14, color: '#5A6478' }}>🎙</Text>
+          <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#5A6478', letterSpacing: 0.24 }}>
+            Practice
+          </Text>
+        </TouchableOpacity>
+        {/* Vocab — primary gateway (Home 📖 silindi) */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => router.push('/vocab')}
+          accessibilityLabel="Sözlük / Vocab ekranını aç"
+          style={{
+            flex: 1,
+            paddingVertical: 8,
+            paddingHorizontal: 4,
+            borderRadius: 8,
+            backgroundColor: 'transparent',
+            borderWidth: 1,
+            borderColor: '#DCE0E8',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+          }}
+        >
+          <Text style={{ fontSize: 14, color: '#5A6478' }}>📖</Text>
+          <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: '#5A6478', letterSpacing: 0.24 }}>
+            Vocab
           </Text>
         </TouchableOpacity>
       </View>
