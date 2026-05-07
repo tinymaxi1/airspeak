@@ -28,7 +28,7 @@ import {
 export default function WelcomeScreen() {
   const { t } = useTranslation();
   return (
-    <View style={{ flex: 1, backgroundColor: '#0F1E47' }}>
+    <View style={{ flex: 1, backgroundColor: '#0A1430' }}>
       {/* Topo Background — globe arcs + red glow */}
       <View style={{ position: 'absolute', inset: 0, top: 0, left: 0, right: 0, bottom: 0 }}>
         <TopoBackground />

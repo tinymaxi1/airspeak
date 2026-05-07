@@ -156,7 +156,16 @@
       "boarding": "Uçuşa katıl — giriş yap →",
       "loading": "Yükleniyor...",
       "forgot": "Şifremi unuttum",
-      "noAccount": "Hesabın yok mu? Kayıt ol"
+      "noAccount": "Hesabın yok mu? Kayıt ol",
+      "heroAccent": "TEKRAR HOŞ GELDİN · YAKLAŞMA İÇİN ONAYLANDI",
+      "helpLink": "Yardım",
+      "callsignLabel": "E-POSTA · ÇAĞRI KODU",
+      "signIn": "Giriş yap",
+      "continueApple": "Apple ile devam et",
+      "continueGoogle": "Google ile devam et",
+      "or": "YA DA",
+      "signUpPrompt": "Henüz pilot lisansı yok?",
+      "signUpLink": "Kayıt ol"
     },
     "register": {
       "step": "ADIM 1 / 6",
@@ -659,6 +668,20 @@
         "lessonSkip": "Ders Atla",
         "lessonSkipDesc": "Sıkıştığın bir dersi atla (XP almazsın)"
       }
+    },
+    "forgotPassword": {
+      "step": "ADIM 1 / 2",
+      "heroAccent": "KURTARMA · IFR YAKLAŞMA",
+      "hero1": "Şifren mi kaybolduğun",
+      "hero2": "bulutlarda kaldı?",
+      "body": "E-posta adresini gir, sana bir sıfırlama linki göndereceğiz. Linki açtıktan sonra yeni şifreni belirle.",
+      "emailCallsign": "E-POSTA · ÇAĞRI KODU",
+      "verifiedLabel": "DOĞRULANMIŞ E-POSTA",
+      "readyText": "● Hazır",
+      "infoText": "E-posta gelmediyse spam klasörüne bak. 60 saniye sonra tekrar gönderebilirsin.",
+      "sendBtn": "Sıfırlama linki gönder",
+      "retryBtn": "Farklı bir e-posta dene",
+      "sentText": "E-postanı kontrol et — sıfırlama linki gönderildi."
     }
   },
   "notif": {

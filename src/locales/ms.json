@@ -156,7 +156,16 @@
       "boarding": "Papan papan vice — mendaftar dalam →",
       "loading": "Boarding...",
       "forgot": "Lupa kata sandi",
-      "noAccount": "Tak ada akun? Daftarkan"
+      "noAccount": "Tak ada akun? Daftarkan",
+      "heroAccent": "WELCOME BACK · CLEARED FOR APPROACH",
+      "helpLink": "Help",
+      "callsignLabel": "EMAIL · CALLSIGN",
+      "signIn": "Sign in",
+      "continueApple": "Continue with Apple",
+      "continueGoogle": "Continue with Google",
+      "or": "OR",
+      "signUpPrompt": "Henüz pilot lisansı yok?",
+      "signUpLink": "Sign up"
     },
     "register": {
       "step": "STEP 1 of 6",
@@ -659,6 +668,20 @@
         "lessonSkip": "Pelajaran Langkauan Saraf",
         "lessonSkipDesc": "Langkau pelajaran yang sulit (tanpa XP)"
       }
+    },
+    "forgotPassword": {
+      "step": "STEP 1 OF 2",
+      "heroAccent": "RECOVERY · IFR APPROACH",
+      "hero1": "Şifren mi kaybolduğun",
+      "hero2": "bulutlarda kaldı?",
+      "body": "Email adresini gir, sana bir reset link göndereceğiz. Linki açtıktan sonra yeni şifreni belirle.",
+      "emailCallsign": "EMAIL · CALLSIGN",
+      "verifiedLabel": "VERIFIED EMAIL",
+      "readyText": "● Ready",
+      "infoText": "Email gelmediyse spam klasörüne bak. 60 saniye sonra tekrar gönderebilirsin.",
+      "sendBtn": "Send reset link",
+      "retryBtn": "Try a different email",
+      "sentText": "Check your email — reset link sent."
     }
   },
   "notif": {

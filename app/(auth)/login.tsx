@@ -1,9 +1,21 @@
 /**
- * Login Screen — Boarding pass sign-in (eşlik eden Register tasarımıyla aynı dil)
+ * Login Screen — Dark + minimal (intent-perfect)
+ *
+ * Tasarım: screens-auth.jsx LoginScreen
+ * - bg navy-900 (#0A1430), white text, status bar dark
+ * - Top: ArrowLeft (white) + "Help" link top-right (white 70%)
+ * - Topo overlay (opacity 0.4)
+ * - LogoMark size 48 red-500
+ * - Eyebrow accent: WELCOME BACK · CLEARED FOR APPROACH
+ * - Hero 36px display: "Tower'a tekrar\nbağlan."
+ * - 2 FieldDark: EMAIL · CALLSIGN (mono) + PASSWORD (with inline "Forgot" right-side red-400)
+ * - btn-primary "Sign in" + ArrowRight
+ * - OR divider (rgba 0.1)
+ * - 2 SocialBtn: Continue with Apple / Continue with Google (white bg, navy text)
+ * - Footer: "Henüz pilot lisansı yok? Sign up" red-400 weight 700
  */
 import { useState } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { usePalette } from '@/lib/usePalette';
+import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { KeyboardAware } from '@/components/ui/KeyboardAware';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -11,16 +23,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { signInWithEmail } from '@/features/auth/api';
 import { mapAuthError } from '@/lib/authErrors';
 import {
-  HHero,
   Eyebrow,
-  Mono,
-  Body,
   FONTS,
   Button3D,
+  LogoMark,
+  TopoBackground,
 } from '@/components/airspeak';
 
+const NAVY_900 = '#0A1430';
+const RED_400 = '#FF5A66';
+const RED_500 = '#E63946';
+
 export default function LoginScreen() {
-  const c = usePalette();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,223 +49,242 @@ export default function LoginScreen() {
       Alert.alert(f.title, f.message);
       return;
     }
-    // Index'e yönlendir — onboarding tamamlanmış mı diye orada karar verilir
-    // (hasCompletedOnboarding=false ise role-select'e gider, true ise home'a)
     router.replace('/');
   }
 
   return (
-    <KeyboardAware style={{ backgroundColor: c.bg }}>
+    <KeyboardAware style={{ backgroundColor: NAVY_900 }}>
+      {/* Topo bg overlay (behind content) */}
+      <View
+        pointerEvents="none"
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.4 }}
+      >
+        <TopoBackground />
+      </View>
+
       <SafeAreaView edges={['top']}>
         <View
           style={{
-            paddingHorizontal: 16,
-            paddingVertical: 8,
+            paddingHorizontal: 24,
+            paddingTop: 4,
+            paddingBottom: 0,
             flexDirection: 'row',
+            justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
-          <Text onPress={() => router.back()} style={{ fontSize: 24, color: '#0E1116' }}>
-            ←
-          </Text>
+          <TouchableOpacity onPress={() => router.back()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+            <Text style={{ fontSize: 24, color: '#FFFFFF' }}>←</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/legal/help' as any)}>
+            <Text
+              style={{
+                fontSize: 13,
+                fontFamily: FONTS.body700,
+                color: 'rgba(255,255,255,0.7)',
+              }}
+            >
+              {t('screens.login.helpLink', 'Help')}
+            </Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 32 }}
+        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 24 }}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <HHero style={{ marginBottom: 4 }}>{t('screens.login.hero1')}{'\n'}{t('screens.login.hero2')}</HHero>
-        <Body color="#5A6478" style={{ fontSize: 15, marginBottom: 24 }}>
-          {t('screens.login.subtitle')}
-        </Body>
+        <View style={{ marginBottom: 28 }}>
+          <LogoMark size={48} color={RED_500} />
+        </View>
 
-        {/* Boarding pass form */}
-        <View
+        <Eyebrow accent>{t('screens.login.heroAccent', 'WELCOME BACK · CLEARED FOR APPROACH')}</Eyebrow>
+        <Text
           style={{
-            backgroundColor: '#FFFFFF',
-            borderRadius: 14,
-            borderWidth: 1.5,
-            borderColor: '#DCE0E8',
-            borderBottomWidth: 4,
+            fontFamily: FONTS.display,
+            fontSize: 36,
+            fontWeight: '700',
+            lineHeight: 38,
+            letterSpacing: -0.9,
+            color: '#FFFFFF',
+            marginTop: 8,
           }}
         >
-          <View
+          {t('screens.login.hero1')}
+          {'\n'}
+          {t('screens.login.hero2')}
+        </Text>
+
+        <View style={{ marginTop: 28, gap: 12 }}>
+          <FieldDark
+            label={t('screens.login.callsignLabel', 'EMAIL · CALLSIGN')}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="captain@airspeak.io"
+            mono
+            keyboardType="email-address"
+          />
+          <FieldDark
+            label={t('screens.login.password', 'PASSWORD')}
+            value={password}
+            onChangeText={setPassword}
+            placeholder={t('screens.login.passwordHint', '••••••••')}
+            secure
+            right={
+              <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
+                <Text style={{ fontSize: 12, fontFamily: FONTS.body700, color: RED_400 }}>
+                  {t('screens.login.forgot', 'Forgot')}
+                </Text>
+              </TouchableOpacity>
+            }
+          />
+        </View>
+
+        <View style={{ flex: 1 }} />
+
+        <View style={{ marginTop: 22 }}>
+          <Button3D variant="primary" fullWidth onPress={handleLogin} disabled={loading}>
+            {loading ? t('screens.login.loading', 'Loading...') : `${t('screens.login.signIn', 'Sign in')} →`}
+          </Button3D>
+        </View>
+
+        {/* OR divider */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 20 }}>
+          <View style={{ flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.1)' }} />
+          <Text
             style={{
-              padding: 20,
-              paddingBottom: 16,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
+              fontFamily: FONTS.mono,
+              fontSize: 10,
+              color: 'rgba(255,255,255,0.4)',
+              letterSpacing: 1.8,
             }}
           >
-            <View>
-              <Eyebrow>{t('screens.login.passenger')}</Eyebrow>
-              <Text
-                style={{
-                  fontFamily: FONTS.display,
-                  fontSize: 22,
-                  fontWeight: '700',
-                  color: '#0E1116',
-                  marginTop: 4,
-                }}
-              >
-                {t('screens.login.title')}
-              </Text>
-            </View>
-            <Text style={{ fontSize: 32 }}>🎫</Text>
-          </View>
-
-          <View style={{ paddingHorizontal: 20, paddingBottom: 16, gap: 14 }}>
-            <Field
-              label={t('screens.login.email')}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="captain@airspeak.io"
-            />
-            <PasswordField
-              label={t('screens.login.password')}
-              value={password}
-              onChangeText={setPassword}
-              placeholder={t('screens.login.passwordHint')}
-            />
-          </View>
-
-          <View
-            style={{
-              borderTopWidth: 1,
-              borderStyle: 'dashed',
-              borderColor: '#DCE0E8',
-              marginHorizontal: 16,
-            }}
-          />
-
-          <View style={{ padding: 16, flexDirection: 'row', gap: 12 }}>
-            <Stub label="GATE" value="A1" />
-            <Stub label="SEAT" value="01A" />
-            <Stub label="CLASS" value="PRO" />
-          </View>
+            {t('screens.login.or', 'OR')}
+          </Text>
+          <View style={{ flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.1)' }} />
         </View>
 
-        <View style={{ marginTop: 24 }}>
-          <Button3D variant="primary" fullWidth onPress={handleLogin} disabled={loading}>
-            {loading ? t('screens.login.loading') : t('screens.login.boarding')}
-          </Button3D>
+        <View style={{ gap: 10 }}>
+          <SocialBtn label={t('screens.login.continueApple', 'Continue with Apple')} icon="apple" onPress={() => Alert.alert('Soon', 'Apple sign-in')} />
+          <SocialBtn label={t('screens.login.continueGoogle', 'Continue with Google')} icon="google" onPress={() => Alert.alert('Soon', 'Google sign-in')} />
         </View>
 
-        <View style={{ marginTop: 8 }}>
-          <Button3D variant="ghost" fullWidth onPress={() => router.push('/(auth)/forgot-password')}>
-            {t('screens.login.forgot')}
-          </Button3D>
-        </View>
-
-        <View style={{ marginTop: 8 }}>
-          <Button3D variant="ghost" fullWidth onPress={() => router.replace('/(auth)/register')}>
-            {t('screens.login.noAccount')}
-          </Button3D>
+        <View style={{ alignItems: 'center', marginTop: 20 }}>
+          <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
+            {t('screens.login.signUpPrompt', 'Henüz pilot lisansı yok?')}{' '}
+            <Text
+              onPress={() => router.replace('/(auth)/register')}
+              style={{ color: RED_400, fontFamily: FONTS.body700 }}
+            >
+              {t('screens.login.signUpLink', 'Sign up')}
+            </Text>
+          </Text>
         </View>
       </ScrollView>
     </KeyboardAware>
   );
 }
 
-function Field({
+// ─────────────────────────────────────────────
+// FieldDark — dark theme input pill (rgba alpha bg + border)
+// ─────────────────────────────────────────────
+function FieldDark({
   label,
   value,
   onChangeText,
   placeholder,
+  mono,
+  secure,
+  keyboardType,
+  right,
 }: {
   label: string;
   value: string;
   onChangeText: (v: string) => void;
-  placeholder: string;
+  placeholder?: string;
+  mono?: boolean;
+  secure?: boolean;
+  keyboardType?: 'email-address' | 'default';
+  right?: React.ReactNode;
 }) {
   return (
-    <View>
-      <Eyebrow>{label}</Eyebrow>
+    <View
+      style={{
+        backgroundColor: 'rgba(255,255,255,0.05)',
+        borderRadius: 12,
+        borderWidth: 1.5,
+        borderColor: 'rgba(255,255,255,0.12)',
+        paddingHorizontal: 14,
+        paddingVertical: 12,
+      }}
+    >
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text
+          style={{
+            fontFamily: FONTS.mono,
+            fontSize: 9,
+            letterSpacing: 1.62,
+            color: 'rgba(255,255,255,0.5)',
+            textTransform: 'uppercase',
+          }}
+        >
+          {label}
+        </Text>
+        {right}
+      </View>
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#8A93A6"
+        placeholderTextColor="rgba(255,255,255,0.4)"
         autoCapitalize="none"
-        keyboardType="email-address"
+        secureTextEntry={secure}
+        keyboardType={keyboardType}
         style={{
+          fontSize: 16,
+          fontFamily: mono ? FONTS.mono : FONTS.body600,
+          fontWeight: '600',
+          color: '#FFFFFF',
           marginTop: 4,
-          borderBottomWidth: 1.5,
-          borderBottomColor: '#B8BFCC',
-          paddingBottom: 6,
-          fontSize: 17,
-          fontFamily: FONTS.body600,
-          color: '#0E1116',
+          padding: 0,
         }}
       />
     </View>
   );
 }
 
-function PasswordField({
+// ─────────────────────────────────────────────
+// SocialBtn — white bg, navy text (Continue with X)
+// ─────────────────────────────────────────────
+function SocialBtn({
   label,
-  value,
-  onChangeText,
-  placeholder,
+  icon,
+  onPress,
 }: {
   label: string;
-  value: string;
-  onChangeText: (v: string) => void;
-  placeholder: string;
+  icon: 'apple' | 'google';
+  onPress: () => void;
 }) {
-  const [visible, setVisible] = useState(false);
   return (
-    <View>
-      <Eyebrow>{label}</Eyebrow>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <TextInput
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          placeholderTextColor="#8A93A6"
-          autoCapitalize="none"
-          secureTextEntry={!visible}
-          style={{
-            flex: 1,
-            marginTop: 4,
-            borderBottomWidth: 1.5,
-            borderBottomColor: '#B8BFCC',
-            paddingBottom: 6,
-            fontSize: 17,
-            fontFamily: FONTS.mono,
-            color: '#0E1116',
-          }}
-        />
-        <TouchableOpacity
-          onPress={() => setVisible((v) => !v)}
-          style={{ paddingLeft: 10, paddingBottom: 4 }}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Text style={{ fontSize: 18 }}>{visible ? '🙈' : '👁️'}</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
-
-function Stub({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={{ flex: 1 }}>
-      <Eyebrow>{label}</Eyebrow>
-      <Text
-        style={{
-          fontFamily: FONTS.mono700,
-          fontSize: 18,
-          fontWeight: '700',
-          color: '#0E1116',
-          marginTop: 2,
-        }}
-      >
-        {value}
-      </Text>
-    </View>
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={onPress}
+      style={{
+        height: 52,
+        borderRadius: 14,
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 3,
+        borderBottomColor: 'rgba(0,0,0,0.3)',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 10,
+      }}
+    >
+      <Text style={{ fontSize: 18, color: NAVY_900 }}>{icon === 'apple' ? '' : 'G'}</Text>
+      <Text style={{ fontSize: 14, fontFamily: FONTS.body800, color: NAVY_900 }}>{label}</Text>
+    </TouchableOpacity>
   );
 }

@@ -156,7 +156,16 @@
       "boarding": "论坛 — 登录 →",
       "loading": "正在登机……",
       "forgot": "忘记密码",
-      "noAccount": "还没有账号？立即注册"
+      "noAccount": "还没有账号？立即注册",
+      "heroAccent": "WELCOME BACK · CLEARED FOR APPROACH",
+      "helpLink": "Help",
+      "callsignLabel": "EMAIL · CALLSIGN",
+      "signIn": "Sign in",
+      "continueApple": "Continue with Apple",
+      "continueGoogle": "Continue with Google",
+      "or": "OR",
+      "signUpPrompt": "Henüz pilot lisansı yok?",
+      "signUpLink": "Sign up"
     },
     "register": {
       "step": "第 1 步（共 6 步）",
@@ -659,6 +668,20 @@
         "lessonSkip": "跳过本节课",
         "lessonSkipDesc": "跳过一个困难的关卡（不获得经验值）"
       }
+    },
+    "forgotPassword": {
+      "step": "STEP 1 OF 2",
+      "heroAccent": "RECOVERY · IFR APPROACH",
+      "hero1": "Şifren mi kaybolduğun",
+      "hero2": "bulutlarda kaldı?",
+      "body": "Email adresini gir, sana bir reset link göndereceğiz. Linki açtıktan sonra yeni şifreni belirle.",
+      "emailCallsign": "EMAIL · CALLSIGN",
+      "verifiedLabel": "VERIFIED EMAIL",
+      "readyText": "● Ready",
+      "infoText": "Email gelmediyse spam klasörüne bak. 60 saniye sonra tekrar gönderebilirsin.",
+      "sendBtn": "Send reset link",
+      "retryBtn": "Try a different email",
+      "sentText": "Check your email — reset link sent."
     }
   },
   "notif": {
