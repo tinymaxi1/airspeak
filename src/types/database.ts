@@ -2132,6 +2132,9 @@ export type Database = {
           slug: string
           sort: number
           status: Database["public"]["Enums"]["content_status"]
+          theory_image_url: string | null
+          theory_md: string | null
+          theory_md_en: string | null
           title: string
           title_tr: string | null
           type: Database["public"]["Enums"]["lesson_type"]
@@ -2150,6 +2153,9 @@ export type Database = {
           slug: string
           sort?: number
           status?: Database["public"]["Enums"]["content_status"]
+          theory_image_url?: string | null
+          theory_md?: string | null
+          theory_md_en?: string | null
           title: string
           title_tr?: string | null
           type: Database["public"]["Enums"]["lesson_type"]
@@ -2168,6 +2174,9 @@ export type Database = {
           slug?: string
           sort?: number
           status?: Database["public"]["Enums"]["content_status"]
+          theory_image_url?: string | null
+          theory_md?: string | null
+          theory_md_en?: string | null
           title?: string
           title_tr?: string | null
           type?: Database["public"]["Enums"]["lesson_type"]
@@ -3331,6 +3340,8 @@ export type Database = {
           description: string | null
           description_tr: string | null
           id: string
+          intro_md: string | null
+          intro_md_en: string | null
           module_id: string
           number: number
           slug: string
@@ -3348,6 +3359,8 @@ export type Database = {
           description?: string | null
           description_tr?: string | null
           id?: string
+          intro_md?: string | null
+          intro_md_en?: string | null
           module_id: string
           number: number
           slug: string
@@ -3365,6 +3378,8 @@ export type Database = {
           description?: string | null
           description_tr?: string | null
           id?: string
+          intro_md?: string | null
+          intro_md_en?: string | null
           module_id?: string
           number?: number
           slug?: string
@@ -4752,6 +4767,7 @@ export type Database = {
         | "quiz"
         | "reading"
         | "speaking"
+        | "theory"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4907,6 +4923,7 @@ export const Constants = {
         "quiz",
         "reading",
         "speaking",
+        "theory",
       ],
     },
   },
