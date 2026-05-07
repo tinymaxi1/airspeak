@@ -85,6 +85,10 @@ export default function LessonScreen() {
   const [selected, setSelected] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [correctCount, setCorrectCount] = useState(initialCorrect);
+  // Sprint 14.B.6 — customIsCorrect erken return'lerden ÖNCE tanımlı olmalı
+  // (Hooks Rules: koşullu hook çağrımı yasak — paywall/loading state'lerde
+  // hook sayısı değişirse "Rendered more hooks" runtime crash verir)
+  const [customIsCorrect, setCustomIsCorrect] = useState<boolean | null>(null);
 
   // İlk yüklemede persist edilen progress'i hydrate et — sadece ilk render
   // (exercises geldiğinde currentIdx out-of-range olabilir, clamp)
@@ -206,8 +210,8 @@ export default function LessonScreen() {
   }
 
   // MCQ default isCorrect; custom egzersizler kendi hesapladıkları değeri verir.
+  // (customIsCorrect state'i erken return'lerden önce yukarıda tanımlı)
   const mcqIsCorrect = selected === exercise.correct_id;
-  const [customIsCorrect, setCustomIsCorrect] = useState<boolean | null>(null);
   const isCorrect = customIsCorrect ?? mcqIsCorrect;
   const dbOptions = (exercise.options ?? []) as { id: string; text: string }[];
 
