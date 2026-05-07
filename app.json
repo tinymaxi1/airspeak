@@ -2,7 +2,7 @@
   "expo": {
     "name": "AirSpeak",
     "slug": "airspeak",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/logo/app-icon-1024.png",
     "scheme": "airspeak",
@@ -11,7 +11,7 @@
     "splash": {
       "image": "./assets/logo/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0F2D5C"
+      "backgroundColor": "#0F1E47"
     },
     "ios": {
       "supportsTablet": true,
@@ -96,14 +96,6 @@
         "expo-tracking-transparency",
         {
           "userTrackingPermission": "AirSpeak'i ve sana özel reklamları geliştirmek için cihaz tanımlayıcına ihtiyaç duyar. İzin vermesen de uygulama tam çalışır."
-        }
-      ],
-      [
-        "react-native-google-mobile-ads",
-        {
-          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
-          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
-          "userTrackingUsageDescription": "AirSpeak'i ve sana özel reklamları geliştirmek için cihaz tanımlayıcına ihtiyaç duyar. İzin vermesen de uygulama tam çalışır."
         }
       ],
       [
