@@ -86,7 +86,6 @@
     "react-i18next": "^14.0.0",
     "react-native": "0.79.6",
     "react-native-gesture-handler": "~2.24.0",
-    "react-native-google-mobile-ads": "^14.0.0",
     "react-native-mmkv": "^3.0.0",
     "react-native-purchases": "^8.0.0",
     "react-native-reanimated": "~3.17.4",
@@ -110,5 +109,19 @@
     "prettier": "^3.0.0",
     "tsx": "^4.21.0",
     "typescript": "~5.8.3"
+  },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@anthropic-ai/sdk",
+          "@tamagui/babel-plugin",
+          "@tamagui/lucide-icons",
+          "openai",
+          "expo-av"
+        ],
+        "listUnknownPackages": false
+      }
+    }
   }
 }
