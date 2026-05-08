@@ -450,7 +450,9 @@
       "deleteAccountDesc": "Kayıt defteri kalıcı silinir",
       "version": "AIRSPEAK v2.4.1 · BUILD 2026.04",
       "squadron": "Squadron / Kohort",
-      "squadronDesc": "Havayolu / okul kodu ile kohort'a katıl"
+      "squadronDesc": "Havayolu / okul kodu ile kohort'a katıl",
+      "blockedUsers": "Engellenen Kullanıcılar",
+      "blockedUsersDesc": "Engelleri yönet"
     },
     "notifications": {
       "eyebrow": "OPS FREQ · {{count}} YENİ",
@@ -784,5 +786,19 @@
     "allCategories": "TÜMÜ",
     "noResults": "\"{{q}}\" için sonuç bulunamadı",
     "masterySummary": "{{m}} / {{n}} ÖĞRENİLDİ"
+  },
+  "settings": {
+    "blockedUsers": {
+      "eyebrow": "AYARLAR · GİZLİLİK",
+      "title": "Engellenen Kullanıcılar",
+      "desc": "Engellediğin kullanıcıların post ve yorumları sana görünmez. İstediğin zaman engeli kaldırabilirsin.",
+      "empty": "Henüz engellediğin kullanıcı yok",
+      "emptyDesc": "Bir kullanıcıyı engellemek için profiline gidip \"Engelle\" butonunu kullanabilirsin.",
+      "count": "{{n}} ENGELLİ",
+      "unblock": "Engeli kaldır",
+      "unblockTitle": "Engeli kaldır?",
+      "unblockBody": "@{{u}} kullanıcısının postları ve yorumları tekrar görünecek.",
+      "unblockConfirm": "Engeli kaldır"
+    }
   }
 }

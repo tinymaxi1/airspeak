@@ -4,7 +4,7 @@
  * 2 sekme: "Benim Gruplarım" / "Keşfet"
  * Sağ üst: yeni grup oluşturma butonu
  */
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
@@ -15,6 +15,7 @@ import {
   useMyGroups,
   useTrendingHashtags,
   usePostsByHashtag,
+  useBlockedUserIds,
 } from '@/features/community/api';
 import { useCommunityNotifications } from '@/features/community/notifications';
 import { GroupCard } from '@/components/community/GroupCard';
@@ -38,7 +39,13 @@ export default function CommunityIndexScreen() {
   const { rows: trending } = useTrendingHashtags(8);
   const [activeHashtag, setActiveHashtag] = useState<string | null>(null);
   const feedHashtag = activeHashtag ?? trending[0]?.tag ?? null;
-  const { rows: feedPosts, loading: feedLoading } = usePostsByHashtag(feedHashtag, 30);
+  const { rows: feedPostsRaw, loading: feedLoading } = usePostsByHashtag(feedHashtag, 30);
+  // Apple 1.2 — Block user filter (engellenen author'ların postları gizlenir)
+  const { ids: blockedIds } = useBlockedUserIds();
+  const feedPosts = useMemo(
+    () => feedPostsRaw.filter((p) => !blockedIds.has(p.author_id)),
+    [feedPostsRaw, blockedIds],
+  );
 
   async function onRefresh() {
     setRefreshing(true);

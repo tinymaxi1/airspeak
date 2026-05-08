@@ -450,7 +450,9 @@
       "deleteAccountDesc": "Logbook deleted permanently",
       "version": "AIRSPEAK v2.4.1 · BUILD 2026.04",
       "squadron": "Squadron / Cohort",
-      "squadronDesc": "Join cohort with airline / school code"
+      "squadronDesc": "Join cohort with airline / school code",
+      "blockedUsers": "Blocked Users",
+      "blockedUsersDesc": "Manage blocks"
     },
     "notifications": {
       "eyebrow": "OPS FREQ · {{count}} NOVO",
@@ -779,5 +781,19 @@
     "allCategories": "ALL",
     "noResults": "No results for \"{{q}}\"",
     "masterySummary": "{{m}} / {{n}} MASTERED"
+  },
+  "settings": {
+    "blockedUsers": {
+      "eyebrow": "SETTINGS · PRIVACY",
+      "title": "Blocked Users",
+      "desc": "Posts and comments from users you block are hidden. You can unblock anytime.",
+      "empty": "No blocked users yet",
+      "emptyDesc": "To block a user, go to their profile and tap \"Block\".",
+      "count": "{{n}} BLOCKED",
+      "unblock": "Unblock",
+      "unblockTitle": "Unblock user?",
+      "unblockBody": "@{{u}}'s posts and comments will be visible again.",
+      "unblockConfirm": "Unblock"
+    }
   }
 }

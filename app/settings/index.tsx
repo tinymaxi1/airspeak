@@ -158,6 +158,12 @@ export default function SettingsScreen() {
           onPress: () => router.push('/settings/privacy'),
         },
         {
+          icon: '🚫',
+          label: t('screens.settings.blockedUsers', 'Engellenen Kullanıcılar'),
+          sub: t('screens.settings.blockedUsersDesc', 'Engelleri yönet'),
+          onPress: () => router.push('/settings/blocked-users' as any),
+        },
+        {
           icon: '🤖',
           label: t('screens.settings.help'),
           onPress: () => router.push('/settings/help'),

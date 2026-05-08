@@ -27,7 +27,11 @@ import {
   useUserCommunityPosts,
   useUserReactions,
   useBookmarkSet,
+  blockUser,
+  unblockUser,
+  isBlocked as checkIsBlocked,
 } from '@/features/community/api';
+import { Alert } from 'react-native';
 import { PostCard } from '@/components/community/PostCard';
 import { FONTS, Avatar, Mono, Body, Button3D } from '@/components/airspeak';
 
@@ -74,6 +78,8 @@ export default function CommunityUserProfileScreen() {
 
   const { following, refresh: refreshFollow } = useFollowing(myUserId, targetId);
   const { rows: posts, loading: postsLoading, refresh: refreshPosts } = useUserCommunityPosts(targetId);
+  // Apple 1.2 — kullanıcı engellenmiş ise post listesi boş gösterilir
+  // (kullanıcı kendi engellediği kişinin profil sayfasından da içerik göremez)
   const postIds = useMemo(() => posts.map((p) => p.id), [posts]);
   const { byTarget: myReactions, refresh: refreshReactions } = useUserReactions(
     myUserId,
@@ -98,6 +104,52 @@ export default function CommunityUserProfileScreen() {
     if (r.ok) {
       void refreshFollow();
       void loadUser(); // refresh follower count
+    }
+  }
+
+  // Apple 1.2 — Block user
+  const [blocked, setBlocked] = useState(false);
+  const [blockBusy, setBlockBusy] = useState(false);
+
+  useEffect(() => {
+    if (!targetId || !myUserId || isOwn) return;
+    void checkIsBlocked(targetId).then(setBlocked);
+  }, [targetId, myUserId, isOwn]);
+
+  async function onBlockToggle() {
+    if (!targetId) return;
+    if (blocked) {
+      // Unblock — direct
+      setBlockBusy(true);
+      const r = await unblockUser(targetId);
+      setBlockBusy(false);
+      if (r.ok) setBlocked(false);
+      else Alert.alert('Hata', r.error ?? 'Engel kaldırılamadı');
+    } else {
+      // Block — onay dialog
+      Alert.alert(
+        'Bu kullanıcıyı engelle?',
+        `@${user?.username ?? 'kullanıcı'} engellendiğinde:\n\n• Postları feed'inde görünmez\n• Yorumları görünmez\n• Karşılıklı takip varsa kaldırılır\n\nİstediğin zaman ayarlardan engeli kaldırabilirsin.`,
+        [
+          { text: 'Vazgeç', style: 'cancel' },
+          {
+            text: 'Engelle',
+            style: 'destructive',
+            onPress: async () => {
+              setBlockBusy(true);
+              const r = await blockUser(targetId);
+              setBlockBusy(false);
+              if (r.ok) {
+                setBlocked(true);
+                void refreshFollow();
+                void loadUser();
+              } else {
+                Alert.alert('Hata', r.error ?? 'Engellenemedi');
+              }
+            },
+          },
+        ],
+      );
     }
   }
 
@@ -225,17 +277,46 @@ export default function CommunityUserProfileScreen() {
             <Stat label="TAKİP" value={user.community_following_count} />
           </View>
 
-          {/* Follow buton */}
+          {/* Follow + Block butonları */}
           {!isOwn && myUserId && (
-            <View style={{ marginTop: 16, width: '100%' }}>
+            <View style={{ marginTop: 16, width: '100%', gap: 8 }}>
               <Button3D
                 variant={following ? 'secondary' : 'primary'}
                 fullWidth
-                disabled={followBusy}
+                disabled={followBusy || blocked}
                 onPress={onFollowToggle}
               >
-                {followBusy ? 'İşleniyor…' : following ? '✓ Takip ediliyor' : 'Takip et'}
+                {blocked
+                  ? '⊘ Engellendi'
+                  : followBusy
+                    ? 'İşleniyor…'
+                    : following
+                      ? '✓ Takip ediliyor'
+                      : 'Takip et'}
               </Button3D>
+              <TouchableOpacity
+                onPress={onBlockToggle}
+                disabled={blockBusy}
+                style={{
+                  paddingVertical: 10,
+                  alignItems: 'center',
+                  opacity: blockBusy ? 0.5 : 1,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: FONTS.body700,
+                    fontSize: 13,
+                    color: blocked ? '#5A6478' : '#E63946',
+                  }}
+                >
+                  {blockBusy
+                    ? '...'
+                    : blocked
+                      ? 'Engeli kaldır'
+                      : '🚫 Bu kullanıcıyı engelle'}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
@@ -249,6 +330,13 @@ export default function CommunityUserProfileScreen() {
           <Body color="#5A6478" style={{ textAlign: 'center', marginTop: 16 }}>
             Yükleniyor…
           </Body>
+        ) : blocked ? (
+          <View style={{ alignItems: 'center', marginTop: 16, gap: 8 }}>
+            <Text style={{ fontSize: 36 }}>⊘</Text>
+            <Body color="#8A93A6" style={{ fontSize: 13, textAlign: 'center', maxWidth: 260 }}>
+              Bu kullanıcıyı engelledin. İçerikleri gizli.
+            </Body>
+          </View>
         ) : posts.length === 0 ? (
           <View style={{ alignItems: 'center', marginTop: 16 }}>
             <Body color="#8A93A6" style={{ fontSize: 13 }}>

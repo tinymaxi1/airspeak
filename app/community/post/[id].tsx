@@ -34,6 +34,7 @@ import {
   toggleBookmark,
   REACTION_KINDS,
   reactionEmoji,
+  useBlockedUserIds,
   type CommunityPost,
   type ReactionKind,
 } from '@/features/community/api';
@@ -66,7 +67,13 @@ export default function PostDetailScreen() {
   const [bookmarked, setBookmarked] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
 
-  const { rows: comments, refresh: refreshComments } = useComments(postId);
+  const { rows: commentsRaw, refresh: refreshComments } = useComments(postId);
+  // Apple 1.2 — Block user filter (engellenen author'ların yorumları gizlenir)
+  const { ids: blockedIds } = useBlockedUserIds();
+  const comments = useMemo(
+    () => commentsRaw.filter((cm) => !blockedIds.has(cm.author_id)),
+    [commentsRaw, blockedIds],
+  );
   const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
   const { byTarget: myCommentReactions, refresh: refreshCommentReactions } =
     useUserReactions(userId, 'comment', commentIds);
