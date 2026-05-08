@@ -36,6 +36,11 @@
   },
   "submit": {
     "production": {
+      "ios": {
+        "appleId": "PENDING_APPLE_ID",
+        "ascAppId": "PENDING_ASC_APP_ID",
+        "appleTeamId": "7964PXR27N"
+      },
       "android": {
         "track": "internal"
       }
