@@ -984,6 +984,74 @@ export async function updateMentionPrivacy(
   return { ok: true };
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// Apple Submit Guideline 1.2 — User Block System
+// ═══════════════════════════════════════════════════════════════════
+// Kullanıcı engellediği kişinin post + comment + reaction'larını görmemeli.
+// Backend tablosu: community_blocks (RLS: blocker_id = auth.uid()).
+
+export async function blockUser(targetId: string): Promise<{ ok: boolean; error?: string }> {
+  const { data, error } = await (supabase as any).rpc('block_user', {
+    p_target_id: targetId,
+  });
+  if (error) return { ok: false, error: error.message };
+  return data;
+}
+
+export async function unblockUser(targetId: string): Promise<{ ok: boolean; error?: string }> {
+  const { data, error } = await (supabase as any).rpc('unblock_user', {
+    p_target_id: targetId,
+  });
+  if (error) return { ok: false, error: error.message };
+  return data;
+}
+
+export async function isBlocked(targetId: string): Promise<boolean> {
+  const { data, error } = await (supabase as any).rpc('is_blocked', {
+    p_target_id: targetId,
+  });
+  if (error) return false;
+  return Boolean(data);
+}
+
+export interface BlockedUserRow {
+  user_id: string;
+  username: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  blocked_at: string;
+}
+
+export async function listBlockedUsers(): Promise<BlockedUserRow[]> {
+  const { data, error } = await (supabase as any).rpc('list_blocked_users');
+  if (error) return [];
+  return (data ?? []) as BlockedUserRow[];
+}
+
+/**
+ * Mobile feed/list filter helper — get_blocked_user_ids() RPC.
+ * Hook'lar bu listeyi fetch edip client-side filter yapar.
+ * v1.1: Server-side RLS policy ile garanti (bonus güvenlik).
+ */
+export async function getBlockedUserIds(): Promise<string[]> {
+  const { data, error } = await (supabase as any).rpc('get_blocked_user_ids');
+  if (error) return [];
+  return (data ?? []) as string[];
+}
+
+/** React hook — blocked user ID set, reactive */
+export function useBlockedUserIds(): { ids: Set<string>; refresh: () => Promise<void> } {
+  const [ids, setIds] = useState<Set<string>>(new Set());
+  const refresh = useCallback(async () => {
+    const list = await getBlockedUserIds();
+    setIds(new Set(list));
+  }, []);
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+  return { ids, refresh };
+}
+
 // Search community posts (ILIKE basit, FTS 6.D'de)
 export async function searchPosts(query: string, limit = 50): Promise<CommunityPost[]> {
   if (!query.trim()) return [];
