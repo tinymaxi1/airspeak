@@ -59,13 +59,17 @@ export default function RegisterScreen() {
       return;
     }
     // Onayları DB'ye yaz (best-effort — trigger handle_new_user önce profile oluşturur)
-    await (supabase as any)
-      .rpc('record_signup_consents', {
+    // Note: Supabase .rpc() PostgrestFilterBuilder döndürür, .catch metodu YOK.
+    // try/catch ile sarmak zorunlu — Sentry REACT-NATIVE-1 bug fix.
+    try {
+      await (supabase as any).rpc('record_signup_consents', {
         p_terms: acceptedTerms,
         p_kvkk: acceptedKvkk,
         p_marketing: marketingConsent,
-      })
-      .catch(() => undefined);
+      });
+    } catch {
+      // best-effort, sessize yut
+    }
     setLoading(false);
 
     // 3 path:

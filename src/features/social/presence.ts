@@ -73,7 +73,13 @@ export function useActiveCount24h(): { count: number | null; loading: boolean } 
 const HEARTBEAT_MIN_INTERVAL_MS = 5 * 60 * 1000;
 
 async function bumpLastActive(): Promise<void> {
-  await (supabase as any).rpc('bump_last_active').catch(() => undefined);
+  // Note: Supabase .rpc() returns PostgrestFilterBuilder (not Promise), no .catch method.
+  // try/catch zorunlu — Sentry REACT-NATIVE-2 bug fix.
+  try {
+    await (supabase as any).rpc('bump_last_active');
+  } catch {
+    // best-effort heartbeat, sessize yut
+  }
 }
 
 export function useLastActiveHeartbeat(): void {

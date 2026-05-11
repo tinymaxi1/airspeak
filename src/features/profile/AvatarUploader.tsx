@@ -60,17 +60,40 @@ async function resizeAndCompress(uri: string): Promise<string> {
 
 async function uploadToStorage(userId: string, fileUri: string): Promise<AvatarUploadResult> {
   const path = `${userId}/avatar_${Date.now()}.jpg`;
-  const res = await fetch(fileUri);
-  const blob = await res.blob();
-  const arrayBuffer = await blob.arrayBuffer();
+
+  // React Native'de Blob.arrayBuffer() bazı sürümlerde undefined olabilir.
+  // Sentry REACT-NATIVE-3 bug fix — guard ekle + multi-path fallback.
+  let arrayBuffer: ArrayBuffer;
+  try {
+    const res = await fetch(fileUri);
+    if (typeof res.arrayBuffer === 'function') {
+      // Modern RN (≥0.71): Response.arrayBuffer() direkt destekler
+      arrayBuffer = await res.arrayBuffer();
+    } else {
+      const blob = await res.blob();
+      if (typeof blob.arrayBuffer !== 'function') {
+        return {
+          ok: false,
+          error: 'arrayBuffer API kullanılamıyor (eski RN sürümü).',
+        };
+      }
+      arrayBuffer = await blob.arrayBuffer();
+    }
+  } catch (e) {
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : 'fetch_failed',
+    };
+  }
 
   const { data, error } = await supabase.storage
     .from(BUCKET)
     .upload(path, arrayBuffer, { contentType: 'image/jpeg', upsert: true });
   if (error) return { ok: false, error: error.message };
+  if (!data) return { ok: false, error: 'upload returned no data' };
 
   const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(data.path);
-  return { ok: true, url: pub.publicUrl };
+  return { ok: true, url: pub?.publicUrl };
 }
 
 async function persistAndCache(userId: string, url: string | null): Promise<AvatarUploadResult> {
