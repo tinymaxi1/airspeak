@@ -16,6 +16,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.airspeak.mobile",
+      "associatedDomains": [
+        "applinks:airspeak.app",
+        "webcredentials:airspeak.app"
+      ],
       "infoPlist": {
         "NSMicrophoneUsageDescription": "AirSpeak telaffuz alıştırmaları ve AI konuşma pratiği için mikrofona ihtiyaç duyar.",
         "NSSpeechRecognitionUsageDescription": "AirSpeak konuşmanı yazıya çevirip ICAO seviye 4 değerlendirmesi yapar.",
@@ -47,6 +51,20 @@
         "foregroundImage": "./assets/logo/adaptive-icon.png",
         "backgroundColor": "#0F2D5C"
       },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "airspeak.app",
+              "pathPrefix": "/auth"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "permissions": [
         "RECORD_AUDIO",
         "MODIFY_AUDIO_SETTINGS",

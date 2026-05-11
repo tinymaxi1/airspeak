@@ -18,11 +18,21 @@ import * as mockAuth from './mockAuth';
 const USE_MOCK = process.env.EXPO_PUBLIC_USE_MOCK_AUTH === 'true';
 
 /**
- * Email verification redirect — Supabase verification email'indeki linke tıklanınca
- * app açılır ve auth-callback ekranı session'ı aktive eder.
- * Production'da iOS scheme airspeak://, deeplink config app.json'da.
+ * Email verification redirect — Universal Link (iOS) + App Link (Android).
+ *
+ * Production flow:
+ * 1. Mail'deki link → https://airspeak.app/auth/verify?token=xxx
+ * 2. iPhone/Android otomatik AirSpeak app'i açar (tarayıcı görünmez)
+ * 3. App'te auth-callback ekranı token'ı handle eder → session aktive → onboarding
+ *
+ * Config:
+ * - iOS: app.json ios.associatedDomains + docs/.well-known/apple-app-site-association
+ * - Android: app.json android.intentFilters + docs/.well-known/assetlinks.json
+ * - DNS: airspeak.app GitHub Pages'e CNAME (host: tinymaxi1.github.io/airspeak)
+ *
+ * Fallback: app yüklü değilse docs/auth/verify.html sayfası "Apple Store'dan indir" gösterir
  */
-export const AUTH_REDIRECT_URL = 'airspeak://auth-callback';
+export const AUTH_REDIRECT_URL = 'https://airspeak.app/auth/verify';
 
 export async function signUpWithEmail(email: string, password: string) {
   if (USE_MOCK) return mockAuth.signUpWithEmail(email, password);
@@ -87,7 +97,7 @@ export async function resetPassword(email: string) {
   if (USE_MOCK) return mockAuth.resetPassword(email);
 
   return supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'airspeak://reset-password',
+    redirectTo: 'https://airspeak.app/auth/verify',
   });
 }
 

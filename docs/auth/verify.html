@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>Email Doğrulama — AirSpeak</title>
+<meta name="description" content="AirSpeak email doğrulama" />
+<link rel="apple-touch-icon" href="/airspeak/icon-180.png" />
+<style>
+  :root {
+    --navy-900: #0A1430;
+    --navy-800: #0F1E47;
+    --red-500: #E63946;
+    --red-600: #C8202E;
+    --green-500: #2DBE6C;
+    --gold-400: #FFD56B;
+    --paper: #FAFAF7;
+    --ink-900: #0E1116;
+    --ink-500: #5A6478;
+    --ink-200: #DCE0E8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, sans-serif;
+    background: var(--navy-900);
+    color: white;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    background:
+      radial-gradient(circle at 50% 20%, rgba(230, 57, 70, 0.18), transparent 60%),
+      var(--navy-900);
+  }
+
+  /* Topo dotted background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 420px;
+    width: 100%;
+  }
+
+  .logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--red-500);
+    margin: 0 auto 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 0 var(--red-600), 0 8px 24px rgba(230, 57, 70, 0.4);
+  }
+  .logo svg { color: white; }
+
+  .eyebrow {
+    color: var(--red-500);
+    font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 12px;
+  }
+  h1 .accent { color: var(--gold-400); }
+
+  p.lead {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 16px;
+    margin-bottom: 32px;
+    line-height: 1.55;
+  }
+
+  .status-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    text-align: left;
+  }
+  .status-card .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .status-card .row + .row { margin-top: 12px; }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.green { background: var(--green-500); box-shadow: 0 0 12px var(--green-500); }
+  .dot.red { background: var(--red-500); }
+  .dot.spin {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+    width: 14px;
+    height: 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 56px;
+    background: var(--red-500);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    box-shadow: 0 4px 0 var(--red-600), 0 8px 24px rgba(230, 57, 70, 0.3);
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(1px); box-shadow: 0 2px 0 var(--red-600); }
+  .btn.ghost {
+    background: transparent;
+    box-shadow: none;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .btn.ghost:hover { background: rgba(255, 255, 255, 0.05); }
+
+  .footer {
+    margin-top: 32px;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .error {
+    background: rgba(230, 57, 70, 0.08);
+    border: 1px solid rgba(230, 57, 70, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: left;
+  }
+
+  /* Hide elements based on state */
+  .state-pending [data-show-on="success"],
+  .state-pending [data-show-on="error"] { display: none; }
+  .state-success [data-show-on="pending"],
+  .state-success [data-show-on="error"] { display: none; }
+  .state-error [data-show-on="pending"],
+  .state-error [data-show-on="success"] { display: none; }
+</style>
+</head>
+<body class="state-pending">
+
+<div class="container">
+
+  <div class="logo" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 13l-4-1-3-9-2 .5 1 8-6-1.5-1.5-3-1.5.5.5 4-1 1 1 1.5 4-.5 1.5 6 8 2 1-.5-2-3 4 1z" />
+    </svg>
+  </div>
+
+  <!-- Pending state (default) -->
+  <div data-show-on="pending">
+    <div class="eyebrow">EMAIL DOĞRULAMA</div>
+    <h1>Doğrulanıyor<span class="accent">…</span></h1>
+    <p class="lead">Email adresin doğrulanıyor, bir saniye…</p>
+
+    <div class="status-card">
+      <div class="row">
+        <span class="dot spin"></span>
+        <span style="font-size: 14px;">Token doğrulanıyor</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success state -->
+  <div data-show-on="success">
+    <div class="eyebrow" style="color: var(--green-500);">✓ DOĞRULANDI</div>
+    <h1>Hoş geldin,<br><span class="accent">kaptan.</span></h1>
+    <p class="lead">Email'in başarıyla doğrulandı. AirSpeak'e geçebilirsin.</p>
+
+    <a href="airspeak://onboarding/role-select" class="btn" id="open-app-btn">
+      AirSpeak'i Aç
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </a>
+
+    <p style="margin-top: 16px; font-size: 12px; color: rgba(255, 255, 255, 0.5);">
+      Otomatik açılmadıysa yukarıdaki butona dokun.
+    </p>
+  </div>
+
+  <!-- Error state -->
+  <div data-show-on="error">
+    <div class="eyebrow" style="color: var(--red-500);">⚠ HATA</div>
+    <h1>Doğrulanamadı</h1>
+    <p class="lead">Linkin süresi dolmuş veya geçersiz.</p>
+
+    <div class="error" id="error-message">
+      Bilinmeyen hata.
+    </div>
+
+    <a href="airspeak://(auth)/login" class="btn">
+      Login'e Dön
+    </a>
+    <a href="airspeak://" class="btn ghost" style="margin-top: 8px;">
+      Ana Sayfa
+    </a>
+  </div>
+
+  <div class="footer">AIRSPEAK · v1.0 · airspeak.app</div>
+
+</div>
+
+<script>
+  // Parse URL params
+  const params = new URLSearchParams(window.location.search);
+  const fragment = new URLSearchParams(window.location.hash.slice(1));
+
+  const token = params.get('token') || params.get('token_hash') || fragment.get('access_token');
+  const type = params.get('type') || fragment.get('type') || 'signup';
+  const errorParam = params.get('error') || fragment.get('error');
+  const errorDescription = params.get('error_description') || fragment.get('error_description');
+
+  const body = document.body;
+
+  function setState(state) {
+    body.classList.remove('state-pending', 'state-success', 'state-error');
+    body.classList.add('state-' + state);
+  }
+
+  function showError(msg) {
+    document.getElementById('error-message').textContent = msg;
+    setState('error');
+  }
+
+  async function verify() {
+    // Already has error from Supabase redirect?
+    if (errorParam) {
+      showError(errorDescription || errorParam);
+      return;
+    }
+
+    if (!token) {
+      showError('Geçersiz link — token parametresi eksik.');
+      return;
+    }
+
+    try {
+      // Call Supabase verify endpoint
+      // Note: Supabase /auth/v1/verify GET endpoint handles this with redirect.
+      // We use the token_hash POST endpoint for cleaner flow.
+
+      const SUPABASE_URL = 'https://neinhbkdctjtyyoskxpg.supabase.co';
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5laW5oYmtkY3RqdHl5b3NreHBnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4MzU1ODYsImV4cCI6MjA2MTQxMTU4Nn0.YYj3MGV4Iz_98DD8gzZQq8KX9P-WdMs-fjUMUFu5SnA';
+
+      const response = await fetch(`${SUPABASE_URL}/auth/v1/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': ANON_KEY,
+        },
+        body: JSON.stringify({
+          type: type,
+          token: token,
+        }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error_description || errData.msg || `HTTP ${response.status}`);
+      }
+
+      // Verification successful
+      setState('success');
+
+      // Auto-open app after 800ms (Universal Link)
+      setTimeout(() => {
+        const deepLink = type === 'recovery'
+          ? 'airspeak://(auth)/reset-password?token=' + encodeURIComponent(token)
+          : 'airspeak://onboarding/role-select';
+        window.location.href = deepLink;
+      }, 800);
+    } catch (e) {
+      showError(e.message || 'Doğrulama başarısız.');
+    }
+  }
+
+  // Run on load
+  verify();
+</script>
+
+</body>
+</html>

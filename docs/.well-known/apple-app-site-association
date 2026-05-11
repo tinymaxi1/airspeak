@@ -1,0 +1,22 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["7964PXR27N.app.airspeak.mobile"],
+        "components": [
+          {
+            "/": "/auth/*",
+            "comment": "Auth verification + password reset"
+          },
+          {
+            "/": "/open",
+            "comment": "Generic deep-link opener"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["7964PXR27N.app.airspeak.mobile"]
+  }
+}
