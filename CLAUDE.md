@@ -417,6 +417,144 @@ git log --oneline | head  # son commit: f4ffcd1 (Sprint 13.B.1 eas.json android 
 
 Açık background süreç: EAS Android production build queue'da (build ID `2d9d6927-0f2e-49b7-bd4d-9b792af01666`, versionCode 3).
 
+---
+
+## 🔥 SON DURUM (2026-05-09) — DESIGN REFACTOR + PRODUCTION LAUNCH PREP
+
+Bu bölüm en güncel state — yeni sohbet bu yerden devam etmeli.
+
+### 14-Phase Design Refactor + Pre-Launch Fix (TAMAM, push edildi)
+
+**Refactor commit'leri (main HEAD: `ad36c8b` — push edilmedi, GitHub auth conflict):**
+- Phase 1-13 design system overhaul (tasarımcı drift report + Block 1/2/3 onaylı kararlarla)
+- Apple 1.2 Block User implementation (backend `community_blocks` tablosu + 5 RPC + UI + Terms § 3.1)
+- airspeak.io → airspeak.app global replace (50+ dosya)
+- Email verification flow (`register.tsx` session check + `app/(auth)/email-verification.tsx` + `app/(auth)/auth-callback.tsx`)
+- Apple Universal Links + Android App Links (`app.json` associatedDomains/intentFilters + `docs/.well-known/apple-app-site-association` + `docs/.well-known/assetlinks.json` + `docs/auth/verify.html` brand-pure landing)
+- 3 Sentry crash fix: `register.tsx` `.rpc().catch()` → try/catch, `presence.ts` `bumpLastActive` aynı, `AvatarUploader.tsx` `arrayBuffer` guard
+- Kotlin 2.0.21 + KSP 2.0.21-1.0.28 (expo-updates compat)
+- Version 1.0.0, splash bg #0F1E47, AdMob remove
+- iOS EAS submit config: `kesfegel@gmail.com` + ASC App ID `6766981661` + Apple Team `7964PXR27N`
+- RevenueCat env: iOS + Android keys (sensitive, EAS production)
+- Sentry env: SENTRY_AUTH_TOKEN + EXPO_PUBLIC_SENTRY_DSN
+- AspIcon registry shell (50+ custom icon + Lucide fallback)
+- TabletShell wrapper (≥768px breakpoint, 560px shell)
+
+**Build geçmişi:**
+- BUILD 2 → iOS ✅ + Android ❌ Gradle (Phase 1-4)
+- BUILD 3 → iOS ✅ + Android ❌ (Phase 5-7)
+- BUILD 4 → iOS ✅ + Android ❌ (Phase 8-9)
+- BUILD 5 → iOS ✅ + Android ❌ (Phase 10-13)
+- BUILD 6 → Android-only Kotlin fix kanıtlandı ✅
+- BUILD 7 — atlandı
+- BUILD 8 → iOS `teN9jC8vw...ipa` + Android `5oxEbqRS6...aab` ✅ ikisi de başarılı (commit `ca738a2`)
+- BUILD 9 → cancelled (Universal Links eksikti)
+- BUILD 10 → cancelled (3 crash fix eksikti)
+- BUILD 11 → ⏳ cloud'da (commit `ad36c8b` — Universal Links + 3 crash fix + Email verification flow)
+  - Android: `df78054d-7f56-48ca-9cd2-b5783a0125b0`
+  - iOS: `9344f493-5786-4f74-a480-203624ba63e8`
+  - Log: `/tmp/build-11.log`
+
+**Apple Submit hazırlık:**
+- iOS BUILD 8 ipa TestFlight'a yüklendi (`eas submit` ile, submission `9e683818-fa5a-4423-a99d-39a6fca2a1a1`)
+- ASC App: `https://appstoreconnect.apple.com/apps/6766981661/testflight/ios` — 1.0.0 build 15 "Ready to Submit" (Internal Test for Team Expo)
+- iOS app açılınca tester kendini Internal Tester olarak eklemiş
+
+### Domain & Mail Infra (2026-05-09)
+
+- **Domain**: `airspeak.app` (GoDaddy'den alındı)
+- **Resend hesabı**: `durakkamil@gmail.com` ile açıldı
+  - Domain verified ✅
+  - DKIM kayıtları GoDaddy DNS'inde: `resend._domainkey` TXT + `send` MX (`feedback-smtp.eu-west-1.amazonses.com` Priority 10)
+  - API key: env'de saklı, chat'e düşen eski key `re_8214GTJH_MMYMfutJuX9Yo4QkLU6Mquur` revoke edilmeli
+- **Supabase SMTP** custom config:
+  - Host: `smtp.resend.com`, Port: `465`, Username: `resend`, Password: Resend API key
+  - Sender: `noreply@airspeak.app`, Name: `AirSpeak`
+  - Min interval: 60sn
+  - ⚠ Save sonrası password maskelenir ("Reveal" butonu var), bu normal davranış
+  - Test signup yapıldı → mail Gmail'e ulaştı ✅ (Resend gerçekten çalıştı)
+
+### Push problemi (çözülmedi)
+
+```
+remote: Permission to tinymaxi1/airspeak.git denied to ozlemkesifte.
+fatal: HTTP 403
+```
+
+Local commit'ler push edilmedi (main `ad36c8b`, origin/main `9317e42`). 8 commit local'de bekliyor:
+- `739b109` docs CLAUDE.md canlı-first
+- `2b3c32a` feat(auth): email verification + airspeak.app
+- `2c8dec2` chore(eas): ASC #6766981661
+- `ca738a2` chore(eas): iOS submit PENDING (BUILD 8 sonrası kalan)
+- `3a33c32` chore: remove admob + expo-doctor
+- 4a4448e feat(community): block user system
+- 37d4eb7 feat(ui): block user UI + terms
+- 9317e42 phase 13: tablet shell
+- ... + 8 ekstra
+
+**Fix:** `gh auth login` veya `git remote set-url` SSH'a → user manuel
+
+### Açık BLOCKER'lar (yeni sohbet bu noktadan devam)
+
+1. **GitHub Pages** — user manuel açacak:
+   - Settings → Pages → Source: `main` / `/docs` folder
+   - Custom domain: `airspeak.app`
+   - Enforce HTTPS
+
+2. **GoDaddy DNS** — user düzenliyor (TAKILDI):
+   - SİL: `A @ WebsiteBuilder Site` (parking page, çakışma yaratıyor)
+   - SİL: `CNAME www airspeak.app.` (default)
+   - EKLE: 4× `A @` → `185.199.108.153/.109.153/.110.153/.111.153`
+   - EKLE: `CNAME www` → `tinymaxi1.github.io`
+   - Mevcut Resend kayıtları KALMALI: `MX send` + `TXT resend._domainkey` + (eksik) `TXT send` SPF `v=spf1 include:amazonses.com ~all`
+   - User'ın son hatası: "Kayıt verisi geçersiz." A @ ekleyemiyor → WebsiteBuilder Site kaydı silinmemiş olabilir, screenshot iste
+
+3. **Supabase URL Configuration** — user manuel:
+   - Site URL: `https://airspeak.app` (`airspeak://` değil!)
+   - Redirect URLs: `https://airspeak.app/auth/verify` + `https://airspeak.app/auth/**`
+   - Save
+
+4. **BUILD 11 bekleniyor** — cloud'da, ~10 dk daha
+   - iOS submit + TestFlight yükle (eas submit)
+   - Temiz smoke test
+
+5. **Sentry crash REACT-NATIVE-4 + 5** — realtime postgres_changes duplicate subscribe (ErrorBoundary catches, app crash etmez, sadece component) — v1.0.1 cleanup için bırakıldı
+
+### Resend API key güvenlik
+
+⚠ Chat'e düşen `re_8214GTJH_MMYMfutJuX9Yo4QkLU6Mquur` revoke edilmeli + Supabase SMTP'de yeni key kullanılmalı. Yeni sohbette bu konu açılırsa hatırla.
+
+### Background process'ler
+
+Yeni sohbet açılırken bu background task'lar çalışıyor olabilir:
+- BUILD 11 main process: `/tmp/build-11.log` (log)
+- BUILD URL detector: tail process (URL geldikten sonra exit)
+
+Yeni sohbet başlangıçta `tail -10 /tmp/build-11.log` ile build durumunu öğren.
+
+### Production Launch Checklist (kapatılmamış)
+
+| Konu | Durum |
+|---|---|
+| Domain `airspeak.app` | ✅ alındı |
+| GitHub Pages aktif + custom domain | ⏳ user yapacak |
+| GoDaddy DNS (A records + www CNAME) | ⏳ user TAKILDI |
+| Supabase URL Config HTTPS | ⏳ user yapacak |
+| Supabase SMTP (Resend) | ✅ kuruldu, test mail geldi |
+| Universal Links + assetlinks | ✅ kod hazır, BUILD 11'de |
+| Email verification UI flow | ✅ kod hazır |
+| Apple 1.2 Block User | ✅ |
+| AdMob test ID removed | ✅ |
+| AspIcon registry + emoji refactor | ✅ shell, emoji refactor v1.1 |
+| TabletShell | ✅ |
+| iOS TestFlight upload | ✅ BUILD 8 ipa |
+| ASC App Privacy answers | ⏳ user yapacak (manuel) |
+| App Store screenshots + listing | ⏳ user yapacak |
+| Play Console aab upload | ⏳ BUILD 11 sonrası |
+| Custom SMTP rate limit (Resend) | ✅ unlimited (paid kullanım gerekirse) |
+| PostHog env | ⏳ eksik (analytics yok) |
+| Google SSO env | ⏳ eksik (Apple Sign-In OK) |
+
 ## Hızlı komutlar
 
 ```bash
@@ -464,6 +602,6 @@ DEEPL_API_KEY=...
 
 ---
 
-**Son güncelleme**: 2026-05-04 — Sprint 13.A (RevenueCat IAP) + Sprint 12 (Theory + Unit Intro) + Sprint 11.B.11 (glossary batch 9, 921 terim) tamamlandı. main HEAD `f4ffcd1`.
+**Son güncelleme**: 2026-05-09 — 14-Phase design refactor + production launch prep. Local main `ad36c8b` (push edilmedi — GitHub auth conflict, 8 commit local). BUILD 11 cloud'da. Domain `airspeak.app` + Resend SMTP kuruldu. User GoDaddy DNS aşamasında takılı.
 
 **Tüm tamamlanan iş**: Faz 0-8 (admin/content pipeline) + Sprint 3a, 3e, 3f, 4, 5, 6, 7 (gamification, community, oral exam, stats, placement adaptive) + Sprint 8.A.2/A.3/B.1/C.1-3 (store hazırlık) + Sprint 11.A/B.1-11 (glossary 921 terim) + Sprint 12.A-D (theory + unit intro) + Sprint 13.A.1-7 (RevenueCat IAP) + Sprint 13.B.1 (eas.json Android profil).
