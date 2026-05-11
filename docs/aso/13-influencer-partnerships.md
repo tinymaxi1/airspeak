@@ -120,8 +120,8 @@ Bir 30 dakikalık video call ayarlayalım mı bu hafta?
 İyi uçuşlar,
 {{Marketing Lead}}
 AirSpeak
-press@airspeak.io
-airspeak.io
+press@airspeak.app
+airspeak.app
 ```
 
 ---
@@ -175,7 +175,7 @@ sponsored post yapamaz.
 Her iki taraf 7 gün öncesinden bildirimle iptal edebilir.
 
 İletişim:
-AirSpeak: press@airspeak.io
+AirSpeak: press@airspeak.app
 {{Influencer}}: {{email}}
 ```
 
@@ -314,7 +314,7 @@ TERMINATION:
 - Payout history
 
 ### Affiliate landing page
-- `airspeak.io/aff/{{handle}}`
+- `airspeak.app/aff/{{handle}}`
 - UTM parameters auto-track
 - Pre-filled promo code on signup
 

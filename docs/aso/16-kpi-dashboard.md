@@ -53,7 +53,7 @@ Metrikler, A/B test pipeline, kohort analizi, churn analiz.
 | Press coverage | 1.500 | $0 (+PR cost) | high |
 | Influencer | 2.500 | $4 | 12:1 |
 | Blog/SEO | 1.000 | $0 (content cost) | high |
-| Web direct (airspeak.io) | 500 | $0 | ∞ |
+| Web direct (airspeak.app) | 500 | $0 | ∞ |
 | Referral (squadron) | 500 | $0 | ∞ |
 | **Toplam** | **20.000** | **$2.20 avg** | **22:1** |
 

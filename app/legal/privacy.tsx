@@ -19,7 +19,7 @@ export default function PrivacyPolicyScreen() {
       <Section title="1. Veri Sorumlusu">
         <P>
           AirSpeak ("Uygulama", "biz") tarafından işletilen mobil uygulamadır. Veri sorumlusu olarak iletişim
-          adresimiz <Bold>privacy@airspeak.io</Bold>. KVKK temsilcisi: <Bold>kvkk@airspeak.io</Bold>.
+          adresimiz <Bold>privacy@airspeak.app</Bold>. KVKK temsilcisi: <Bold>kvkk@airspeak.app</Bold>.
         </P>
       </Section>
 
@@ -106,7 +106,7 @@ export default function PrivacyPolicyScreen() {
         <Bullet>İşlemeye itiraz, kısıtlama isteme.</Bullet>
         <Bullet>Aktarımı durdurma talebi.</Bullet>
         <Bullet>
-          Bu hakları kullanmak için <Bold>privacy@airspeak.io</Bold>'a yazabilirsin. 30 gün içinde yanıtlarız.
+          Bu hakları kullanmak için <Bold>privacy@airspeak.app</Bold>'a yazabilirsin. 30 gün içinde yanıtlarız.
         </Bullet>
       </Section>
 
@@ -125,8 +125,8 @@ export default function PrivacyPolicyScreen() {
       </Section>
 
       <Section title="10. İletişim">
-        <Bullet>Genel: <Bold>privacy@airspeak.io</Bold></Bullet>
-        <Bullet>KVKK temsilcisi: <Bold>kvkk@airspeak.io</Bold></Bullet>
+        <Bullet>Genel: <Bold>privacy@airspeak.app</Bold></Bullet>
+        <Bullet>KVKK temsilcisi: <Bold>kvkk@airspeak.app</Bold></Bullet>
         <Bullet>
           Şikayet: Kişisel Verileri Koruma Kurulu — <Bold>kvkk.gov.tr</Bold>
         </Bullet>

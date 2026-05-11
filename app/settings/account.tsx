@@ -166,7 +166,7 @@ export default function AccountSettingsScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
-            placeholder="ornek@airspeak.io"
+            placeholder="ornek@airspeak.app"
             placeholderTextColor="#8A93A6"
             style={{
               borderWidth: 1.5,

@@ -49,7 +49,7 @@ Pre-launch (4 hafta) + Launch (1 hafta) + Post-launch (8 hafta) tam playbook.
 - [ ] Screenshot frame template (Figma)
 
 **Cuma**:
-- [ ] Marketing site `airspeak.io` deploy (Next.js)
+- [ ] Marketing site `airspeak.app` deploy (Next.js)
 - [ ] Landing page: ICAO 4, mülakat, telaffuz
 - [ ] SEO sitemap.xml + robots.txt
 
@@ -104,7 +104,7 @@ Pre-launch (4 hafta) + Launch (1 hafta) + Post-launch (8 hafta) tam playbook.
 - [ ] Beta feedback form (Google Form)
 
 **Salı**:
-- [ ] Press kit website hazır (`airspeak.io/press`)
+- [ ] Press kit website hazır (`airspeak.app/press`)
 - [ ] Logo pack export (5 varyant × 5 format)
 - [ ] Press release v1.0 yazımı (TR/EN)
 

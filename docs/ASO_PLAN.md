@@ -153,9 +153,9 @@ AirSpeak; Türk pilotlar, kabin ekibi, yer hizmetleri ve havacılık öğrencile
 • Düzenli yeni içerik (haftalık)
 
 📞 İLETİŞİM
-• ops@airspeak.io
-• Privacy: airspeak.io/privacy
-• Terms: airspeak.io/terms
+• ops@airspeak.app
+• Privacy: airspeak.app/privacy
+• Terms: airspeak.app/terms
 
 ICAO Doc 9835 + EASA Part-FCL'ye uygun — uluslararası havacılık standartları.
 
@@ -261,7 +261,7 @@ mayday,squawk,readback,phraseology,FCOM,IGOM,ATPL,FAA,EASA,cabin crew,flight att
 | 12-18 | AI Co-pilot dialog (VECON) | ATC voice + user response |
 | 18-22 | ICAO 4 PASSED stamp animasyonu | Notification ding |
 | 22-26 | League leaderboard yukarı kayıyor | Whoosh |
-| 26-30 | Logo + "İlk 7 gün ücretsiz · airspeak.io" | CTA |
+| 26-30 | Logo + "İlk 7 gün ücretsiz · airspeak.app" | CTA |
 
 ### Feature Graphic (Android, 1024×500)
 - Sol: ortalı pilot avatarı + headset
@@ -346,7 +346,7 @@ mayday,squawk,readback,phraseology,FCOM,IGOM,ATPL,FAA,EASA,cabin crew,flight att
 
 ### Negative review yanıt stratejisi
 - 1-2★: 24 saat içinde yanıtla
-- "Bu konu için ops@airspeak.io'ya yaz, hemen çözelim" template
+- "Bu konu için ops@airspeak.app'ya yaz, hemen çözelim" template
 - Spesifik soruna değin (genel template KULLANMA)
 - Düzeltme yapılınca user'a bildir → review güncellesin
 
@@ -392,7 +392,7 @@ Yeni içerik için /update'e bekleriz!
 ## 10. Off-Store Strategy
 
 ### Content marketing
-1. **Blog (airspeak.io/blog)**:
+1. **Blog (airspeak.app/blog)**:
    - "ICAO Level 4 sınavı nedir? Tam rehber" — TR keyword %14k/ay
    - "THY pilot mülakatı nasıl geçer?" — 6.2k/ay
    - "Pegasus kabin memuru olmak" — 3.8k/ay
@@ -516,7 +516,7 @@ App Store Privacy nutrition label:
 
 ## 14. SEO + ASO Sinerjisi
 
-### Web sayfası optimizasyonu (airspeak.io)
+### Web sayfası optimizasyonu (airspeak.app)
 - `/icao-4` landing page → "ICAO 4 sınav rehberi" + app download CTA
 - `/thy-mulakat` landing → "THY mülakat hazırlık" + app
 - `/pilot-ingilizce` landing → "Pilot İngilizcesi nasıl öğrenilir"
@@ -524,7 +524,7 @@ App Store Privacy nutrition label:
 - App Store + Play Store rich result
 
 ### App linking (deep link)
-- airspeak.io/app → universal link → otomatik App Store / Play Store / app
+- airspeak.app/app → universal link → otomatik App Store / Play Store / app
 - Bu link sosyal medyada paylaşıldıkça organik install ↑
 
 ---

@@ -91,8 +91,8 @@ export default function HelpScreen() {
           <SettingsRow
             icon="📧"
             label={t('settings.help.email', 'Email destek')}
-            value="ops@airspeak.io"
-            onPress={() => Linking.openURL('mailto:ops@airspeak.io')}
+            value="ops@airspeak.app"
+            onPress={() => Linking.openURL('mailto:ops@airspeak.app')}
           />
           <SettingsRow
             icon="💬"
@@ -157,7 +157,7 @@ export default function HelpScreen() {
           <Button3D
             variant="primary"
             fullWidth
-            onPress={() => Linking.openURL('mailto:ops@airspeak.io?subject=AirSpeak%20Destek%20Talebi')}
+            onPress={() => Linking.openURL('mailto:ops@airspeak.app?subject=AirSpeak%20Destek%20Talebi')}
           >
             {t('settings.help.contactSupport', '📧 Destek ekibine yaz')}
           </Button3D>

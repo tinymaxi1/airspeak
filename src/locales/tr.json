@@ -696,6 +696,30 @@
       "sendBtn": "Sıfırlama linki gönder",
       "retryBtn": "Farklı bir e-posta dene",
       "sentText": "E-postanı kontrol et — sıfırlama linki gönderildi."
+    },
+    "emailVerification": {
+      "eyebrow": "DOĞRULAMA BEKLENİYOR",
+      "title1": "Mailini",
+      "title2": "kontrol et.",
+      "body": "{{email}} adresine doğrulama linki gönderdik. Mail kutunu aç, linke dokun — otomatik geri döneceksin.",
+      "sentTo": "GÖNDERİLDİ",
+      "autoCheck": "OTOMATIK KONTROL · DOĞRULAMA YAPINCA GEÇER",
+      "spamHint": "Mail görünmüyorsa Spam ve Promosyonlar klasörünü kontrol et. Gönderen: noreply@supabase.io",
+      "resend": "Maili tekrar gönder",
+      "resendCooldown": "Tekrar gönder ({{sec}})",
+      "resendError": "Mail gönderilemedi",
+      "resentTitle": "Mail gönderildi",
+      "resentBody": "{{email}} adresine yeni doğrulama linki gönderildi.",
+      "backToLogin": "Login'e dön"
+    },
+    "authCallback": {
+      "verifying": "DOĞRULANIYOR…",
+      "pleaseWait": "Mail bağlantın doğrulanıyor. Birkaç saniye sürer.",
+      "success": "Doğrulandı!",
+      "successBody": "Hesabın aktif. Yönlendiriliyorsun…",
+      "errorTitle": "Doğrulama başarısız",
+      "goToLogin": "Login'e dön",
+      "goToWelcome": "Ana sayfaya dön"
     }
   },
   "notif": {

@@ -51,7 +51,7 @@ export default function RegisterScreen() {
       return;
     }
     setLoading(true);
-    const { error } = await signUpWithEmail(email, password);
+    const { data, error } = await signUpWithEmail(email, password);
     if (error) {
       setLoading(false);
       const f = mapAuthError(error);
@@ -67,7 +67,24 @@ export default function RegisterScreen() {
       })
       .catch(() => undefined);
     setLoading(false);
-    router.replace('/(auth)/onboarding/role-select');
+
+    // 3 path:
+    // 1. data.session var → Email confirmation OFF, direkt onboarding
+    // 2. data.user var ama session null → Email verification pending → verify screen
+    // 3. ikisi de yok → beklenmeyen yanıt (rare)
+    if (data?.session) {
+      router.replace('/(auth)/onboarding/role-select');
+    } else if (data?.user) {
+      router.replace({
+        pathname: '/(auth)/email-verification',
+        params: { email },
+      });
+    } else {
+      Alert.alert(
+        'Beklenmeyen yanıt',
+        'Sunucudan geçerli bir yanıt alınamadı. Tekrar dene.',
+      );
+    }
   }
 
   return (
@@ -148,7 +165,7 @@ export default function RegisterScreen() {
               label={t('screens.register.email')}
               value={email}
               onChangeText={setEmail}
-              placeholder="captain@airspeak.io"
+              placeholder="captain@airspeak.app"
               keyboardType="email-address"
             />
             <PasswordField

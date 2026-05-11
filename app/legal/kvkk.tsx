@@ -18,8 +18,8 @@ export default function KVKKScreen() {
     >
       <Section title="1. Veri Sorumlusu">
         <Bullet>Veri sorumlusu: <Bold>AirSpeak</Bold></Bullet>
-        <Bullet>İletişim: <Bold>privacy@airspeak.io</Bold></Bullet>
-        <Bullet>KVKK temsilcisi: <Bold>kvkk@airspeak.io</Bold></Bullet>
+        <Bullet>İletişim: <Bold>privacy@airspeak.app</Bold></Bullet>
+        <Bullet>KVKK temsilcisi: <Bold>kvkk@airspeak.app</Bold></Bullet>
       </Section>
 
       <Section title="2. İşlenen Kişisel Veri Kategorileri">
@@ -111,7 +111,7 @@ export default function KVKKScreen() {
         <Bullet>Otomatik analiz sonucu aleyhinize bir sonuç çıkmasına itiraz etme.</Bullet>
         <Bullet>Kanuna aykırı işleme sebebiyle zarara uğramışsanız tazminat isteme.</Bullet>
         <P>
-          Bu haklarınızı kullanmak için <Bold>kvkk@airspeak.io</Bold> adresine yazılı başvuru yapabilirsiniz.
+          Bu haklarınızı kullanmak için <Bold>kvkk@airspeak.app</Bold> adresine yazılı başvuru yapabilirsiniz.
           KVKK md.13 kapsamında talebinize 30 gün içinde yanıt verilir.
         </P>
         <P>
@@ -130,7 +130,7 @@ export default function KVKKScreen() {
       </Section>
 
       <Section title="9. İletişim">
-        <Bullet>KVKK temsilcisi: <Bold>kvkk@airspeak.io</Bold></Bullet>
+        <Bullet>KVKK temsilcisi: <Bold>kvkk@airspeak.app</Bold></Bullet>
         <Bullet>Posta: AirSpeak KVKK Birimi (firma adresi yayın aşamasında eklenecek)</Bullet>
       </Section>
     </LegalLayout>

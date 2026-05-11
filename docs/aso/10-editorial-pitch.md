@@ -110,7 +110,7 @@ UYGUN ÖDÜLLER
 - Türkiye App of the Day potansiyel
 - 20 lokalize pazar = "Apps We Love Around the World" inclusion
 
-İletişim: editorial@airspeak.io · airspeak.io
+İletişim: editorial@airspeak.app · airspeak.app
 ```
 
 (~1.940 char)
@@ -279,8 +279,8 @@ Detay: gerçek mikrofonla telaffuz puanlama (cihazda işlenir, internet bile ger
 
 Ekrandan göstermek için 30 dakika ayırabilir misiniz? Demo + hikaye + sayılar.
 
-Web: airspeak.io
-Pitch deck: airspeak.io/press
+Web: airspeak.app
+Pitch deck: airspeak.app/press
 Demo: loom.com/airspeak-demo
 
 Saygılarımızla,

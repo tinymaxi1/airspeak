@@ -696,6 +696,30 @@
       "sendBtn": "Send reset link",
       "retryBtn": "Try a different email",
       "sentText": "Check your email — reset link sent."
+    },
+    "emailVerification": {
+      "eyebrow": "VERIFICATION PENDING",
+      "title1": "Check your",
+      "title2": "email.",
+      "body": "We sent a verification link to {{email}}. Open your inbox, tap the link — you'll be redirected automatically.",
+      "sentTo": "SENT TO",
+      "autoCheck": "AUTO-CHECK · WILL CONTINUE WHEN VERIFIED",
+      "spamHint": "If you don't see the email, check Spam and Promotions. Sender: noreply@supabase.io",
+      "resend": "Resend email",
+      "resendCooldown": "Resend ({{sec}})",
+      "resendError": "Could not send email",
+      "resentTitle": "Email sent",
+      "resentBody": "A new verification link was sent to {{email}}.",
+      "backToLogin": "Back to login"
+    },
+    "authCallback": {
+      "verifying": "VERIFYING…",
+      "pleaseWait": "Verifying your email link. This takes a few seconds.",
+      "success": "Verified!",
+      "successBody": "Your account is active. Redirecting…",
+      "errorTitle": "Verification failed",
+      "goToLogin": "Back to login",
+      "goToWelcome": "Back to start"
     }
   },
   "notif": {

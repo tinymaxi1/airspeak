@@ -235,19 +235,19 @@ youtube
 ### Standart listing + 3 CPP varyant
 
 **CPP 1: ICAO 4 odaklı**
-- URL: `airspeak.io/icao4`
+- URL: `airspeak.app/icao4`
 - Hero: ICAO 4 PASSED stamp screenshot
 - Caption: "ICAO 4 sınavı 14 haftada"
 - Search Ads campaign 2 → bu CPP'ye link
 
 **CPP 2: Mülakat odaklı**
-- URL: `airspeak.io/mulakat`
+- URL: `airspeak.app/mulakat`
 - Hero: 41 airline screenshot
 - Caption: "41 havayolu mülakat tek uygulamada"
 - Search Ads campaign 3 → bu CPP'ye link
 
 **CPP 3: AI Co-pilot odaklı**
-- URL: `airspeak.io/ai`
+- URL: `airspeak.app/ai`
 - Hero: AI Co-pilot conversation screenshot
 - Caption: "AI ile sınırsız ATC roleplay"
 - Generic / discovery campaign

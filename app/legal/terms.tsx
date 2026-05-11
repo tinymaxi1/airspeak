@@ -115,8 +115,8 @@ export default function TermsScreen() {
       </Section>
 
       <Section title="10. İletişim">
-        <Bullet>Genel: <Bold>support@airspeak.io</Bold></Bullet>
-        <Bullet>Hukuki: <Bold>legal@airspeak.io</Bold></Bullet>
+        <Bullet>Genel: <Bold>support@airspeak.app</Bold></Bullet>
+        <Bullet>Hukuki: <Bold>legal@airspeak.app</Bold></Bullet>
       </Section>
     </LegalLayout>
   );

@@ -42,7 +42,7 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     setLoading(true);
-    const { error } = await signInWithEmail(email || 'mock@airspeak.io', password || 'mock1234');
+    const { error } = await signInWithEmail(email || 'mock@airspeak.app', password || 'mock1234');
     setLoading(false);
     if (error) {
       const f = mapAuthError(error);
@@ -122,7 +122,7 @@ export default function LoginScreen() {
             label={t('screens.login.callsignLabel', 'EMAIL · CALLSIGN')}
             value={email}
             onChangeText={setEmail}
-            placeholder="captain@airspeak.io"
+            placeholder="captain@airspeak.app"
             mono
             keyboardType="email-address"
           />

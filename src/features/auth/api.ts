@@ -17,17 +17,57 @@ import * as mockAuth from './mockAuth';
 // 'true' ise mock auth açılır. Production build'inde env yoksa mock asla devreye girmez.
 const USE_MOCK = process.env.EXPO_PUBLIC_USE_MOCK_AUTH === 'true';
 
+/**
+ * Email verification redirect — Supabase verification email'indeki linke tıklanınca
+ * app açılır ve auth-callback ekranı session'ı aktive eder.
+ * Production'da iOS scheme airspeak://, deeplink config app.json'da.
+ */
+export const AUTH_REDIRECT_URL = 'airspeak://auth-callback';
+
 export async function signUpWithEmail(email: string, password: string) {
   if (USE_MOCK) return mockAuth.signUpWithEmail(email, password);
 
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: AUTH_REDIRECT_URL },
+  });
   if (data.session) {
+    // Email confirmation kapalı modda — direkt session
     useAuthStore.getState().setSession(data.session);
     track('auth_signed_up', { method: 'email' });
     identify(data.session.user.id, { email });
     identifyUser({ id: data.session.user.id });
+  } else if (data.user) {
+    // Email confirmation açık — user oluştu ama session yok, verification bekliyor
+    track('auth_signup_verification_pending', { method: 'email' });
   }
   return { data, error };
+}
+
+/**
+ * Verification email'i tekrar gönder.
+ * Rate limit: Supabase default 60sn cooldown — UI tarafında da enforce edilir.
+ */
+export async function resendVerificationEmail(email: string) {
+  if (USE_MOCK) return { error: null };
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: { emailRedirectTo: AUTH_REDIRECT_URL },
+  });
+  if (!error) track('auth_verification_resent');
+  return { error };
+}
+
+/**
+ * Email verification status check — polling için kullanılır.
+ * `email_confirmed_at` set olduğunda true döner.
+ */
+export async function checkEmailVerified(): Promise<boolean> {
+  if (USE_MOCK) return true;
+  const { data } = await supabase.auth.getUser();
+  return Boolean(data.user?.email_confirmed_at);
 }
 
 export async function signInWithEmail(email: string, password: string) {

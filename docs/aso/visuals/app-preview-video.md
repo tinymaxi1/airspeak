@@ -155,7 +155,7 @@ haftalık yarış
 - Logo center (zoomed)
 - Alt: "İlk 7 GÜN ÜCRETSİZ" red 3D button (welcome ekranındaki)
 - App Store badge altta
-- "airspeak.io" URL
+- "airspeak.app" URL
 
 **Ses**:
 - Triumph musical sting

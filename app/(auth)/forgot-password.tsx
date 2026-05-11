@@ -117,7 +117,7 @@ export default function ForgotPasswordScreen() {
           <TextInput
             value={email}
             onChangeText={setEmail}
-            placeholder="captain@airspeak.io"
+            placeholder="captain@airspeak.app"
             placeholderTextColor="#8A93A6"
             autoCapitalize="none"
             keyboardType="email-address"

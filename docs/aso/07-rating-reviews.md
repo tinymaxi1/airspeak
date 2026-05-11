@@ -108,7 +108,7 @@ Senin için neyi düzeltebiliriz?
 ### Backend
 - Form gönderilince:
   1. PostHog event: `feedback_submitted` + category
-  2. Email: `ops@airspeak.io` notification
+  2. Email: `ops@airspeak.app` notification
   3. Discord webhook'a #feedback channel
   4. Kullanıcıya "Mesajın alındı, 24 saat içinde dönüş yapacağız."
 
@@ -153,7 +153,7 @@ App Store yorumunu okuduk. {{specific issue}} bizim için kritik bir konu.
 İstersen şu kodu kullan: AIRSPEAK-FREE3MO (3 ay ücretsiz Pro).
 
 Kişisel olarak çözmek istiyoruz. Konuşalım mı?
-ops@airspeak.io
+ops@airspeak.app
 
 — AirSpeak ekibi
 ```

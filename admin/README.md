@@ -23,7 +23,7 @@ bir kullanıcı oluştur, sonra SQL Editor'da:
 ```sql
 update public.profiles
 set is_admin = true, admin_role = 'super_admin'
-where id = (select id from auth.users where email = 'sen@airspeak.io');
+where id = (select id from auth.users where email = 'sen@airspeak.app');
 ```
 
 ## Sayfa Haritası
@@ -64,7 +64,7 @@ Vercel:
 - Install command: `npm install`
 - Root directory: `admin`
 - Env vars: 3 Supabase key'i ekle
-- Custom domain: `admin.airspeak.io`
+- Custom domain: `admin.airspeak.app`
 
 ## Şu Anki Durum
 

@@ -67,7 +67,7 @@ v2.0.0 — Major: Anniversary release (Eylül 2027)
 
 🎁 İlk 7 gün ücretsiz!
 
-Geri bildirim: ops@airspeak.io
+Geri bildirim: ops@airspeak.app
 ```
 
 ### v1.0.1 — İlk patch

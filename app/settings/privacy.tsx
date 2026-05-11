@@ -33,7 +33,7 @@ export default function PrivacySettingsScreen() {
   const [friendsOnlyMentions, setFriendsOnlyMentions] = useState(false);
   const [mentionLoading, setMentionLoading] = useState(true);
   const [deletionStatus, setDeletionStatus] = useState<AccountDeletionStatus | null>(null);
-  const [legalEmail, setLegalEmail] = useState<string>('kvkk@airspeak.io');
+  const [legalEmail, setLegalEmail] = useState<string>('kvkk@airspeak.app');
 
   async function refreshDeletionStatus() {
     const s = await getAccountDeletionStatus();

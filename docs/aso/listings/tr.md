@@ -132,10 +132,10 @@ Her havayolu için:
 • Topluluk: Discord (5.000+ üye), Instagram @airspeak_app
 
 📞 İLETİŞİM
-• ops@airspeak.io
-• Privacy: airspeak.io/privacy
-• Terms: airspeak.io/terms
-• Bug raporu: airspeak.io/feedback
+• ops@airspeak.app
+• Privacy: airspeak.app/privacy
+• Terms: airspeak.app/terms
+• Bug raporu: airspeak.app/feedback
 
 📚 SERTİFİKA & UYUMLUK
 • ICAO Doc 9835 — Language Proficiency Requirements
@@ -177,7 +177,7 @@ KVKK + GDPR uyumlu.
 • 20 dil arayüz
 • İlk 7 gün ücretsiz!
 
-Geri bildirim: ops@airspeak.io
+Geri bildirim: ops@airspeak.app
 ```
 
 ### v1.1 — Kabin sezonu (Ocak 2027)
@@ -264,16 +264,16 @@ Hızlı geçmişlere şans!
 ---
 
 ## Privacy Policy URL
-- TR: `https://airspeak.io/tr/privacy`
-- EN: `https://airspeak.io/privacy`
+- TR: `https://airspeak.app/tr/privacy`
+- EN: `https://airspeak.app/privacy`
 
 ## Support URL
-- TR: `https://airspeak.io/tr/destek`
-- EN: `https://airspeak.io/support`
+- TR: `https://airspeak.app/tr/destek`
+- EN: `https://airspeak.app/support`
 
 ## Marketing URL
-- TR: `https://airspeak.io/tr`
-- EN: `https://airspeak.io`
+- TR: `https://airspeak.app/tr`
+- EN: `https://airspeak.app`
 
 ---
 

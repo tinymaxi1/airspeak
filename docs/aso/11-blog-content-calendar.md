@@ -262,7 +262,7 @@
 
 ### Site yapısı
 ```
-airspeak.io/
+airspeak.app/
 ├── /
 ├── /icao-4 (hub A)
 │   ├── /icao-4-nedir

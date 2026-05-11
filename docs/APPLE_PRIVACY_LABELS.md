@@ -102,10 +102,10 @@ KVKK + GDPR uyumlu standart sözleşme klozları (SCCs) altında:
 ## Pre-Submission Checklist
 
 - [ ] App Store Connect → App Privacy → Data Types listesi doldur
-- [ ] Privacy Policy URL: https://airspeak.io/privacy (veya app içi `/legal/privacy`)
-- [ ] Terms of Use URL: https://airspeak.io/terms
+- [ ] Privacy Policy URL: https://airspeak.app/privacy (veya app içi `/legal/privacy`)
+- [ ] Terms of Use URL: https://airspeak.app/terms
 - [ ] Account Deletion: app içi mevcut (Settings → Privacy → Hesabı kalıcı sil)
-- [ ] Demo Account Apple Reviewer için: review@airspeak.io / DemoPass2026
+- [ ] Demo Account Apple Reviewer için: review@airspeak.app / DemoPass2026
 - [ ] Age Rating: 4+
 - [ ] Encryption Export Compliance: ITSAppUsesNonExemptEncryption = false (zaten app.json'da)
 

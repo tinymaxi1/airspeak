@@ -218,7 +218,7 @@ Pro = "kısıtsız" hissettir, free = "yeterince" değil ama "rastgele" kapatma 
 - 10+ lisans → %30 indirim
 - 50+ lisans → %50 indirim
 - 100+ lisans → custom (THY/Pegasus academy gibi)
-- Email: enterprise@airspeak.io
+- Email: enterprise@airspeak.app
 
 ---
 

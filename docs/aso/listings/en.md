@@ -129,10 +129,10 @@ For each airline:
 • Aviation phraseology preserved in standard ICAO English regardless of UI language
 
 📞 CONTACT
-• ops@airspeak.io
-• Privacy: airspeak.io/privacy
-• Terms: airspeak.io/terms
-• Feedback: airspeak.io/feedback
+• ops@airspeak.app
+• Privacy: airspeak.app/privacy
+• Terms: airspeak.app/terms
+• Feedback: airspeak.app/feedback
 
 📚 STANDARDS COMPLIANCE
 • ICAO Doc 9835 — Language Proficiency Requirements
@@ -172,7 +172,7 @@ GDPR + CCPA + COPPA compliant.
 • 20 UI languages
 • 7-day free trial!
 
-Feedback: ops@airspeak.io
+Feedback: ops@airspeak.app
 ```
 
 ### v1.1 — Cabin season (January 2027)

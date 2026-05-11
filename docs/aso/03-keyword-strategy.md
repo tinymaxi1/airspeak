@@ -225,7 +225,7 @@ mayday,squawk,readback,FCOM,IGOM,ATPL,FAA,EASA,steward,stewardess,airline,pilot 
 Her cluster = 1 ana sayfa + 5-8 destek sayfa (blog), aralarında internal link.
 
 ### Cluster A: ICAO 4
-- **Hub**: `airspeak.io/icao-4` (ana sayfa, 3000 kelime)
+- **Hub**: `airspeak.app/icao-4` (ana sayfa, 3000 kelime)
 - **Spokes**:
   - `/icao-4-nedir` — keyword: "ICAO 4 nedir" (740/ay)
   - `/icao-4-sinavi-nasil-gecilir` — "ICAO 4 sınavı nasıl geçilir" (320/ay)

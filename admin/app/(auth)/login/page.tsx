@@ -83,7 +83,7 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full border-b-2 border-border focus:border-airspeak-red outline-none py-2 text-base"
-              placeholder="admin@airspeak.io"
+              placeholder="admin@airspeak.app"
             />
           </div>
 

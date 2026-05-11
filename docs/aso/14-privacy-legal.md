@@ -50,7 +50,7 @@ Apple her app için 4 kategori soruyor:
 - VERBIS sicili kayıt zorunluluğu (eğer kayıtlı kullanıcı 5K üzeri)
 - Hedef: yıl 1 sonu 20K kullanıcı → kayıt zorunlu
 
-### Aydınlatma Metni (`airspeak.io/aydinlatma`)
+### Aydınlatma Metni (`airspeak.app/aydinlatma`)
 
 ```markdown
 # AirSpeak Aydınlatma Metni
@@ -103,12 +103,12 @@ Apple her app için 4 kategori soruyor:
 - Düzeltme, silme talep etme
 - Verinin işlenmesine itiraz etme
 
-İletişim: kvkk@airspeak.io
+İletişim: kvkk@airspeak.app
 ```
 
 ### KVKK uyumlu eylemler
 
-- [ ] Aydınlatma metni airspeak.io/aydinlatma'da yayınlandı
+- [ ] Aydınlatma metni airspeak.app/aydinlatma'da yayınlandı
 - [ ] In-app: kayıt sırasında "Aydınlatma metnini okudum" checkbox
 - [ ] User data export feature (in-app: Settings → Verimi indir)
 - [ ] Account deletion feature (Settings → Hesabı sil)
@@ -129,7 +129,7 @@ Apple her app için 4 kategori soruyor:
 7. **Data Processing Agreement (DPA)**: Supabase/PostHog/Sentry ile imzalı
 
 ### Cookie consent (web)
-- airspeak.io banner: "Çerezleri kabul ediyor musun?"
+- airspeak.app banner: "Çerezleri kabul ediyor musun?"
 - Reject button mevcut (legal zorunlu)
 - Analytics çerezler default OFF (kullanıcı opt-in)
 
@@ -196,8 +196,8 @@ PROMOSYON TARİHLERİ
 - 7 gün ücretsiz deneme (yeni abone)
 - Reklamlı kullanıcılarda promosyon kodu
 
-KULLANIM ŞARTLARI: airspeak.io/terms
-GİZLİLİK: airspeak.io/privacy
+KULLANIM ŞARTLARI: airspeak.app/terms
+GİZLİLİK: airspeak.app/privacy
 ```
 
 ### Yer
@@ -209,7 +209,7 @@ GİZLİLİK: airspeak.io/privacy
 
 ## 14.7 Terms of Service
 
-### URL: `airspeak.io/terms`
+### URL: `airspeak.app/terms`
 
 ### Yapı
 
@@ -262,14 +262,14 @@ Tarih: {{date}}
 - 30 gün öncesinden bildirim
 - Continued use = kabul
 
-İletişim: legal@airspeak.io
+İletişim: legal@airspeak.app
 ```
 
 ---
 
 ## 14.8 Privacy Policy
 
-### URL: `airspeak.io/privacy`
+### URL: `airspeak.app/privacy`
 
 ### Yapı (KVKK + GDPR uyumlu)
 
@@ -291,7 +291,7 @@ COPPA uyumlu — yasaklı
 [Yukarıda KVKK bölümünde detay]
 
 ## İletişim
-privacy@airspeak.io
+privacy@airspeak.app
 ```
 
 ---
@@ -337,7 +337,7 @@ privacy@airspeak.io
 | **Web wrapper hissi** | Native React Native, Expo bridge kullanılıyor |
 | **"Not enough functionality"** | Lansman'da 5 senaryo, 41 havayolu, ICAO mock var |
 | **Fake review hissi** | Beta tester referans, reklamı dengeli |
-| **Privacy policy eksik** | airspeak.io/privacy URL Apple'a verildi |
+| **Privacy policy eksik** | airspeak.app/privacy URL Apple'a verildi |
 | **Children content / advertising** | Yok |
 
 ### Google Play Reject

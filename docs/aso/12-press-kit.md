@@ -4,7 +4,7 @@ Logo paketi, screenshot pack, bültenler, gazeteci outreach.
 
 ## 12.1 Press Kit İçeriği
 
-### URL: `airspeak.io/press`
+### URL: `airspeak.app/press`
 
 ### Components
 1. **About** — 100/300/1000 kelime şirket tanıtım
@@ -15,7 +15,7 @@ Logo paketi, screenshot pack, bültenler, gazeteci outreach.
 6. **Press Releases** — chronological list
 7. **Awards & Recognition**
 8. **FAQ**
-9. **Contact** — press@airspeak.io
+9. **Contact** — press@airspeak.app
 
 ---
 
@@ -52,11 +52,11 @@ Lisanslı pilotlar + havacılık eğitmenleri + Anthropic Design.
 LANSMAN
 Eylül 2026, Apple App Store + Google Play. İlk 7 gün ücretsiz, ardından ₺349/ay veya ₺2.499/yıl. Mayflower Aviation €29/ay rakibine göre %61 daha ucuz.
 
-İletişim: press@airspeak.io | airspeak.io
+İletişim: press@airspeak.app | airspeak.app
 ```
 
 ### 1000 kelime — derin makale için
-[Bu uzun versiyon ayrı dosya: `airspeak.io/press/about-long.pdf`]
+[Bu uzun versiyon ayrı dosya: `airspeak.app/press/about-long.pdf`]
 
 ---
 
@@ -161,8 +161,8 @@ AirSpeak, 7 gün ücretsiz denemeden sonra ₺349/ay veya ₺2.499/yıl fiyatla.
 AirSpeak ekibi pilot ve havacılık eğitmenlerinden oluşuyor; Anthropic Design ortaklığında geliştirilen kullanıcı arayüzü Apple App Store Editor's Choice değerlendirmesinde.
 
 İletişim:
-press@airspeak.io
-airspeak.io
+press@airspeak.app
+airspeak.app
 @airspeak_app (Instagram)
 ```
 
@@ -325,7 +325,7 @@ Press kit'in alt bölümü influencer'lar için:
 
 | Aksiyon | Sahip | Süre |
 |---|---|---|
-| Press kit website (`airspeak.io/press`) | Web | Hafta 4 |
+| Press kit website (`airspeak.app/press`) | Web | Hafta 4 |
 | Logo pack export (5 variant × 5 format) | Design | Hafta 2 |
 | Founder bio + photo | Founder | Hafta 1 |
 | Press release v1.0 yazımı | Marketing | Hafta 6 |

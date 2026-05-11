@@ -169,9 +169,9 @@ AirSpeak resmi ICAO sertifikası **vermez** — pratik aracıdır. Resmi ICAO Le
 
 ## 📧 İletişim
 
-- Email: ops@airspeak.io
+- Email: ops@airspeak.app
 - Discord: discord.gg/airspeak
-- Privacy: privacy@airspeak.io · KVKK: kvkk@airspeak.io
+- Privacy: privacy@airspeak.app · KVKK: kvkk@airspeak.app
 
 ---
 
