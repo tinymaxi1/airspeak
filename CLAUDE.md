@@ -13,6 +13,18 @@
 7. Kullanıcı "devam" derse: planı uygula, açıklama yapma. "yeni sohbete geçiyorum" dediğinde dahi son durumu CLAUDE.md'ye yaz.
 8. Yeni dosya yaratırken markdown/docs **yaratma**; istemese kullanıcı.
 9. Emoji kullanma kural değil ama kullanıcı kullanıyorsa kibarsa.
+10. **CANLI-FIRST PRENSİBİ (CORE RULE — 2026-05-09):**
+    - "Geçici çözüm", "placeholder", "şimdilik X, sonra Y" YASAK.
+    - "v1.1'de yapılır" tarzı erteleme tek başına KABUL EDİLEMEZ — production-ready
+      değilse implementation tamamlanmamıştır.
+    - Her özellik canlıya çıkmak için **eksiksiz** kurgulanır: gerçek backend,
+      gerçek mail, gerçek auth, gerçek IAP, gerçek monitoring.
+    - "Test domain", "test key", "mock email" gibi geçici şeyler **sadece local
+      development** için kullanılır — TestFlight veya canlıya asla çıkmaz.
+    - Pre-launch checklist'te eksik kalan her item **blocker** sayılır.
+    - Bu prensip Sprint 5'in "Mock-first" kuralından farklıdır: Mock-first =
+      "API key yoksa local çalışsın". Canlı-First = "Production'a çıkacak şey
+      eksiksiz hazırlansın, hiçbir adım atlanmasın."
 
 ## App tanımı
 
