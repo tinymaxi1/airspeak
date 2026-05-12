@@ -717,33 +717,35 @@ export default function HomeScreen() {
         )}
 
         {/* Quick practice 2x2 — tasarım grid: red·sky / purple·gold */}
-        <Eyebrow style={{ marginTop: dueCount > 0 || recentActivity.length > 0 ? 18 : 0 }}>FAST PRACTICE — 90 SEC</Eyebrow>
+        <Eyebrow style={{ marginTop: dueCount > 0 || recentActivity.length > 0 ? 18 : 0 }}>
+          {t('screens.home.fastPractice', 'HIZLI ALIŞTIRMA — 90 SN')}
+        </Eyebrow>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
           <QuickCard
             icon="🎙"
-            label={t('screens.home.qReadback', 'Read-back drill')}
-            sub={t('screens.home.qReadbackSub', 'ATC clearances')}
+            label={t('screens.home.qReadback', 'Telsiz tekrarı')}
+            sub={t('screens.home.qReadbackSub', 'ATC izinleri')}
             color="#E63946"
             onPress={() => router.push('/readback')}
           />
           <QuickCard
             icon="🎧"
-            label={t('screens.home.qListen', 'Listen & decode')}
-            sub={t('screens.home.qListenSub', 'Garbled radio')}
+            label={t('screens.home.qListen', 'Dinle & çöz')}
+            sub={t('screens.home.qListenSub', 'Parazitli telsiz')}
             color="#2EA8FF"
             onPress={() => router.push({ pathname: '/practice', params: { category: 'listening' } })}
           />
           <QuickCard
             icon="🤖"
-            label={t('screens.home.qAi', 'AI roleplay')}
-            sub={t('screens.home.qAiSub', 'Holding pattern')}
+            label={t('screens.home.qAi', 'AI ile rol yap')}
+            sub={t('screens.home.qAiSub', 'Bekleme deseni')}
             color="#7C5CFF"
             onPress={() => router.push('/conversation')}
           />
           <QuickCard
             icon="🔊"
             label={t('screens.home.qPronounce', 'Telaffuz')}
-            sub={t('screens.home.qPronounceSub', 'Numbers 0–9')}
+            sub={t('screens.home.qPronounceSub', 'Sayılar 0-9')}
             color="#F2C14E"
             onPress={() => router.push('/pronunciation/p1')}
           />
