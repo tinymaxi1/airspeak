@@ -481,47 +481,72 @@ export default function HomeScreen() {
         <Eyebrow>{t('screens.home.weekRoute', { week: weekNumber, defaultValue: 'HAFTA {{week}} · YOLDA' })}</Eyebrow>
         <Card3D style={{ padding: 14, marginTop: 8, marginBottom: 18 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-            {((t('screens.home.weekDays', { returnObjects: true, defaultValue: ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'] }) as string[])).map((d, i) => {
-              const states = ['done', 'done', 'done', 'done', 'current', 'future', 'future'] as const;
-              const s = states[i];
-              return (
-                <View key={i} style={{ alignItems: 'center', flex: 1 }}>
-                  <Text
-                    style={{
-                      fontFamily: FONTS.body700,
-                      fontSize: 11,
-                      color: '#8A93A6',
-                      marginBottom: 6,
-                    }}
-                  >
-                    {d}
-                  </Text>
-                  <View
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 16,
-                      backgroundColor:
-                        s === 'done' ? '#2DBE6C' : s === 'current' ? '#E63946' : '#E9E6DD',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderWidth: s === 'current' ? 2 : 0,
-                      borderColor: '#E63946',
-                    }}
-                  >
+            {(() => {
+              const labels = t('screens.home.weekDays', {
+                returnObjects: true,
+                defaultValue: ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'],
+              }) as string[];
+              // Pazartesi=0 ... Pazar=6 indeksi (getDay: 0=Pazar, 1=Pazartesi).
+              const todayDow = new Date().getDay();
+              const todayIndex = (todayDow + 6) % 7;
+              // states:
+              //   'done'    → geçmiş + streak içinde (tamamlandı)
+              //   'missed'  → geçmiş + streak dışı (kaçırıldı)
+              //   'current' → bugün (aktif, alev)
+              //   'future'  → gelecek (gri, gün rakamı, ASLA ✓)
+              return labels.map((d, i) => {
+                let s: 'done' | 'missed' | 'current' | 'future';
+                if (i === todayIndex) s = 'current';
+                else if (i < todayIndex) {
+                  const daysAgo = todayIndex - i;
+                  s = daysAgo <= streak ? 'done' : 'missed';
+                } else {
+                  s = 'future';
+                }
+                const bg =
+                  s === 'done' ? '#2DBE6C'
+                    : s === 'current' ? '#E63946'
+                      : s === 'missed' ? 'rgba(230,57,70,0.12)'
+                        : '#E9E6DD';
+                const fg =
+                  s === 'future' || s === 'missed' ? '#8A93A6' : '#FFFFFF';
+                const glyph =
+                  s === 'done' ? '✓'
+                    : s === 'current' ? '🔥'
+                      : s === 'missed' ? '✗'
+                        : String(i + 1);
+                return (
+                  <View key={i} style={{ alignItems: 'center', flex: 1 }}>
                     <Text
                       style={{
                         fontFamily: FONTS.body700,
-                        fontSize: 12,
-                        color: s === 'future' ? '#8A93A6' : '#FFFFFF',
+                        fontSize: 11,
+                        color: s === 'current' ? '#E63946' : '#8A93A6',
+                        marginBottom: 6,
                       }}
                     >
-                      {s === 'done' ? '✓' : s === 'current' ? '🔥' : i + 1}
+                      {d}
                     </Text>
+                    <View
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 16,
+                        backgroundColor: bg,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderWidth: s === 'current' ? 2 : 0,
+                        borderColor: '#E63946',
+                      }}
+                    >
+                      <Text style={{ fontFamily: FONTS.body700, fontSize: 12, color: fg }}>
+                        {glyph}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              );
-            })}
+                );
+              });
+            })()}
           </View>
           <View style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8', paddingTop: 10 }}>
             <Body style={{ fontSize: 13, color: '#5A6478', textAlign: 'center' }}>
