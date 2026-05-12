@@ -69,7 +69,22 @@ GitHub'a giriş yapacaksa: önce sağ üst avatardan **`tinymaxi1` aktif mi kont
 - Apple ID (ASC): `kesfegel@gmail.com`
 - ASC App ID: `6766981661`
 
-**Supabase:** (aşağıda detay)
+**EAS (Expo):**
+- Hesap: `mirissaapss` (login email: `kesfegel@gmail.com`)
+- Project ID: `684b9eaf-123f-4145-89a9-89b235aecb46`
+
+**Supabase:**
+- Hesap email: `durakkamil@gmail.com`
+- Project ref: `neinhbkdctjtyyoskxpg` (aşağıda detay)
+
+**Google Cloud Console:**
+- Hesap email: `kesfegel@gmail.com`
+- Project: `AirSpeak` (project_id: `airspeak-496108`)
+- OAuth Client'lar:
+  - **Web** (Supabase için): `339554480219-l8hlh705hove8ulr2ie8b94hd0h03kmn.apps.googleusercontent.com`
+  - **iOS**: `339554480219-e3vvq5lap7bruvmg1rjk8lq6o1o5s9re.apps.googleusercontent.com`
+  - Android: PENDING (BUILD 15 sonrası SHA-1 ile)
+- Web Client Secret: chat-exposed, v1.0.1'de rotate edilmeli
 
 ---
 
@@ -470,15 +485,18 @@ Bu bölüm en güncel state — yeni sohbet bu yerden devam etmeli.
 - BUILD 8 → iOS `teN9jC8vw...ipa` + Android `5oxEbqRS6...aab` ✅ ikisi de başarılı (commit `ca738a2`)
 - BUILD 9 → cancelled (Universal Links eksikti)
 - BUILD 10 → cancelled (3 crash fix eksikti)
-- BUILD 11 → 🤖 Android ✅ `s5MCBdgzMbQA36FogmUgyf.aab` + 🍏 iOS ❌ FAILED
-  - Android: `d338b391-862b-4ea5-ae27-0a9b96156a2a` (success)
-  - iOS: `935d5f5d-90ce-49cd-b6ee-3698a164aef2` (FAILED)
-  - **iOS fail sebebi**: Provisioning profile `*[expo] app.airspeak.mobile AppStore 2026-05-07T14:34:28.266Z` **Associated Domains capability**'i içermiyor.
-    - `app.json` ios.associatedDomains (applinks:airspeak.app + webcredentials:airspeak.app) yeni eklendi
-    - EAS'ın mevcut provisioning profile bu capability ile generate edilmedi
-    - **Fix**: `eas credentials -p ios` ile profile refresh + Apple Developer Portal'da Associated Domains capability'i App ID'ye ekle
-    - Veya basitçe: `eas build --platform ios --clear-cache` ile yeniden credentials sync
-  - Log: `/tmp/build-11.log`
+- BUILD 11 → 🤖 Android ✅ `s5MCBdgzMbQA36FogmUgyf.aab` + 🍏 iOS ❌ FAILED (Associated Domains capability eksik)
+- BUILD 12 → 🍏 iOS ❌ FAILED (provisioning profile hala eski) → silindi
+- BUILD 13 → 🍏 iOS cancel (kredi kurtar, EAS dashboard'tan provisioning profile reset)
+- BUILD 14 → 🍏 iOS ✅ `xaFwQWS9BSKUn3Kc12Z2Yk.ipa` (`fc655acf-09fa-45ba-a998-3b3cfc220e1f`)
+  - Build #21, Submitted to TestFlight (`4e11bdb7-dfcf-451b-b877-697cda09c2f6`)
+  - Apple/Google Sign-In butonları "Soon" alert (henüz implement değil)
+- BUILD 15 → 🍏 iOS ✅ `cwXejsqQj9pNnDU2MnF8kP.ipa` (`5d66dff4-89a8-4525-aa07-5f56d98efb41`)
+  - Build #22, Submitted to TestFlight (`049c8ad4-2b4c-4874-b915-7c88af2f98ca`)
+  - Provisioning profile yeni: `LZ844ZWKTZ` (Associated Domains + Sign in with Apple capability dahil)
+  - Apple Sign-In: gerçek implement ✅
+  - Google Sign-In: kod var ama Google env değişkenleri (`EXPO_PUBLIC_GOOGLE_*`) build sırasında eas.json'a yazılmadı → runtime'da fail
+  - EAS kredi: %93 kullanıldı, BUILD 16 son kredi olabilir
 
 **Apple Submit hazırlık:**
 - iOS BUILD 8 ipa TestFlight'a yüklendi (`eas submit` ile, submission `9e683818-fa5a-4423-a99d-39a6fca2a1a1`)
