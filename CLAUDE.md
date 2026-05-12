@@ -450,9 +450,14 @@ Bu bölüm en güncel state — yeni sohbet bu yerden devam etmeli.
 - BUILD 8 → iOS `teN9jC8vw...ipa` + Android `5oxEbqRS6...aab` ✅ ikisi de başarılı (commit `ca738a2`)
 - BUILD 9 → cancelled (Universal Links eksikti)
 - BUILD 10 → cancelled (3 crash fix eksikti)
-- BUILD 11 → ⏳ cloud'da (commit `ad36c8b` — Universal Links + 3 crash fix + Email verification flow)
-  - Android: `df78054d-7f56-48ca-9cd2-b5783a0125b0`
-  - iOS: `9344f493-5786-4f74-a480-203624ba63e8`
+- BUILD 11 → 🤖 Android ✅ `s5MCBdgzMbQA36FogmUgyf.aab` + 🍏 iOS ❌ FAILED
+  - Android: `d338b391-862b-4ea5-ae27-0a9b96156a2a` (success)
+  - iOS: `935d5f5d-90ce-49cd-b6ee-3698a164aef2` (FAILED)
+  - **iOS fail sebebi**: Provisioning profile `*[expo] app.airspeak.mobile AppStore 2026-05-07T14:34:28.266Z` **Associated Domains capability**'i içermiyor.
+    - `app.json` ios.associatedDomains (applinks:airspeak.app + webcredentials:airspeak.app) yeni eklendi
+    - EAS'ın mevcut provisioning profile bu capability ile generate edilmedi
+    - **Fix**: `eas credentials -p ios` ile profile refresh + Apple Developer Portal'da Associated Domains capability'i App ID'ye ekle
+    - Veya basitçe: `eas build --platform ios --clear-cache` ile yeniden credentials sync
   - Log: `/tmp/build-11.log`
 
 **Apple Submit hazırlık:**
@@ -496,12 +501,27 @@ Local commit'ler push edilmedi (main `ad36c8b`, origin/main `9317e42`). 8 commit
 
 ### Açık BLOCKER'lar (yeni sohbet bu noktadan devam)
 
-1. **GitHub Pages** — user manuel açacak:
+1. **iOS BUILD 11 FAILED — Associated Domains capability** (KRİTİK, ilk yapılacak):
+   - Hata: "Provisioning profile doesn't include the Associated Domains capability"
+   - Sebep: app.json'a `ios.associatedDomains` yeni eklendi, mevcut provisioning profile bu capability ile generate edilmedi
+   - **Çözüm A** (Apple Developer Portal manuel):
+     - https://developer.apple.com/account/resources/identifiers/list
+     - `app.airspeak.mobile` App ID'sini aç → Capabilities → "Associated Domains" checkbox işaretle → Save
+     - Sonra `eas build --platform ios --profile production --clear-cache` (yeni provisioning profile auto-generate)
+   - **Çözüm B** (EAS otomatik):
+     - `eas credentials -p ios --profile production` → Provisioning Profile → "Set up a new profile" → seç → EAS yeni profile yaratır (Associated Domains dahil)
+     - Sonra `eas build --platform ios --profile production` retry
+   - **Çözüm C** (geçici, Universal Links'i ertele):
+     - app.json'dan `ios.associatedDomains` geçici kaldır
+     - BUILD 12 iOS başarılı olur ama Universal Links çalışmaz
+     - v1.0.1'de credentials fix + universal links geri
+
+2. **GitHub Pages** — user manuel açacak (verify.html host için):
    - Settings → Pages → Source: `main` / `/docs` folder
    - Custom domain: `airspeak.app`
    - Enforce HTTPS
 
-2. **GoDaddy DNS** — user düzenliyor (TAKILDI):
+3. **GoDaddy DNS** — user düzenliyor (TAKILDI 2026-05-09):
    - SİL: `A @ WebsiteBuilder Site` (parking page, çakışma yaratıyor)
    - SİL: `CNAME www airspeak.app.` (default)
    - EKLE: 4× `A @` → `185.199.108.153/.109.153/.110.153/.111.153`
@@ -509,16 +529,22 @@ Local commit'ler push edilmedi (main `ad36c8b`, origin/main `9317e42`). 8 commit
    - Mevcut Resend kayıtları KALMALI: `MX send` + `TXT resend._domainkey` + (eksik) `TXT send` SPF `v=spf1 include:amazonses.com ~all`
    - User'ın son hatası: "Kayıt verisi geçersiz." A @ ekleyemiyor → WebsiteBuilder Site kaydı silinmemiş olabilir, screenshot iste
 
-3. **Supabase URL Configuration** — user manuel:
+4. **Supabase URL Configuration** — user manuel:
    - Site URL: `https://airspeak.app` (`airspeak://` değil!)
    - Redirect URLs: `https://airspeak.app/auth/verify` + `https://airspeak.app/auth/**`
    - Save
 
-4. **BUILD 11 bekleniyor** — cloud'da, ~10 dk daha
-   - iOS submit + TestFlight yükle (eas submit)
-   - Temiz smoke test
+5. **BUILD 12 trigger** — iOS Associated Domains fix sonrası:
+   - iOS sadece veya iOS+Android (Android zaten BUILD 11'de başarılı, gerek yok)
+   - `eas build --platform ios --profile production` (clear-cache opsiyonel)
+   - Beklenen süre ~20 dk
 
-5. **Sentry crash REACT-NATIVE-4 + 5** — realtime postgres_changes duplicate subscribe (ErrorBoundary catches, app crash etmez, sadece component) — v1.0.1 cleanup için bırakıldı
+6. **Android BUILD 11 sonrası**:
+   - AAB hazır: `s5MCBdgzMbQA36FogmUgyf.aab`
+   - Play Console internal track upload (manuel veya `eas submit -p android --latest`)
+   - Internal testing
+
+7. **Sentry crash REACT-NATIVE-4 + 5** — realtime postgres_changes duplicate subscribe (ErrorBoundary catches, app crash etmez, sadece component) — v1.0.1 cleanup için bırakıldı
 
 ### Resend API key güvenlik
 
