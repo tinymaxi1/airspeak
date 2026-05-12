@@ -1,0 +1,11 @@
+# Jekyll config — GitHub Pages için
+# Default'ta `.` ile başlayan dosya/klasörler exclude edilir.
+# `.well-known/` Apple Universal Links + Android App Links için zorunlu, include et.
+include:
+  - .well-known
+  - .well-known/apple-app-site-association
+  - .well-known/assetlinks.json
+
+# Markdown render → asıl docs HTML statik, ama Jekyll default tema yüklemesin
+theme: null
+plugins: []
