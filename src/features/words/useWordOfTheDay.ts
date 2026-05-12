@@ -11,6 +11,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
 
 export type WordOfDayContentType = 'word' | 'phrase' | 'sentence' | 'dialogue' | 'tip';
 export type WordOfDayWordType =
@@ -36,8 +37,14 @@ export interface WordOfDayRow {
 }
 
 export function useWordOfTheDay() {
+  // Role queryKey'de — kullanıcı rolünü değiştirirse otomatik refetch (cache miss).
+  // useUserDataSync server'dan role hidrate eder, store'a yazar → bu query
+  // yeni key ile fetch atar.
+  const role = useAuthStore((s) => s.profile?.role ?? null);
+  const userId = useAuthStore((s) => s.user?.id ?? null);
+
   return useQuery({
-    queryKey: ['word-of-today'],
+    queryKey: ['word-of-today', userId, role],
     queryFn: async (): Promise<WordOfDayRow | null> => {
       const { data, error } = await (supabase as any).rpc('get_word_of_today');
       if (error) {
@@ -50,8 +57,9 @@ export function useWordOfTheDay() {
       }
       return null;
     },
-    staleTime: 1000 * 60 * 60 * 6, // 6 saat: gün içinde aynı içerik
-    gcTime: 1000 * 60 * 60 * 24, // 24 saat memory
+    enabled: !!userId, // anonim kullanıcı için no-op
+    staleTime: 1000 * 60 * 30, // 30 dk — gün içinde stabil ama rol değişimi hızlı yansır
+    gcTime: 1000 * 60 * 60 * 12, // 12 saat memory cache
     retry: 1,
   });
 }
