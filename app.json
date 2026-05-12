@@ -16,6 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.airspeak.mobile",
+      "usesAppleSignIn": true,
       "associatedDomains": [
         "applinks:airspeak.app",
         "webcredentials:airspeak.app"
@@ -123,7 +124,14 @@
           "project": "react-native"
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      "expo-apple-authentication",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.PENDING_IOS_CLIENT_ID"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

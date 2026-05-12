@@ -9,13 +9,13 @@
  * - Terms footnote
  */
 import { useState } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Alert, Platform } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
 import { KeyboardAware } from '@/components/ui/KeyboardAware';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { signUpWithEmail } from '@/features/auth/api';
+import { signUpWithEmail, signInWithApple, signInWithGoogle } from '@/features/auth/api';
 import { mapAuthError } from '@/lib/authErrors';
 import { supabase } from '@/lib/supabase';
 import {
@@ -37,6 +37,46 @@ export default function RegisterScreen() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedKvkk, setAcceptedKvkk] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
+
+  async function handleApple() {
+    if (Platform.OS !== 'ios') {
+      Alert.alert('Apple Sign-In', 'Apple ile giriş yalnızca iOS cihazlarda kullanılabilir.');
+      return;
+    }
+    if (!acceptedTerms || !acceptedKvkk) {
+      Alert.alert(
+        'Onay gerekli',
+        'Apple ile devam etmek için Kullanım Koşulları, Gizlilik Politikası ve KVKK Aydınlatma Metni\'ni kabul etmelisin.',
+      );
+      return;
+    }
+    setLoading(true);
+    const { ok, error } = await signInWithApple();
+    setLoading(false);
+    if (!ok && error) {
+      Alert.alert('Apple ile giriş başarısız', error);
+      return;
+    }
+    if (ok) router.replace('/(auth)/onboarding/role-select');
+  }
+
+  async function handleGoogle() {
+    if (!acceptedTerms || !acceptedKvkk) {
+      Alert.alert(
+        'Onay gerekli',
+        'Google ile devam etmek için Kullanım Koşulları, Gizlilik Politikası ve KVKK Aydınlatma Metni\'ni kabul etmelisin.',
+      );
+      return;
+    }
+    setLoading(true);
+    const { ok, error } = await signInWithGoogle();
+    setLoading(false);
+    if (!ok && error) {
+      Alert.alert('Google ile giriş başarısız', error);
+      return;
+    }
+    if (ok) router.replace('/(auth)/onboarding/role-select');
+  }
 
   async function handleRegister() {
     if (!email || !password || password.length < 6) {
@@ -278,15 +318,17 @@ export default function RegisterScreen() {
 
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <View style={{ flex: 1 }}>
-            <Button3D variant="secondary" fullWidth onPress={() => Alert.alert('Soon', 'Google sign-in')}>
+            <Button3D variant="secondary" fullWidth onPress={handleGoogle} disabled={loading}>
               G  Google
             </Button3D>
           </View>
-          <View style={{ flex: 1 }}>
-            <Button3D variant="secondary" fullWidth onPress={() => Alert.alert('Soon', 'Apple sign-in')}>
-                Apple
-            </Button3D>
-          </View>
+          {Platform.OS === 'ios' && (
+            <View style={{ flex: 1 }}>
+              <Button3D variant="secondary" fullWidth onPress={handleApple} disabled={loading}>
+                  Apple
+              </Button3D>
+            </View>
+          )}
         </View>
 
         <Body

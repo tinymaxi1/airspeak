@@ -101,6 +101,122 @@ export async function resetPassword(email: string) {
   });
 }
 
+// ============================================================================
+// Social Sign-In — Apple Guideline 4.8 zorunlu (Google + Apple)
+// Supabase signInWithIdToken native flow (Provider: Apple/Google, Dashboard'da config'li olmalı)
+// ============================================================================
+
+/**
+ * Apple Sign-In — expo-apple-authentication ile native flow.
+ * iOS 13+ ve sadece iOS'ta çalışır. Android'de fallback: Alert ile uyar.
+ *
+ * Apple Dev Portal: App ID'de "Sign In with Apple" capability aktif olmalı.
+ * Supabase Dashboard → Authentication → Providers → Apple aktif olmalı.
+ */
+export async function signInWithApple(): Promise<{ ok: boolean; error?: string }> {
+  if (USE_MOCK) {
+    // Mock: hemen sahte session oluştur
+    const result = await mockAuth.signInWithEmail('apple-mock@airspeak.app', 'mock-pw');
+    return { ok: !result.error, error: result.error?.message };
+  }
+
+  try {
+    const AppleAuthentication = await import('expo-apple-authentication');
+    const isAvailable = await AppleAuthentication.isAvailableAsync();
+    if (!isAvailable) {
+      return { ok: false, error: 'Apple Sign-In bu cihazda kullanılamaz (iOS 13+ gerekli).' };
+    }
+
+    const credential = await AppleAuthentication.signInAsync({
+      requestedScopes: [
+        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+      ],
+    });
+
+    if (!credential.identityToken) {
+      return { ok: false, error: 'Apple identity token alınamadı.' };
+    }
+
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'apple',
+      token: credential.identityToken,
+    });
+
+    if (error) return { ok: false, error: error.message };
+    if (!data.session) return { ok: false, error: 'Apple ile oturum açılamadı.' };
+
+    useAuthStore.getState().setSession(data.session);
+    track('auth_logged_in', { method: 'apple' });
+    if (data.session.user.email) {
+      identify(data.session.user.id, { email: data.session.user.email });
+    }
+    identifyUser({ id: data.session.user.id });
+    return { ok: true };
+  } catch (e: any) {
+    // ERR_REQUEST_CANCELED — kullanıcı iptal etti, hata gösterme
+    if (e?.code === 'ERR_REQUEST_CANCELED') return { ok: false };
+    return { ok: false, error: e?.message ?? 'Apple sign-in başarısız.' };
+  }
+}
+
+/**
+ * Google Sign-In — @react-native-google-signin/google-signin ile native flow.
+ *
+ * Google Cloud Console: 3 OAuth Client ID gerekli:
+ *   1. iOS (Bundle ID: app.airspeak.mobile)
+ *   2. Android (Package: app.airspeak.mobile + SHA-1)
+ *   3. Web (Supabase için)
+ *
+ * Supabase Dashboard → Authentication → Providers → Google aktif + Web Client ID/Secret girilmiş.
+ * Env: EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID + EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID
+ */
+export async function signInWithGoogle(): Promise<{ ok: boolean; error?: string }> {
+  if (USE_MOCK) {
+    const result = await mockAuth.signInWithEmail('google-mock@airspeak.app', 'mock-pw');
+    return { ok: !result.error, error: result.error?.message };
+  }
+
+  try {
+    const { GoogleSignin, statusCodes } = await import('@react-native-google-signin/google-signin');
+
+    GoogleSignin.configure({
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+      offlineAccess: false,
+    });
+
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    const userInfo: any = await GoogleSignin.signIn();
+
+    // v13'te idToken iki yerde olabilir (data.idToken veya idToken)
+    const idToken = userInfo?.data?.idToken ?? userInfo?.idToken;
+    if (!idToken) {
+      return { ok: false, error: 'Google ID token alınamadı.' };
+    }
+
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'google',
+      token: idToken,
+    });
+
+    if (error) return { ok: false, error: error.message };
+    if (!data.session) return { ok: false, error: 'Google ile oturum açılamadı.' };
+
+    useAuthStore.getState().setSession(data.session);
+    track('auth_logged_in', { method: 'google' });
+    if (data.session.user.email) {
+      identify(data.session.user.id, { email: data.session.user.email });
+    }
+    identifyUser({ id: data.session.user.id });
+    return { ok: true };
+  } catch (e: any) {
+    // SIGN_IN_CANCELLED — kullanıcı iptal etti
+    if (e?.code === 'SIGN_IN_CANCELLED' || e?.code === -5) return { ok: false };
+    return { ok: false, error: e?.message ?? 'Google sign-in başarısız.' };
+  }
+}
+
 export async function signOut() {
   // Push token unregister: cihazın bildirim almaması için.
   // Logout'tan ÖNCE çağrılır — sonra auth.uid() null olur, RLS engeller.

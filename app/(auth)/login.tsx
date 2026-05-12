@@ -20,8 +20,9 @@ import { KeyboardAware } from '@/components/ui/KeyboardAware';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { signInWithEmail } from '@/features/auth/api';
+import { signInWithEmail, signInWithApple, signInWithGoogle } from '@/features/auth/api';
 import { mapAuthError } from '@/lib/authErrors';
+import { Platform } from 'react-native';
 import {
   Eyebrow,
   FONTS,
@@ -50,6 +51,32 @@ export default function LoginScreen() {
       return;
     }
     router.replace('/');
+  }
+
+  async function handleApple() {
+    if (Platform.OS !== 'ios') {
+      Alert.alert('Apple Sign-In', 'Apple ile giriş yalnızca iOS cihazlarda kullanılabilir.');
+      return;
+    }
+    setLoading(true);
+    const { ok, error } = await signInWithApple();
+    setLoading(false);
+    if (!ok && error) {
+      Alert.alert('Apple ile giriş başarısız', error);
+      return;
+    }
+    if (ok) router.replace('/');
+  }
+
+  async function handleGoogle() {
+    setLoading(true);
+    const { ok, error } = await signInWithGoogle();
+    setLoading(false);
+    if (!ok && error) {
+      Alert.alert('Google ile giriş başarısız', error);
+      return;
+    }
+    if (ok) router.replace('/');
   }
 
   return (
@@ -167,8 +194,10 @@ export default function LoginScreen() {
         </View>
 
         <View style={{ gap: 10 }}>
-          <SocialBtn label={t('screens.login.continueApple', 'Continue with Apple')} icon="apple" onPress={() => Alert.alert('Soon', 'Apple sign-in')} />
-          <SocialBtn label={t('screens.login.continueGoogle', 'Continue with Google')} icon="google" onPress={() => Alert.alert('Soon', 'Google sign-in')} />
+          {Platform.OS === 'ios' && (
+            <SocialBtn label={t('screens.login.continueApple', 'Continue with Apple')} icon="apple" onPress={handleApple} />
+          )}
+          <SocialBtn label={t('screens.login.continueGoogle', 'Continue with Google')} icon="google" onPress={handleGoogle} />
         </View>
 
         <View style={{ alignItems: 'center', marginTop: 20 }}>
