@@ -12,6 +12,23 @@ import { identify, resetAnalytics, track } from '@/lib/posthog';
 import { identifyUser, clearUser } from '@/lib/sentry';
 import { unregisterPushToken } from '@/lib/notifications';
 import * as mockAuth from './mockAuth';
+// Sprint 14.C — signOut tüm user-specific local store'ları temizler.
+// User-switch flash önleme: yeni user login olduğunda 1-2 sn önceki kullanıcının
+// XP/streak/lesson'ları görünmez (useUserDataSync server hidrasyonu sırasında).
+import { useGamificationStore } from '@/stores/gamificationStore';
+import { useProgressStore } from '@/stores/progressStore';
+import { useLessonProgressStore } from '@/stores/lessonProgressStore';
+import { useActivityStore } from '@/stores/activityStore';
+import { useBookmarkStore } from '@/stores/bookmarkStore';
+import { useExerciseHistoryStore } from '@/stores/exerciseHistoryStore';
+import { useSquadronStore } from '@/stores/squadronStore';
+import { useSrsStore } from '@/stores/srsStore';
+import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
+import { useQuestsStore } from '@/stores/questsStore';
+import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
+import { useUnitIntroStore } from '@/stores/unitIntroStore';
+import { useOnboardingStore } from '@/stores/onboardingStore';
+import { useCoachMarkStore } from '@/stores/coachMarkStore';
 
 // Sprint 14.B.5 — Default kapalı (production-safe). Sadece env'de explicit
 // 'true' ise mock auth açılır. Production build'inde env yoksa mock asla devreye girmez.
@@ -263,6 +280,33 @@ export async function signInWithGoogle(): Promise<{ ok: boolean; error?: string 
   }
 }
 
+/**
+ * Tüm user-specific local store'ları temizler. signOut() içinden çağrılır.
+ *
+ * Cihaz/device-bound store'lar ZARARLAYICI değildir, korunur:
+ *   - themeStore (kullanıcı temasi cihaza bağlı)
+ *   - offlineStore (indirilen üniteler disk'te dosya)
+ *
+ * Sprint 14.C — user-switch flash bug fix.
+ */
+function resetUserSpecificStores(): void {
+  try { useAuthStore.getState().reset(); } catch {}
+  try { useGamificationStore.getState().reset(); } catch {}
+  try { useProgressStore.getState().reset(); } catch {}
+  try { useLessonProgressStore.getState().resetAll(); } catch {}
+  try { useActivityStore.getState().clear(); } catch {}
+  try { useBookmarkStore.getState().clear(); } catch {}
+  try { useExerciseHistoryStore.getState().clear(); } catch {}
+  try { useSquadronStore.getState().reset(); } catch {}
+  try { useSrsStore.getState().reset(); } catch {}
+  try { useLessonHistoryStore.getState().reset(); } catch {}
+  try { useQuestsStore.getState().reset(); } catch {}
+  try { useDailyLimitsStore.getState().reset(); } catch {}
+  try { useUnitIntroStore.getState().reset(); } catch {}
+  try { useOnboardingStore.getState().reset(); } catch {}
+  try { useCoachMarkStore.getState().reset(); } catch {}
+}
+
 export async function signOut() {
   // Push token unregister: cihazın bildirim almaması için.
   // Logout'tan ÖNCE çağrılır — sonra auth.uid() null olur, RLS engeller.
@@ -270,13 +314,14 @@ export async function signOut() {
 
   if (USE_MOCK) {
     const result = await mockAuth.signOut();
+    resetUserSpecificStores();
     resetAnalytics();
     return result;
   }
 
   const { error } = await supabase.auth.signOut();
   if (!error) {
-    useAuthStore.getState().reset();
+    resetUserSpecificStores();
     resetAnalytics();
     clearUser();
   }

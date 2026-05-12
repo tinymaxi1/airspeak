@@ -21,6 +21,8 @@ interface SquadronState {
   joinCohort: (code: string) => boolean;
   leaveCohort: () => void;
   getCurrentCohort: () => Cohort | null;
+  /** Sprint 14.C — user-switch flash önleme: logout'ta squadron reset. */
+  reset: () => void;
 }
 
 const zustandStorage = {
@@ -48,6 +50,8 @@ export const useSquadronStore = create<SquadronState>()(
         const code = get().cohortCode;
         return code ? findCohortByCode(code) ?? null : null;
       },
+
+      reset: () => set({ cohortCode: null, joinedAt: null }),
     }),
     {
       name: 'airspeak-squadron',
