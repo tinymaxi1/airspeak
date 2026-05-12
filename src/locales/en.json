@@ -201,6 +201,8 @@
       "continue": "Continue",
       "rolePilot": "Pilot",
       "rolePilotDesc": "Cockpit, ATC, ICAO Level 4",
+      "roleAtc": "Air Traffic Controller",
+      "roleAtcDesc": "Tower, approach, area control",
       "roleCabin": "Cabin Crew",
       "roleCabinDesc": "PA, safety demo, interview prep",
       "roleTech": "Aircraft Technician",

@@ -38,6 +38,7 @@ function getRoleInterview(a: AirlineRow, role: UserRole | null): AirlineIntervie
   if (!role) return null;
   switch (role) {
     case 'pilot': return a.pilot_interview;
+    case 'atc': return a.pilot_interview;
     case 'cabin': return a.cabin_interview;
     case 'technician': return a.technician_interview;
     case 'ground': return a.ground_interview;
@@ -73,6 +74,7 @@ const REGION_FILTERS: { id: AirlineRegion | 'all'; label: string; emoji: string 
 
 const ROLE_LABELS: Record<UserRole, string> = {
   pilot: 'Pilot',
+  atc: 'Hava Trafik Kontrolör',
   cabin: 'Kabin',
   technician: 'Teknisyen',
   ground: 'Yer Hizmetleri',

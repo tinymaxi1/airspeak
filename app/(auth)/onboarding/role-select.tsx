@@ -50,6 +50,7 @@ interface RoleSpec {
 
 const ROLES: RoleSpec[] = [
   { id: 'pilot', icon: '✈', code: 'PIL', accent: '#E63946', tk: 'rolePilot', dk: 'rolePilotDesc' },
+  { id: 'atc', icon: '🗼', code: 'ATC', accent: '#FF6B35', tk: 'roleAtc', dk: 'roleAtcDesc' },
   { id: 'cabin', icon: '🎧', code: 'CAB', accent: '#7C5CFF', tk: 'roleCabin', dk: 'roleCabinDesc' },
   { id: 'technician', icon: '⚙', code: 'TEC', accent: '#2EA8FF', tk: 'roleTech', dk: 'roleTechDesc' },
   { id: 'ground', icon: '💼', code: 'GND', accent: '#2DBE6C', tk: 'roleGround', dk: 'roleGroundDesc' },

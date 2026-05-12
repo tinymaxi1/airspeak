@@ -55,6 +55,7 @@ function pickInterview(
   if (!role) return null;
   switch (role) {
     case 'pilot': return airline.pilot_interview;
+    case 'atc': return airline.atc_interview ?? airline.pilot_interview ?? null;
     case 'cabin': return airline.cabin_interview;
     case 'technician': return airline.technician_interview;
     case 'ground': return airline.ground_interview;

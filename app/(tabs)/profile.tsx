@@ -153,6 +153,7 @@ export default function ProfileScreen() {
 
   const roleLabel = {
     pilot: 'Pilot',
+    atc: 'Air Traffic Controller',
     cabin: 'Cabin Crew',
     technician: 'Technician',
     ground: 'Ground Ops',

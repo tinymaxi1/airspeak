@@ -34,7 +34,7 @@ export interface ExercisePair {
   right: string;
 }
 
-export type Role = 'pilot' | 'cabin' | 'technician' | 'ground' | 'student';
+export type Role = 'pilot' | 'atc' | 'cabin' | 'technician' | 'ground' | 'student';
 
 export interface ContentBase {
   id: string;

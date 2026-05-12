@@ -201,6 +201,8 @@
       "continue": "Devam et",
       "rolePilot": "Pilot",
       "rolePilotDesc": "Kokpit, ATC, ICAO Level 4",
+      "roleAtc": "Hava Trafik Kontrolör",
+      "roleAtcDesc": "Kule, yaklaşma, alan kontrolü",
       "roleCabin": "Kabin Ekibi",
       "roleCabinDesc": "PA, güvenlik anonsu, mülakat",
       "roleTech": "Uçak Teknisyeni",
