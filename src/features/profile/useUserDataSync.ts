@@ -127,12 +127,14 @@ export function useUserDataSync(userId: string | null | undefined): { hydrating:
         const profile = pfRes.value.data as unknown as Profile;
         useAuthStore.getState().setProfile(profile);
         // Server-side onboarding_completed source-of-truth.
-        // Reinstall sonrası bu hidrasyon yapıldığında, local persisted
-        // hasCompletedOnboarding=false bile olsa server true ise override eder.
-        if (profile.onboarding_completed === true) {
-          useAuthStore.getState().setOnboardingComplete(true);
+        // - Boolean değer (true VEYA false) gelirse setOnboardingComplete çağrılır.
+        // - Field undefined/null gelirse (eski kayıtlar) DOKUNMA — local flag'i
+        //   olduğu gibi bırak (false data ile aynı user'a yanlış route).
+        if (typeof profile.onboarding_completed === 'boolean') {
+          useAuthStore.getState().setOnboardingComplete(profile.onboarding_completed);
         }
       } else if (pfRes.status === 'rejected') {
+        // Fetch fail — flag'e DOKUNMA (network sorunu, local persist korunsun).
         captureException(pfRes.reason, {
           tags: { hook: 'useUserDataSync', step: 'profile' },
         } as any);

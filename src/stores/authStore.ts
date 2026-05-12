@@ -51,8 +51,22 @@ export const useAuthStore = create<AuthState>()(
       setHasSeenTour: (seen) => set({ hasSeenTour: seen }),
       setPremium: (premium) => set({ isPremium: premium }),
       setHydrating: (hydrating) => set({ hydrating }),
+      // Sprint 14.C HOTFIX — hasCompletedOnboarding + hasSeenTour KORUNUR.
+      // Sebep: logout → false set ederdik → re-login render'da false okunur
+      // → router onboarding'e gönderir → useUserDataSync server fetch yetişmez
+      // (race condition). Çözüm: flag persisted kalır, server fetch sonrası
+      // useUserDataSync gerçek değeri set eder (true ya da false).
+      // isPremium GÜVENLİK için reset edilir (logout'ta premium gözükmesin).
       reset: () =>
-        set({ session: null, user: null, profile: null, hasCompletedOnboarding: false, hasSeenTour: false, isPremium: false, hydrating: false }),
+        set((state) => ({
+          session: null,
+          user: null,
+          profile: null,
+          hasCompletedOnboarding: state.hasCompletedOnboarding,
+          hasSeenTour: state.hasSeenTour,
+          isPremium: false,
+          hydrating: false,
+        })),
     }),
     {
       name: 'airspeak-auth',
