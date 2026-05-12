@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useAuthStore } from '@/stores/authStore';
 import { track } from '@/lib/posthog';
+import { supabase } from '@/lib/supabase';
 import {
   HHero,
   Body,
@@ -50,12 +51,33 @@ export default function GoalsScreen() {
 
   const handleFinish = () => {
     setDailyGoal(selected);
-    setOnboardingComplete(true);
+    setOnboardingComplete(true); // optimistic local — UX kesintisiz
     track('onboarding_completed', {
       role: role ?? null,
       level: placement?.level ?? null,
       daily_goal: selected,
     });
+    // Server-side mark + daily_goal persist (fire-and-forget; reinstall'da
+    // useUserDataSync onboarding_completed=true görür, kullanıcı direkt home).
+    // Sprint 14.C — onboarding state cross-device persistence.
+    void (async () => {
+      try {
+        await (supabase as any).rpc('mark_onboarding_completed');
+      } catch {
+        // best-effort; local zaten true, app çalışır.
+      }
+      try {
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          await supabase
+            .from('profiles')
+            .update({ daily_goal_minutes: selected })
+            .eq('id', userId);
+        }
+      } catch {
+        // best-effort; goal local store'da kayıtlı.
+      }
+    })();
     // Goals → profile-setup (Sprint 3c-A) → tour → home
     router.replace('/(auth)/onboarding/profile-setup');
   };
