@@ -52,6 +52,7 @@ import { useBadgeWatcher } from '@/features/badges/useBadgeWatcher';
 import { PaywallTriggerSheet } from '@/components/paywall/PaywallTriggerSheet';
 import { useWalletMigration } from '@/features/wallet/useWalletMigration';
 import { useLastActiveHeartbeat } from '@/features/social/presence';
+import { useUserDataSync } from '@/features/profile/useUserDataSync';
 import { useTrialEndingPaywall } from '@/features/trial/api';
 import { useAuthStore } from '@/stores/authStore';
 import { useThemeStore } from '@/stores/themeStore';
@@ -109,6 +110,10 @@ function RootLayoutInner() {
 
   // Last-active heartbeat — sosyal kanıt (son 24h aktif sayısı) için DB bump
   useLastActiveHeartbeat();
+
+  // Login / app reopen sonrası: server'dan XP, streak, completed lessons hydrate.
+  // Cihaz değişimi/uninstall sonrası progress kaybolmasın diye kritik.
+  useUserDataSync(userId);
 
   // Trial 1 gün/0 gün kala client-side paywall (push trigger'a ek olarak)
   const trialUserId = useAuthStore((s) => s.user?.id);

@@ -13,6 +13,14 @@ interface ProgressState {
   markLessonCompleted: (lessonId: string, score: number) => void;
   isCompleted: (lessonId: string) => boolean;
   getCompletedSet: () => Set<string>;
+  /**
+   * Server'dan gelen progress'le local state'i birleştir.
+   * Server source-of-truth — yarış durumlarında server tarafı kazanır:
+   *   - completedLessonIds: union (server + local, dedup)
+   *   - bestScores: per-lesson MAX(server, local)
+   * Cihaz değişimi / uninstall sonrası login'de çağrılır.
+   */
+  hydrateFromServer: (snapshot: { completedLessonIds: string[]; bestScores: Record<string, number> }) => void;
   reset: () => void;
 }
 
@@ -41,6 +49,17 @@ export const useProgressStore = create<ProgressState>()(
 
       isCompleted: (lessonId) => get().completedLessonIds.includes(lessonId),
       getCompletedSet: () => new Set(get().completedLessonIds),
+
+      hydrateFromServer: (snapshot) => {
+        const localIds = get().completedLessonIds;
+        const merged = Array.from(new Set([...localIds, ...snapshot.completedLessonIds]));
+        const localScores = get().bestScores;
+        const mergedScores: Record<string, number> = { ...localScores };
+        for (const [id, score] of Object.entries(snapshot.bestScores)) {
+          mergedScores[id] = Math.max(mergedScores[id] ?? 0, score);
+        }
+        set({ completedLessonIds: merged, bestScores: mergedScores });
+      },
 
       reset: () => set({ completedLessonIds: [], bestScores: {} }),
     }),
