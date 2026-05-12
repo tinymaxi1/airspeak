@@ -258,8 +258,14 @@
   const params = new URLSearchParams(window.location.search);
   const fragment = new URLSearchParams(window.location.hash.slice(1));
 
-  const token = params.get('token') || params.get('token_hash') || fragment.get('access_token');
-  const type = params.get('type') || fragment.get('type') || 'signup';
+  // Supabase /auth/v1/verify GET endpoint çağrıldıktan sonra buraya redirect yapar:
+  // SUCCESS → URL fragment'ta access_token + refresh_token + type
+  // ERROR   → URL query string'te error + error_description
+  // Sayfanın işi sadece state göstermek + deep link açmak — verify POST yapmıyoruz.
+
+  const accessToken = fragment.get('access_token');
+  const refreshToken = fragment.get('refresh_token');
+  const type = fragment.get('type') || params.get('type') || 'signup';
   const errorParam = params.get('error') || fragment.get('error');
   const errorDescription = params.get('error_description') || fragment.get('error_description');
 
@@ -275,60 +281,29 @@
     setState('error');
   }
 
-  async function verify() {
-    // Already has error from Supabase redirect?
+  function handleVerify() {
     if (errorParam) {
       showError(errorDescription || errorParam);
       return;
     }
 
-    if (!token) {
-      showError('Geçersiz link — token parametresi eksik.');
+    if (!accessToken) {
+      showError('Geçersiz link — token bilgisi yok veya linkin süresi dolmuş.');
       return;
     }
 
-    try {
-      // Call Supabase verify endpoint
-      // Note: Supabase /auth/v1/verify GET endpoint handles this with redirect.
-      // We use the token_hash POST endpoint for cleaner flow.
+    setState('success');
 
-      const SUPABASE_URL = 'https://neinhbkdctjtyyoskxpg.supabase.co';
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5laW5oYmtkY3RqdHl5b3NreHBnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4MzU1ODYsImV4cCI6MjA2MTQxMTU4Nn0.YYj3MGV4Iz_98DD8gzZQq8KX9P-WdMs-fjUMUFu5SnA';
-
-      const response = await fetch(`${SUPABASE_URL}/auth/v1/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': ANON_KEY,
-        },
-        body: JSON.stringify({
-          type: type,
-          token: token,
-        }),
-      });
-
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error_description || errData.msg || `HTTP ${response.status}`);
-      }
-
-      // Verification successful
-      setState('success');
-
-      // Auto-open app after 800ms (Universal Link)
-      setTimeout(() => {
-        const deepLink = type === 'recovery'
-          ? 'airspeak://(auth)/reset-password?token=' + encodeURIComponent(token)
-          : 'airspeak://onboarding/role-select';
-        window.location.href = deepLink;
-      }, 800);
-    } catch (e) {
-      showError(e.message || 'Doğrulama başarısız.');
-    }
+    // Auto-open app: deep link app'i açar, tokens query param ile aktar.
+    setTimeout(() => {
+      const deepLink = type === 'recovery'
+        ? `airspeak://(auth)/reset-password?access_token=${encodeURIComponent(accessToken)}&refresh_token=${encodeURIComponent(refreshToken || '')}`
+        : `airspeak://(auth)/auth-callback?access_token=${encodeURIComponent(accessToken)}&refresh_token=${encodeURIComponent(refreshToken || '')}&type=${encodeURIComponent(type)}`;
+      window.location.href = deepLink;
+    }, 800);
   }
 
-  // Run on load
-  verify();
+  handleVerify();
 </script>
 
 </body>

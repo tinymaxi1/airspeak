@@ -97,15 +97,17 @@ function tr(actionType: EmailPayload['email_data']['email_action_type']): {
 }
 
 function buildVerifyUrl(p: EmailPayload): string {
-  const { token_hash, email_action_type, redirect_to } = p.email_data;
-  // Universal Link: airspeak.app/auth/verify — iOS/Android otomatik app açar
-  const base = 'https://airspeak.app/auth/verify';
+  const { token_hash, email_action_type } = p.email_data;
+  // Supabase GET verify endpoint — token'ı doğrular + session oluşturur + redirect_to'ya
+  // hash fragment ile access_token & refresh_token yollar.
+  // verify.html bunu okuyup deep link açar.
+  const SUPABASE_URL = 'https://neinhbkdctjtyyoskxpg.supabase.co';
   const params = new URLSearchParams({
     token_hash,
     type: email_action_type === 'signup' ? 'signup' : email_action_type,
-    next: redirect_to || '/',
+    redirect_to: 'https://airspeak.app/auth/verify',
   });
-  return `${base}?${params.toString()}`;
+  return `${SUPABASE_URL}/auth/v1/verify?${params.toString()}`;
 }
 
 function renderHTML(p: EmailPayload, t: ReturnType<typeof tr>, verifyUrl: string): string {
