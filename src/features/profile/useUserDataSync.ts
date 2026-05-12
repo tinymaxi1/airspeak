@@ -29,12 +29,18 @@ export function useUserDataSync(userId: string | null | undefined): { hydrating:
   const [hydrating, setHydrating] = useState(false);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      // Logout veya henüz login yok — hydrating global'i false'a çek.
+      useAuthStore.getState().setHydrating(false);
+      return;
+    }
     const uid = userId; // closure-safe narrowing for TS
     let cancelled = false;
 
     async function run() {
       setHydrating(true);
+      // Global hydrating flag — Router (app/index.tsx) bunu okur, splash gösterir.
+      useAuthStore.getState().setHydrating(true);
       const results = await Promise.allSettled([
         // 1) XP summary
         supabase
@@ -132,7 +138,10 @@ export function useUserDataSync(userId: string | null | undefined): { hydrating:
         } as any);
       }
 
-      if (!cancelled) setHydrating(false);
+      if (!cancelled) {
+        setHydrating(false);
+        useAuthStore.getState().setHydrating(false);
+      }
     }
 
     void run();

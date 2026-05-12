@@ -16,6 +16,7 @@ import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useAuthStore } from '@/stores/authStore';
 import { track } from '@/lib/posthog';
 import { supabase } from '@/lib/supabase';
+import { captureException } from '@/lib/sentry';
 import {
   HHero,
   Body,
@@ -49,7 +50,7 @@ export default function GoalsScreen() {
   const setOnboardingComplete = useAuthStore((s) => s.setOnboardingComplete);
   const [selected, setSelected] = useState<GoalOption['mins']>(15);
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     setDailyGoal(selected);
     setOnboardingComplete(true); // optimistic local — UX kesintisiz
     track('onboarding_completed', {
@@ -57,27 +58,43 @@ export default function GoalsScreen() {
       level: placement?.level ?? null,
       daily_goal: selected,
     });
-    // Server-side mark + daily_goal persist (fire-and-forget; reinstall'da
-    // useUserDataSync onboarding_completed=true görür, kullanıcı direkt home).
-    // Sprint 14.C — onboarding state cross-device persistence.
-    void (async () => {
-      try {
-        await (supabase as any).rpc('mark_onboarding_completed');
-      } catch {
-        // best-effort; local zaten true, app çalışır.
+
+    // Server-side mark + daily_goal persist — AWAIT EDİYORUZ.
+    // Sebep: fire-and-forget pattern'da hızlı router.replace sonrası
+    // RPC iptal olabiliyor (network kötü/timing) → sunucu'da
+    // onboarding_completed = false kalıyor → re-login'de onboarding'e
+    // geri dönüş bug'ı. Fix: timeout korumalı await (max 3sn).
+    //
+    // Hata olursa Sentry'ye yaz, UX bloklamadan devam et — local TRUE.
+    const rpcWithTimeout = Promise.race([
+      (supabase as any).rpc('mark_onboarding_completed'),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('mark_onboarding_completed timeout')), 3000),
+      ),
+    ]);
+
+    try {
+      await rpcWithTimeout;
+    } catch (e) {
+      captureException(e, {
+        tags: { feature: 'onboarding', step: 'mark_completed' },
+      } as any);
+    }
+
+    try {
+      const userId = useAuthStore.getState().user?.id;
+      if (userId) {
+        await supabase
+          .from('profiles')
+          .update({ daily_goal_minutes: selected })
+          .eq('id', userId);
       }
-      try {
-        const userId = useAuthStore.getState().user?.id;
-        if (userId) {
-          await supabase
-            .from('profiles')
-            .update({ daily_goal_minutes: selected })
-            .eq('id', userId);
-        }
-      } catch {
-        // best-effort; goal local store'da kayıtlı.
-      }
-    })();
+    } catch (e) {
+      captureException(e, {
+        tags: { feature: 'onboarding', step: 'persist_goal' },
+      } as any);
+    }
+
     // Goals → profile-setup (Sprint 3c-A) → tour → home
     router.replace('/(auth)/onboarding/profile-setup');
   };
