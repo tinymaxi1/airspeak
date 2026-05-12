@@ -7,7 +7,7 @@
  * - markRead(ids?), markAllRead(), deleteNotification(id, source)
  * - routeFromKind: deep link mapping (push tap + in-app row tap)
  */
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useId } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export type NotificationSource = 'log' | 'community';
@@ -108,11 +108,15 @@ export function useNotifications(userId: string | null | undefined): {
     setLoading(false);
   }, [userId]);
 
+  // Unique channel name per hook instance — React Strict Mode + multi-component
+  // safe. Aynı userId için TabsLayout + HomeScreen ikisi de useNotifications
+  // çağırırsa, aynı channel adı ile collision olur (REACT-NATIVE-4,5 crash).
+  const instanceId = useId();
   useEffect(() => {
     void load();
     if (!userId) return;
     const ch = supabase
-      .channel(`notif_unified_${userId}`)
+      .channel(`notif_unified_${userId}_${instanceId}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'notification_log', filter: `user_id=eq.${userId}` },
@@ -127,7 +131,7 @@ export function useNotifications(userId: string | null | undefined): {
     return () => {
       void supabase.removeChannel(ch);
     };
-  }, [userId, load]);
+  }, [userId, load, instanceId]);
 
   const unreadCount = rows.filter((r) => !r.read_at).length;
   return { rows, loading, refresh: load, unreadCount };
@@ -171,6 +175,9 @@ export async function markNotificationTapped(item: UnifiedNotification): Promise
 // ─── Unread count (Sprint 5.D için) ───────────────────────────────────────
 export function useUnreadCount(userId: string | null | undefined): number {
   const [count, setCount] = useState(0);
+  // Unique channel id per hook instance — TabsLayout + HomeScreen iki kez
+  // çağırsa bile channel collision olmaz.
+  const instanceId = useId();
 
   useEffect(() => {
     if (!userId) {
@@ -183,7 +190,7 @@ export function useUnreadCount(userId: string | null | undefined): number {
     };
     void fetchCount();
     const ch = supabase
-      .channel(`unread_count_${userId}`)
+      .channel(`unread_count_${userId}_${instanceId}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'notification_log', filter: `user_id=eq.${userId}` },
@@ -198,7 +205,7 @@ export function useUnreadCount(userId: string | null | undefined): number {
     return () => {
       void supabase.removeChannel(ch);
     };
-  }, [userId]);
+  }, [userId, instanceId]);
 
   return count;
 }
