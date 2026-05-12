@@ -256,6 +256,27 @@
     },
     "home": {
       "greeting": "Good morning, aviator.",
+      "contentTypes": {
+        "word": "WORD OF THE DAY",
+        "phrase": "PHRASE OF THE DAY",
+        "sentence": "SENTENCE OF THE DAY",
+        "dialogue": "DIALOGUE OF THE DAY",
+        "tip": "TIP OF THE DAY"
+      },
+      "wordTypes": {
+        "noun": "noun",
+        "verb": "verb",
+        "adj": "adjective",
+        "adv": "adverb",
+        "phrase": "phrase",
+        "abbr": "abbreviation",
+        "dialogue": "dialogue",
+        "tip": "tip"
+      },
+      "wordOfDaySubtitle": "Role-specific · refreshes daily",
+      "wordOfDayLoadError": "Could not load content",
+      "wordOfDayEmpty": "New content coming soon",
+      "wordOfDayListen": "Listen pronunciation",
       "fastPractice": "FAST PRACTICE — 90 SEC",
       "fastPracticeSub": "Short, focused sessions — perfect for a break",
       "todaySub": "3 quick tasks picked for today (5-15 min)",

@@ -41,10 +41,12 @@ import {
   Card3D,
 } from '@/components/airspeak';
 import { TabletShell } from '@/components/tablet';
+import * as Speech from 'expo-speech';
+import { useWordOfTheDay } from '@/features/words/useWordOfTheDay';
 
 export default function HomeScreen() {
   const c = usePalette();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const placement = useOnboardingStore((s) => s.placementResult);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
@@ -67,17 +69,19 @@ export default function HomeScreen() {
   const recentList = useActivityStore((s) => s.recent);
   const recentActivity = useMemo(() => recentList.slice(0, 3), [recentList]);
 
+  const userId = useAuthStore((s) => s.user?.id);
+  const profile = useAuthStore((s) => s.profile);
+  const unreadCount = useUnreadCount(userId);
+  const { data: wordOfDay, isLoading: wodLoading, error: wodError, refetch: refetchWod } = useWordOfTheDay();
+
   // Pull-to-refresh: Zustand snapshot'larının fresh okunması için kısa bir bekleme yeter.
   // Persisted store'lar zaten hot-reload, bu sadece kullanıcıya "yenilendi" hissi verir.
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    void refetchWod();
     setTimeout(() => setRefreshing(false), 600);
-  }, []);
-
-  const userId = useAuthStore((s) => s.user?.id);
-  const profile = useAuthStore((s) => s.profile);
-  const unreadCount = useUnreadCount(userId);
+  }, [refetchWod]);
 
   // Saate göre selamlama + isim (full_name'in ilk kelimesi).
   // Fallback chain: full_name → "havacı" / "aviator" (i18n)
@@ -685,66 +689,167 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
 
-        {/* Word of the flight */}
-        <Eyebrow style={{ marginTop: 18 }}>{t('screens.home.wordOfFlight')}</Eyebrow>
-        <Body color="#8A93A6" style={{ fontSize: 11, marginTop: 4, marginBottom: 4, lineHeight: 15 }}>
-          {t('screens.home.wordOfFlightSub', 'Her gün yeni bir havacılık terimi')}
-        </Body>
-        <Card3D style={{ marginTop: 8 }}>
-          <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  fontFamily: FONTS.display,
-                  fontSize: 30,
-                  fontWeight: '700',
-                  letterSpacing: -0.6,
-                  color: '#0E1116',
-                }}
-              >
-                squawk
-              </Text>
-              <Mono style={{ fontSize: 12, color: '#8A93A6', marginTop: -2 }}>
-                /skwɒk/ · verb
-              </Mono>
-              <Body style={{ fontSize: 14, marginTop: 8 }}>
-                To set a 4-digit transponder code as instructed by ATC.
+        {/* Günün İçeriği — rol bazlı DB (Sprint 14.D Faz D) */}
+        {(() => {
+          // Locale'a göre içerik seçimi (TR ise TR ana + EN ikincil, EN ise tersi)
+          const isTr = i18n.language === 'tr';
+          const dynamicEyebrow = wordOfDay
+            ? t(`screens.home.contentTypes.${wordOfDay.content_type}`, t('screens.home.wordOfFlight'))
+            : t('screens.home.wordOfFlight');
+
+          // 🔊 buton: önce DB audio_url, yoksa expo-speech fallback
+          const playWord = () => {
+            if (!wordOfDay) return;
+            Speech.stop();
+            Speech.speak(wordOfDay.word_or_phrase, {
+              language: 'en-US',
+              rate: 0.85,
+              pitch: 1.0,
+            });
+          };
+          const playExample = () => {
+            if (!wordOfDay) return;
+            Speech.stop();
+            Speech.speak(wordOfDay.example_en, {
+              language: 'en-US',
+              rate: 0.9,
+              pitch: 1.0,
+            });
+          };
+
+          return (
+            <>
+              <Eyebrow style={{ marginTop: 18 }}>{dynamicEyebrow}</Eyebrow>
+              <Body color="#8A93A6" style={{ fontSize: 11, marginTop: 4, marginBottom: 4, lineHeight: 15 }}>
+                {t('screens.home.wordOfDaySubtitle', 'Rolüne özel · her gün yenilenir')}
               </Body>
-              <View
-                style={{
-                  borderLeftWidth: 3,
-                  borderLeftColor: '#E63946',
-                  paddingLeft: 10,
-                  marginTop: 8,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: FONTS.body,
-                    fontSize: 13,
-                    fontStyle: 'italic',
-                    color: '#0E1116',
-                  }}
-                >
-                  "Turkish 1453, squawk 7421."
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              activeOpacity={0.85}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                backgroundColor: '#0F1E47',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text style={{ color: '#FFFFFF', fontSize: 18 }}>🔊</Text>
-            </TouchableOpacity>
-          </View>
-        </Card3D>
+              <Card3D style={{ marginTop: 8 }}>
+                {wodLoading ? (
+                  // ── Loading skeleton ────────────────────────────────
+                  <View style={{ minHeight: 120, justifyContent: 'center' }}>
+                    <View style={{ height: 28, width: '60%', backgroundColor: '#E5E8EF', borderRadius: 6 }} />
+                    <View style={{ height: 12, width: '40%', backgroundColor: '#F0F2F7', borderRadius: 4, marginTop: 8 }} />
+                    <View style={{ height: 12, width: '90%', backgroundColor: '#F0F2F7', borderRadius: 4, marginTop: 12 }} />
+                    <View style={{ height: 12, width: '70%', backgroundColor: '#F0F2F7', borderRadius: 4, marginTop: 4 }} />
+                  </View>
+                ) : wodError ? (
+                  // ── Error state ─────────────────────────────────────
+                  <Body color="#8A93A6" style={{ fontSize: 13, textAlign: 'center', paddingVertical: 24 }}>
+                    {t('screens.home.wordOfDayLoadError', 'İçerik yüklenemedi')}
+                  </Body>
+                ) : !wordOfDay ? (
+                  // ── Empty state ─────────────────────────────────────
+                  <Body color="#8A93A6" style={{ fontSize: 13, textAlign: 'center', paddingVertical: 24 }}>
+                    {t('screens.home.wordOfDayEmpty', 'Yakında yeni içerik')}
+                  </Body>
+                ) : (
+                  // ── Data state ──────────────────────────────────────
+                  <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        style={{
+                          fontFamily: FONTS.display,
+                          fontSize: 28,
+                          fontWeight: '700',
+                          letterSpacing: -0.6,
+                          color: '#0E1116',
+                        }}
+                      >
+                        {wordOfDay.word_or_phrase}
+                      </Text>
+                      {(wordOfDay.ipa || wordOfDay.word_type) && (
+                        <Mono style={{ fontSize: 12, color: '#8A93A6', marginTop: 0 }}>
+                          {wordOfDay.ipa ? `${wordOfDay.ipa}` : ''}
+                          {wordOfDay.ipa && wordOfDay.word_type ? ' · ' : ''}
+                          {wordOfDay.word_type
+                            ? t(`screens.home.wordTypes.${wordOfDay.word_type}`, wordOfDay.word_type)
+                            : ''}
+                        </Mono>
+                      )}
+                      <Body style={{ fontSize: 14, marginTop: 8, lineHeight: 19 }}>
+                        {isTr ? wordOfDay.definition_tr : wordOfDay.definition_en}
+                      </Body>
+                      {/* Secondary lang (gri, küçük) */}
+                      <Body color="#8A93A6" style={{ fontSize: 12, marginTop: 4, lineHeight: 16 }}>
+                        {isTr ? wordOfDay.definition_en : wordOfDay.definition_tr}
+                      </Body>
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={playExample}
+                        style={{
+                          borderLeftWidth: 3,
+                          borderLeftColor: '#E63946',
+                          paddingLeft: 10,
+                          marginTop: 10,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: FONTS.body,
+                            fontSize: 13,
+                            fontStyle: 'italic',
+                            color: '#0E1116',
+                          }}
+                        >
+                          "{isTr ? wordOfDay.example_tr : wordOfDay.example_en}"
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: FONTS.body,
+                            fontSize: 11,
+                            fontStyle: 'italic',
+                            color: '#8A93A6',
+                            marginTop: 2,
+                          }}
+                        >
+                          "{isTr ? wordOfDay.example_en : wordOfDay.example_tr}"
+                        </Text>
+                      </TouchableOpacity>
+                      {/* Difficulty dots */}
+                      <View style={{ flexDirection: 'row', gap: 4, marginTop: 10, alignItems: 'center' }}>
+                        {[1, 2, 3].map((n) => {
+                          const filled =
+                            (wordOfDay.difficulty === 'basic' && n === 1) ||
+                            (wordOfDay.difficulty === 'intermediate' && n <= 2) ||
+                            wordOfDay.difficulty === 'advanced';
+                          return (
+                            <View
+                              key={n}
+                              style={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: 3,
+                                backgroundColor: filled ? '#E63946' : '#E5E8EF',
+                              }}
+                            />
+                          );
+                        })}
+                        <Text style={{ fontSize: 10, color: '#8A93A6', marginLeft: 4, fontFamily: FONTS.mono }}>
+                          {wordOfDay.difficulty}
+                        </Text>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      activeOpacity={0.85}
+                      onPress={playWord}
+                      accessibilityLabel={t('screens.home.wordOfDayListen', 'Telaffuzu dinle')}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 22,
+                        backgroundColor: '#0F1E47',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Text style={{ color: '#FFFFFF', fontSize: 18 }}>🔊</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </Card3D>
+            </>
+          );
+        })()}
       </ScrollView>
     </View>
     </TabletShell>
