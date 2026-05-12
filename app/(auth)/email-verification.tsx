@@ -251,7 +251,7 @@ export default function EmailVerificationScreen() {
           <Text style={{ flex: 1, fontSize: 12, color: '#0F1E47', lineHeight: 17 }}>
             {t(
               'screens.emailVerification.spamHint',
-              'Mail görünmüyorsa Spam ve Promosyonlar klasörünü kontrol et. Gönderen: noreply@supabase.io',
+              'Mail görünmüyorsa Spam ve Promosyonlar klasörünü kontrol et. Gönderen: noreply@airspeak.app',
             )}
           </Text>
         </View>

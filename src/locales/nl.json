@@ -704,7 +704,7 @@
       "body": "We sent a verification link to {{email}}. Open your inbox, tap the link — you'll be redirected automatically.",
       "sentTo": "SENT TO",
       "autoCheck": "AUTO-CHECK · WILL CONTINUE WHEN VERIFIED",
-      "spamHint": "If you don't see the email, check Spam and Promotions. Sender: noreply@supabase.io",
+      "spamHint": "If you don't see the email, check Spam and Promotions. Sender: noreply@airspeak.app",
       "resend": "Resend email",
       "resendCooldown": "Resend ({{sec}})",
       "resendError": "Could not send email",

@@ -704,7 +704,7 @@
       "body": "{{email}} adresine doğrulama linki gönderdik. Mail kutunu aç, linke dokun — otomatik geri döneceksin.",
       "sentTo": "GÖNDERİLDİ",
       "autoCheck": "OTOMATIK KONTROL · DOĞRULAMA YAPINCA GEÇER",
-      "spamHint": "Mail görünmüyorsa Spam ve Promosyonlar klasörünü kontrol et. Gönderen: noreply@supabase.io",
+      "spamHint": "Mail görünmüyorsa Spam ve Promosyonlar klasörünü kontrol et. Gönderen: noreply@airspeak.app",
       "resend": "Maili tekrar gönder",
       "resendCooldown": "Tekrar gönder ({{sec}})",
       "resendError": "Mail gönderilemedi",
