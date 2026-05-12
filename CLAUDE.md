@@ -53,6 +53,26 @@
 | Admin | Tailwind | latest |
 | DB | PostgreSQL | Supabase 14.5 |
 
+## 🔑 Hesap bilgileri (KARIŞTIRMA — her zaman tinymaxi1 kullan)
+
+**GitHub:**
+- ✅ **`tinymaxi1`** → AirSpeak ANA HESAP (repo sahibi: `github.com/tinymaxi1/airspeak`)
+  - Email: **`tatildetatilcom@gmail.com`**
+  - **Her GitHub işleminde sadece bu hesabı kullan.** Kullanıcıya başka hesaba geçmediğinden emin olmasını her seferinde hatırlat.
+- ❌ `mirissalabkozm...` → başka iş (kozmetik) — AirSpeak ile karıştırma
+- ❌ `ozlemkesifte` → eski/kişisel — AirSpeak ile karıştırma
+
+GitHub'a giriş yapacaksa: önce sağ üst avatardan **`tinymaxi1` aktif mi kontrol et**, değilse account switcher veya sign out → login.
+
+**Apple Developer:**
+- Team ID: `7964PXR27N` (MIRISSA KOZMETIK VE TICARET LIMITED SIRKETI)
+- Apple ID (ASC): `kesfegel@gmail.com`
+- ASC App ID: `6766981661`
+
+**Supabase:** (aşağıda detay)
+
+---
+
 ## Supabase project
 
 - **Ref**: `neinhbkdctjtyyoskxpg`
