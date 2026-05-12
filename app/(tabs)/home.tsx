@@ -101,6 +101,17 @@ export default function HomeScreen() {
           ? `İyi günler, ${firstName}.`
           : `İyi akşamlar, ${firstName}.`;
   const greeting = t(greetingKey, { name: firstName, defaultValue: greetingDefault });
+
+  // Avatar baş harf(ler)i: tek kelime → "K", iki+ kelime → "KD"
+  // avatar_url varsa Avatar component zaten foto'yu render eder, initial sadece fallback.
+  const avatarInitials = (() => {
+    const name = profile?.full_name?.trim();
+    if (!name) return 'P';
+    const words = name.split(/\s+/).filter(Boolean);
+    if (words.length === 0) return 'P';
+    if (words.length === 1) return words[0]!.charAt(0).toUpperCase();
+    return (words[0]!.charAt(0) + words[words.length - 1]!.charAt(0)).toUpperCase();
+  })();
   const streak = useGamificationStore((s) => s.currentStreak ?? 0);
   const hearts = useGamificationStore((s) => s.hearts ?? 5);
   const xp = useGamificationStore((s) => s.totalXp ?? 0);
@@ -245,7 +256,12 @@ export default function HomeScreen() {
                     </View>
                   )}
                 </TouchableOpacity>
-                <Avatar initials="EK" color="#E63946" size={44} />
+                <Avatar
+                  initials={avatarInitials}
+                  imageUrl={profile?.avatar_url ?? undefined}
+                  color="#E63946"
+                  size={44}
+                />
               </View>
             </View>
 
