@@ -54,6 +54,9 @@ export interface Profile {
   timezone: string;
   active_hours: number[];
   is_student: boolean;
+  /** Sprint 14.C — server source of truth. role + level seçildikten sonra true. */
+  onboarding_completed?: boolean;
+  onboarding_completed_at?: string | null;
   created_at: string;
   updated_at: string;
 }

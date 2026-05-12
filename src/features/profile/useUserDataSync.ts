@@ -19,9 +19,11 @@
  */
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { captureException } from '@/lib/sentry';
+import type { Profile } from '@/types/profile';
 
 export function useUserDataSync(userId: string | null | undefined): { hydrating: boolean } {
   const [hydrating, setHydrating] = useState(false);
@@ -51,6 +53,14 @@ export function useUserDataSync(userId: string | null | undefined): { hydrating:
           .from('user_lesson_progress')
           .select('lesson_id, score')
           .eq('user_id', uid),
+        // 4) Profile (Sprint 14.C — onboarding_completed server source of truth)
+        supabase
+          .from('profiles')
+          .select(
+            'id, username, full_name, avatar_url, role, level, daily_goal_minutes, timezone, active_hours, is_student, onboarding_completed, onboarding_completed_at, created_at, updated_at',
+          )
+          .eq('id', uid)
+          .maybeSingle(),
       ]);
 
       if (cancelled) return;
@@ -100,6 +110,25 @@ export function useUserDataSync(userId: string | null | undefined): { hydrating:
       } else if (lpRes.status === 'rejected') {
         captureException(lpRes.reason, {
           tags: { hook: 'useUserDataSync', step: 'lesson_progress' },
+        } as any);
+      }
+
+      // ── Profile hydrate (Sprint 14.C — onboarding state) ──
+      // Supabase generated types henüz onboarding_completed kolonunu bilmiyor
+      // (regenerate edilmemiş) — `unknown` üzerinden Profile'a cast.
+      const pfRes = results[3];
+      if (pfRes.status === 'fulfilled' && pfRes.value.data) {
+        const profile = pfRes.value.data as unknown as Profile;
+        useAuthStore.getState().setProfile(profile);
+        // Server-side onboarding_completed source-of-truth.
+        // Reinstall sonrası bu hidrasyon yapıldığında, local persisted
+        // hasCompletedOnboarding=false bile olsa server true ise override eder.
+        if (profile.onboarding_completed === true) {
+          useAuthStore.getState().setOnboardingComplete(true);
+        }
+      } else if (pfRes.status === 'rejected') {
+        captureException(pfRes.reason, {
+          tags: { hook: 'useUserDataSync', step: 'profile' },
         } as any);
       }
 
