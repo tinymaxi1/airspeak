@@ -102,6 +102,16 @@ export default function HomeScreen() {
           : `İyi akşamlar, ${firstName}.`;
   const greeting = t(greetingKey, { name: firstName, defaultValue: greetingDefault });
 
+  // Hafta numarası — profile.created_at'tan hesaplanır. Yeni hesap → HAFTA 1.
+  const weekNumber = (() => {
+    const createdAt = profile?.created_at;
+    if (!createdAt) return 1;
+    const ms = Date.now() - new Date(createdAt).getTime();
+    if (!Number.isFinite(ms) || ms < 0) return 1;
+    const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+    return Math.max(1, Math.floor(days / 7) + 1);
+  })();
+
   // Avatar baş harf(ler)i: tek kelime → "K", iki+ kelime → "KD"
   // avatar_url varsa Avatar component zaten foto'yu render eder, initial sadece fallback.
   const avatarInitials = (() => {
@@ -468,7 +478,7 @@ export default function HomeScreen() {
         </Card3D>
 
         {/* Week strip */}
-        <Eyebrow>{t('screens.home.weekRoute', { week: 6, defaultValue: 'HAFTA {{week}} · YOLDA' })}</Eyebrow>
+        <Eyebrow>{t('screens.home.weekRoute', { week: weekNumber, defaultValue: 'HAFTA {{week}} · YOLDA' })}</Eyebrow>
         <Card3D style={{ padding: 14, marginTop: 8, marginBottom: 18 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
             {((t('screens.home.weekDays', { returnObjects: true, defaultValue: ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'] }) as string[])).map((d, i) => {
