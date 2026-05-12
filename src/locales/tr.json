@@ -254,6 +254,11 @@
     },
     "home": {
       "greeting": "Günaydın, havacı.",
+      "greetingMorning": "Günaydın, {{name}}.",
+      "greetingDay": "İyi günler, {{name}}.",
+      "greetingEvening": "İyi akşamlar, {{name}}.",
+      "greetingLateNight": "İyi geceler, {{name}}.",
+      "greetingFallback": "havacı",
       "today": "BUGÜNKÜ UÇUŞ PLANI",
       "weeklyChallenge": "HAFTANIN GÖREVİ",
       "wordOfFlight": "UÇUŞUN KELİMESİ",

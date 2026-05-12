@@ -254,6 +254,11 @@
     },
     "home": {
       "greeting": "Good morning, aviator.",
+      "greetingMorning": "Good morning, {{name}}.",
+      "greetingDay": "Good afternoon, {{name}}.",
+      "greetingEvening": "Good evening, {{name}}.",
+      "greetingLateNight": "Good night, {{name}}.",
+      "greetingFallback": "aviator",
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",

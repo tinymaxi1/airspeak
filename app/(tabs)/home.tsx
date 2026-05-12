@@ -76,7 +76,31 @@ export default function HomeScreen() {
   }, []);
 
   const userId = useAuthStore((s) => s.user?.id);
+  const profile = useAuthStore((s) => s.profile);
   const unreadCount = useUnreadCount(userId);
+
+  // Saate göre selamlama + isim (full_name'in ilk kelimesi).
+  // Fallback chain: full_name → "havacı" / "aviator" (i18n)
+  const firstName =
+    profile?.full_name?.trim().split(/\s+/)[0] || t('screens.home.greetingFallback', 'havacı');
+  const hour = new Date().getHours();
+  const greetingKey =
+    hour < 6
+      ? 'screens.home.greetingLateNight'
+      : hour < 12
+        ? 'screens.home.greetingMorning'
+        : hour < 18
+          ? 'screens.home.greetingDay'
+          : 'screens.home.greetingEvening';
+  const greetingDefault =
+    hour < 6
+      ? `İyi geceler, ${firstName}.`
+      : hour < 12
+        ? `Günaydın, ${firstName}.`
+        : hour < 18
+          ? `İyi günler, ${firstName}.`
+          : `İyi akşamlar, ${firstName}.`;
+  const greeting = t(greetingKey, { name: firstName, defaultValue: greetingDefault });
   const streak = useGamificationStore((s) => s.currentStreak ?? 0);
   const hearts = useGamificationStore((s) => s.hearts ?? 5);
   const xp = useGamificationStore((s) => s.totalXp ?? 0);
@@ -153,7 +177,7 @@ export default function HomeScreen() {
                     marginTop: 2,
                   }}
                 >
-                  {t('screens.home.greeting')}
+                  {greeting}
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
