@@ -77,15 +77,39 @@ export function ErrorFallback({ error, resetError, eventId }: Props) {
         )}
 
         {eventId && (
-          <Text
+          <View
             style={{
-              fontFamily: FONTS.mono,
-              fontSize: 10,
-              color: 'rgba(255,255,255,0.4)',
+              marginTop: 4,
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              backgroundColor: 'rgba(0,0,0,0.25)',
+              borderRadius: 6,
+              maxWidth: 320,
             }}
           >
-            ID: {eventId.slice(0, 12)}
-          </Text>
+            <Text
+              style={{
+                fontFamily: FONTS.mono,
+                fontSize: 9,
+                color: 'rgba(255,255,255,0.5)',
+                letterSpacing: 0.5,
+                marginBottom: 2,
+              }}
+            >
+              HATA REFERANSI · uzun bas → seç → kopyala
+            </Text>
+            <Text
+              selectable
+              style={{
+                fontFamily: FONTS.mono,
+                fontSize: 11,
+                color: 'rgba(255,255,255,0.85)',
+                lineHeight: 16,
+              }}
+            >
+              {eventId}
+            </Text>
+          </View>
         )}
 
         <View style={{ width: '100%', maxWidth: 320, gap: 8, marginTop: 8 }}>
