@@ -41,8 +41,10 @@ export interface DialogTurn {
 
 export interface ConversationScenario {
   id: string;
-  /** Rol filtresi: 'pilot' / 'cabin' / 'tech' / 'ground' / 'all' */
-  role: 'pilot' | 'cabin' | 'tech' | 'ground' | 'all';
+  /** Rol filtresi: profiles.role değerleri + 'all'.
+   *  UserRole = 'pilot' | 'atc' | 'cabin' | 'technician' | 'ground' | 'student'.
+   *  'all' = her rol için geçerli. */
+  role: 'pilot' | 'atc' | 'cabin' | 'technician' | 'ground' | 'student' | 'all';
   /** ICAO seviye gerekliliği (B1/B2/L4) */
   level: 'B1' | 'B2' | 'L4';
   titleTr: string;

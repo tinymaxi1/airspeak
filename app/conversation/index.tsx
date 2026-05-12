@@ -21,11 +21,15 @@ import { SCENARIOS } from '@/features/conversation/scenarios';
 import { useBookmarkStore } from '@/stores/bookmarkStore';
 import { useCoachMarkStore } from '@/stores/coachMarkStore';
 
+// Tüm 6 UserRole + 'all'. Type mismatch fix (önceden 'tech' kullanılıyordu; profiles.role
+// 'technician' tutuyor → senaryo bulunamıyordu → empty list / crash riski).
 const ROLE_ICONS: Record<string, string> = {
   pilot: '✈',
+  atc: '🗼',
   cabin: '🎧',
-  tech: '⚙',
+  technician: '⚙',
   ground: '💼',
+  student: '🎓',
   all: '🌐',
 };
 
@@ -35,12 +39,15 @@ const LEVEL_BADGE: Record<string, { bg: string; fg: string }> = {
   B1: { bg: '#2DBE6C', fg: '#FFFFFF' },
 };
 
-const ROLE_FILTERS: { value: 'all' | 'pilot' | 'cabin' | 'tech' | 'ground'; label: string }[] = [
+type RoleFilter = 'all' | 'pilot' | 'atc' | 'cabin' | 'technician' | 'ground' | 'student';
+const ROLE_FILTERS: { value: RoleFilter; label: string }[] = [
   { value: 'all', label: 'Tümü' },
   { value: 'pilot', label: '✈ Pilot' },
+  { value: 'atc', label: '🗼 ATC' },
   { value: 'cabin', label: '🎧 Kabin' },
-  { value: 'tech', label: '⚙ Teknisyen' },
+  { value: 'technician', label: '⚙ Teknisyen' },
   { value: 'ground', label: '💼 Yer' },
+  { value: 'student', label: '🎓 Öğrenci' },
 ];
 
 export default function ConversationIndexScreen() {
