@@ -255,6 +255,9 @@
     "home": {
       "greeting": "Günaydın, havacı.",
       "fastPractice": "HIZLI ALIŞTIRMA — 90 SN",
+      "fastPracticeSub": "Kısa, odaklı seanslar — mola arası ideal",
+      "todaySub": "Bugün için seçilmiş 3 hızlı görev (5-15 dk)",
+      "wordOfFlightSub": "Her gün yeni bir havacılık terimi",
       "qReadback": "Telsiz tekrarı",
       "qReadbackSub": "ATC izinleri",
       "qListen": "Dinle & çöz",

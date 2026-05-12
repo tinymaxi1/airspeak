@@ -402,11 +402,14 @@ export default function HomeScreen() {
               borderStyle: 'dashed',
             }}
           >
-            <View>
+            <View style={{ flex: 1, paddingRight: 12 }}>
               <Eyebrow>{t('screens.home.today')}</Eyebrow>
               <Mono style={{ fontSize: 12, fontWeight: '700', marginTop: 4 }}>
                 IST <Text style={{ color: '#8A93A6' }}>—————</Text> JFK
               </Mono>
+              <Body color="#8A93A6" style={{ fontSize: 11, marginTop: 4, lineHeight: 15 }}>
+                {t('screens.home.todaySub', 'Bugün için seçilmiş 3 hızlı görev (5-15 dk)')}
+              </Body>
             </View>
             <Text
               style={{
@@ -592,7 +595,7 @@ export default function HomeScreen() {
               {t('screens.home.careerTitle', 'ICAO 4 · 41 Havayolu · AI')}
             </Text>
             <Mono style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', marginTop: 4 }}>
-              {t('screens.home.careerSub', 'Mülakat + sınav + B2B kohort')}
+              {t('screens.home.careerSub', 'ICAO 4 sınavı + mülakat hazırlığı + havayolu cohort')}
             </Mono>
           </View>
           <Text style={{ fontSize: 22, color: '#FFD56B' }}>›</Text>
@@ -720,6 +723,9 @@ export default function HomeScreen() {
         <Eyebrow style={{ marginTop: dueCount > 0 || recentActivity.length > 0 ? 18 : 0 }}>
           {t('screens.home.fastPractice', 'HIZLI ALIŞTIRMA — 90 SN')}
         </Eyebrow>
+        <Body color="#8A93A6" style={{ fontSize: 11, marginTop: 4, marginBottom: 4, lineHeight: 15 }}>
+          {t('screens.home.fastPracticeSub', 'Kısa, odaklı seanslar — mola arası ideal')}
+        </Body>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
           <QuickCard
             icon="🎙"
@@ -753,6 +759,9 @@ export default function HomeScreen() {
 
         {/* Word of the flight */}
         <Eyebrow style={{ marginTop: 18 }}>{t('screens.home.wordOfFlight')}</Eyebrow>
+        <Body color="#8A93A6" style={{ fontSize: 11, marginTop: 4, marginBottom: 4, lineHeight: 15 }}>
+          {t('screens.home.wordOfFlightSub', 'Her gün yeni bir havacılık terimi')}
+        </Body>
         <Card3D style={{ marginTop: 8 }}>
           <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
             <View style={{ flex: 1 }}>

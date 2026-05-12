@@ -255,6 +255,9 @@
     "home": {
       "greeting": "Good morning, aviator.",
       "fastPractice": "FAST PRACTICE — 90 SEC",
+      "fastPracticeSub": "Short, focused sessions — perfect for a break",
+      "todaySub": "3 quick tasks picked for today (5-15 min)",
+      "wordOfFlightSub": "A new aviation term every day",
       "qReadback": "Read-back drill",
       "qReadbackSub": "ATC clearances",
       "qListen": "Listen & decode",
