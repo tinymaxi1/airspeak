@@ -643,84 +643,11 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
 
-        {/* Recents — kaldığın yer */}
-        {recentActivity.length > 0 && (
-          <>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginTop: dueCount > 0 ? 18 : 0,
-              }}
-            >
-              <Eyebrow>{t('screens.home.recentsEyebrow', 'KALDIĞIN YER')}</Eyebrow>
-            </View>
-            <View style={{ marginTop: 8, gap: 6 }}>
-              {recentActivity.map((a) => (
-                <TouchableOpacity
-                  key={a.id}
-                  activeOpacity={0.85}
-                  onPress={() => {
-                    if (a.type === 'lesson') router.push(`/lesson/${a.refId}`);
-                    else if (a.type === 'conversation')
-                      router.push({
-                        pathname: '/conversation/[scenario]',
-                        params: { scenario: a.refId },
-                      });
-                    else if (a.type === 'pronunciation') router.push(`/pronunciation/${a.refId}`);
-                    else if (a.type === 'srs') router.push('/srs');
-                    else if (a.type === 'exam') router.push('/exam/icao4');
-                    else if (a.type === 'readback') router.push('/readback');
-                  }}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${a.titleTr} ${a.subtitleTr ?? ''}`}
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    borderWidth: 1.5,
-                    borderColor: '#DCE0E8',
-                    borderRadius: 12,
-                    padding: 12,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 10,
-                  }}
-                >
-                  <Text style={{ fontSize: 22 }}>
-                    {a.type === 'lesson'
-                      ? '📚'
-                      : a.type === 'conversation'
-                      ? '🤖'
-                      : a.type === 'pronunciation'
-                      ? '🔊'
-                      : a.type === 'srs'
-                      ? '🔁'
-                      : a.type === 'exam'
-                      ? '🎯'
-                      : '🎙'}
-                  </Text>
-                  <View style={{ flex: 1 }}>
-                    <Text
-                      style={{ fontFamily: FONTS.body700, fontSize: 13, color: '#0E1116' }}
-                      numberOfLines={1}
-                    >
-                      {a.titleTr}
-                    </Text>
-                    {a.subtitleTr && (
-                      <Mono style={{ fontSize: 10, color: '#8A93A6', marginTop: 2 }}>
-                        {a.subtitleTr}
-                      </Mono>
-                    )}
-                  </View>
-                  <Text style={{ fontSize: 18, color: '#8A93A6' }}>›</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </>
-        )}
+        {/* 'KALDIĞIN YER' (recents) section'ı kaldırıldı — 'BUGÜNKÜ TEKRAR' (SRS)
+            zaten yarım kalmış kartları gösteriyor. Tek section yeter. (Fix 7) */}
 
         {/* Quick practice 2x2 — tasarım grid: red·sky / purple·gold */}
-        <Eyebrow style={{ marginTop: dueCount > 0 || recentActivity.length > 0 ? 18 : 0 }}>
+        <Eyebrow style={{ marginTop: dueCount > 0 ? 18 : 0 }}>
           {t('screens.home.fastPractice', 'HIZLI ALIŞTIRMA — 90 SN')}
         </Eyebrow>
         <Body color="#8A93A6" style={{ fontSize: 11, marginTop: 4, marginBottom: 4, lineHeight: 15 }}>
