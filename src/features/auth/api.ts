@@ -148,10 +148,34 @@ export async function signInWithApple(): Promise<{ ok: boolean; error?: string }
 
     useAuthStore.getState().setSession(data.session);
     track('auth_logged_in', { method: 'apple' });
+    // Apple "Hide my email" relay edge case: email null gelirse identify atlanır.
+    // Supabase auth.users.email yine relay adresiyle (private@privaterelay.appleid.com) dolu olur.
     if (data.session.user.email) {
       identify(data.session.user.id, { email: data.session.user.email });
     }
     identifyUser({ id: data.session.user.id });
+
+    // Apple kuralı: fullName SADECE ilk sign-in'de gelir. Sonraki signin'lerde
+    // null döner — Apple bilerek gizler (user privacy). Bu yüzden profile boşsa
+    // (yeni user) full_name'i şimdi yaz. Ezme yok (.is null filter).
+    const givenName = credential.fullName?.givenName?.trim();
+    const familyName = credential.fullName?.familyName?.trim();
+    if (givenName || familyName) {
+      const composedName = [givenName, familyName].filter(Boolean).join(' ');
+      // Fire-and-forget; UI bloklamaz, fail olursa Sentry'ye düşer
+      void (async () => {
+        try {
+          await supabase
+            .from('profiles')
+            .update({ full_name: composedName })
+            .eq('id', data.session.user.id)
+            .is('full_name', null);
+        } catch {
+          // best-effort; null değer korunur
+        }
+      })();
+    }
+
     return { ok: true };
   } catch (e: any) {
     // ERR_REQUEST_CANCELED — kullanıcı iptal etti, hata gösterme
@@ -209,6 +233,28 @@ export async function signInWithGoogle(): Promise<{ ok: boolean; error?: string 
       identify(data.session.user.id, { email: data.session.user.email });
     }
     identifyUser({ id: data.session.user.id });
+
+    // Google fullName: ilk sign-in'de userInfo.user.name veya
+    // userInfo.data.user.name doludur. Profile boşsa yaz, varsa ezme.
+    const googleUser = userInfo?.data?.user ?? userInfo?.user;
+    const googleName: string | undefined =
+      googleUser?.name ??
+      [googleUser?.givenName, googleUser?.familyName].filter(Boolean).join(' ');
+    if (googleName && googleName.trim()) {
+      const composedName = googleName.trim();
+      void (async () => {
+        try {
+          await supabase
+            .from('profiles')
+            .update({ full_name: composedName })
+            .eq('id', data.session.user.id)
+            .is('full_name', null);
+        } catch {
+          // best-effort
+        }
+      })();
+    }
+
     return { ok: true };
   } catch (e: any) {
     // SIGN_IN_CANCELLED — kullanıcı iptal etti
