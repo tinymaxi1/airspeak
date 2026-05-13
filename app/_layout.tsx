@@ -33,7 +33,7 @@ import {
 import config from '../tamagui.config';
 import { queryClient } from '@/lib/queryClient';
 import { initI18n } from '@/lib/i18n';
-import { initAnalytics } from '@/lib/posthog';
+import { initAnalytics, track } from '@/lib/posthog';
 import { initSentry, identifyUser, clearUser, SentryErrorBoundary, sentryWrap } from '@/lib/sentry';
 import { ErrorFallback } from '@/components/ErrorFallback';
 import { initIap, initRevenueCat, logOutIap, syncPremiumFromIap } from '@/lib/iap';
@@ -69,6 +69,10 @@ initSentry();
 initAnalytics();
 initI18n();
 void initIap();
+
+// PostHog app_opened — captureNativeAppLifecycleEvents true ama manuel de
+// bir tane atalım (foreground'a her dönüşte değil, sadece cold start).
+track('app_opened', { runtime: 'expo' });
 
 function RootLayoutInner() {
   const systemColorScheme = useColorScheme();

@@ -21,6 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useLocalizedSubRoles } from '@/features/profile/useSubRoles';
 import { supabase } from '@/lib/supabase';
+import { track } from '@/lib/posthog';
 import { useAuthStore } from '@/stores/authStore';
 import {
   HHero,
@@ -51,6 +52,7 @@ export default function SubRoleSelectScreen() {
     if (!selected || !userId) return;
     setSaving(true);
     setSubRole(selected);
+    track('sub_role_selected', { sub_role: selected, parent_role: role });
 
     // profiles.sub_role update — best effort, fail olsa onboarding devam
     try {

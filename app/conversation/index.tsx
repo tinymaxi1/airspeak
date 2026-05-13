@@ -20,6 +20,7 @@ import {
 import { SCENARIOS } from '@/features/conversation/scenarios';
 import { useBookmarkStore } from '@/stores/bookmarkStore';
 import { useCoachMarkStore } from '@/stores/coachMarkStore';
+import { track } from '@/lib/posthog';
 
 // Tüm 6 UserRole + 'all'. Type mismatch fix (önceden 'tech' kullanılıyordu; profiles.role
 // 'technician' tutuyor → senaryo bulunamıyordu → empty list / crash riski).
@@ -161,7 +162,10 @@ export default function ConversationIndexScreen() {
           <TouchableOpacity
             key={s.id}
             activeOpacity={0.85}
-            onPress={() => router.push({ pathname: '/conversation/[scenario]', params: { scenario: s.id } })}
+            onPress={() => {
+              track('scenario_opened', { scenario_id: s.id, role: s.role, level: s.level });
+              router.push({ pathname: '/conversation/[scenario]', params: { scenario: s.id } });
+            }}
             style={{
               backgroundColor: 'rgba(255,255,255,0.08)',
               borderWidth: 1,

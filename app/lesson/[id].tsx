@@ -104,6 +104,7 @@ export default function LessonScreen() {
       if (safeIdx !== currentIdx) setCurrentIdx(safeIdx);
       // İlk başlama timestamp
       if (!persisted?.startedAt) {
+        track('lesson_started', { lesson_slug: lessonSlug, exercise_count: exercises.length });
         saveProgress(lessonSlug, {
           startedAt: Date.now(),
           totalCount: exercises.length,

@@ -25,7 +25,9 @@
         "SENTRY_ORG": "airspeak",
         "SENTRY_PROJECT": "react-native",
         "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "339554480219-l8hlh705hove8ulr2ie8b94hd0h03kmn.apps.googleusercontent.com",
-        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "339554480219-e3vvq5lap7bruvmg1rjk8lq6o1o5s9re.apps.googleusercontent.com"
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "339554480219-e3vvq5lap7bruvmg1rjk8lq6o1o5s9re.apps.googleusercontent.com",
+        "EXPO_PUBLIC_POSTHOG_API_KEY": "phc_kDPnk5uY8FKUoN6NdSxYUzdRnpV8ToFXwEKk8uMtvYJb",
+        "EXPO_PUBLIC_POSTHOG_HOST": "https://us.i.posthog.com"
       },
       "ios": {
         "resourceClass": "m-medium",

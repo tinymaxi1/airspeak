@@ -13,11 +13,12 @@
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import type { UserRole } from '@/types/profile';
+import { track } from '@/lib/posthog';
 import {
   HHero,
   Body,
@@ -65,11 +66,15 @@ export default function RoleSelectScreen() {
   const currentRole = useOnboardingStore((s) => s.role);
   const [selected, setSelected] = useState<UserRole | null>(currentRole);
 
+  useEffect(() => {
+    track('onboarding_started');
+  }, []);
+
   const handleNext = () => {
     if (!selected) return;
     setRole(selected);
+    track('role_selected', { role: selected });
     // FAZ 3 — sub-role-select adımına git (level-test'e değil).
-    // sub_role'u atlayan kullanıcı için skip yolu yok → sub-role-select zorunlu.
     router.push('/(auth)/onboarding/sub-role-select');
   };
 
