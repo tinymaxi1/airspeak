@@ -42,14 +42,19 @@ export interface WordOfDayRow {
 }
 
 export function useWordOfTheDay() {
-  // Role queryKey'de — kullanıcı rolünü değiştirirse otomatik refetch (cache miss).
-  // useUserDataSync server'dan role hidrate eder, store'a yazar → bu query
-  // yeni key ile fetch atar.
+  // Role + sub_role queryKey'de — kullanıcı role/sub_role değiştirirse otomatik
+  // refetch (cache miss). useUserDataSync server'dan role + sub_role hidrate
+  // eder, store'a yazar → bu query yeni key ile fetch atar.
+  //
+  // RPC get_word_of_today() user_id üzerinden sub_role'ü auth.uid()'den okur
+  // (FAZ 3 migration), param geçirmemiz gerekmez. queryKey sadece cache
+  // invalidation için.
   const role = useAuthStore((s) => s.profile?.role ?? null);
+  const subRole = useAuthStore((s) => s.profile?.sub_role ?? null);
   const userId = useAuthStore((s) => s.user?.id ?? null);
 
   return useQuery({
-    queryKey: ['word-of-today', userId, role],
+    queryKey: ['word-of-today', userId, role, subRole],
     queryFn: async (): Promise<WordOfDayRow | null> => {
       const { data, error } = await (supabase as any).rpc('get_word_of_today');
       if (error) {
