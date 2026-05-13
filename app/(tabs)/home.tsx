@@ -22,7 +22,7 @@ import { useProgressStore } from '@/stores/progressStore';
 import { useSrsStore } from '@/stores/srsStore';
 import { useOfflineStore } from '@/stores/offlineStore';
 import { useActivityStore } from '@/stores/activityStore';
-import { useNextLesson } from '@/features/content/api';
+import { useNextLesson, useModules } from '@/features/content/api';
 import type { UserRole } from '@/types/profile';
 import { CompetitionBanner } from '@/components/competitions/CompetitionBanner';
 import { TrialCountdownChip } from '@/components/trial/TrialCountdownChip';
@@ -55,6 +55,30 @@ export default function HomeScreen() {
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
   // DB'den bir sonraki tamamlanmamış ders'i getir
   const { data: nextLesson } = useNextLesson(role, completedSet);
+  // DB'den rol bazlı tüm modülleri çek — totalLessons + completed counter için
+  const { data: roleModules = [] } = useModules(role);
+  const roleLessonSlugs = useMemo(
+    () => new Set(roleModules.flatMap((m: any) => (m.units ?? []).flatMap((u: any) => (u.lessons ?? []).map((l: any) => l.slug)))),
+    [roleModules],
+  );
+  const totalRoleLessons = roleLessonSlugs.size;
+  const completedRoleLessons = useMemo(
+    () => completedIds.filter((id) => roleLessonSlugs.has(id)).length,
+    [completedIds, roleLessonSlugs],
+  );
+  // 4-state Daily Flight Plan card
+  //   nextLesson varsa → CURRENT (kaldığı yerden devam)
+  //   yoksa & totalRoleLessons === 0 → EMPTY (rol için içerik henüz yok)
+  //   yoksa & completed >= total → ALL_DONE (tüm dersler bitti)
+  //   yoksa & 0 < completed < total → COMING_SOON (DB inconsistency veya next paginate eksik)
+  const flightPlanState: 'current' | 'empty' | 'allDone' | 'comingSoon' =
+    nextLesson
+      ? 'current'
+      : totalRoleLessons === 0
+        ? 'empty'
+        : completedRoleLessons >= totalRoleLessons
+          ? 'allDone'
+          : 'comingSoon';
 
   // SRS: bugün tekrar etmesi gereken kart sayısı
   const dueCount = useSrsStore((s) => {
@@ -392,7 +416,7 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* Daily Flight Plan card */}
+        {/* Daily Flight Plan card — 4-state (current / empty / allDone / comingSoon) */}
         <Card3D style={{ padding: 0, overflow: 'hidden', marginBottom: 18 }}>
           {/* Header */}
           <View
@@ -416,71 +440,119 @@ export default function HomeScreen() {
                 {t('screens.home.todaySub', 'Bugün için seçilmiş 3 hızlı görev (5-15 dk)')}
               </Body>
             </View>
-            <Text
-              style={{
-                fontFamily: FONTS.display,
-                fontSize: 22,
-                fontWeight: '700',
-                color: '#E63946',
-              }}
-            >
-              2 / 3
-            </Text>
-          </View>
-
-          {/* Lesson list — gerçek son aktiviteler + bir sonraki ders */}
-          <View style={{ padding: 16 }}>
-            {recentActivity.length > 0 ? (
-              recentActivity.map((a, idx) => (
-                <FlightPlanRow
-                  key={a.id}
-                  state="done"
-                  title={a.titleTr}
-                  meta={a.subtitleTr ?? ''}
-                  hasBorder={idx > 0}
-                />
-              ))
-            ) : (
-              <FlightPlanRow
-                state="done"
-                title={t('screens.home.noActivityYet', 'Henüz aktivite yok')}
-                meta={t('screens.home.startFirstLesson', 'İlk dersini aç')}
-              />
+            {/* Counter — sadece içerik varsa göster (current/allDone/comingSoon) */}
+            {totalRoleLessons > 0 && (
+              <Text
+                style={{
+                  fontFamily: FONTS.display,
+                  fontSize: 22,
+                  fontWeight: '700',
+                  color: '#E63946',
+                }}
+              >
+                {completedRoleLessons} / {totalRoleLessons}
+              </Text>
             )}
-            <FlightPlanRow
-              state="current"
-              title={
-                nextLesson?.title_tr ??
-                nextLesson?.title ??
-                t('screens.home.allLessonsDone', 'Tüm dersler tamam')
-              }
-              meta={
-                nextLesson
-                  ? t('screens.home.lessonMeta', {
-                      min: nextLesson.estimated_minutes,
-                      defaultValue: '~{{min}} dk · co-pilot AI ile canlı',
-                    })
-                  : t('screens.home.continueOther', 'Pratik bölümünden devam et')
-              }
-              hasBorder={recentActivity.length > 0}
-            />
           </View>
 
-          {/* Resume button */}
-          <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+          {/* Body — state'e göre içerik */}
+          {flightPlanState === 'current' && (
+            <View style={{ padding: 16 }}>
+              {recentActivity.length > 0 ? (
+                recentActivity.map((a, idx) => (
+                  <FlightPlanRow
+                    key={a.id}
+                    state="done"
+                    title={a.titleTr}
+                    meta={a.subtitleTr ?? ''}
+                    hasBorder={idx > 0}
+                  />
+                ))
+              ) : (
+                <FlightPlanRow
+                  state="done"
+                  title={t('screens.home.noActivityYet', 'Henüz aktivite yok')}
+                  meta={t('screens.home.startFirstLesson', 'İlk dersini aç')}
+                />
+              )}
+              <FlightPlanRow
+                state="current"
+                title={nextLesson!.title_tr ?? nextLesson!.title ?? ''}
+                meta={t('screens.home.lessonMeta', {
+                  min: nextLesson!.estimated_minutes,
+                  defaultValue: '~{{min}} dk · co-pilot AI ile canlı',
+                })}
+                hasBorder={recentActivity.length > 0}
+              />
+            </View>
+          )}
+
+          {flightPlanState === 'empty' && (
+            <View style={{ padding: 24, alignItems: 'center' }}>
+              <Text style={{ fontSize: 44, marginBottom: 8 }}>✈️</Text>
+              <Text style={{ fontFamily: FONTS.body800, fontSize: 18, color: '#0F1E47', textAlign: 'center' }}>
+                {t('screens.home.emptyState.title', 'İlk uçuşuna hazır mısın?')}
+              </Text>
+              <Body color="#8A93A6" style={{ fontSize: 13, marginTop: 6, textAlign: 'center', lineHeight: 18 }}>
+                {role
+                  ? t('screens.home.emptyState.subtitle', {
+                      role: t(`screens.roleSelect.role${roleLabelKeyFromRole(role)}`, role),
+                      defaultValue: '{{role}} müfredatı seni bekliyor',
+                    })
+                  : t('screens.home.emptyState.subtitleNoRole', 'Rolünü seçtikten sonra ders ağacın açılır')}
+              </Body>
+            </View>
+          )}
+
+          {flightPlanState === 'allDone' && (
+            <View style={{ padding: 24, alignItems: 'center' }}>
+              <Text style={{ fontSize: 44, marginBottom: 8 }}>🏆</Text>
+              <Text style={{ fontFamily: FONTS.body800, fontSize: 18, color: '#2DBE6C', textAlign: 'center' }}>
+                {t('screens.home.allDone.title', 'Tüm dersler tamam')}
+              </Text>
+              <Body color="#8A93A6" style={{ fontSize: 13, marginTop: 6, textAlign: 'center', lineHeight: 18 }}>
+                {t('screens.home.allDone.subtitle', 'Pratiklerle ustalaş veya yarın yeni içerik kontrol et')}
+              </Body>
+            </View>
+          )}
+
+          {flightPlanState === 'comingSoon' && (
+            <View style={{ padding: 24, alignItems: 'center' }}>
+              <Text style={{ fontSize: 44, marginBottom: 8 }}>🛠</Text>
+              <Text style={{ fontFamily: FONTS.body800, fontSize: 18, color: '#0F1E47', textAlign: 'center' }}>
+                {t('screens.home.comingSoon.title', 'İçerik yakında')}
+              </Text>
+              <Body color="#8A93A6" style={{ fontSize: 13, marginTop: 6, textAlign: 'center', lineHeight: 18 }}>
+                {t('screens.home.comingSoon.subtitle', 'Şimdilik pratiklerden devam et')}
+              </Body>
+            </View>
+          )}
+
+          {/* CTA — her state'e özel buton */}
+          <View style={{ paddingHorizontal: 16, paddingBottom: 16, paddingTop: flightPlanState === 'current' ? 0 : 4 }}>
             <Button3D
               variant="primary"
               fullWidth
               onPress={() => {
                 recordDailyActivity();
-                if (nextLesson) {
+                if (flightPlanState === 'current' && nextLesson) {
                   router.push({ pathname: '/lesson/[id]', params: { id: nextLesson.slug } });
+                } else if (flightPlanState === 'empty') {
+                  // Role seçilmediyse onboarding'e (theoretical, normalde olmaz)
+                  router.push('/(tabs)/learn');
                 } else {
+                  // allDone & comingSoon → pratik
                   router.push('/(tabs)/learn');
                 }
               }}
             >
-              {t('screens.home.resume')} ✈
+              {flightPlanState === 'current'
+                ? `${t('screens.home.resume')} ✈`
+                : flightPlanState === 'empty'
+                  ? t('screens.home.emptyState.cta', 'İlk dersini başlat →')
+                  : flightPlanState === 'allDone'
+                    ? t('screens.home.allDone.cta', 'Pratiklere git →')
+                    : t('screens.home.comingSoon.cta', 'Pratiklere git →')}
             </Button3D>
           </View>
         </Card3D>
@@ -997,4 +1069,13 @@ function QuickCard({
       </Text>
     </TouchableOpacity>
   );
+}
+
+/**
+ * UserRole → screens.roleSelect.role* i18n key suffix.
+ * Tarihsel naming: technician için key 'roleTech' (PascalCase değil), diğerleri PascalCase.
+ */
+function roleLabelKeyFromRole(role: UserRole): string {
+  if (role === 'technician') return 'Tech';
+  return role.charAt(0).toUpperCase() + role.slice(1);
 }
