@@ -64,21 +64,47 @@ export interface TtsService {
 }
 
 /**
- * Stub implementation — gerçek TTS yapmıyor, infrastructure hazır.
- * Sprint 10'da gerçek sağlayıcıyla değiştirilecek.
+ * ElevenLabs implementation — Supabase Edge Function üzerinden çağrı.
+ * Edge function: supabase/functions/elevenlabs-tts/index.ts
+ * Cache: Supabase Storage `tts-cache` bucket (1 yıl public TTL).
+ *
+ * Karakter ekonomisi: aynı cacheKey ikinci çağrıda Storage'tan döner,
+ * ElevenLabs'a istek atılmaz (0 karakter düşer).
  */
-class StubTtsService implements TtsService {
-  provider: TtsProvider = 'stub';
+import { supabase } from './supabase';
+import { ELEVENLABS_VOICES, type ElevenLabsVoiceKey } from './elevenlabs.config';
 
-  async synthesize(_req: TtsRequest): Promise<TtsResponse> {
-    // Production'da: ElevenLabs API call + S3 upload + URL döndür
-    return {
-      audioUrl: '',
-      durationSeconds: 0,
-      charactersUsed: 0,
-      costUsd: 0,
-      fromCache: false,
-    };
+class ElevenLabsTtsService implements TtsService {
+  provider: TtsProvider = 'elevenlabs';
+
+  async synthesize(req: TtsRequest): Promise<TtsResponse> {
+    // voice → ElevenLabs voice ID map
+    const voiceKey: ElevenLabsVoiceKey =
+      req.voice === 'atc-controller' ? 'atc' :
+      req.voice === 'cabin-crew' ? 'cabin' :
+      req.voice === 'pilot-captain' ? 'pilot' :
+      'wordOfDay';
+    const voiceId = ELEVENLABS_VOICES[voiceKey];
+
+    const cacheKey = req.cacheKey ?? `${voiceKey}_${req.locale}_${hashText(req.text)}`;
+
+    try {
+      const { data, error } = await (supabase as any).functions.invoke('elevenlabs-tts', {
+        body: { text: req.text, voice_id: voiceId, cache_key: cacheKey },
+      });
+      if (error) throw error;
+      const characters = data?.characters_used ?? 0;
+      return {
+        audioUrl: data?.url ?? '',
+        durationSeconds: Math.max(1, Math.ceil(req.text.length / 15)), // ~15 char/sec
+        charactersUsed: characters,
+        costUsd: characters * (0.30 / 1000),
+        fromCache: !!data?.cached,
+      };
+    } catch {
+      // Fail-safe — UI safeSpeechSpeak fallback'e düşer
+      return { audioUrl: '', durationSeconds: 0, charactersUsed: 0, costUsd: 0, fromCache: false };
+    }
   }
 
   getVoicesForLocale(locale: Locale): TtsVoice[] {
@@ -101,7 +127,16 @@ class StubTtsService implements TtsService {
   }
 }
 
-export const tts: TtsService = new StubTtsService();
+/** Basit text hash — cacheKey için (büyük olmasın). */
+function hashText(s: string): string {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h).toString(36);
+}
+
+export const tts: TtsService = new ElevenLabsTtsService();
 
 /**
  * TTS maliyet tahmini — bütçe planlama için.

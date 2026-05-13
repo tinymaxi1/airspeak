@@ -835,6 +835,41 @@ export SUPABASE_ACCESS_TOKEN="sbp_..."
 
 **Workaround**: Supabase Dashboard'dan Studio Logs UI direkt kullan. Helper'daki `tables` komutu yine de useful (retention sağlık kontrolü).
 
+### ElevenLabs TTS Workflow
+
+**Setup**:
+- API key env: `ELEVENLABS_API_KEY` (NEVER commit)
+- Plan şu an: **Free 10K char/ay** (App Store öncesi Pro $5+ gerekli)
+- Voice IDs: `src/lib/elevenlabs.config.ts` (Adam/Antoni/Bella/Rachel)
+- Edge Function: `supabase/functions/elevenlabs-tts/index.ts` (caching + storage)
+- Storage bucket: `tts-cache` (1 yıl public TTL)
+
+**Mobile fallback chain** (gerçekleşme sırası):
+1. `word_audio_url` DB'de varsa → expo-av play
+2. Edge function `tts.synthesize()` → cached mp3 URL → expo-av play
+3. ElevenLabs fail → `safeSpeechSpeak()` (expo-speech native)
+
+**Karakter ekonomisi**:
+- Cache hit = **0 karakter** (Storage'tan döner)
+- Cache miss = `text.length` karakter düşer
+- Aynı `cacheKey` idempotent
+
+**Helper**: `scripts/elevenlabs-helper.sh`
+```bash
+export ELEVENLABS_API_KEY="sk_..."
+./scripts/elevenlabs-helper.sh quota           # kalan
+./scripts/elevenlabs-helper.sh voices          # ses listesi
+./scripts/elevenlabs-helper.sh generate "text" # mp3 indir
+./scripts/elevenlabs-helper.sh batch-words --dry-run  # karakter sayar
+```
+
+**Pro plan upgrade sonrası**:
+1. Free plan'den Creator/Pro'ya geç (https://elevenlabs.io/pricing)
+2. Aynı API key çalışır (rotate gerekmez)
+3. `batch-words` script'i gerçek çalıştırılır (40 word_of_day × 2 audio × ~30 char = 2400 char)
+4. Edge function deploy: `supabase functions deploy elevenlabs-tts --project-ref neinhbkdctjtyyoskxpg`
+5. ELEVENLABS_API_KEY Edge function secret olarak set: `supabase secrets set ELEVENLABS_API_KEY=sk_...`
+
 ### Apple ASC Workflow
 
 Helper: `scripts/asc-helper.sh` + `scripts/asc-jwt.mjs` (ES256 JWT).
