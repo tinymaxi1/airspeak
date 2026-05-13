@@ -126,6 +126,7 @@
       ],
       "expo-audio",
       "expo-apple-authentication",
+      "expo-speech",
       [
         "@react-native-google-signin/google-signin",
         {
