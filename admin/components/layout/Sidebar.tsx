@@ -33,6 +33,7 @@ import {
   Bell,
   BookMarked,
   Languages,
+  Layers,
 } from 'lucide-react';
 
 interface NavItem {
@@ -70,6 +71,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/notifications', label: 'Bildirimler', icon: Bell, minRole: 'reviewer' },
   { href: '/glossary', label: 'Aviation Glossary', icon: BookMarked, minRole: 'reviewer' },
   { href: '/word-of-day', label: 'Günün Kelimesi', icon: Sparkles, minRole: 'reviewer' },
+  { href: '/sub-roles', label: 'Alt-Roller', icon: Layers, minRole: 'reviewer' },
   { href: '/translations', label: 'Çeviri Yönetimi', icon: Languages, minRole: 'editor' },
   { href: '/reports', label: 'Reports', icon: ShieldAlert, minRole: 'reviewer' },
   { href: '/banned-words', label: 'Yasaklı Kelimeler', icon: Ban, minRole: 'editor' },
