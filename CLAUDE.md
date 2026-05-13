@@ -835,6 +835,27 @@ export SUPABASE_ACCESS_TOKEN="sbp_..."
 
 **Workaround**: Supabase Dashboard'dan Studio Logs UI direkt kullan. Helper'daki `tables` komutu yine de useful (retention sağlık kontrolü).
 
+### Apple ASC Workflow
+
+Helper: `scripts/asc-helper.sh` + `scripts/asc-jwt.mjs` (ES256 JWT).
+
+Env:
+```
+ASC_KEY_ID=76P9F3T6Z6
+ASC_ISSUER_ID=464c9ef0-00d2-4f0e-83d7-38c372794dad
+ASC_KEY_PATH=/Users/.../AuthKey_76P9F3T6Z6.p8
+```
+
+⚠️ `.p8` private key **asla commit edilmez**, sadece local path.
+
+Komutlar:
+- `asc latest` — son build durumu
+- `asc builds [n]` — son N build
+- `asc testflight` — beta state
+- `asc versions` — App Store version'lar
+- `asc reviews` — kullanıcı yorumları
+- `asc raw <path>` — ham API
+
 ### Yeni DB Crash Bildirimi → Akış
 
 1. Sentry'de crash görüldü, ama DB tarafı (RLS denied, RPC error) görünmüyor
