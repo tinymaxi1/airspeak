@@ -53,8 +53,14 @@ const ROLE_FILTERS: { value: RoleFilter; label: string }[] = [
 export default function ConversationIndexScreen() {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>('all');
-  const bookmarkedSet = useBookmarkStore((s) =>
-    new Set(s.entries.filter((e) => e.kind === 'scenario').map((e) => e.id)),
+  // CRASH 1 fix (REACT-NATIVE-7 Maximum update depth):
+  // Eskiden `useBookmarkStore((s) => new Set(...))` her render'da yeni Set
+  // referansı dönüyordu → Zustand "değişti" görüyor → re-render → sonsuz döngü.
+  // Çözüm: raw entries'i selector'la al, Set'i useMemo'da hesapla.
+  const bookmarkEntries = useBookmarkStore((s) => s.entries);
+  const bookmarkedSet = useMemo(
+    () => new Set(bookmarkEntries.filter((e) => e.kind === 'scenario').map((e) => e.id)),
+    [bookmarkEntries],
   );
   const toggleBookmark = useBookmarkStore((s) => s.toggle);
   const coachSeen = useCoachMarkStore((s) => s.isSeen('conversation_first_open'));
