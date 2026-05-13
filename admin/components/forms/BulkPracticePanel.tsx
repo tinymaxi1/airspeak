@@ -238,7 +238,7 @@ export function BulkPracticePanel({
           <div className="h-4 w-px bg-white/20" />
           <Button
             size="sm"
-            variant="default"
+            variant="primary"
             onClick={() => bulkUpdate('published')}
             disabled={isPending}
             className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -266,7 +266,7 @@ export function BulkPracticePanel({
           {canDelete && (
             <Button
               size="sm"
-              variant="default"
+              variant="primary"
               onClick={() => setDeleteConfirmOpen(true)}
               disabled={isPending}
               className="bg-airspeak-red hover:bg-airspeak-red/90 text-white"
@@ -371,7 +371,7 @@ export function BulkPracticePanel({
               İptal
             </Button>
             <Button
-              variant="default"
+              variant="primary"
               onClick={confirmDelete}
               disabled={isPending}
               className="bg-airspeak-red hover:bg-airspeak-red/90 text-white"
