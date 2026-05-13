@@ -598,7 +598,11 @@
       "lipSync": "口型同步演示",
       "compare": "比较波形",
       "skip": "跳过",
-      "tryAgain": "🎙 请重试"
+      "tryAgain": "🎙 请重试",
+      "empty": {
+        "title": "Sentence not found",
+        "body": "This sentence isn't published yet or has been removed. Admin will add it soon."
+      }
     },
     "icao": {
       "exam": "国际民航组织 L4 ✦ 模拟考试",
@@ -862,6 +866,12 @@
       },
       "exitConfirm": "Exit the drill?",
       "hintLabel": "HINT"
+    },
+    "readback": {
+      "empty": {
+        "title": "Content coming soon",
+        "body": "Read-back content for this role isn't published yet. Admin will add it soon."
+      }
     }
   },
   "notif": {

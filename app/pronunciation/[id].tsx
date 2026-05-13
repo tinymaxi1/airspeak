@@ -60,11 +60,11 @@ export default function PronunciationScreen() {
   const c = usePalette();
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ id: string }>();
-  // DB-first (Sprint C2): slug ile fetch, fallback TS dosyasından
-  const { data: dbSentence } = usePronunciationSentence(params.id);
-  const sentence = (dbSentence ??
-    PRONUNCIATION_SENTENCES.find((s) => s.id === params.id) ??
-    PRONUNCIATION_SENTENCES[0]) as PronunciationSentence;
+  // DB-first: slug ile fetch. DB'de yoksa null (empty state UI)
+  const { data: dbSentence, isLoading: sentenceLoading } = usePronunciationSentence(params.id);
+  const sentenceData = dbSentence as PronunciationSentence | null;
+  // Render path için non-null cast; gerçek null check erken return ile aşağıda
+  const sentence = (sentenceData ?? { id: '', text: '', category: 'phraseology', level: 'A2' }) as PronunciationSentence;
 
   const addXp = useGamificationStore((s) => s.addXp);
   const recordDailyActivity = useGamificationStore((s) => s.recordDailyActivity);
@@ -217,6 +217,26 @@ export default function PronunciationScreen() {
   const ringColor = overall >= 80 ? '#2DBE6C' : overall >= 60 ? '#F2C14E' : '#E63946';
   const weakIdx = phonemes.findIndex((p) => p.score < 60);
   const weakPhoneme = weakIdx >= 0 ? phonemes[weakIdx] : null;
+
+  // Sentence yok ve fetch tamam → empty state
+  if (!sentenceLoading && !sentenceData) {
+    return (
+      <View style={{ flex: 1, backgroundColor: c.bg, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <Text style={{ fontSize: 64, marginBottom: 16 }}>🔊</Text>
+        <Text style={{ fontFamily: FONTS.body800, fontSize: 18, color: '#0E1116', textAlign: 'center', marginBottom: 8 }}>
+          {t('screens.pronunciation.empty.title', 'Cümle bulunamadı')}
+        </Text>
+        <Body color="#5A6478" style={{ fontSize: 13, textAlign: 'center', marginBottom: 24, lineHeight: 18 }}>
+          {t('screens.pronunciation.empty.body', 'Bu cümle henüz yayında değil veya silinmiş. Admin yakında ekleyecek.')}
+        </Body>
+        <Button3D variant="primary" onPress={() => router.back()}>
+          {t('common.back', 'Geri')}
+        </Button3D>
+      </View>
+    );
+  }
+
+  if (!sentenceData) return null; // hala loading
 
   return (
     <View style={{ flex: 1, backgroundColor: c.bg }}>

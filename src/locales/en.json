@@ -667,7 +667,17 @@
       "lipSync": "Lip sync demo",
       "compare": "COMPARE WAVEFORM",
       "skip": "Skip",
-      "tryAgain": "🎙 Try again"
+      "tryAgain": "🎙 Try again",
+      "empty": {
+        "title": "Sentence not found",
+        "body": "This sentence isn't published yet or has been removed. Admin will add it soon."
+      }
+    },
+    "readback": {
+      "empty": {
+        "title": "Content coming soon",
+        "body": "Read-back content for this role isn't published yet. Admin will add it soon."
+      }
     },
     "icao": {
       "exam": "ICAO L4 ✦ MOCK EXAM",

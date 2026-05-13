@@ -57,7 +57,8 @@ export function usePronunciationSentences(
         if (level) query = query.eq('level', level);
         const { data, error } = await query.order('sort', { ascending: true }).limit(50);
         if (error) throw error;
-        if (!data || data.length === 0) return TS_FALLBACK;
+        // DB boş → fallback KULLANMA (rol için içerik yok). Sadece error → fallback
+        if (!data || data.length === 0) return [];
 
         let rows = data as PronunciationSentenceRow[];
         if (subRole) {
@@ -92,11 +93,13 @@ export function usePronunciationSentence(slug: string | undefined) {
           .maybeSingle();
         if (error) throw error;
         if (data) return rowToSentence(data as PronunciationSentenceRow);
+        // DB'de yok → null (TS fallback YOK — empty state UI gösterilir)
+        return null;
       } catch (e) {
         if (__DEV__) console.warn('pronunciation single fetch failed:', e);
+        // Sadece error → TS fallback (network sorun olabilir)
+        return TS_FALLBACK.find((s) => s.id === slug) ?? null;
       }
-      // Fallback: TS dosyasında ara
-      return TS_FALLBACK.find((s) => s.id === slug) ?? TS_FALLBACK[0] ?? null;
     },
   });
 }

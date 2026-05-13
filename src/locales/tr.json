@@ -678,7 +678,17 @@
       "lipSync": "Dudak senkron demo",
       "compare": "DALGAFORMU KIYASLA",
       "skip": "Atla",
-      "tryAgain": "🎙 Tekrar dene"
+      "tryAgain": "🎙 Tekrar dene",
+      "empty": {
+        "title": "Cümle bulunamadı",
+        "body": "Bu cümle henüz yayında değil veya silinmiş. Admin yakında ekleyecek."
+      }
+    },
+    "readback": {
+      "empty": {
+        "title": "İçerik yakında",
+        "body": "Bu rol için telsiz tekrarı içeriği henüz yayında değil. Admin yakında ekleyecek."
+      }
     },
     "icao": {
       "exam": "ICAO L4 ✦ MOCK SINAV",

@@ -598,7 +598,11 @@
       "lipSync": "ตัวอย่างการปรับเทียบริมฝีปาก",
       "compare": "เม อร์เค เตอร์",
       "skip": "ข้าม",
-      "tryAgain": "○ ลอง ทํา อีก"
+      "tryAgain": "○ ลอง ทํา อีก",
+      "empty": {
+        "title": "Sentence not found",
+        "body": "This sentence isn't published yet or has been removed. Admin will add it soon."
+      }
     },
     "icao": {
       "exam": "ICAO L4 ✦ Mock ExAM",
@@ -862,6 +866,12 @@
       },
       "exitConfirm": "Exit the drill?",
       "hintLabel": "HINT"
+    },
+    "readback": {
+      "empty": {
+        "title": "Content coming soon",
+        "body": "Read-back content for this role isn't published yet. Admin will add it soon."
+      }
     }
   },
   "notif": {

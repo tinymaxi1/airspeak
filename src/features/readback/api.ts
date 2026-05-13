@@ -71,9 +71,9 @@ export function useReadbackClearances(
         }
         const { data, error } = await query.order('sort', { ascending: true }).limit(50);
         if (error) throw error;
-        if (!data || data.length === 0) {
-          return TS_FALLBACK; // boş → fallback
-        }
+        // DB boş → fallback KULLANMA (rol için içerik henüz yayınlanmamış demek)
+        // Sadece error durumunda fallback (network/timeout)
+        if (!data || data.length === 0) return [];
 
         let rows = data as ReadbackClearanceRow[];
 
@@ -96,7 +96,8 @@ export function useReadbackClearances(
 
 /** Senkron random N tane (mevcut TS API). Pre-fetched data alır, yoksa TS. */
 export function pickRandomClearances(pool: AtcClearance[] | undefined, count: number): AtcClearance[] {
-  const source = pool && pool.length > 0 ? pool : TS_FALLBACK;
-  const shuffled = [...source].sort(() => Math.random() - 0.5);
+  // Pool boş ise boş döndür (empty state UI gösterilir, TS fallback YOK)
+  if (!pool || pool.length === 0) return [];
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }

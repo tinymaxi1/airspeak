@@ -598,7 +598,11 @@
       "lipSync": "Δείγμα συγχρονισμού χειλιών",
       "compare": "ΣΥΓΚΡΙΝΕΤΕ ΤΗ ΜΟΡΦΗ ΚΥΜΑΤΟΣ",
       "skip": "Πλοίο",
-      "tryAgain": "🎙 Δοκίμασε ξανά"
+      "tryAgain": "🎙 Δοκίμασε ξανά",
+      "empty": {
+        "title": "Sentence not found",
+        "body": "This sentence isn't published yet or has been removed. Admin will add it soon."
+      }
     },
     "icao": {
       "exam": "ICAO Επίπεδο 4 ✦ Προσομοίωση εξετάσεων",
@@ -862,6 +866,12 @@
       },
       "exitConfirm": "Exit the drill?",
       "hintLabel": "HINT"
+    },
+    "readback": {
+      "empty": {
+        "title": "Content coming soon",
+        "body": "Read-back content for this role isn't published yet. Admin will add it soon."
+      }
     }
   },
   "notif": {

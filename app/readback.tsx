@@ -51,12 +51,18 @@ export default function ReadbackDrillScreen() {
   const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
 
-  // DB-first (Sprint C2): rol bazlı clearance pool çek, içinden 8 random
+  // DB-first: rol bazlı clearance pool çek, içinden 8 random
+  // DB boş ise empty state göster (TS fallback YOK — yanlış rol içeriği gösterirdi)
   const role = useOnboardingStore((s) => s.role);
-  const { data: dbPool } = useReadbackClearances(role ?? 'pilot');
-  const [clearances] = useState<AtcClearance[]>(
-    () => dbPool && dbPool.length > 0 ? pickRandomClearances(dbPool, 8) : getRandomClearances(8),
-  );
+  const { data: dbPool, isLoading: poolLoading } = useReadbackClearances(role ?? 'pilot');
+  const [clearances, setClearances] = useState<AtcClearance[]>([]);
+
+  // Pool geldiğinde clearances'i set et (sadece bir kere)
+  useEffect(() => {
+    if (clearances.length === 0 && dbPool && dbPool.length > 0) {
+      setClearances(pickRandomClearances(dbPool, 8));
+    }
+  }, [dbPool, clearances.length]);
 
   // Sprint (post-C3d) — günlük limit kontrolü + paywall trigger
   const readbackLimit = useReadbackLimit();
@@ -189,6 +195,24 @@ export default function ReadbackDrillScreen() {
       total: total,
       xp_earned: xp,
     });
+  }
+
+  // DB pool boş ve fetch tamam → empty state (rol için içerik yok)
+  if (!poolLoading && (!dbPool || dbPool.length === 0)) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#06091A', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+        <Text style={{ fontSize: 64, marginBottom: 16 }}>🎙</Text>
+        <Text style={{ fontFamily: FONTS.body800, fontSize: 18, color: '#FFFFFF', textAlign: 'center', marginBottom: 8 }}>
+          {t('screens.readback.empty.title', 'İçerik yakında')}
+        </Text>
+        <Body color="rgba(255,255,255,0.7)" style={{ fontSize: 13, textAlign: 'center', marginBottom: 24, lineHeight: 18 }}>
+          {t('screens.readback.empty.body', 'Bu rol için telsiz tekrarı içeriği henüz yayında değil. Admin yakında ekleyecek.')}
+        </Body>
+        <Button3D variant="primary" onPress={() => router.back()}>
+          {t('common.back', 'Geri')}
+        </Button3D>
+      </View>
+    );
   }
 
   if (!current) return null;

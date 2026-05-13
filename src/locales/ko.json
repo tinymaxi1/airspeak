@@ -598,7 +598,11 @@
       "lipSync": "립싱크 데모",
       "compare": "파형 비교",
       "skip": "건너뛰기",
-      "tryAgain": "🎙 다시 시도해 보세요"
+      "tryAgain": "🎙 다시 시도해 보세요",
+      "empty": {
+        "title": "Sentence not found",
+        "body": "This sentence isn't published yet or has been removed. Admin will add it soon."
+      }
     },
     "icao": {
       "exam": "ICAO 레벨 4 ✦ 모의 시험",
@@ -862,6 +866,12 @@
       },
       "exitConfirm": "Exit the drill?",
       "hintLabel": "HINT"
+    },
+    "readback": {
+      "empty": {
+        "title": "Content coming soon",
+        "body": "Read-back content for this role isn't published yet. Admin will add it soon."
+      }
     }
   },
   "notif": {

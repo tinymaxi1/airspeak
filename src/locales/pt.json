@@ -598,7 +598,11 @@
       "lipSync": "Demonstração de sincronização labial",
       "compare": "COMPARAR FORMAS DE ONDA",
       "skip": "Pular",
-      "tryAgain": "🎙 Tente novamente"
+      "tryAgain": "🎙 Tente novamente",
+      "empty": {
+        "title": "Sentence not found",
+        "body": "This sentence isn't published yet or has been removed. Admin will add it soon."
+      }
     },
     "icao": {
       "exam": "ICAO Nível 4 ✦ EXAME SIMULADO",
@@ -862,6 +866,12 @@
       },
       "exitConfirm": "Exit the drill?",
       "hintLabel": "HINT"
+    },
+    "readback": {
+      "empty": {
+        "title": "Content coming soon",
+        "body": "Read-back content for this role isn't published yet. Admin will add it soon."
+      }
     }
   },
   "notif": {

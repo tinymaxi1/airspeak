@@ -75,7 +75,8 @@ export function useListenSolveDrills(
         if (category) query = query.eq('category', category);
         const { data, error } = await query.order('sort', { ascending: true }).limit(50);
         if (error) throw error;
-        if (!data || data.length === 0) return LISTEN_SOLVE_DRILLS;
+        // DB boş → fallback KULLANMA (rol için içerik yok). Sadece error → fallback
+        if (!data || data.length === 0) return [];
 
         let rows = data as ListenSolveDrillRow[];
         if (subRole) {

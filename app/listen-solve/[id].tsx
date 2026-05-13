@@ -57,20 +57,12 @@ export default function ListenSolveScreen() {
   const { category } = useMemo(() => routeIdToFilters(id), [id]);
   const { data: dbDrills, isLoading: drillsLoading } = useListenSolveDrills(role ?? 'all', null, category);
 
-  // Picker: fetch sonucundan rol+kategori+level eşleşme, sonra shuffle + max 7
+  // Picker: DB sonucu boş ise empty state UI (TS fallback YOK — yanlış rol içeriği gösterirdi)
   const drills = useMemo<ListenSolveDrill[]>(() => {
-    if (!dbDrills || dbDrills.length === 0) {
-      // Hook hala loading ya da boş — pickListenSolveDrills TS fallback'i de işler
-      return pickListenSolveDrills({
-        role: role ?? 'all',
-        category,
-        level: userLevel && ['A2', 'B1', 'B2'].includes(userLevel) ? userLevel : undefined,
-      });
-    }
-    // DB'den geleni shuffle + max 7
+    if (!dbDrills || dbDrills.length === 0) return [];
     const shuffled = [...dbDrills].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 7);
-  }, [dbDrills, role, category, userLevel]);
+  }, [dbDrills]);
 
   const [stage, setStage] = useState<Stage>('briefing');
   const [idx, setIdx] = useState(0);
