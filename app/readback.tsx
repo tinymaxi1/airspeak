@@ -22,7 +22,9 @@ import {
   useSpeechRecognitionEvent,
 } from '@/lib/speechRecognition';
 import { getRandomClearances, type AtcClearance } from '@/features/readback/clearances';
+import { useReadbackClearances, pickRandomClearances } from '@/features/readback/api';
 import { matchTranscript } from '@/features/conversation/scenarios';
+import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
@@ -44,7 +46,12 @@ export default function ReadbackDrillScreen() {
   const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
 
-  const [clearances] = useState<AtcClearance[]>(() => getRandomClearances(8));
+  // DB-first (Sprint C2): rol bazlı clearance pool çek, içinden 8 random
+  const role = useOnboardingStore((s) => s.role);
+  const { data: dbPool } = useReadbackClearances(role ?? 'pilot');
+  const [clearances] = useState<AtcClearance[]>(
+    () => dbPool && dbPool.length > 0 ? pickRandomClearances(dbPool, 8) : getRandomClearances(8),
+  );
   const [idx, setIdx] = useState(0);
   const [stage, setStage] = useState<Stage>('briefing');
   const [recognized, setRecognized] = useState('');

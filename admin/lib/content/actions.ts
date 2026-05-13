@@ -26,7 +26,10 @@ export type ContentTable =
   | 'placement_questions'
   | 'airlines'
   | 'scenarios'
-  | 'badges';
+  | 'badges'
+  | 'readback_clearances'
+  | 'pronunciation_sentences'
+  | 'listen_solve_drills';
 
 export type ActionResult<T = unknown> =
   | { ok: true; data: T }

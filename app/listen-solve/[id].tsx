@@ -28,7 +28,7 @@ import {
   Button3D,
 } from '@/components/airspeak';
 import { TabletShell } from '@/components/tablet';
-import { pickListenSolveDrills, routeIdToFilters } from '@/features/listen-solve/api';
+import { pickListenSolveDrills, routeIdToFilters, useListenSolveDrills } from '@/features/listen-solve/api';
 import { CATEGORY_LABEL, type ListenSolveDrill } from '@/features/listen-solve/drills';
 import type { UserRole } from '@/types/profile';
 
@@ -48,14 +48,24 @@ export default function ListenSolveScreen() {
   const recordHistoryActivity = useLessonHistoryStore((s) => s.recordActivity);
   const recordRecentActivity = useActivityStore((s) => s.recordActivity);
 
+  // DB-first fetch (Sprint C2). Fallback TS hook içinde.
+  const { category } = useMemo(() => routeIdToFilters(id), [id]);
+  const { data: dbDrills, isLoading: drillsLoading } = useListenSolveDrills(role ?? 'all', null, category);
+
+  // Picker: fetch sonucundan rol+kategori+level eşleşme, sonra shuffle + max 7
   const drills = useMemo<ListenSolveDrill[]>(() => {
-    const { category } = routeIdToFilters(id);
-    return pickListenSolveDrills({
-      role: role ?? 'all',
-      category,
-      level: userLevel && ['A2', 'B1', 'B2'].includes(userLevel) ? userLevel : undefined,
-    });
-  }, [id, role, userLevel]);
+    if (!dbDrills || dbDrills.length === 0) {
+      // Hook hala loading ya da boş — pickListenSolveDrills TS fallback'i de işler
+      return pickListenSolveDrills({
+        role: role ?? 'all',
+        category,
+        level: userLevel && ['A2', 'B1', 'B2'].includes(userLevel) ? userLevel : undefined,
+      });
+    }
+    // DB'den geleni shuffle + max 7
+    const shuffled = [...dbDrills].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 7);
+  }, [dbDrills, role, category, userLevel]);
 
   const [stage, setStage] = useState<Stage>('briefing');
   const [idx, setIdx] = useState(0);
@@ -73,8 +83,8 @@ export default function ListenSolveScreen() {
     };
   }, []);
 
-  // Drill yoksa erken çıkış
-  if (drills.length === 0) {
+  // Drill yoksa erken çıkış (loading değilse)
+  if (!drillsLoading && drills.length === 0) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.bg, padding: 24 }}>
         <Text style={{ fontSize: 48 }}>🎧</Text>

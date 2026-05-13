@@ -34,6 +34,9 @@ import {
   BookMarked,
   Languages,
   Layers,
+  Radio,
+  Speech,
+  Ear,
 } from 'lucide-react';
 
 interface NavItem {
@@ -53,6 +56,9 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/interviews', label: 'Mülakat', icon: ClipboardList, minRole: 'reviewer' },
   { href: '/airlines', label: 'Havayolları', icon: Plane, minRole: 'reviewer' },
   { href: '/scenarios', label: 'AI Senaryolar', icon: MessageSquare, minRole: 'reviewer' },
+  { href: '/readback-clearances', label: 'Telsiz Tekrarı', icon: Radio, minRole: 'reviewer' },
+  { href: '/pronunciation', label: 'Telaffuz', icon: Speech, minRole: 'reviewer' },
+  { href: '/listen-solve', label: 'Dinle & Çöz', icon: Ear, minRole: 'reviewer' },
   { href: '/placement', label: 'Placement Test', icon: ClipboardList, minRole: 'reviewer' },
   { href: '/badges', label: 'Rozetler', icon: Award, minRole: 'editor' },
   { href: '/leagues', label: 'Lig Yönetimi', icon: Trophy, minRole: 'editor' },

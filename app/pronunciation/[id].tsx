@@ -21,6 +21,7 @@ import {
   PRONUNCIATION_SENTENCES,
   type PronunciationSentence,
 } from '@/features/pronunciation/sentences';
+import { usePronunciationSentence } from '@/features/pronunciation/api';
 import {
   scorePronunciationFromTranscript,
   heuristicScore,
@@ -57,7 +58,10 @@ export default function PronunciationScreen() {
   const c = usePalette();
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ id: string }>();
-  const sentence = (PRONUNCIATION_SENTENCES.find((s) => s.id === params.id) ??
+  // DB-first (Sprint C2): slug ile fetch, fallback TS dosyasından
+  const { data: dbSentence } = usePronunciationSentence(params.id);
+  const sentence = (dbSentence ??
+    PRONUNCIATION_SENTENCES.find((s) => s.id === params.id) ??
     PRONUNCIATION_SENTENCES[0]) as PronunciationSentence;
 
   const addXp = useGamificationStore((s) => s.addXp);

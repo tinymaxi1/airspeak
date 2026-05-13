@@ -482,6 +482,18 @@ iOS test key konfigüre edildi (`test_bepbobVLqibOscaAJFmISTcTuMv`), Android key
    - Eski 4 score kolonu DROP (vocabulary/grammar/listening/reading_score)
    - Detaylı attempt history tablosu (şu an latest-only)
 
+9. **Sprint C — Quick Practice DB-driven** (2026-05-13)
+   - **C1 (TAMAM)**: Listen & Solve gerçek engine + 14 TS drill role-aware (commit `30f4a90`)
+   - **C2 (TAMAM)**: 3 yeni DB tablo + admin CRUD + mobile hook'lar (migration `20260513000015`)
+     - `readback_clearances` (12 satır seed) — admin `/readback-clearances`
+     - `pronunciation_sentences` (10 satır seed) — admin `/pronunciation`
+     - `listen_solve_drills` (15 satır seed) — admin `/listen-solve`
+     - Mobile hook'lar DB-first, TS fallback
+     - Sidebar 3 yeni menü item (Telsiz Tekrarı / Telaffuz / Dinle & Çöz)
+   - **C3 (kalan)**: ElevenLabs audio_url batch generation (audio_text → mp3 cache)
+   - **C4 (kalan)**: `practice_attempts` tablosu (her drill için attempt log + skor + cohort analiz)
+   - **C5 (kalan)**: 14 TS drill yetersiz — Claude API ile 50-100 drill batch generation
+
 ## Aktif durum (2026-05-04)
 
 ```bash

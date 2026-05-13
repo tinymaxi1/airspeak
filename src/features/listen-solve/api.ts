@@ -1,15 +1,97 @@
 /**
- * Listen & Solve API — drill picker.
+ * Listen & Solve API — DB-driven, TS fallback.
  *
- * Şu an hardcoded TS drill bank'tan filtreler. İleride DB tablosu eklenirse
- * supabase query'e geçer (interface aynı kalır).
+ * Sprint C2:
+ * - DB tablo: listen_solve_drills
+ * - TS fallback: src/features/listen-solve/drills.ts (DB boşsa veya hata)
  */
+import { useQuery } from '@tanstack/react-query';
+import { supabase as typedSupabase } from '@/lib/supabase';
 import {
   LISTEN_SOLVE_DRILLS,
   type ListenSolveDrill,
   type ListenSolveRole,
   type ListenSolveCategory,
 } from './drills';
+
+const supabase: any = typedSupabase;
+const FIVE_MIN = 5 * 60_000;
+
+export interface ListenSolveDrillRow {
+  id: string;
+  slug: string;
+  level: string | null;
+  target_role: string;
+  target_sub_roles: string[] | null;
+  category: string;
+  audio_text: string;
+  question_tr: string;
+  question_en: string;
+  options: any;
+  correct_id: string;
+  explanation_tr: string | null;
+  explanation_en: string | null;
+  hint_tr: string | null;
+  hint_en: string | null;
+  noise_level: number;
+  audio_url: string | null;
+  sort: number;
+}
+
+function rowToDrill(r: ListenSolveDrillRow): ListenSolveDrill {
+  return {
+    id: r.slug,
+    slug: r.slug,
+    level: (r.level as any) ?? 'B1',
+    target_role: r.target_role as ListenSolveRole,
+    target_sub_roles: r.target_sub_roles ?? [],
+    category: r.category as ListenSolveCategory,
+    audio_text: r.audio_text,
+    question_tr: r.question_tr,
+    question_en: r.question_en,
+    options: r.options,
+    correct_id: r.correct_id,
+    explanation_tr: r.explanation_tr ?? '',
+    explanation_en: r.explanation_en ?? '',
+    hint_tr: r.hint_tr ?? undefined,
+  };
+}
+
+export function useListenSolveDrills(
+  role: string | null | undefined,
+  subRole?: string | null,
+  category?: ListenSolveCategory,
+) {
+  return useQuery({
+    queryKey: ['listen-solve-drills', role ?? 'any', subRole ?? 'any', category ?? 'any'],
+    staleTime: FIVE_MIN,
+    queryFn: async (): Promise<ListenSolveDrill[]> => {
+      try {
+        let query = supabase
+          .from('listen_solve_drills')
+          .select('*')
+          .eq('status', 'published');
+        if (role) query = query.in('target_role', [role, 'all']);
+        if (category) query = query.eq('category', category);
+        const { data, error } = await query.order('sort', { ascending: true }).limit(50);
+        if (error) throw error;
+        if (!data || data.length === 0) return LISTEN_SOLVE_DRILLS;
+
+        let rows = data as ListenSolveDrillRow[];
+        if (subRole) {
+          const subFiltered = rows.filter(
+            (r) => !r.target_sub_roles || r.target_sub_roles.length === 0 || r.target_sub_roles.includes(subRole),
+          );
+          if (subFiltered.length >= 2) rows = subFiltered;
+        }
+        return rows.map(rowToDrill);
+      } catch (e) {
+        if (__DEV__) console.warn('listen-solve fetch failed, fallback to TS:', e);
+        return LISTEN_SOLVE_DRILLS;
+      }
+    },
+  });
+}
 
 /**
  * Rol + opsiyonel kategori filtresine göre drill setini döndürür.
