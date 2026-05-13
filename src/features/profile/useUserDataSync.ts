@@ -100,7 +100,7 @@ export function useUserDataSync(userId: string | null | undefined): void {
           supabase
             .from('profiles')
             .select(
-              'id, username, full_name, avatar_url, role, level, daily_goal_minutes, timezone, active_hours, is_student, onboarding_completed, onboarding_completed_at, created_at, updated_at',
+              'id, username, full_name, avatar_url, role, sub_role, level, daily_goal_minutes, timezone, active_hours, is_student, onboarding_completed, onboarding_completed_at, created_at, updated_at',
             )
             .eq('id', uid)
             .maybeSingle(),
