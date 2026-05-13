@@ -790,3 +790,50 @@ release:app.airspeak.mobile@1.0.0+29       → BUILD 29 native
 | RN-5 | _layout.tsx postgres_changes (38 event, fix var) | UNRESOLVED |
 | RN-6 | useUserDataSync run undefined (OTA #14 fix) | UNRESOLVED — OTA #16+ test |
 | RN-7 | conversation infinite loop (OTA #14 fix) | UNRESOLVED — OTA #16+ test |
+
+---
+
+## Supabase Debug Workflow (FAZ 7 — Observability)
+
+**Setup**:
+- Management API: `https://api.supabase.com/v1/projects/neinhbkdctjtyyoskxpg`
+- Auth token env: `SUPABASE_ACCESS_TOKEN` (NEVER commit, in-memory only)
+- Underlying: Logflare + BigQuery
+- Project: `airspeak` · Region: `eu-central-1` · Status: `ACTIVE_HEALTHY`
+
+### Helper Script: `scripts/supabase-logs.sh`
+
+```bash
+export SUPABASE_ACCESS_TOKEN="sbp_..."
+./scripts/supabase-logs.sh project              # smoke test, proje info
+./scripts/supabase-logs.sh tables               # log tablo row count survey
+./scripts/supabase-logs.sh errors [hours]       # postgres + edge errors (default 1h)
+./scripts/supabase-logs.sh slow [hours]         # duration log içeren query'ler
+./scripts/supabase-logs.sh auth [hours]         # auth event'ler
+./scripts/supabase-logs.sh rpc <name> [hours]   # spesifik RPC
+./scripts/supabase-logs.sh realtime [hours]     # realtime channel hataları
+./scripts/supabase-logs.sh sql "<query>"        # raw BigQuery SQL
+```
+
+### BigQuery Dialect Notları (önemli farklar)
+
+- `ILIKE` **yok** — `REGEXP_CONTAINS(LOWER(col), r'pattern')` veya `LIKE` (case-sensitive)
+- Time filter **zorunlu** — `WHERE timestamp > timestamp_sub(current_timestamp(), interval N hour)` yoksa BigQuery partition tarama yapmaz ve boş döner
+- `error_severity` postgres_logs metadata struct içinde — top-level değil. `UNNEST(metadata)` gerekli
+- Tablo isimleri: `edge_logs`, `postgres_logs`, `auth_logs`, `function_logs`, `function_edge_logs`, `realtime_logs`, `storage_logs`
+
+### Bilinen Sınırlama (2026-05-13 itibarı)
+
+`SELECT timestamp, event_message FROM postgres_logs WHERE timestamp > ...` query'leri **boş döner** ama `COUNT(*)` 5 satır gösteriyor. Olası nedenler:
+- Free/Pro plan log API kısıtlaması (sadece COUNT izinli, raw row yok)
+- BigQuery row-level read scope eksik
+
+**Workaround**: Supabase Dashboard'dan Studio Logs UI direkt kullan. Helper'daki `tables` komutu yine de useful (retention sağlık kontrolü).
+
+### Yeni DB Crash Bildirimi → Akış
+
+1. Sentry'de crash görüldü, ama DB tarafı (RLS denied, RPC error) görünmüyor
+2. `./scripts/supabase-logs.sh errors 1` → son 1 saatte postgres error
+3. `./scripts/supabase-logs.sh rpc <name>` → spesifik RPC çağrılarını izle
+4. Studio Logs UI ile cross-reference (raw event_message için)
+5. Migration veya RPC fix → apply → cross-check
