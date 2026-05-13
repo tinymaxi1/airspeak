@@ -1,0 +1,67 @@
+[
+  {
+    "slug": "climb-flight-level-three-five-zero-readback",
+    "text_en": "Climb flight level three five zero, Speedbird two six alpha",
+    "text_tr": "Flight level üç beş sıfıra tırman, Speedbird iki altı alfa",
+    "ipa": "/klaɪm flaɪt ˈlɛvəl θriː faɪv ˈzɪəroʊ ˈspiːdˌbɜːrd tuː sɪks ˈælfə/",
+    "phonemes": [
+      "klaɪm-flaɪt",
+      "ˈlɛ-vəl-θriː",
+      "faɪv-ˈzɪə-roʊ",
+      "ˈspiːd-bɜːrd",
+      "tuː-sɪks",
+      "ˈæl-fə"
+    ],
+    "level": "B1",
+    "target_role": "pilot",
+    "target_sub_roles": [
+      "a320"
+    ],
+    "category": "phraseology",
+    "hint_tr": "Her rakamı ayrı ayrı söyleyin ('three five zero'), 'flight level' vurgusunu 'LEVel' hecesine yapın.",
+    "hint_en": "Pronounce each digit separately in the flight level, stress on 'LEVel' and ensure clear /θ/ in 'three'."
+  },
+  {
+    "slug": "hydraulic-system-terminology",
+    "text_en": "The accumulator pressure has dropped below minimum threshold.",
+    "text_tr": "Accumulator basıncı minimum eşik değerinin altına düştü.",
+    "ipa": "/ði əˈkjuːmjəleɪtə ˈpreʃə hæz drɒpt bɪˈləʊ ˈmɪnɪməm ˈθreʃhəʊld/",
+    "phonemes": [
+      "ði-ə-ˈkjuː-mjə-leɪ-tə",
+      "ˈpre-ʃə",
+      "hæz-drɒpt",
+      "bɪ-ˈləʊ",
+      "ˈmɪ-nɪ-məm",
+      "ˈθreʃ-həʊld"
+    ],
+    "level": "B2",
+    "target_role": "technician",
+    "target_sub_roles": [
+      "tech_line"
+    ],
+    "category": "vocabulary",
+    "hint_tr": "Accumulator kelimesinde vurgu ikinci hecede 'KJU', threshold'da 'th' sesi diş arası /θ/ olarak söylenir.",
+    "hint_en": "Stress 'accumulator' on the second syllable /ˈkjuː/, and pronounce 'threshold' with the soft 'th' /θ/ sound at the start."
+  },
+  {
+    "slug": "welcome-aboard-passenger-greeting",
+    "text_en": "Good morning, welcome aboard this flight to London.",
+    "text_tr": "Günaydın, Londra'ya yapacağımız bu uçuşa hoş geldiniz.",
+    "ipa": "/ɡʊd ˈmɔːrnɪŋ ˈwɛlkəm əˈbɔːrd ðɪs flaɪt tə ˈlʌndən/",
+    "phonemes": [
+      "ɡʊd-ˈmɔːr-nɪŋ",
+      "ˈwɛl-kəm",
+      "ə-ˈbɔːrd",
+      "ðɪs-flaɪt",
+      "tə-ˈlʌn-dən"
+    ],
+    "level": "A2",
+    "target_role": "cabin",
+    "target_sub_roles": [
+      "cabin_purser"
+    ],
+    "category": "phrase",
+    "hint_tr": "Welcome kelimesinde 'wel-' hecesi vurgulu, 'aboard' sözcüğünde '-board' kısmı uzun /ɔː/ sesi ile telaffuz edilir.",
+    "hint_en": "Stress 'WEL-come' on the first syllable and pronounce 'aboard' with a long vowel /ɔː/ sound in the second syllable."
+  }
+]

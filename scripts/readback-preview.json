@@ -1,0 +1,135 @@
+[
+  {
+    "slug": "ils-approach-clearance-descent-b1",
+    "level": "B1",
+    "target_role": "pilot",
+    "target_sub_roles": [
+      "a320"
+    ],
+    "category": "approach",
+    "station": "APPROACH",
+    "freq": "119.7",
+    "atc_utterance": "Speedbird 342, cleared ILS runway 34 left approach, descend to altitude 3000 feet on QNH 1013, report established on the localizer.",
+    "expected_readback": "Cleared ILS runway 34 left approach, descend to 3000 feet, QNH 1013, wilco, Speedbird 342.",
+    "key_phrases": [
+      [
+        "cleared ILS",
+        "ILS clearance",
+        "cleared for ILS"
+      ],
+      [
+        "runway 34 left",
+        "34 left",
+        "rwy 34L",
+        "three four left"
+      ],
+      [
+        "descend to 3000 feet",
+        "descend 3000",
+        "three thousand feet"
+      ],
+      [
+        "QNH 1013",
+        "one zero one three"
+      ],
+      [
+        "Speedbird 342",
+        "342"
+      ]
+    ],
+    "icao_ref": "ICAO Doc 4444 Ch.7, Annex 10 Vol II",
+    "hint_tr": "ILS approach clearance'da runway numarası, descend altitude ve QNH mutlaka readback edilmeli. 'Wilco' ile report talimatını kabul edin.",
+    "hint_en": "For ILS approach clearance, read back the runway number, descent altitude, and QNH. Use 'wilco' to acknowledge the reporting instruction."
+  },
+  {
+    "slug": "hydraulic-snag-report-left-system-low-pressure",
+    "level": "B2",
+    "target_role": "technician",
+    "target_sub_roles": [
+      "tech_line"
+    ],
+    "category": "maintenance_comm",
+    "station": "MAINTENANCE CONTROL",
+    "freq": null,
+    "atc_utterance": "Maintenance Control, go ahead with your snag report for Tango Charlie Alpha Three Two Five.",
+    "expected_readback": "Tango Charlie Alpha Three Two Five, left hydraulic system showing low pressure indication on ECAM, quantity normal, noted intermittent pump caution during taxi, requesting troubleshooting guidance.",
+    "key_phrases": [
+      [
+        "left hydraulic system",
+        "hydraulic system left",
+        "left hyd system"
+      ],
+      [
+        "low pressure",
+        "pressure low",
+        "low press indication"
+      ],
+      [
+        "ECAM",
+        "ecam indication",
+        "ECAM message"
+      ],
+      [
+        "quantity normal",
+        "fluid quantity normal",
+        "normal quantity"
+      ],
+      [
+        "troubleshooting guidance",
+        "troubleshooting",
+        "guidance",
+        "technical support"
+      ]
+    ],
+    "icao_ref": "ICAO Doc 9432 Maintenance Phraseology",
+    "hint_tr": "Hydraulic system failure raporunda sistem adı (left/right), bulgu (low pressure), ECAM status ve quantity bilgisini sırayla verin. Troubleshooting guidance isteğini unutmayın.",
+    "hint_en": "For hydraulic snag reports, state system side, observed symptom, ECAM status, fluid quantity, and request troubleshooting guidance in sequence."
+  },
+  {
+    "slug": "cabin-secure-report-to-cockpit-before-pushback",
+    "level": "B1",
+    "target_role": "cabin",
+    "target_sub_roles": [
+      "cabin_purser"
+    ],
+    "category": "ground_ops",
+    "station": "FLIGHT DECK",
+    "freq": null,
+    "atc_utterance": "Cockpit, this is the purser. Cabin is secure, all passengers seated with seat belts fastened, carry-on stowed, doors armed and cross-checked. We are ready for pushback.",
+    "expected_readback": "Roger purser, cabin secure, all passengers seated and belted, carry-on stowed, doors armed and cross-checked, ready for pushback.",
+    "key_phrases": [
+      [
+        "cabin secure",
+        "cabin is secure"
+      ],
+      [
+        "passengers seated",
+        "all passengers seated",
+        "pax seated"
+      ],
+      [
+        "seat belts fastened",
+        "belts fastened",
+        "seatbelts fastened"
+      ],
+      [
+        "carry-on stowed",
+        "baggage stowed",
+        "overhead bins closed"
+      ],
+      [
+        "doors armed",
+        "doors armed and cross-checked",
+        "doors armed and checked"
+      ],
+      [
+        "ready for pushback",
+        "ready for departure",
+        "clear for pushback"
+      ]
+    ],
+    "icao_ref": "ICAO Doc 9432 Cabin Safety Procedures",
+    "hint_tr": "Purser olarak flight deck'e pushback öncesi cabin durumunu rapor ediyorsun. Tüm kritik maddeleri sırayla tekrarla: cabin secure, passengers seated ve belted, carry-on stowed, doors armed.",
+    "hint_en": "As purser reporting to flight deck before pushback, confirm all critical items in sequence: cabin secure status, passenger seating and belts, carry-on stowage, and door arming status."
+  }
+]
