@@ -17,13 +17,14 @@ import {
   CoachMark,
   BackButton,
 } from '@/components/airspeak';
-import { useScenariosAsStatic } from '@/features/conversation/useScenarios';
+import { useScenariosAsStatic, useScenarios } from '@/features/conversation/useScenarios';
 import { useBookmarkStore } from '@/stores/bookmarkStore';
 import { useCoachMarkStore } from '@/stores/coachMarkStore';
 import { track } from '@/lib/posthog';
+import { useAuthStore } from '@/stores/authStore';
+import { useLocalizedSubRoles } from '@/features/profile/useSubRoles';
+import type { UserRole } from '@/types/profile';
 
-// Tüm 6 UserRole + 'all'. Type mismatch fix (önceden 'tech' kullanılıyordu; profiles.role
-// 'technician' tutuyor → senaryo bulunamıyordu → empty list / crash riski).
 const ROLE_ICONS: Record<string, string> = {
   pilot: '✈',
   atc: '🗼',
@@ -31,6 +32,7 @@ const ROLE_ICONS: Record<string, string> = {
   technician: '⚙',
   ground: '💼',
   student: '🎓',
+  dispatcher: '📊',
   all: '🌐',
 };
 
@@ -40,24 +42,10 @@ const LEVEL_BADGE: Record<string, { bg: string; fg: string }> = {
   B1: { bg: '#2DBE6C', fg: '#FFFFFF' },
 };
 
-type RoleFilter = 'all' | 'pilot' | 'atc' | 'cabin' | 'technician' | 'ground' | 'student';
-const ROLE_FILTERS: { value: RoleFilter; label: string }[] = [
-  { value: 'all', label: 'Tümü' },
-  { value: 'pilot', label: '✈ Pilot' },
-  { value: 'atc', label: '🗼 ATC' },
-  { value: 'cabin', label: '🎧 Kabin' },
-  { value: 'technician', label: '⚙ Teknisyen' },
-  { value: 'ground', label: '💼 Yer' },
-  { value: 'student', label: '🎓 Öğrenci' },
-];
-
 export default function ConversationIndexScreen() {
   const { t } = useTranslation();
+  // Tab değeri: 'all' veya sub_role id (örn 'tech_line').
   const [filter, setFilter] = useState<string>('all');
-  // CRASH 1 fix (REACT-NATIVE-7 Maximum update depth):
-  // Eskiden `useBookmarkStore((s) => new Set(...))` her render'da yeni Set
-  // referansı dönüyordu → Zustand "değişti" görüyor → re-render → sonsuz döngü.
-  // Çözüm: raw entries'i selector'la al, Set'i useMemo'da hesapla.
   const bookmarkEntries = useBookmarkStore((s) => s.entries);
   const bookmarkedSet = useMemo(
     () => new Set(bookmarkEntries.filter((e) => e.kind === 'scenario').map((e) => e.id)),
@@ -67,11 +55,33 @@ export default function ConversationIndexScreen() {
   const coachSeen = useCoachMarkStore((s) => s.isSeen('conversation_first_open'));
   const markCoachSeen = useCoachMarkStore((s) => s.markSeen);
 
+  // User'ın parent role'una göre sub_role tab listesi
+  const userRole = useAuthStore((s) => s.profile?.role) as UserRole | null;
+  const { items: subRoles } = useLocalizedSubRoles(userRole);
+
+  // Senaryolar — user.role'üne ait tümü (sub_role filter UI tarafında)
   const { items: allScenarios, isLoading } = useScenariosAsStatic();
-  const scenarios = useMemo(
-    () => (filter === 'all' ? allScenarios : allScenarios.filter((s) => s.role === filter)),
-    [filter, allScenarios],
-  );
+
+  // Raw DbScenario verisinden target_sub_roles bilgisine erişmek için Map.
+  // useScenariosAsStatic adapter'i target_sub_roles bilgisini kaybediyor —
+  // useScenarios raw çağırıp slug → target_sub_roles map'ı kuruyoruz.
+  const rawScenarios = useScenarios();
+  const subRoleBySlug = useMemo(() => {
+    const m = new Map<string, string[]>();
+    (rawScenarios.data ?? []).forEach((r) => m.set(r.slug, r.target_sub_roles ?? []));
+    return m;
+  }, [rawScenarios.data]);
+
+  // Filter: 'all' tab → tümü; sub_role tab → o sub_role tag'i olan veya boş olanlar
+  const scenarios = useMemo(() => {
+    if (filter === 'all') return allScenarios;
+    return allScenarios.filter((s) => {
+      const tags = subRoleBySlug.get(s.id) ?? [];
+      // Sub_role tag matching: spesifik tag varsa match, boşsa da gösteriliyor mu?
+      // Tasarım kararı: BOŞ olanlar her tab'da görünür (parent role'a açık)
+      return tags.length === 0 || tags.includes(filter);
+    });
+  }, [filter, allScenarios, subRoleBySlug]);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#06091A' }}>
@@ -93,7 +103,7 @@ export default function ConversationIndexScreen() {
           <BackButton onPress={() => router.back()} color="#FFFFFF" label={t('common.back', 'Geri')} />
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
-              {t('conversation.indexEyebrow', 'AI CO-PILOT · 5 SENARYO')}
+              {t('conversation.indexEyebrowCount', { count: scenarios.length, defaultValue: 'AI CO-PILOT · {{count}} SENARYO' })}
             </Mono>
             <Text style={{ fontFamily: FONTS.body800, fontSize: 22, color: '#FFFFFF', marginTop: 2 }}>
               {t('conversation.indexTitle', 'Senaryo seç')}
@@ -101,19 +111,43 @@ export default function ConversationIndexScreen() {
           </View>
         </View>
 
-        {/* Role filter */}
+        {/* Sub-role filter tabs — user.role'a ait alt-roller */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 12, gap: 6 }}
         >
-          {ROLE_FILTERS.map((f) => {
-            const active = filter === f.value;
+          {/* Tümü tab — her zaman ilk */}
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => setFilter('all')}
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 999,
+              borderWidth: 1.5,
+              borderColor: filter === 'all' ? '#FFD56B' : 'rgba(255,255,255,0.18)',
+              backgroundColor: filter === 'all' ? 'rgba(255,213,107,0.16)' : 'transparent',
+            }}
+          >
+            <Mono
+              style={{
+                fontSize: 11,
+                color: filter === 'all' ? '#FFD56B' : 'rgba(255,255,255,0.85)',
+                letterSpacing: 0.99,
+              }}
+            >
+              🌐 {t('common.all', 'Tümü')}
+            </Mono>
+          </TouchableOpacity>
+          {/* Sub_role tab'ları — kullanıcının parent role'una bağlı */}
+          {subRoles.map((sr) => {
+            const active = filter === sr.id;
             return (
               <TouchableOpacity
-                key={f.value}
+                key={sr.id}
                 activeOpacity={0.85}
-                onPress={() => setFilter(f.value)}
+                onPress={() => setFilter(sr.id)}
                 style={{
                   paddingHorizontal: 12,
                   paddingVertical: 6,
@@ -130,7 +164,7 @@ export default function ConversationIndexScreen() {
                     letterSpacing: 0.99,
                   }}
                 >
-                  {f.label}
+                  {sr.icon ?? '·'} {sr.name}
                 </Mono>
               </TouchableOpacity>
             );
@@ -159,7 +193,9 @@ export default function ConversationIndexScreen() {
           >
             <Text style={{ fontSize: 36 }}>🎙</Text>
             <Body color="rgba(255,255,255,0.7)" style={{ fontSize: 14, textAlign: 'center' }}>
-              {t('conversation.noScenarios', 'Bu rol için henüz senaryo yok')}
+              {filter === 'all'
+                ? t('conversation.noScenarios', 'Bu rol için henüz senaryo yok')
+                : t('conversation.noScenariosSubRole', 'Bu alt-rol için henüz senaryo yok. "Tümü" sekmesine bak.')}
             </Body>
           </View>
         )}

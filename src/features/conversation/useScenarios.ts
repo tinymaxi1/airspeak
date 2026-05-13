@@ -48,13 +48,16 @@ export interface DbScenario {
   is_premium: boolean;
 }
 
-/** Kullanıcıya uygun tüm yayınlanmış senaryoları döner. */
+/**
+ * Kullanıcının ROLE'üne ait tüm yayınlanmış senaryoları döner.
+ * Sub_role filter UI tarafında (sub_role tab'larında) yapılır — burada
+ * yapmıyoruz, böylece UI tab değiştirdikçe ek fetch yok.
+ */
 export function useScenarios() {
   const role = useAuthStore((s) => s.profile?.role ?? null);
-  const subRole = useAuthStore((s) => s.profile?.sub_role ?? null);
 
   return useQuery({
-    queryKey: ['scenarios', role, subRole],
+    queryKey: ['scenarios', role],
     staleTime: ONE_HOUR,
     queryFn: async (): Promise<DbScenario[]> => {
       const { data, error } = await (supabase as any)
@@ -65,18 +68,13 @@ export function useScenarios() {
         .limit(200);
       if (error) return [];
       const rows = (data ?? []) as DbScenario[];
-      // Client-side filter — supabase'in array OR query'si karmaşık
+      // Sadece role match — sub_role UI tarafında
       return rows.filter((s) => {
-        // role match
-        const roleMatch =
+        return (
           s.role === 'all' ||
           (s.target_roles && s.target_roles.length === 0) ||
-          (role && s.target_roles?.includes(role));
-        if (!roleMatch) return false;
-        // sub_role match (sub_roles boşsa veya user'ın sub'u içeriyorsa)
-        if (!s.target_sub_roles || s.target_sub_roles.length === 0) return true;
-        if (!subRole) return false;
-        return s.target_sub_roles.includes(subRole);
+          (role && s.target_roles?.includes(role))
+        );
       });
     },
   });
