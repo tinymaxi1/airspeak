@@ -41,7 +41,7 @@ import {
   Card3D,
 } from '@/components/airspeak';
 import { TabletShell } from '@/components/tablet';
-import * as Speech from 'expo-speech';
+import { safeSpeechSpeak, safeSpeechStop } from '@/lib/speechSafe';
 import { useWordOfTheDay } from '@/features/words/useWordOfTheDay';
 
 export default function HomeScreen() {
@@ -700,8 +700,8 @@ export default function HomeScreen() {
           // 🔊 buton: önce DB audio_url, yoksa expo-speech fallback
           const playWord = () => {
             if (!wordOfDay) return;
-            Speech.stop();
-            Speech.speak(wordOfDay.word_or_phrase, {
+            safeSpeechStop();
+            safeSpeechSpeak(wordOfDay.word_or_phrase, {
               language: 'en-US',
               rate: 0.85,
               pitch: 1.0,
@@ -709,8 +709,8 @@ export default function HomeScreen() {
           };
           const playExample = () => {
             if (!wordOfDay) return;
-            Speech.stop();
-            Speech.speak(wordOfDay.example_en, {
+            safeSpeechStop();
+            safeSpeechSpeak(wordOfDay.example_en, {
               language: 'en-US',
               rate: 0.9,
               pitch: 1.0,
