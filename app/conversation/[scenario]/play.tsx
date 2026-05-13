@@ -506,6 +506,11 @@ export default function ConversationScreen() {
           return <ChatBubble key={i} item={item} />;
         })}
 
+        {/* HINT CARD — awaiting-mic'te otomatik görünür (kullanıcı konuşmadan ÖNCE) */}
+        {stage === 'awaiting-mic' && currentTurn && (
+          <HintCard turn={currentTurn} />
+        )}
+
         {/* Live recognized text (recording sırasında) */}
         {stage === 'recording' && (
           <View
@@ -807,6 +812,99 @@ function ChatBubble({ item }: { item: ChatItem }) {
           </View>
         )}
       </View>
+    </View>
+  );
+}
+
+/**
+ * HintCard — awaiting-mic state'inde otomatik görünür.
+ * Kullanıcı konuşmadan ÖNCE ipucu verir.
+ */
+function HintCard({ turn }: { turn: DialogTurn }) {
+  const [showExpected, setShowExpected] = useState(false);
+  const dbT = turn as DialogTurn & {
+    hint?: { text_tr?: string; text_en?: string };
+    expected_response?: { text_en?: string; text_tr?: string; must_include?: string[] };
+    vocabulary_focus?: string[];
+  };
+  const hintText = dbT.hint?.text_tr ?? (turn as any).hintTr ?? '';
+  const expectedEn = dbT.expected_response?.text_en ?? turn.expectedReadback ?? '';
+  const expectedTr = dbT.expected_response?.text_tr ?? '';
+  const vocab = dbT.vocabulary_focus ?? [];
+
+  if (!hintText && !expectedEn) return null;
+
+  return (
+    <View
+      style={{
+        backgroundColor: 'rgba(255,213,107,0.10)',
+        borderWidth: 1,
+        borderColor: 'rgba(255,213,107,0.4)',
+        borderRadius: 12,
+        padding: 14,
+        marginTop: 8,
+        marginBottom: 6,
+      }}
+    >
+      {!!hintText && (
+        <>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <Text style={{ fontSize: 16 }}>💡</Text>
+            <Mono style={{ fontSize: 10, color: '#FFD56B', letterSpacing: 1.4 }}>İPUCU</Mono>
+          </View>
+          <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.92)', lineHeight: 19 }}>
+            {hintText}
+          </Text>
+        </>
+      )}
+
+      {/* Vocabulary chips */}
+      {vocab.length > 0 && (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+          {vocab.map((v, i) => (
+            <View
+              key={i}
+              style={{
+                backgroundColor: 'rgba(46,168,255,0.16)',
+                borderColor: 'rgba(46,168,255,0.4)',
+                borderWidth: 1,
+                paddingHorizontal: 8,
+                paddingVertical: 3,
+                borderRadius: 6,
+              }}
+            >
+              <Mono style={{ fontSize: 10, color: '#9FD3FF', letterSpacing: 0.5 }}>{v}</Mono>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* Beklenen ifade toggle */}
+      {!!expectedEn && (
+        <View style={{ marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.1)' }}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => setShowExpected(!showExpected)}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+          >
+            <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', letterSpacing: 1.2 }}>
+              {showExpected ? '▼' : '▶'} Beklenen ifadeyi göster
+            </Mono>
+          </TouchableOpacity>
+          {showExpected && (
+            <View style={{ marginTop: 6, padding: 8, backgroundColor: 'rgba(0,0,0,0.25)', borderRadius: 6 }}>
+              <Text style={{ fontSize: 13, color: '#FFFFFF', fontFamily: FONTS.mono, lineHeight: 18 }}>
+                "{expectedEn}"
+              </Text>
+              {!!expectedTr && (
+                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', marginTop: 6, lineHeight: 16, fontStyle: 'italic' }}>
+                  {expectedTr}
+                </Text>
+              )}
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 }
