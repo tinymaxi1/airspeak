@@ -208,7 +208,9 @@
       "roleGround": "Grondoperaties",
       "roleGroundDesc": "IATA IGOM, platform, klantenservice",
       "roleStudent": "Luchtvaartstudent",
-      "roleStudentDesc": "YDS, universiteit, ICAO-vooruitblik"
+      "roleStudentDesc": "YDS, universiteit, ICAO-vooruitblik",
+      "roleDispatcher": "Vluchtdispatcher",
+      "roleDispatcherDesc": "Vluchtplanning, weer, slots"
     },
     "goals": {
       "step": "STAP 6 VAN 6",
@@ -823,6 +825,91 @@
       "unblockTitle": "Unblock user?",
       "unblockBody": "@{{u}}'s posts and comments will be visible again.",
       "unblockConfirm": "Unblock"
+    }
+  },
+  "quick": {
+    "readback": {
+      "label": "Read-back drill",
+      "pilotSub": "ATC clearances",
+      "generalSub": "Radio practice"
+    },
+    "listen": {
+      "label": "Listen & decode",
+      "pilotSub": "Garbled radio",
+      "generalSub": "Listening practice"
+    },
+    "roleplay": {
+      "label": "AI roleplay",
+      "pilotSub": "Holding pattern",
+      "atcSub": "Tower comms",
+      "cabinSub": "PA announcement",
+      "technicianSub": "Mechanic brief",
+      "groundSub": "Pushback brief",
+      "studentSub": "Basic dialog",
+      "dispatcherSub": "Ops brief",
+      "generalSub": "AI scenario"
+    },
+    "pronunciation": {
+      "label": "Pronunciation",
+      "pilotSub": "Numbers 0-9",
+      "atcSub": "Numbers 0-9",
+      "cabinSub": "Announcement phrases",
+      "technicianSub": "Technical terms",
+      "groundSub": "Pushback phrases",
+      "dispatcherSub": "Weather terms",
+      "generalSub": "General pronunciation"
+    },
+    "clearance": {
+      "label": "Issue clearance",
+      "sub": "Traffic instructions"
+    },
+    "conflict": {
+      "label": "Conflict resolution",
+      "sub": "Alternative route"
+    },
+    "announcement": {
+      "label": "PA announcement",
+      "sub": "Boarding / landing"
+    },
+    "safety": {
+      "label": "Safety briefing",
+      "sub": "Emergency procedures"
+    },
+    "maintenance": {
+      "label": "Maintenance brief",
+      "sub": "Service check"
+    },
+    "faultReport": {
+      "label": "Fault report",
+      "sub": "AOG status"
+    },
+    "pushback": {
+      "label": "Pushback",
+      "sub": "Marshalling signals"
+    },
+    "marshalling": {
+      "label": "Marshalling",
+      "sub": "Ramp coordination"
+    },
+    "alphabet": {
+      "label": "Alphabet",
+      "sub": "ICAO phonetic"
+    },
+    "numbers": {
+      "label": "Numbers",
+      "sub": "0-9 phrases"
+    },
+    "basics": {
+      "label": "Basic dialog",
+      "sub": "Daily phrases"
+    },
+    "flightPlan": {
+      "label": "Flight plan",
+      "sub": "Route phrases"
+    },
+    "weather": {
+      "label": "Weather report",
+      "sub": "METAR / TAF"
     }
   }
 }

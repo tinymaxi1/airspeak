@@ -210,7 +210,9 @@
       "roleGround": "Yer Hizmetleri",
       "roleGroundDesc": "IATA IGOM, ramp, müşteri hizmeti",
       "roleStudent": "Havacılık Öğrencisi",
-      "roleStudentDesc": "YDS, üniversite, ICAO önizleme"
+      "roleStudentDesc": "YDS, üniversite, ICAO önizleme",
+      "roleDispatcher": "Uçuş Operasyon Memuru",
+      "roleDispatcherDesc": "Dispatcher, hava raporları, slot"
     },
     "goals": {
       "step": "ADIM 6 / 6",
@@ -260,14 +262,14 @@
       "fastPracticeSub": "Kısa, odaklı seanslar — mola arası ideal",
       "todaySub": "Bugün için seçilmiş 3 hızlı görev (5-15 dk)",
       "wordOfFlightSub": "Her gün yeni bir havacılık terimi",
-      "qReadback": "Telsiz tekrarı",
-      "qReadbackSub": "ATC izinleri",
-      "qListen": "Dinle & çöz",
+      "qReadback": "Read-back drill",
+      "qReadbackSub": "ATC clearances",
+      "qListen": "Dinle ve çöz",
       "qListenSub": "Parazitli telsiz",
-      "qAi": "AI ile rol yap",
-      "qAiSub": "Bekleme deseni",
+      "qAi": "AI roleplay",
+      "qAiSub": "Holding pattern",
       "qPronounce": "Telaffuz",
-      "qPronounceSub": "Sayılar 0-9",
+      "qPronounceSub": "Sayılar 0–9",
       "greetingMorning": "Günaydın, {{name}}.",
       "greetingDay": "İyi günler, {{name}}.",
       "greetingEvening": "İyi akşamlar, {{name}}.",
@@ -324,14 +326,6 @@
       "firstTimeTitle": "İlk dersine başla",
       "firstTimeSub": "~3 dk · streak'in başlasın",
       "firstTimeStart": "BAŞLA →",
-      "qReadback": "Read-back drill",
-      "qReadbackSub": "ATC clearances",
-      "qListen": "Dinle ve çöz",
-      "qListenSub": "Parazitli telsiz",
-      "qAi": "AI roleplay",
-      "qAiSub": "Holding pattern",
-      "qPronounce": "Telaffuz",
-      "qPronounceSub": "Sayılar 0–9",
       "careerEyebrow": "KARİYER MERKEZİ",
       "careerTitle": "ICAO 4 · 41 Havayolu · AI",
       "careerSub": "Mülakat + sınav + B2B kohort",
@@ -868,6 +862,91 @@
       "unblockTitle": "Engeli kaldır?",
       "unblockBody": "@{{u}} kullanıcısının postları ve yorumları tekrar görünecek.",
       "unblockConfirm": "Engeli kaldır"
+    }
+  },
+  "quick": {
+    "readback": {
+      "label": "Telsiz tekrarı",
+      "pilotSub": "ATC izinleri",
+      "generalSub": "Telsiz pratiği"
+    },
+    "listen": {
+      "label": "Dinle & çöz",
+      "pilotSub": "Parazitli telsiz",
+      "generalSub": "Dinleme pratiği"
+    },
+    "roleplay": {
+      "label": "AI ile rol yap",
+      "pilotSub": "Bekleme deseni",
+      "atcSub": "Kule iletişimi",
+      "cabinSub": "Yolcu anonsu",
+      "technicianSub": "Mekanik brief",
+      "groundSub": "Pushback brief",
+      "studentSub": "Temel diyalog",
+      "dispatcherSub": "Operasyon brief",
+      "generalSub": "AI senaryo"
+    },
+    "pronunciation": {
+      "label": "Telaffuz",
+      "pilotSub": "Sayılar 0-9",
+      "atcSub": "Sayılar 0-9",
+      "cabinSub": "Anons ifadeleri",
+      "technicianSub": "Teknik terimler",
+      "groundSub": "Pushback ifadeleri",
+      "dispatcherSub": "Hava terminolojisi",
+      "generalSub": "Genel telaffuz"
+    },
+    "clearance": {
+      "label": "Klerans verme",
+      "sub": "Trafik talimatları"
+    },
+    "conflict": {
+      "label": "Çatışma çözme",
+      "sub": "Alternatif route"
+    },
+    "announcement": {
+      "label": "Yolcu anonsu",
+      "sub": "Boarding / landing"
+    },
+    "safety": {
+      "label": "Güvenlik briefi",
+      "sub": "Acil prosedürler"
+    },
+    "maintenance": {
+      "label": "Bakım briefi",
+      "sub": "Servis kontrol"
+    },
+    "faultReport": {
+      "label": "Arıza raporu",
+      "sub": "AOG durumu"
+    },
+    "pushback": {
+      "label": "Pushback",
+      "sub": "Marshalling sinyaller"
+    },
+    "marshalling": {
+      "label": "Marshalling",
+      "sub": "Ramp koordinasyonu"
+    },
+    "alphabet": {
+      "label": "Alfabe",
+      "sub": "ICAO fonetik"
+    },
+    "numbers": {
+      "label": "Sayılar",
+      "sub": "0-9 ifadeleri"
+    },
+    "basics": {
+      "label": "Temel diyalog",
+      "sub": "Günlük ifadeler"
+    },
+    "flightPlan": {
+      "label": "Uçuş planı",
+      "sub": "Route ifadeleri"
+    },
+    "weather": {
+      "label": "Hava raporu",
+      "sub": "METAR / TAF"
     }
   }
 }
