@@ -368,15 +368,33 @@ export function useNextLesson(role: Role | null | undefined, completedSlugs: Set
     staleTime: FIVE_MIN,
     queryFn: async (): Promise<LessonRow | null> => {
       if (!role) return null;
-      // Modülleri sort'la çek, lesson level'a kadar inerek ilk tamamlanmamışı bul
-      const { data, error } = await supabase
-        .from('lessons')
-        .select('*, unit:units!inner(module:modules!inner(role, sort), sort), sort')
+      // BUG FIX: Eski kodda supabase-js embed filter `units.modules.role` syntax'ı
+      // (tablo adı) kullanıyordu — alias `unit.module.role` olmalı veya hiç filter
+      // yapmadan client-side filtre. 400 ders tech için var olsa da hook null
+      // dönüyordu, home empty state yanlış tetikleniyordu.
+      //
+      // ÇÖZÜM: Modülleri ayrı çek, sonra ID listesiyle lessons sorgu.
+      const { data: mods, error: e1 } = await supabase
+        .from('modules')
+        .select('id, sort')
+        .eq('role', role)
         .eq('status', 'published')
-        .eq('units.modules.role', role);
-      if (error) throw error;
-      const sorted = (data ?? []).sort((a: any, b: any) => {
-        const ms = (a.unit?.module?.sort ?? 0) - (b.unit?.module?.sort ?? 0);
+        .order('sort', { ascending: true });
+      if (e1 || !mods || mods.length === 0) return null;
+
+      const modIds = mods.map((m: any) => m.id);
+      const modSortById = new Map<string, number>(mods.map((m: any) => [m.id, m.sort ?? 0]));
+
+      const { data: lessons, error: e2 } = await supabase
+        .from('lessons')
+        .select('*, unit:units!inner(id, module_id, sort), sort')
+        .eq('status', 'published')
+        .in('unit.module_id', modIds);
+      if (e2 || !lessons) return null;
+
+      // Sırala: module.sort → unit.sort → lesson.sort
+      const sorted = (lessons as any[]).sort((a, b) => {
+        const ms = (modSortById.get(a.unit?.module_id) ?? 0) - (modSortById.get(b.unit?.module_id) ?? 0);
         if (ms !== 0) return ms;
         const us = (a.unit?.sort ?? 0) - (b.unit?.sort ?? 0);
         if (us !== 0) return us;
