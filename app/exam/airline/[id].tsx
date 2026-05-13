@@ -60,6 +60,7 @@ function pickInterview(
     case 'technician': return airline.technician_interview;
     case 'ground': return airline.ground_interview;
     case 'student': return airline.student_interview;
+    case 'dispatcher': return airline.pilot_interview;
   }
 }
 

@@ -43,6 +43,9 @@ function getRoleInterview(a: AirlineRow, role: UserRole | null): AirlineIntervie
     case 'technician': return a.technician_interview;
     case 'ground': return a.ground_interview;
     case 'student': return a.student_interview;
+    // Dispatcher şirketler için ayrı interview seti yok — operasyonel rol pilot
+    // mülakatına yakın, fallback olarak pilot interview gösterilir.
+    case 'dispatcher': return a.pilot_interview;
   }
 }
 
@@ -79,6 +82,7 @@ const ROLE_LABELS: Record<UserRole, string> = {
   technician: 'Teknisyen',
   ground: 'Yer Hizmetleri',
   student: 'Öğrenci',
+  dispatcher: 'Dispatcher',
 };
 
 export default function AirlinesHubScreen() {

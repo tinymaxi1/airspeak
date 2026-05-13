@@ -151,14 +151,15 @@ export default function ProfileScreen() {
   const initials = (displayName || username).slice(0, 2).toUpperCase();
   const avatarUrl = profile?.avatar_url ?? null;
 
-  const roleLabel = {
+  const roleLabel = ({
     pilot: 'Pilot',
     atc: 'Air Traffic Controller',
     cabin: 'Cabin Crew',
     technician: 'Technician',
     ground: 'Ground Ops',
     student: 'Student',
-  }[role ?? 'student'];
+    dispatcher: 'Flight Dispatcher',
+  } as const)[role ?? 'student'] ?? 'Pilot';
 
   const xpLevel = calculateLevelFromXp(totalXp);
 
