@@ -344,7 +344,11 @@
       "checkpoint": "จดหมาย เหตุ",
       "boss": "Bos",
       "sectionPreview": "ไม่ใช้รันเวย์ 27R",
-      "sectionPreviewDesc": "ความท้าทายของหัวหน้าส่วนนี้ ATC"
+      "sectionPreviewDesc": "ความท้าทายของหัวหน้าส่วนนี้ ATC",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

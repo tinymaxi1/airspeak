@@ -344,7 +344,11 @@
       "checkpoint": "КОНТРОЛЬНАЯ ТОЧКА",
       "boss": "BOSS",
       "sectionPreview": "Оставайтесь на вылетной полосе перед взлетно-посадочной полосой 27R",
-      "sectionPreviewDesc": "Испытание с боссом в этом разделе — ATC имеет значение."
+      "sectionPreviewDesc": "Испытание с боссом в этом разделе — ATC имеет значение.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

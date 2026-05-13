@@ -344,7 +344,11 @@
       "checkpoint": "TITIK PERIKSA",
       "boss": "BOSS",
       "sectionPreview": "Tunggu di luar landasan pacu 27R",
-      "sectionPreviewDesc": "Tantangan bos di bagian ini — ATC sangat penting."
+      "sectionPreviewDesc": "Tantangan bos di bagian ini — ATC sangat penting.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

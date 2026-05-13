@@ -344,7 +344,11 @@
       "checkpoint": "POINT DE CONTRÔLE",
       "boss": "BOSS",
       "sectionPreview": "Attendez avant la piste 27R",
-      "sectionPreviewDesc": "Le défi du boss de cette section — L'ATC, c'est important."
+      "sectionPreviewDesc": "Le défi du boss de cette section — L'ATC, c'est important.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

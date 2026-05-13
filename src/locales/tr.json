@@ -376,7 +376,11 @@
       "checkpoint": "KONTROL",
       "boss": "BOSS",
       "sectionPreview": "Hold short of runway 27R",
-      "sectionPreviewDesc": "Bu bölümün boss meydan okuması — ATC önemli."
+      "sectionPreviewDesc": "Bu bölümün boss meydan okuması — ATC önemli.",
+      "emptyState": {
+        "title": "Bu rol için içerik yakında",
+        "subtitle": "Admin yakında bu role uygun ders ekleyecek. Bu arada pratiklerden devam edebilirsin."
+      }
     },
     "practice": {
       "eyebrow": "HIZLI UÇUŞ · STREAK CEZASI YOK",

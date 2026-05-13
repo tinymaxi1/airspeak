@@ -361,29 +361,47 @@ export function useScenario(slug: string | null | undefined) {
  * useNextLesson — Home Daily Flight Plan card için.
  * Tamamlanmamış ilk lesson'ı döndürür (rol bazlı tüm modülleri tarayarak).
  */
-export function useNextLesson(role: Role | null | undefined, completedSlugs: Set<string>) {
+/** CEFR seviye sıralama indexi. Düşük → yüksek. */
+const CEFR_ORDER: Record<string, number> = {
+  A0: 0, A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6,
+};
+
+export function useNextLesson(
+  role: Role | null | undefined,
+  completedSlugs: Set<string>,
+  userLevel?: string | null,
+) {
   return useQuery({
-    queryKey: ['content', 'next_lesson', role, [...completedSlugs].sort().join(',')],
+    queryKey: ['content', 'next_lesson', role, userLevel ?? 'any', [...completedSlugs].sort().join(',')],
     enabled: !!role,
     staleTime: FIVE_MIN,
     queryFn: async (): Promise<LessonRow | null> => {
       if (!role) return null;
-      // BUG FIX: Eski kodda supabase-js embed filter `units.modules.role` syntax'ı
-      // (tablo adı) kullanıyordu — alias `unit.module.role` olmalı veya hiç filter
-      // yapmadan client-side filtre. 400 ders tech için var olsa da hook null
-      // dönüyordu, home empty state yanlış tetikleniyordu.
-      //
-      // ÇÖZÜM: Modülleri ayrı çek, sonra ID listesiyle lessons sorgu.
+
+      // Level filter: user level >= module.level
+      // userLevel NULL ise tüm seviyeler (A0'dan başla — placement henüz yapılmamış)
+      const userLvIdx = userLevel ? (CEFR_ORDER[userLevel] ?? 0) : 0;
+
       const { data: mods, error: e1 } = await supabase
         .from('modules')
-        .select('id, sort')
+        .select('id, sort, level')
         .eq('role', role)
         .eq('status', 'published')
+        .order('level', { ascending: true })
         .order('sort', { ascending: true });
       if (e1 || !mods || mods.length === 0) return null;
 
-      const modIds = mods.map((m: any) => m.id);
-      const modSortById = new Map<string, number>(mods.map((m: any) => [m.id, m.sort ?? 0]));
+      // Level filter — user level VE üstü (placement sonrası kullanıcının başlangıç seviyesi)
+      // Eğer userLevel verildiyse: sadece o seviye ve sonrası
+      const filteredMods = userLevel
+        ? mods.filter((m: any) => (CEFR_ORDER[m.level ?? 'A0'] ?? 0) >= userLvIdx)
+        : mods;
+
+      if (filteredMods.length === 0) return null;
+
+      const modIds = filteredMods.map((m: any) => m.id);
+      const modOrderById = new Map<string, number>();
+      filteredMods.forEach((m: any, i: number) => modOrderById.set(m.id, i));
 
       const { data: lessons, error: e2 } = await supabase
         .from('lessons')
@@ -392,9 +410,9 @@ export function useNextLesson(role: Role | null | undefined, completedSlugs: Set
         .in('unit.module_id', modIds);
       if (e2 || !lessons) return null;
 
-      // Sırala: module.sort → unit.sort → lesson.sort
+      // Sırala: module order (level + sort) → unit.sort → lesson.sort
       const sorted = (lessons as any[]).sort((a, b) => {
-        const ms = (modSortById.get(a.unit?.module_id) ?? 0) - (modSortById.get(b.unit?.module_id) ?? 0);
+        const ms = (modOrderById.get(a.unit?.module_id) ?? 0) - (modOrderById.get(b.unit?.module_id) ?? 0);
         if (ms !== 0) return ms;
         const us = (a.unit?.sort ?? 0) - (b.unit?.sort ?? 0);
         if (us !== 0) return us;

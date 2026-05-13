@@ -344,7 +344,11 @@
       "checkpoint": "ΣΗΜΕΙΟ ΕΛΕΓΧΟΥ",
       "boss": "BOSS",
       "sectionPreview": "Περιμένετε πριν από τον διάδρομο 27R",
-      "sectionPreviewDesc": "Η πρόκληση του αφεντικού σε αυτό το επίπεδο — Το ATC έχει σημασία."
+      "sectionPreviewDesc": "Η πρόκληση του αφεντικού σε αυτό το επίπεδο — Το ATC έχει σημασία.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

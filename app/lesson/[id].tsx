@@ -44,6 +44,8 @@ import { track } from '@/lib/posthog';
 import { bumpUserXp } from '@/features/league/api';
 import { addCoins as addCoinsServer } from '@/features/wallet/api';
 import { showPaywall } from '@/stores/paywallStore';
+import { useOnboardingStore } from '@/stores/onboardingStore';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function LessonScreen() {
   const c = usePalette();
@@ -70,6 +72,10 @@ export default function LessonScreen() {
   const lessonLimit = useLessonLimit();
   const bumpDaily = useDailyLimitsStore((s) => s.bump);
   const [paywallOpen, setPaywallOpen] = useState(false);
+
+  // Role + level — analytics segmentation için
+  const userRole = useOnboardingStore((s) => s.role);
+  const userLevel = useAuthStore((s) => s.profile?.level ?? null);
 
   // ─────────── DB lesson ───────────
   const { data: lesson, isLoading, error } = useLesson(lessonSlug);
@@ -104,7 +110,12 @@ export default function LessonScreen() {
       if (safeIdx !== currentIdx) setCurrentIdx(safeIdx);
       // İlk başlama timestamp
       if (!persisted?.startedAt) {
-        track('lesson_started', { lesson_slug: lessonSlug, exercise_count: exercises.length });
+        track('lesson_started', {
+          lesson_slug: lessonSlug,
+          exercise_count: exercises.length,
+          role: userRole ?? 'none',
+          level: userLevel ?? 'unknown',
+        });
         saveProgress(lessonSlug, {
           startedAt: Date.now(),
           totalCount: exercises.length,

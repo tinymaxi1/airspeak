@@ -344,7 +344,11 @@
       "checkpoint": "チェックポイント",
       "boss": "ボス",
       "sectionPreview": "27R滑走路の手前で待機してください",
-      "sectionPreviewDesc": "このセクションのボス戦――ATCが重要です。"
+      "sectionPreviewDesc": "このセクションのボス戦――ATCが重要です。",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

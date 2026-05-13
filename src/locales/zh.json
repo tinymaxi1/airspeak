@@ -344,7 +344,11 @@
       "checkpoint": "检查点",
       "boss": "BOSS",
       "sectionPreview": "在27R跑道前等待",
-      "sectionPreviewDesc": "本章节的头目挑战——空中交通管制至关重要。"
+      "sectionPreviewDesc": "本章节的头目挑战——空中交通管制至关重要。",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

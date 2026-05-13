@@ -44,6 +44,7 @@ import { TabletShell } from '@/components/tablet';
 import { safeSpeechSpeak, safeSpeechStop } from '@/lib/speechSafe';
 import { useWordOfTheDay } from '@/features/words/useWordOfTheDay';
 import { getQuickCardsForRole } from '@/features/home/quickPracticeCards';
+import { track } from '@/lib/posthog';
 
 export default function HomeScreen() {
   const c = usePalette();
@@ -54,7 +55,8 @@ export default function HomeScreen() {
   const completedIds = useProgressStore((s) => s.completedLessonIds);
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
   // DB'den bir sonraki tamamlanmamış ders'i getir
-  const { data: nextLesson } = useNextLesson(role, completedSet);
+  const userLevel = useAuthStore((s) => s.profile?.level ?? null);
+  const { data: nextLesson } = useNextLesson(role, completedSet, userLevel);
   // DB'den rol bazlı tüm modülleri çek — totalLessons + completed counter için
   const { data: roleModules = [] } = useModules(role);
   const roleLessonSlugs = useMemo(
@@ -164,6 +166,22 @@ export default function HomeScreen() {
   useEffect(() => {
     refillHearts();
   }, [refillHearts]);
+
+  // Empty/allDone/comingSoon state telemetri — content gap görünürlüğü
+  useEffect(() => {
+    if (flightPlanState !== 'current') {
+      track('empty_state_shown', {
+        screen: 'home',
+        role: role ?? 'none',
+        level: userLevel ?? 'unknown',
+        reason: flightPlanState === 'empty'
+          ? 'no_content'
+          : flightPlanState === 'allDone'
+            ? 'all_completed'
+            : 'no_next_lesson',
+      });
+    }
+  }, [flightPlanState, role, userLevel]);
   const level = placement?.generalEnglish?.label ?? placement?.level ?? 'B1';
 
   // İlk kullanıcı kontrolü: hiç ders tamamlamadı + XP 0

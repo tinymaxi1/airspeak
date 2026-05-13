@@ -344,7 +344,11 @@
       "checkpoint": "CHECKPOINT",
       "boss": "BOSS",
       "sectionPreview": "Bitte warten Sie vor der Landebahn 27R",
-      "sectionPreviewDesc": "Die Boss-Herausforderung dieses Abschnitts – ATC ist entscheidend."
+      "sectionPreviewDesc": "Die Boss-Herausforderung dieses Abschnitts – ATC ist entscheidend.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

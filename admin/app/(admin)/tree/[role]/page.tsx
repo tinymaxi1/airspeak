@@ -6,13 +6,15 @@ import { StatusBadge } from '@/components/shared/StatusBadge';
 import { CreateModuleButton } from '@/components/forms/ModuleActions';
 import { StatusActions } from '@/components/forms/StatusActions';
 
-const VALID_ROLES = ['pilot', 'cabin', 'technician', 'ground', 'student'] as const;
+const VALID_ROLES = ['pilot', 'atc', 'cabin', 'technician', 'ground', 'student', 'dispatcher'] as const;
 const ROLE_LABELS: Record<string, string> = {
   pilot: 'Pilot',
+  atc: 'Hava Trafik Kontrol',
   cabin: 'Kabin Ekibi',
   technician: 'Teknisyen',
   ground: 'Yer Hizmetleri',
   student: 'Öğrenci',
+  dispatcher: 'Uçuş Dispeçeri',
 };
 
 export default async function ModulesPage({ params }: { params: Promise<{ role: string }> }) {

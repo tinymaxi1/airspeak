@@ -344,7 +344,11 @@
       "checkpoint": "نقطة تفتيش",
       "boss": "BOSS",
       "sectionPreview": "انتظر قبل مدرج 27R",
-      "sectionPreviewDesc": "تحدي رئيس القسم هذا — ATC مهم."
+      "sectionPreviewDesc": "تحدي رئيس القسم هذا — ATC مهم.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

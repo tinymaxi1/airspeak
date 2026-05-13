@@ -344,7 +344,11 @@
       "checkpoint": "확인 사항",
       "boss": "BOSS",
       "sectionPreview": "27R 활주로 진입 전 대기",
-      "sectionPreviewDesc": "이 구간의 보스전 — ATC가 중요합니다."
+      "sectionPreviewDesc": "이 구간의 보스전 — ATC가 중요합니다.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

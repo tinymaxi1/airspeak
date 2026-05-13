@@ -13,9 +13,12 @@
 import { ScrollView, View, Text, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle } from 'react-native-svg';
+import { track } from '@/lib/posthog';
+import { useAuthStore } from '@/stores/authStore';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { useLessonProgressStore } from '@/stores/lessonProgressStore';
@@ -56,6 +59,7 @@ const LESSON_ICON: Record<string, string> = {
 
 export default function LearnScreen() {
   const c = usePalette();
+  const { t } = useTranslation();
   const role = useOnboardingStore((s) => s.role) as UserRole | null;
   const completedIds = useProgressStore((s) => s.completedLessonIds);
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
@@ -120,15 +124,29 @@ export default function LearnScreen() {
       </View>
     );
   }
+  const userLevel = useAuthStore((s) => s.profile?.level ?? null);
+
+  // Empty state telemetri — sadece bir kez/değişimde ateşle
+  useEffect(() => {
+    if (!modulesLoading && modules.length === 0) {
+      track('empty_state_shown', {
+        screen: 'learn',
+        role: role ?? 'none',
+        level: userLevel ?? 'unknown',
+        reason: 'no_content',
+      });
+    }
+  }, [modulesLoading, modules.length, role, userLevel]);
+
   if (!modulesLoading && modules.length === 0) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.bg, padding: 24 }}>
         <Text style={{ fontSize: 64, marginBottom: 16 }}>📚</Text>
-        <Text style={{ fontSize: 18, fontWeight: '700', color: '#0E1116', marginBottom: 8 }}>
-          Henüz modül yok
+        <Text style={{ fontSize: 18, fontWeight: '700', color: '#0E1116', marginBottom: 8, textAlign: 'center' }}>
+          {t('screens.learn.emptyState.title', 'Henüz modül yok')}
         </Text>
-        <Text style={{ fontSize: 13, color: '#5A6478', textAlign: 'center' }}>
-          Admin yakında bu role uygun ders ekleyecek.
+        <Text style={{ fontSize: 13, color: '#5A6478', textAlign: 'center', lineHeight: 18 }}>
+          {t('screens.learn.emptyState.subtitle', 'Admin yakında bu role uygun ders ekleyecek.')}
         </Text>
       </View>
     );

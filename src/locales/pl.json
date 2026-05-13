@@ -344,7 +344,11 @@
       "checkpoint": "PUNKT KONTROLNY",
       "boss": "BOSS",
       "sectionPreview": "Proszę zatrzymać się przed pasem startowym 27R",
-      "sectionPreviewDesc": "Wyzwanie z bossem w tej sekcji — ATC ma znaczenie."
+      "sectionPreviewDesc": "Wyzwanie z bossem w tej sekcji — ATC ma znaczenie.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

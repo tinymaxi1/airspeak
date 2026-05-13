@@ -344,7 +344,11 @@
       "checkpoint": "चेक",
       "boss": "बॉस",
       "sectionPreview": "रनवे 27R से कम पकड़ो",
-      "sectionPreviewDesc": "इस अनुभाग की मुख्य चुनौती - एटीसी मामले।"
+      "sectionPreviewDesc": "इस अनुभाग की मुख्य चुनौती - एटीसी मामले।",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

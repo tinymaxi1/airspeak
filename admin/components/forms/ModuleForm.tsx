@@ -22,9 +22,12 @@ interface ModuleFormProps {
     description_tr?: string | null;
     badge?: string | null;
     reward_xp?: number;
+    level?: string | null;
   };
   onClose: () => void;
 }
+
+const LEVELS = ['A0', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as const;
 
 export function ModuleForm({ mode, role, initial, onClose }: ModuleFormProps) {
   const router = useRouter();
@@ -37,6 +40,7 @@ export function ModuleForm({ mode, role, initial, onClose }: ModuleFormProps) {
     description_tr: initial?.description_tr ?? '',
     badge: initial?.badge ?? '🛩',
     reward_xp: initial?.reward_xp ?? 50,
+    level: initial?.level ?? 'A0',
   });
 
   function update<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
@@ -49,12 +53,17 @@ export function ModuleForm({ mode, role, initial, onClose }: ModuleFormProps) {
       toast.error('Başlık (EN + TR) zorunlu');
       return;
     }
+    if (!form.level) {
+      toast.error('Seviye seçimi zorunlu');
+      return;
+    }
     startTransition(async () => {
       if (mode === 'create') {
         const r = await createRow(
           'modules',
           {
-            slug: uniqueSlug(form.title_tr || form.title, `mod_${role}_${form.number}`),
+            // Slug format: {role}_m{number}_{level}_{title_slug}
+            slug: uniqueSlug(form.title_tr || form.title, `${role}_m${form.number}_${form.level.toLowerCase()}`),
             role,
             number: form.number,
             title: form.title,
@@ -63,6 +72,7 @@ export function ModuleForm({ mode, role, initial, onClose }: ModuleFormProps) {
             description_tr: form.description_tr,
             badge: form.badge,
             reward_xp: form.reward_xp,
+            level: form.level,
             sort: form.number,
             status: 'draft',
           },
@@ -85,6 +95,7 @@ export function ModuleForm({ mode, role, initial, onClose }: ModuleFormProps) {
             description_tr: form.description_tr,
             badge: form.badge,
             reward_xp: form.reward_xp,
+            level: form.level,
           },
           [`/tree/${role}`, `/tree/${role}/${initial.slug}`],
         );
@@ -107,7 +118,7 @@ export function ModuleForm({ mode, role, initial, onClose }: ModuleFormProps) {
       </DialogHeader>
 
       <div className="space-y-4">
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-4 gap-3">
           <div>
             <Label required>Sıra No</Label>
             <Input
@@ -118,6 +129,14 @@ export function ModuleForm({ mode, role, initial, onClose }: ModuleFormProps) {
               onChange={(e) => update('number', Math.max(1, Number(e.target.value)))}
               required
             />
+          </div>
+          <div>
+            <Label required hint="CEFR">Seviye</Label>
+            <Select value={form.level} onChange={(e) => update('level', e.target.value)}>
+              {LEVELS.map((lv) => (
+                <option key={lv} value={lv}>{lv}</option>
+              ))}
+            </Select>
           </div>
           <div>
             <Label>Rozet</Label>

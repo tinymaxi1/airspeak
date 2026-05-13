@@ -344,7 +344,11 @@
       "checkpoint": "CONTROLEPUNT",
       "boss": "BOSS",
       "sectionPreview": "Wacht op de baan 27R",
-      "sectionPreviewDesc": "De eindbaasuitdaging van dit hoofdstuk — ATC is belangrijk."
+      "sectionPreviewDesc": "De eindbaasuitdaging van dit hoofdstuk — ATC is belangrijk.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

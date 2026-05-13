@@ -344,7 +344,11 @@
       "checkpoint": "CHECKPOINT",
       "boss": "Perancis",
       "sectionPreview": "Landasan 27R",
-      "sectionPreviewDesc": "Tantangan bos bagian ini, ATC."
+      "sectionPreviewDesc": "Tantangan bos bagian ini, ATC.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

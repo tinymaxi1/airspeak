@@ -344,7 +344,11 @@
       "checkpoint": "PUNTO DE CONTROL",
       "boss": "JEFE",
       "sectionPreview": "Espere antes de entrar en la pista 27R",
-      "sectionPreviewDesc": "El desafío del jefe de esta sección: el control de tráfico aéreo es fundamental."
+      "sectionPreviewDesc": "El desafío del jefe de esta sección: el control de tráfico aéreo es fundamental.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import { Plane, Users, Wrench, Headphones, GraduationCap, ChevronRight } from 'lucide-react';
+import { Plane, Users, Wrench, Headphones, GraduationCap, Radio, ClipboardList, ChevronRight } from 'lucide-react';
 
 const ROLES = [
   { id: 'pilot', label: 'Pilot', icon: Plane, color: 'bg-airspeak-red/10 text-airspeak-red border-airspeak-red/20' },
+  { id: 'atc', label: 'Hava Trafik Kontrol', icon: Radio, color: 'bg-sky-100 text-sky-700 border-sky-200' },
   { id: 'cabin', label: 'Kabin Ekibi', icon: Users, color: 'bg-pink-100 text-pink-700 border-pink-200' },
   { id: 'technician', label: 'Teknisyen', icon: Wrench, color: 'bg-amber-100 text-amber-700 border-amber-200' },
   { id: 'ground', label: 'Yer Hizmetleri', icon: Headphones, color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
   { id: 'student', label: 'Öğrenci', icon: GraduationCap, color: 'bg-blue-100 text-blue-700 border-blue-200' },
+  { id: 'dispatcher', label: 'Uçuş Dispeçeri', icon: ClipboardList, color: 'bg-purple-100 text-purple-700 border-purple-200' },
 ] as const;
 
 async function getRoleStats() {

@@ -681,10 +681,19 @@ DEEPL_API_KEY=...
 
 **Tarih**: 2026-05-13 sonrası planlanır. Lansmandan 4 ay önce başlat, 1-2 hafta her rol.
 
-### Mevcut Durum (v1.0 UX REAL FIX Pack sonrası)
+### Mevcut Durum (FAZ 1 — Level system sonrası, 2026-05-13)
 
 - 7 rol sistemde: pilot, atc, cabin, technician, ground, student, **dispatcher** (eklendi)
 - `profiles_role_check` + `modules_role_check` 7 rolü destekler (migration `20260513000001`)
+- **CEFR level sistemi aktif** (migration `20260513000013_modules_level_system.sql`):
+  - `profiles.level` CHECK = `A0/A1/A2/B1/B2/C1/C2`
+  - `modules.level` kolon + index `idx_modules_role_level_sort`
+  - 14 modül backfilled slug regex ile
+  - `useNextLesson(role, completed, userLevel)` — level filter (≥ userLevel)
+  - `ModuleForm` admin'de level dropdown zorunlu
+  - `/admin/tree` 7 rol kart (atc + dispatcher dahil)
+- **Empty state mobil**: home `flightPlanState` 4-state (current/empty/allDone/comingSoon) + learn empty card + PostHog `empty_state_shown` event
+- **Telemetri**: `lesson_started` event'e `role` + `level` tag, `empty_state_shown` event `{screen, role, level, reason}`
 - **Eksik CHECK constraint'ler** (içerik üretimi öncesi ek migration gerekli):
   - `interview_questions_role_check` (eski 5 rol, atc + dispatcher YOK)
   - `league_groups_role_check` (eski 5 rol + 'all')
@@ -692,25 +701,53 @@ DEEPL_API_KEY=...
   - `vocab_terms_role_check` (eski 5 rol + 'all')
   - `word_of_the_day_target_roles_check` (6 rol, dispatcher YOK)
 
-### Eksik İçerik
+### Eksik İçerik (Level Bazlı Matrix — 2026-05-13)
 
-| Rol | scenarios | vocab_terms | interview_qns | modules |
-|---|---|---|---|---|
-| **pilot** | ✅ mevcut | ✅ mevcut | ✅ mevcut | ✅ mevcut |
-| **atc** | 0 | az | 0 | az |
-| **dispatcher** | 0 | 0 | 0 | 0 |
-| **technician** | az | mevcut | mevcut | az |
-| **ground** | az | mevcut | mevcut | az |
-| **student** | az | mevcut | mevcut | az |
-| **cabin** | ✅ mevcut | ✅ mevcut | ✅ mevcut | ✅ mevcut |
+| Rol | A0 | A1 | A2 | B1 | B2 | C1 | C2 | Toplam modül |
+|---|---|---|---|---|---|---|---|---|
+| **pilot** | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **atc** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | **0** |
+| **cabin** | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **technician** | 1 | 1 | 1 | 1 | 1 | 1 | 0 | **6** (en zengin) |
+| **ground** | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **student** | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **dispatcher** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | **0** |
+| **TOPLAM** | 5 | 5 | 1 | 1 | 1 | 1 | 0 | **14** |
 
-### Hedef (her rol için minimum)
+**Diğer içerik tipleri** (level boyutu yok, sadece role bazlı):
 
-- 5 module × 3 unit × 3 lesson = **45 lesson**
-- **5-10 conversation scenario**
+| Rol | scenarios | vocab_terms | interview_qns |
+|---|---|---|---|
+| **pilot** | ✅ mevcut | ✅ mevcut | ✅ mevcut |
+| **atc** | 0 | az | 0 |
+| **dispatcher** | 0 | 0 | 0 |
+| **technician** | az | mevcut | mevcut |
+| **ground** | az | mevcut | mevcut |
+| **student** | az | mevcut | mevcut |
+| **cabin** | ✅ mevcut | ✅ mevcut | ✅ mevcut |
+
+### Hedef (her rol için minimum, level-aware)
+
+- 7 level × 1 module × 3 unit × 3 lesson = **63 lesson** (full coverage)
+- veya 5 level × 1 module × 3 unit × 3 lesson = **45 lesson** (A0-B2 MVP)
+- **5-10 conversation scenario** (level-agnostic)
 - **30-50 vocab term**
 - **10-20 interview question**
 - **1 league group seed**
+
+### Eksik Lesson Tahmini
+
+Hedef: her rol için 7 level × 9 lesson = 63 lesson tam coverage.
+
+- **pilot**: 14 mevcut · 49 eksik (A2-C2 yok)
+- **atc**: 0 mevcut · 63 eksik (A0-C2 hiçbiri yok)
+- **cabin**: 14 mevcut · 49 eksik
+- **technician**: ~54 mevcut (A0-C1) · 9 eksik (C2 yok) — **en yakın hedefe**
+- **ground**: 14 mevcut · 49 eksik
+- **student**: 14 mevcut · 49 eksik
+- **dispatcher**: 0 mevcut · 63 eksik
+
+**Toplam eksik**: ~331 lesson (full 7-level coverage). MVP A0-B2 hedeflenirse ~165 lesson.
 
 ### Tahmini Süre
 

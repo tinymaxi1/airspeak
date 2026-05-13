@@ -344,7 +344,11 @@
       "checkpoint": "CHECKPOINT",
       "boss": "BOSS",
       "sectionPreview": "دانلود بازی کوتاه باند 27R",
-      "sectionPreviewDesc": "چالش رئیس این بخش - ATC مهم است."
+      "sectionPreviewDesc": "چالش رئیس این بخش - ATC مهم است.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",

@@ -376,7 +376,11 @@
       "checkpoint": "CHECKPOINT",
       "boss": "BOSS",
       "sectionPreview": "Hold short of runway 27R",
-      "sectionPreviewDesc": "This section's boss challenge — ATC matters."
+      "sectionPreviewDesc": "This section's boss challenge — ATC matters.",
+      "emptyState": {
+        "title": "Content coming soon for this role",
+        "subtitle": "Admin will add lessons for this role shortly. Meanwhile, keep going with practices."
+      }
     },
     "practice": {
       "eyebrow": "QUICK FLIGHT · NO STREAK PENALTY",
