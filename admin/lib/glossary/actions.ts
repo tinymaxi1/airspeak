@@ -30,6 +30,9 @@ export const glossarySchema = z.object({
   source: z.enum(SOURCES).optional(),
   is_verified: z.boolean().optional(),
   frequency: z.number().int().min(0).max(999999).optional(),
+  /** FAZ 5 — granular sub-role filter. Glossary parent_role kavramı yok,
+   *  doğrudan sub_role id'leri taglenir. Boş = tüm sub_role'lara açık. */
+  target_sub_roles: z.array(z.string()).optional(),
 });
 
 export type GlossaryPayload = z.infer<typeof glossarySchema>;

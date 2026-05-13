@@ -8,6 +8,9 @@ import {
   type GlossaryPayload,
 } from '@/lib/glossary/actions';
 import { createClient } from '@/lib/supabase/client';
+import { SubRolePicker } from '@/components/sub-roles/SubRolePicker';
+
+const ALL_PARENT_ROLES_GLOSSARY = ['pilot','atc','cabin','technician','ground','student','dispatcher'];
 
 const CATEGORIES = [
   'phraseology', 'aircraft_parts', 'aerodynamics', 'navigation',
@@ -68,6 +71,7 @@ function GlossaryDialog({
     source: initial?.source ?? 'admin_manual',
     is_verified: initial?.is_verified ?? false,
     frequency: initial?.frequency ?? 0,
+    target_sub_roles: (initial?.target_sub_roles as string[] | undefined) ?? [],
   });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -254,6 +258,21 @@ function GlossaryDialog({
               onChange={(v) => set('frequency', parseInt(v, 10) || 0)}
               type="number"
               compact
+            />
+          </div>
+
+          {/* FAZ 5 — Target sub-roles (opsiyonel granular filter) */}
+          <div>
+            <label className="block text-xs font-semibold mb-2">
+              Hedef alt-roller (opsiyonel — boş = tüm alt-rollere açık)
+            </label>
+            <p className="text-[10px] text-muted-foreground mb-2">
+              Glossary parent role'a bağlı değil — doğrudan sub-role taglemek için 7 parent grup gösterilir.
+            </p>
+            <SubRolePicker
+              parentRoles={ALL_PARENT_ROLES_GLOSSARY}
+              value={form.target_sub_roles ?? []}
+              onChange={(next) => set('target_sub_roles', next)}
             />
           </div>
 
