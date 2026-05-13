@@ -15,10 +15,12 @@ import { SubRolePicker } from '@/components/sub-roles/SubRolePicker';
 const ROLES = [
   { id: 'all', label: 'Tüm roller' },
   { id: 'pilot', label: 'Pilot' },
+  { id: 'atc', label: 'ATC' },
   { id: 'cabin', label: 'Kabin' },
   { id: 'technician', label: 'Teknisyen' },
   { id: 'ground', label: 'Yer hizmetleri' },
   { id: 'student', label: 'Öğrenci' },
+  { id: 'dispatcher', label: 'Dispatcher' },
 ];
 
 const ALL_PARENT_ROLES_VOCAB = ['pilot','atc','cabin','technician','ground','student','dispatcher'];

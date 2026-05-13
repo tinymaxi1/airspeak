@@ -28,10 +28,12 @@ import { SubRolePicker } from '@/components/sub-roles/SubRolePicker';
 const ROLES = [
   { id: 'all', label: 'Tümü', emoji: '👥' },
   { id: 'pilot', label: 'Pilot', emoji: '👨‍✈️' },
-  { id: 'cabin', label: 'Kabin', emoji: '✈️' },
+  { id: 'atc', label: 'ATC', emoji: '🗼' },
+  { id: 'cabin', label: 'Kabin', emoji: '🎧' },
   { id: 'technician', label: 'Teknisyen', emoji: '🔧' },
   { id: 'ground', label: 'Yer', emoji: '🛬' },
   { id: 'student', label: 'Öğrenci', emoji: '🎓' },
+  { id: 'dispatcher', label: 'Dispatcher', emoji: '📊' },
 ] as const;
 
 const CATEGORIES = [
@@ -176,7 +178,7 @@ function ScenarioFormBody({
         {/* Role chips */}
         <div>
           <Label required>Rol</Label>
-          <div className="grid grid-cols-6 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {ROLES.map((r) => {
               const active = form.role === r.id;
               return (
