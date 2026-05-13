@@ -20,11 +20,17 @@ export type PlacementDimension = 'vocabulary' | 'grammar' | 'listening' | 'readi
 export interface UserPlacementResult {
   user_id: string;
   taken_at: string;
+  // YENI 4 dim (Sprint B sonrası)
+  general_english_score: number | null;
+  aviation_english_score: number | null;
+  aviation_knowledge_score: number | null;
+  communication_score: number | null;
+  // ESKİ 4 dim (NULL kalır, gelecek migration'da DROP)
   vocabulary_score: number | null;
   grammar_score: number | null;
   listening_score: number | null;
   reading_score: number | null;
-  overall_level: PlacementLevel | null;
+  overall_level: PlacementLevel | 'A0' | 'C2' | null;
   recommended_start_lesson_id: string | null;
   questions_answered: number;
   test_duration_seconds: number | null;
@@ -59,13 +65,14 @@ export interface NextQuestionResponse {
 
 export interface FinalizeResult {
   ok: boolean;
-  level?: PlacementLevel;
+  level?: PlacementLevel | 'A0' | 'C2';
+  previous_level?: string | null;
   avg_score?: number;
   scores?: {
-    vocabulary: number;
-    grammar: number;
-    listening: number;
-    reading: number;
+    generalEnglish: number;
+    aviationEnglish: number;
+    aviationKnowledge: number;
+    communication: number;
   };
   recommended_lesson_id?: string | null;
   next_test_allowed_at?: string;
@@ -187,21 +194,71 @@ export async function getNextPlacementQuestion(args: {
 }
 
 export async function finalizePlacement(args: {
+  userId: string;
   scores: {
-    vocabulary: number;
-    grammar: number;
-    listening: number;
-    reading: number;
+    generalEnglish: number;
+    aviationEnglish: number;
+    aviationKnowledge: number;
+    communication: number;
   };
   questionsAnswered?: number;
   testDurationSeconds?: number;
 }): Promise<FinalizeResult> {
+  // Sentry breadcrumb — başarı/başarısızlık takip edilebilir
+  try {
+    const Sentry = await import('@sentry/react-native').catch(() => null);
+    Sentry?.addBreadcrumb?.({
+      category: 'placement',
+      level: 'info',
+      message: 'finalize_placement.call',
+      data: {
+        userId: args.userId,
+        scores: args.scores,
+        questionsAnswered: args.questionsAnswered,
+      },
+    });
+  } catch {}
+
   const { data, error } = await (supabase as any).rpc('finalize_placement', {
-    p_scores: args.scores,
-    p_questions_answered: args.questionsAnswered ?? 0,
-    p_test_duration_seconds: args.testDurationSeconds ?? null,
+    p_user_id: args.userId,
+    p_scores: {
+      generalEnglish: args.scores.generalEnglish,
+      aviationEnglish: args.scores.aviationEnglish,
+      aviationKnowledge: args.scores.aviationKnowledge,
+      communication: args.scores.communication,
+      questionsAnswered: args.questionsAnswered ?? 0,
+      testDurationSeconds: args.testDurationSeconds ?? null,
+    },
   });
-  if (error) return { ok: false, error: error.message };
+
+  if (error) {
+    // Sentry capture — sessizce yutmama
+    try {
+      const Sentry = await import('@sentry/react-native').catch(() => null);
+      Sentry?.captureException?.(new Error(`finalize_placement RPC error: ${error.message}`), {
+        tags: { feature: 'placement' },
+        extra: { error, args },
+      });
+    } catch {}
+    return { ok: false, error: error.message };
+  }
+
+  // Başarı breadcrumb
+  try {
+    const Sentry = await import('@sentry/react-native').catch(() => null);
+    Sentry?.addBreadcrumb?.({
+      category: 'placement',
+      level: 'info',
+      message: 'finalize_placement.success',
+      data: {
+        level: data?.level,
+        previous_level: data?.previous_level,
+        attempt_number: data?.attempt_number,
+        recommended_lesson_id: data?.recommended_lesson_id,
+      },
+    });
+  } catch {}
+
   return data;
 }
 

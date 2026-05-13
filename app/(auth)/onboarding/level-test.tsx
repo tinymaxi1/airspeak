@@ -7,6 +7,7 @@
  * - Break: Segment tamamlandı + sonraki segment kartı + Devam
  */
 import { useState, useMemo } from 'react';
+import { useAuthStore } from '@/stores/authStore';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
@@ -63,6 +64,7 @@ export default function LevelTestScreen() {
   const { t, i18n } = useTranslation();
   const setPlacementResult = useOnboardingStore((s) => s.setPlacementResult);
   const role = useOnboardingStore((s) => s.role);
+  const userId = useAuthStore((s) => s.user?.id);
 
   const [step, setStep] = useState<Step>('intro');
   const [segmentIdx, setSegmentIdx] = useState(0);
@@ -445,26 +447,45 @@ export default function LevelTestScreen() {
         aviation_knowledge: dims.aviationKnowledge.label,
         communication: dims.communication.label,
       });
-      // Sprint 3f.B — DB'ye yaz (mevcut 4 dim → yeni 4 score map)
-      // Mapping: generalEnglish→vocabulary, aviationEnglish→grammar,
-      //          aviationKnowledge→listening, communication→reading.
-      // Her dim'in CEFR label'ından band (1-5) hesaplanır.
+      // Sprint B — DB'ye yaz (mobile dim isimleri DB ile aynı, mapping yok)
+      // Her dim'in CEFR label'ından band (1-6, A0=0 C2=6) hesaplanır.
       const labelToBand = (lbl: string): number => {
-        const m: Record<string, number> = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5,
-          beginner: 1, elementary: 2, intermediate: 3, advanced: 4, expert: 5 };
+        const m: Record<string, number> = {
+          A0: 0, A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6,
+          beginner: 1, elementary: 2, intermediate: 3, advanced: 4, expert: 5,
+        };
         return m[lbl] ?? 3;
       };
       const durationSec = testStartedAt ? Math.round((Date.now() - testStartedAt) / 1000) : null;
-      void finalizePlacement({
-        scores: {
-          vocabulary: labelToBand(dims.generalEnglish.label),
-          grammar: labelToBand(dims.aviationEnglish.label),
-          listening: labelToBand(dims.aviationKnowledge.label),
-          reading: labelToBand(dims.communication.label),
-        },
-        questionsAnswered: newAllAnswers.length,
-        testDurationSeconds: durationSec ?? undefined,
-      }).catch((e) => { if (__DEV__) console.warn('finalizePlacement failed:', e); });
+      if (userId) {
+        void finalizePlacement({
+          userId,
+          scores: {
+            generalEnglish: labelToBand(dims.generalEnglish.label),
+            aviationEnglish: labelToBand(dims.aviationEnglish.label),
+            aviationKnowledge: labelToBand(dims.aviationKnowledge.label),
+            communication: labelToBand(dims.communication.label),
+          },
+          questionsAnswered: newAllAnswers.length,
+          testDurationSeconds: durationSec ?? undefined,
+        }).then((res) => {
+          if (!res.ok && __DEV__) console.warn('finalizePlacement failed:', res.error);
+          // recommended_lesson_id store'a yaz — placement-result + home kullanır
+          if (res.ok && res.recommended_lesson_id) {
+            setPlacementResult({
+              recommended_lesson_id: res.recommended_lesson_id,
+              level_from_db: res.level,
+            } as any);
+          }
+          track('placement_completed', {
+            overall_level: res.level ?? null,
+            previous_level: res.previous_level ?? null,
+            dimension_scores: (res.scores ?? null) as any,
+            attempt_number: res.attempt_number ?? null,
+            recommended_lesson_id: res.recommended_lesson_id ?? null,
+          });
+        }).catch((e) => { if (__DEV__) console.warn('finalizePlacement exception:', e); });
+      }
       router.replace('/(auth)/onboarding/placement-result');
     } else if (isLastInSegment) {
       setStep('segmentBreak');

@@ -429,7 +429,39 @@
       "careerDesc": "ICAO 4 · {{count}} havayolu · Squadron",
       "tabLogbook": "Logbook",
       "tabProfile": "Profil",
-      "tabHangar": "Hangar"
+      "tabHangar": "Hangar",
+      "placement": {
+        "title": "Seviye Sınavı",
+        "lastResult": "SON SONUÇ",
+        "history": "GEÇMİŞ",
+        "historyNote": "Bu güne kadar {{attempts}} kez sınava girdin. Skorların sadece son sınava ait — geçmiş seansları detaylı görmek için ileri sürümde history eklenecek.",
+        "retake": "Sınavı yenile",
+        "retakeTitle": "Sınavı yenile",
+        "retakeBody": "Bu seni yeniden değerlendirir ve seviyeni günceller. 5-10 dakika sürer. Devam mı?",
+        "cooldownTitle": "Henüz tekrar test alamazsın",
+        "cooldownBody": "{{days}} gün sonra tekrar test alabilirsin. Cooldown 30 gün.",
+        "cooldownDays": "⏱ {{days}} GÜN SONRA TEKRAR ALINABİLİR",
+        "cooldownDaysLong": "{{days}} gün sonra tekrar alınabilir",
+        "viewDetails": "DETAYLARI GÖR ›",
+        "takenAt": "Test tarihi",
+        "questionsSuffix": "soru",
+        "minutesSuffix": "dk",
+        "attempt": "{{n}}. deneme",
+        "recommended": "ÖNERİLEN BAŞLANGIÇ",
+        "recommendedCta": "Seviyene uygun ilk derse git",
+        "emptyState": {
+          "title": "Henüz sınav vermedin",
+          "subtitle": "5 dakika · seviyeni belirle",
+          "subtitleLong": "4 boyutta seviyeni belirle: Genel İngilizce, Havacılık İngilizcesi, Havacılık Bilgisi ve İletişim. 5-10 dakika sürer.",
+          "cta": "Sınava gir →"
+        },
+        "dimensions": {
+          "generalEnglish": "Genel İngilizce",
+          "aviationEnglish": "Havacılık İngilizcesi",
+          "aviationKnowledge": "Havacılık Bilgisi",
+          "communication": "İletişim"
+        }
+      }
     },
     "league": {
       "tier": "TIER 4 / 7",

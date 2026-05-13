@@ -177,6 +177,35 @@ Bu hat **content authoring** odaklı — admin tarafından içerik girişi, mobi
 - `PlacementCard` component profile sayfasında: L badge + 4 score pill + cooldown-gated retry buton
 - 2 commit: 3f.A backend, 3f.B mobile
 
+### Sprint B — Placement UX (RPC fix + schema align + recommended_start) — 2026-05-13
+- **RPC bug fix**: eski `finalize_placement` kolon hatası ile fail oluyordu (`m.target_role`, `l.level`, `u.order_index` yok)
+  - Migration `20260513000014_placement_rpc_fix_and_schema_align.sql`:
+    - 4 yeni kolon: `general_english_score / aviation_english_score / aviation_knowledge_score / communication_score` (mobile dim isimleri)
+    - Eski 4 kolon (vocabulary/grammar/listening/reading_score) NULL kalır (geriye uyumluluk)
+    - `overall_level` CHECK: A0..C2 (7 level)
+    - Yeni RPC imzası: `finalize_placement(p_user_id uuid, p_scores jsonb)` — eski imzalar drop
+    - Recommended lesson sorgusu FIX: `m.role` + `m.level` + `m.sort`/`u.sort`/`l.sort` (var olan kolonlar)
+    - **GREATEST level**: yeni sonuç düşükse profile.level düşmez (kullanıcı stress günü güvenli)
+    - Avg → 7 CEFR mapping (A0 < 1.0, A1 < 1.5, A2 < 2.5, B1 < 3.5, B2 < 4.5, C1 < 5.5, else C2)
+- **Mobile finalizePlacement**: scores naming align (vocabulary→generalEnglish, grammar→aviationEnglish, ...)
+  - `userId` parametresi RPC'ye geçirilir (auth.uid() doğrulama)
+  - Sentry breadcrumb: `finalize_placement.call` / `.success`, fail durumunda `captureException`
+- **useNextLesson recommended_start priority**:
+  - `userId` parametresi eklendi
+  - İlk açılış (completedIds === 0) + `user_placement_results.recommended_start_lesson_id` varsa → direkt onu döndür
+  - Sentry breadcrumb: `next_lesson.using_recommended_start` vs `fallback_to_level_filter`
+- **Profile UI**:
+  - `PlacementCard` 4 dim güncellendi (VOC/GRA/LIS/REA → GEN/AVE/KNO/COM, eski kolonlardan fallback)
+  - "Detayları gör" link → `/profile/placement`
+  - Yeni sayfa `app/profile/placement.tsx`: last result kartı (overall_level + 4 bar) + recommended lesson CTA + retry (cooldown gate)
+  - Empty state: "Henüz sınav vermedin" + CTA (Konu 2 — B: mevcut user'lara backfill YOK, sadece CTA)
+- **i18n**: `screens.profile.placement.*` 20 dilde (TR+EN real, 18 EN fallback)
+- **PostHog events**:
+  - `placement_completed` { overall_level, previous_level, dimension_scores, attempt_number, recommended_lesson_id }
+  - `placement_retest_started` { previous_level, days_since_last, attempt_number }
+  - `recommendation_followed` { lesson_id, role, level }
+- **Backfill yok**: mevcut user'lar `user_placement_results` boş — yeniden test almaları beklenir (empty state CTA).
+
 ### Sprint 4 — Lig sistemi (TAMAM)
 - 4B haftalık leaderboard + bumpUserXp RPC
 - 4C aylık leaderboard + championships
@@ -446,6 +475,12 @@ iOS test key konfigüre edildi (`test_bepbobVLqibOscaAJFmISTcTuMv`), Android key
 6. **Sprint 3 alt seriler** (3a/3e/3f tamam, 3b/3c/3d boş — kullanıcı planında olmayabilir)
 
 7. **i18n genişletme** (16 dil mevcut, içerik çevirisi eksik)
+
+8. **Placement v2** (Sprint B sonrası kalan):
+   - Adaptive RPC mobile entegrasyonu (`get_next_placement_question` şu an kullanılmıyor — statik 22 soru)
+   - `lessons.skill` kolonu eklenir → "en zayıf dim'e göre lesson öner" mantığı
+   - Eski 4 score kolonu DROP (vocabulary/grammar/listening/reading_score)
+   - Detaylı attempt history tablosu (şu an latest-only)
 
 ## Aktif durum (2026-05-04)
 

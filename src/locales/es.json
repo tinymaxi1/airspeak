@@ -397,7 +397,39 @@
       "careerDesc": "ICAO 4 · {{count}} airlines · Squadron",
       "tabLogbook": "Logbook",
       "tabProfile": "Profile",
-      "tabHangar": "Hangar"
+      "tabHangar": "Hangar",
+      "placement": {
+        "title": "Placement Test",
+        "lastResult": "LATEST RESULT",
+        "history": "HISTORY",
+        "historyNote": "You've taken the test {{attempts}} times. Scores shown are for the latest attempt only.",
+        "retake": "Retake test",
+        "retakeTitle": "Retake test",
+        "retakeBody": "This re-evaluates and updates your level. Takes 5-10 minutes. Continue?",
+        "cooldownTitle": "Can't retake yet",
+        "cooldownBody": "You can retake in {{days}} days. Cooldown is 30 days.",
+        "cooldownDays": "⏱ AVAILABLE IN {{days}} DAYS",
+        "cooldownDaysLong": "Available in {{days}} days",
+        "viewDetails": "VIEW DETAILS ›",
+        "takenAt": "Test date",
+        "questionsSuffix": "questions",
+        "minutesSuffix": "min",
+        "attempt": "Attempt #{{n}}",
+        "recommended": "RECOMMENDED START",
+        "recommendedCta": "Go to your first lesson",
+        "emptyState": {
+          "title": "Haven't taken the test yet",
+          "subtitle": "5 minutes · find your level",
+          "subtitleLong": "Determine your level across 4 dimensions: General English, Aviation English, Aviation Knowledge, and Communication.",
+          "cta": "Take the test →"
+        },
+        "dimensions": {
+          "generalEnglish": "General English",
+          "aviationEnglish": "Aviation English",
+          "aviationKnowledge": "Aviation Knowledge",
+          "communication": "Communication"
+        }
+      }
     },
     "league": {
       "tier": "NIVEL 4 DE 7",

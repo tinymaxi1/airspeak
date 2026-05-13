@@ -56,7 +56,8 @@ export default function HomeScreen() {
   const completedSet = useMemo(() => new Set(completedIds), [completedIds]);
   // DB'den bir sonraki tamamlanmamış ders'i getir
   const userLevel = useAuthStore((s) => s.profile?.level ?? null);
-  const { data: nextLesson } = useNextLesson(role, completedSet, userLevel);
+  const userIdForLesson = useAuthStore((s) => s.user?.id ?? null);
+  const { data: nextLesson } = useNextLesson(role, completedSet, userLevel, userIdForLesson);
   // DB'den rol bazlı tüm modülleri çek — totalLessons + completed counter için
   const { data: roleModules = [] } = useModules(role);
   const roleLessonSlugs = useMemo(
@@ -558,6 +559,15 @@ export default function HomeScreen() {
               onPress={() => {
                 recordDailyActivity();
                 if (flightPlanState === 'current' && nextLesson) {
+                  // recommendation_followed event — completed === 0 ise recommended lesson kullanılıyor demek
+                  if (completedIds.length === 0) {
+                    track('recommendation_followed', {
+                      lesson_id: nextLesson.id,
+                      lesson_slug: nextLesson.slug,
+                      role: role ?? 'none',
+                      level: userLevel ?? 'unknown',
+                    });
+                  }
                   router.push({ pathname: '/lesson/[id]', params: { id: nextLesson.slug } });
                 } else if (flightPlanState === 'empty') {
                   // Role seçilmediyse onboarding'e (theoretical, normalde olmaz)

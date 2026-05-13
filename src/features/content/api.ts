@@ -370,13 +370,61 @@ export function useNextLesson(
   role: Role | null | undefined,
   completedSlugs: Set<string>,
   userLevel?: string | null,
+  userId?: string | null,
 ) {
   return useQuery({
-    queryKey: ['content', 'next_lesson', role, userLevel ?? 'any', [...completedSlugs].sort().join(',')],
+    queryKey: ['content', 'next_lesson', role, userLevel ?? 'any', userId ?? 'anon', [...completedSlugs].sort().join(',')],
     enabled: !!role,
     staleTime: FIVE_MIN,
     queryFn: async (): Promise<LessonRow | null> => {
       if (!role) return null;
+
+      // ─── Sprint B — recommended_start_lesson_id priority ────────
+      // İlk açılış (completed === 0) + placement RPC'den dönen recommended_lesson_id varsa
+      // direkt onu döndür. Sentry breadcrumb ile takip edilir.
+      if (userId && completedSlugs.size === 0) {
+        try {
+          const { data: pr } = await supabase
+            .from('user_placement_results')
+            .select('recommended_start_lesson_id')
+            .eq('user_id', userId)
+            .maybeSingle();
+          const recId = (pr as any)?.recommended_start_lesson_id;
+          if (recId) {
+            const { data: lesson } = await supabase
+              .from('lessons')
+              .select('*, unit:units!inner(id, module_id, sort), sort')
+              .eq('id', recId)
+              .eq('status', 'published')
+              .maybeSingle();
+            if (lesson) {
+              try {
+                const Sentry = await import('@sentry/react-native').catch(() => null);
+                Sentry?.addBreadcrumb?.({
+                  category: 'content',
+                  level: 'info',
+                  message: 'next_lesson.using_recommended_start',
+                  data: { lesson_id: recId, role, userLevel },
+                });
+              } catch {}
+              return lesson as LessonRow;
+            }
+          }
+        } catch {
+          // Sessizce fallback'e geç — recommended yoksa veya sorgu fail ise level filter çalışır
+        }
+      }
+
+      // ─── Fallback: level-based filter ────────────────────────────
+      try {
+        const Sentry = await import('@sentry/react-native').catch(() => null);
+        Sentry?.addBreadcrumb?.({
+          category: 'content',
+          level: 'info',
+          message: 'next_lesson.fallback_to_level_filter',
+          data: { role, userLevel, completedCount: completedSlugs.size },
+        });
+      } catch {}
 
       // Level filter: user level >= module.level
       // userLevel NULL ise tüm seviyeler (A0'dan başla — placement henüz yapılmamış)
