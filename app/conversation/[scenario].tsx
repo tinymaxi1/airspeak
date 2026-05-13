@@ -26,7 +26,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as Speech from 'expo-speech';
+import { safeSpeechSpeak, safeSpeechStop } from '@/lib/speechSafe';
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
@@ -138,8 +138,8 @@ export default function ConversationScreen() {
   // Block 1.C — Headset: ATC mesajını tekrar dinle
   function replayCurrentAtc() {
     if (currentTurn?.atcUtterance) {
-      Speech.stop();
-      Speech.speak(currentTurn.atcUtterance, { language: 'en-US', rate: 0.9 });
+      safeSpeechStop();
+      safeSpeechSpeak(currentTurn.atcUtterance, { language: 'en-US', rate: 0.9 });
     }
   }
 
@@ -185,7 +185,7 @@ export default function ConversationScreen() {
       } catch {
         /* ignore */
       }
-      Speech.stop();
+      safeSpeechStop();
     };
   }, []);
 
@@ -223,13 +223,18 @@ export default function ConversationScreen() {
         text: turn.atcUtterance,
       },
     ]);
-    Speech.speak(turn.atcUtterance, {
+    const spoke = safeSpeechSpeak(turn.atcUtterance, {
       language: 'en-US',
       rate: 0.95,
       pitch: 1.0,
       onDone: () => setStage('awaiting-mic'),
       onError: () => setStage('awaiting-mic'),
     });
+    // TTS yoksa (native modül eksik veya iptal) kullanıcı metni okuyabilsin,
+    // mic stage'ine manuel düş — sonsuza dek "DİNLE" stuck kalmasın.
+    if (!spoke) {
+      setStage('awaiting-mic');
+    }
   }
 
   async function startRecording() {
