@@ -63,6 +63,8 @@ export interface PlacementResult {
 
 export interface OnboardingState {
   role: UserRole | null;
+  /** Granular sub-role id (örn 'pilot_a320'). FAZ 3 — opsiyonel, role seçildikten sonra. */
+  subRole: string | null;
   status: UserStatus | null;
   goals: Goal[];
   examType: string | null;
@@ -80,6 +82,8 @@ export interface OnboardingState {
 
   // Setters
   setRole: (role: UserRole) => void;
+  /** FAZ 3 — sub_role seçimi. null = "atla / sonra seç". */
+  setSubRole: (subRole: string | null) => void;
   setStatus: (status: UserStatus) => void;
   toggleGoal: (goal: Goal) => void;
   setExam: (examType: string | null, examDate: string | null) => void;
@@ -96,6 +100,7 @@ export interface OnboardingState {
 
 const initialState = {
   role: null,
+  subRole: null,
   status: null,
   goals: [],
   examType: null,
@@ -122,7 +127,8 @@ export const useOnboardingStore = create<OnboardingState>()(
   persist(
     (set, get) => ({
       ...initialState,
-      setRole: (role) => set({ role }),
+      setRole: (role) => set({ role, subRole: null }), // role değişince subRole reset
+      setSubRole: (subRole) => set({ subRole }),
       setStatus: (status) => set({ status }),
       toggleGoal: (goal) => {
         const goals = get().goals;

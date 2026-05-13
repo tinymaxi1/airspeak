@@ -68,7 +68,9 @@ export default function RoleSelectScreen() {
   const handleNext = () => {
     if (!selected) return;
     setRole(selected);
-    router.push('/(auth)/onboarding/level-test');
+    // FAZ 3 — sub-role-select adımına git (level-test'e değil).
+    // sub_role'u atlayan kullanıcı için skip yolu yok → sub-role-select zorunlu.
+    router.push('/(auth)/onboarding/sub-role-select');
   };
 
   return (
