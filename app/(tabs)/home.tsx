@@ -756,10 +756,33 @@ export default function HomeScreen() {
             ? t(`screens.home.contentTypes.${wordOfDay.content_type}`, t('screens.home.wordOfFlight'))
             : t('screens.home.wordOfFlight');
 
-          // 🔊 buton: önce DB audio_url, yoksa expo-speech fallback
+          // 🔊 buton fallback chain:
+          // 1) word_audio_url DB'de varsa → expo-av Audio.Sound play (ElevenLabs cache)
+          // 2) Yoksa → safeSpeechSpeak (expo-speech native)
+          const playFromUrl = async (url: string) => {
+            try {
+              const { Audio } = await import('expo-av');
+              const { sound } = await Audio.Sound.createAsync({ uri: url });
+              await sound.playAsync();
+              // Otomatik unload — bellek sızıntısı önle
+              sound.setOnPlaybackStatusUpdate((s) => {
+                if ('didJustFinish' in s && s.didJustFinish) void sound.unloadAsync();
+              });
+            } catch {
+              // expo-av fail → text fallback
+              throw new Error('audio play failed');
+            }
+          };
+
           const playWord = () => {
             if (!wordOfDay) return;
             safeSpeechStop();
+            if (wordOfDay.word_audio_url) {
+              playFromUrl(wordOfDay.word_audio_url).catch(() => {
+                safeSpeechSpeak(wordOfDay.word_or_phrase, { language: 'en-US', rate: 0.85 });
+              });
+              return;
+            }
             safeSpeechSpeak(wordOfDay.word_or_phrase, {
               language: 'en-US',
               rate: 0.85,
@@ -769,6 +792,12 @@ export default function HomeScreen() {
           const playExample = () => {
             if (!wordOfDay) return;
             safeSpeechStop();
+            if (wordOfDay.example_audio_url) {
+              playFromUrl(wordOfDay.example_audio_url).catch(() => {
+                safeSpeechSpeak(wordOfDay.example_en, { language: 'en-US', rate: 0.9 });
+              });
+              return;
+            }
             safeSpeechSpeak(wordOfDay.example_en, {
               language: 'en-US',
               rate: 0.9,

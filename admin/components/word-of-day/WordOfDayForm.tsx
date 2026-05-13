@@ -9,6 +9,7 @@ import {
   type WotdRole,
 } from '@/lib/word-of-day/actions';
 import { SubRolePicker } from '@/components/sub-roles/SubRolePicker';
+import { AudioGenerateButton } from './AudioGenerateButton';
 
 const ROLES: { id: WotdRole; label: string; emoji: string }[] = [
   { id: 'pilot', label: 'Pilot', emoji: '✈' },
@@ -80,6 +81,8 @@ export function WordOfDayForm({ mode, initial, onClose }: Props) {
   );
   const [scheduledDate, setScheduledDate] = useState(initial?.scheduled_date ?? '');
   const [isActive, setIsActive] = useState(initial?.is_active ?? true);
+  const [wordAudioUrl, setWordAudioUrl] = useState<string | null>(initial?.word_audio_url ?? null);
+  const [exampleAudioUrl, setExampleAudioUrl] = useState<string | null>(initial?.example_audio_url ?? null);
 
   function toggleRole(role: WotdRole) {
     setTargetRoles((prev) =>
@@ -107,6 +110,8 @@ export function WordOfDayForm({ mode, initial, onClose }: Props) {
       difficulty,
       scheduled_date: scheduledDate || null,
       is_active: isActive,
+      word_audio_url: wordAudioUrl,
+      example_audio_url: exampleAudioUrl,
     };
 
     const result =
@@ -319,6 +324,31 @@ export function WordOfDayForm({ mode, initial, onClose }: Props) {
                 className="w-full px-3 py-2 border rounded text-sm"
               />
             </div>
+          </div>
+
+          {/* ElevenLabs ses üretim */}
+          <div className="border-t pt-4 space-y-3">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              🎙 Ses (ElevenLabs, opsiyonel)
+            </div>
+            <p className="text-[10px] text-muted-foreground">
+              Boş bırakırsan mobil tarafta expo-speech fallback çalışır. Üretirsen önce mp3 oynar.
+              Cache hit = 0 karakter, miss = text.length karakter ElevenLabs quota'dan düşer.
+            </p>
+            <AudioGenerateButton
+              text={wordOrPhrase}
+              cacheKey={`wotd/${initial?.id ?? 'new'}/word_${Date.now()}`}
+              currentUrl={wordAudioUrl}
+              onUrlChange={setWordAudioUrl}
+              label="Kelime sesini üret"
+            />
+            <AudioGenerateButton
+              text={exampleEn}
+              cacheKey={`wotd/${initial?.id ?? 'new'}/example_${Date.now()}`}
+              currentUrl={exampleAudioUrl}
+              onUrlChange={setExampleAudioUrl}
+              label="Örnek sesini üret"
+            />
           </div>
 
           <label className="flex items-center gap-2 text-sm">
