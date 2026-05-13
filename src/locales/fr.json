@@ -313,6 +313,22 @@
         "basic": "débutant",
         "intermediate": "intermédiaire",
         "advanced": "avancé"
+      },
+      "emptyState": {
+        "title": "Ready for your first flight?",
+        "subtitle": "Your {{role}} curriculum awaits",
+        "subtitleNoRole": "Select your role to unlock your lesson tree",
+        "cta": "Start your first lesson →"
+      },
+      "allDone": {
+        "title": "All lessons complete",
+        "subtitle": "Master with practice or check back tomorrow",
+        "cta": "Go to practice →"
+      },
+      "comingSoon": {
+        "title": "Coming soon",
+        "subtitle": "Continue with practice for now",
+        "cta": "Go to practice →"
       }
     },
     "learn": {

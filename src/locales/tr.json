@@ -345,7 +345,23 @@
         "C",
         "P"
       ],
-      "perfectWeek": "Mükemmel hafta rozetine {{days}} gün kaldı."
+      "perfectWeek": "Mükemmel hafta rozetine {{days}} gün kaldı.",
+      "emptyState": {
+        "title": "İlk uçuşuna hazır mısın?",
+        "subtitle": "{{role}} müfredatı seni bekliyor",
+        "subtitleNoRole": "Rolünü seçtikten sonra ders ağacın açılır",
+        "cta": "İlk dersini başlat →"
+      },
+      "allDone": {
+        "title": "Tüm dersler tamam",
+        "subtitle": "Pratiklerle ustalaş veya yarın yeni içerik kontrol et",
+        "cta": "Pratiklere git →"
+      },
+      "comingSoon": {
+        "title": "İçerik yakında",
+        "subtitle": "Şimdilik pratiklerden devam et",
+        "cta": "Pratiklere git →"
+      }
     },
     "learn": {
       "unit": "BÖLÜM",
