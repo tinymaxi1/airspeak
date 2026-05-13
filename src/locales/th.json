@@ -1,6 +1,8 @@
 {
   "common": {
-    "back": "Back"
+    "back": "Back",
+    "saving": "Saving...",
+    "continue": "Continue"
   },
   "welcome": {
     "tagline": "ภาษาอังกฤษแบบ Avive",
@@ -743,6 +745,17 @@
       "errorTitle": "Verification failed",
       "goToLogin": "Back to login",
       "goToWelcome": "Back to start"
+    },
+    "subRoleSelect": {
+      "step": "STEP 2.5 / 6",
+      "hero1": "What type",
+      "hero2": "are you?",
+      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
+      "eyebrow": "YOUR SUB-ROLE",
+      "emptyTitle": "No sub-roles defined for this role yet",
+      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
+      "continue": "Continue →",
+      "continueWithout": "Continue →"
     }
   },
   "notif": {
@@ -841,6 +854,12 @@
       "unblockTitle": "Unblock user?",
       "unblockBody": "@{{u}}'s posts and comments will be visible again.",
       "unblockConfirm": "Unblock"
+    },
+    "role": {
+      "subRoleEyebrow": "SUB-ROLE",
+      "subRoleNotSet": "Not selected yet",
+      "subRoleHint": "Tap to change or pick",
+      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
     }
   },
   "quick": {

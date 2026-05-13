@@ -1,6 +1,8 @@
 {
   "common": {
-    "back": "Geri"
+    "back": "Geri",
+    "saving": "Kaydediliyor...",
+    "continue": "Devam"
   },
   "welcome": {
     "tagline": "Havacılık İngilizcesinde Ustalaş",
@@ -775,6 +777,17 @@
       "errorTitle": "Doğrulama başarısız",
       "goToLogin": "Login'e dön",
       "goToWelcome": "Ana sayfaya dön"
+    },
+    "subRoleSelect": {
+      "step": "ADIM 2.5 / 6",
+      "hero1": "Hangi tip",
+      "hero2": "sende?",
+      "subtitle": "Daha kişiselleştirilmiş ders ve senaryolar için rolünün altındaki spesifik tipi seç.",
+      "eyebrow": "ALT-ROLÜN",
+      "emptyTitle": "Bu rol için tanımlı alt-rol yok",
+      "emptyBody": "Şimdilik genel müfredata devam ediyoruz. Admin alt-roller eklediğinde profilinden seçebilirsin.",
+      "continue": "Devam et →",
+      "continueWithout": "Devam et →"
     }
   },
   "notif": {
@@ -878,6 +891,12 @@
       "unblockTitle": "Engeli kaldır?",
       "unblockBody": "@{{u}} kullanıcısının postları ve yorumları tekrar görünecek.",
       "unblockConfirm": "Engeli kaldır"
+    },
+    "role": {
+      "subRoleEyebrow": "ALT-ROL",
+      "subRoleNotSet": "Henüz seçilmedi",
+      "subRoleHint": "Tıkla — değiştir veya seç",
+      "updatedReselectSubRole": "Rol güncellendi. Şimdi yeni rolün için alt-rolünü seç."
     }
   },
   "quick": {
