@@ -317,20 +317,20 @@
         "advanced": "продвинутый"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "Готовы к первому полету?",
+        "subtitle": "Ваша учебная программа ждет",
+        "subtitleNoRole": "Выберите свою роль, чтобы разблокировать дерево уроков",
+        "cta": "Начните свой первый урок"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "Все уроки завершены",
+        "subtitle": "Мастер практики или проверить завтра",
+        "cta": "Иди практиковаться"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "Скоро будет",
+        "subtitle": "Продолжайте практику сейчас",
+        "cta": "Иди практиковаться"
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "Шаг 2.5 / 6",
+      "hero1": "Какой тип",
+      "hero2": "Это ты?",
+      "subtitle": "Выберите свой конкретный тип для персонализации уроков и сценариев.",
+      "eyebrow": "Твоя главная роль",
+      "emptyTitle": "Никаких подролей для этой роли пока не определено.",
+      "emptyBody": "Продолжая общую учебную программу. Вы можете выбрать подроль из своего профиля, как только администратор добавит их.",
+      "continue": "Продолжайте",
+      "continueWithout": "Продолжайте"
     }
   },
   "notif": {
@@ -856,95 +856,95 @@
       "unblockConfirm": "Unblock"
     },
     "role": {
-      "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleEyebrow": "СУБ-РОЛЕ",
+      "subRoleNotSet": "Не выбрано пока",
+      "subRoleHint": "Нажмите, чтобы изменить или выбрать",
+      "updatedReselectSubRole": "Роль обновлена. Теперь выберите свою роль для новой роли."
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "Упражнение для чтения",
+      "pilotSub": "Разрешение УВД",
+      "generalSub": "Радио практика"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "Слушайте и декодируйте",
+      "pilotSub": "Гарблер радио",
+      "generalSub": "Прослушивание практики"
     },
     "roleplay": {
-      "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "label": "ролевая игра",
+      "pilotSub": "Структура удержания",
+      "atcSub": "Телефонная связь",
+      "cabinSub": "Объявление ПА",
+      "technicianSub": "Механический бриф",
+      "groundSub": "Краткое содержание Pushback",
+      "studentSub": "Базовый диалог",
+      "dispatcherSub": "Опс кратко",
+      "generalSub": "Сценарий"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "произношение",
+      "pilotSub": "Номера 0-9",
+      "atcSub": "Номера 0-9",
+      "cabinSub": "Фразы объявления",
+      "technicianSub": "Технические термины",
+      "groundSub": "Фразы Pushback",
+      "dispatcherSub": "Погодные условия",
+      "generalSub": "Общее произношение"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "Разрешение проблемы",
+      "sub": "Правила дорожного движения"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "Разрешение конфликтов",
+      "sub": "Альтернативный маршрут"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "Объявление ПА",
+      "sub": "Посадка/посадка"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "Брифинг по вопросам безопасности",
+      "sub": "Экстренные процедуры"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "Краткое техническое обслуживание",
+      "sub": "Проверка услуг"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "Отчет об ошибках",
+      "sub": "статус AOG"
     },
     "pushback": {
-      "label": "Pushback",
-      "sub": "Marshalling signals"
+      "label": "Пушбэк",
+      "sub": "Маршалловы сигналы"
     },
     "marshalling": {
-      "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "label": "Маршалл",
+      "sub": "Равномерная координация"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "Алфавит",
+      "sub": "фонетический ИКАО"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "Числа",
+      "sub": "0-9 фраз"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "Базовый диалог",
+      "sub": "Ежедневные фразы"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "План полета",
+      "sub": "Маршрутные фразы"
     },
     "weather": {
-      "label": "Weather report",
-      "sub": "METAR / TAF"
+      "label": "Погодный отчет",
+      "sub": "МЕТАРЬ / ТАФ"
     }
   }
 }

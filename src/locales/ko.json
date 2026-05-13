@@ -317,20 +317,20 @@
         "advanced": "고급"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "첫 비행 준비?",
+        "subtitle": "자주 묻는 질문",
+        "subtitleNoRole": "수업 트리를 잠금 해제 할 수있는 역할 선택",
+        "cta": "첫 수업 시작 →"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "모든 수업 완료",
+        "subtitle": "연습과 함께 마스터 또는 내일을 확인",
+        "cta": "연습 →"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "곧 출시",
+        "subtitle": "지금 연습 계속",
+        "cta": "연습 →"
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "단계 2.5/6",
+      "hero1": "어떤 유형",
+      "hero2": "당신은?",
+      "subtitle": "수업과 시나리오를 개인화하기 위해 특정 유형을 선택합니다.",
+      "eyebrow": "자주 묻는 질문",
+      "emptyTitle": "이 역할에 정의되지 않는 하위 역할 아직",
+      "emptyBody": "일반 커리큘럼과 계속. 한 번 관리자가 추가하면 프로필에서 하위로를 선택할 수 있습니다.",
+      "continue": "계속 →",
+      "continueWithout": "계속 →"
     }
   },
   "notif": {
@@ -856,95 +856,95 @@
       "unblockConfirm": "Unblock"
     },
     "role": {
-      "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleEyebrow": "공지사항",
+      "subRoleNotSet": "아직 선택되지 않음",
+      "subRoleHint": "변경 또는 선택",
+      "updatedReselectSubRole": "역할 업데이트. 이제 새로운 역할에 대한 하위 역할."
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "Read-back 드릴",
+      "pilotSub": "ATC 정리",
+      "generalSub": "라디오 연습"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "듣기 및 디코딩",
+      "pilotSub": "Garbled 라디오",
+      "generalSub": "듣기 연습"
     },
     "roleplay": {
-      "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "label": "AI 역할 놀이",
+      "pilotSub": "관련 상품",
+      "atcSub": "타워 상품",
+      "cabinSub": "PA 발표",
+      "technicianSub": "Mechanic 간단한",
+      "groundSub": "Pushback 간단한",
+      "studentSub": "기본 대화 상자",
+      "dispatcherSub": "Ops 간단한",
+      "generalSub": "AI 시나리오"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "이름 *",
+      "pilotSub": "번호 0-9",
+      "atcSub": "번호 0-9",
+      "cabinSub": "공지 사항",
+      "technicianSub": "기술 용어",
+      "groundSub": "Pushback 구문",
+      "dispatcherSub": "기상 조건",
+      "generalSub": "일반 발음"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "문제 정리",
+      "sub": "교통 안내"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "Conflict 해결책",
+      "sub": "대체 노선"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "PA 발표",
+      "sub": "탑승 / 착륙"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "안전 간결",
+      "sub": "긴급 절차"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "자주 묻는 질문",
+      "sub": "서비스 체크"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "Fault 보고서",
+      "sub": "AOG 상태"
     },
     "pushback": {
-      "label": "Pushback",
-      "sub": "Marshalling signals"
+      "label": "푸시백",
+      "sub": "Marshalling 신호"
     },
     "marshalling": {
-      "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "label": "인기 카테고리",
+      "sub": "Ramp 조정"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "알파벳",
+      "sub": "ICAO 폰틱"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "이름 *",
+      "sub": "0-9 구문"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "기본 대화 상자",
+      "sub": "매일 문구"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "비행 계획",
+      "sub": "노선 구문"
     },
     "weather": {
-      "label": "Weather report",
-      "sub": "METAR / TAF"
+      "label": "날씨 보고서",
+      "sub": "METAR / 타프"
     }
   }
 }

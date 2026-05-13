@@ -317,20 +317,20 @@
         "advanced": "پیشرفته"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "برای اولین پرواز آماده باشید؟",
+        "subtitle": "برنامه درسی شما در انتظار",
+        "subtitleNoRole": "نقش خود را برای باز کردن درخت درس خود انتخاب کنید",
+        "cta": "اولین درس خود را شروع کنید"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "تمام درس های کامل",
+        "subtitle": "استاد با تمرین یا بررسی فردا",
+        "cta": "رفتن به تمرین"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "بزودی می آیند",
+        "subtitle": "ادامه تمرین در حال حاضر",
+        "cta": "رفتن به تمرین"
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "مرحله 2.5 / 6",
+      "hero1": "چه نوع",
+      "hero2": "شما هستید؟",
+      "subtitle": "نوع خاص خود را برای شخصی سازی درس ها و سناریو ها انتخاب کنید.",
+      "eyebrow": "SUB-ROLE",
+      "emptyTitle": "هیچ زیرمجموعه ای برای این نقش تعریف نشده است.",
+      "emptyBody": "ادامه با برنامه درسی عمومی شما می توانید یک زیر آهنگ را از پروفایل خود انتخاب کنید زمانی که مدیر آنها را اضافه می کند.",
+      "continue": "ادامه",
+      "continueWithout": "ادامه"
     }
   },
   "notif": {
@@ -857,93 +857,93 @@
     },
     "role": {
       "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleNotSet": "هنوز انتخاب نشده",
+      "subRoleHint": "ضربه زدن به تغییر یا انتخاب",
+      "updatedReselectSubRole": "نقش به روز شده حالا زیر پا را برای نقش جدید انتخاب کنید."
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "دانلود بازی Read-back",
+      "pilotSub": "ATC ترخیص",
+      "generalSub": "رادیو تمرین"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "گوش دادن و رمزگشایی",
+      "pilotSub": "رادیوهای گرم",
+      "generalSub": "تمرین گوش دادن"
     },
     "roleplay": {
-      "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "label": "بازی AI",
+      "pilotSub": "الگوی برگزاری",
+      "atcSub": "برج Comms",
+      "cabinSub": "اعلامیه PA",
+      "technicianSub": "مکانیک کوتاه",
+      "groundSub": "Pushback کوتاه",
+      "studentSub": "گفتگوی پایه",
+      "dispatcherSub": "بازی کوتاه",
+      "generalSub": "سناریوی AI"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "محکومیت",
+      "pilotSub": "اعداد 0-9",
+      "atcSub": "اعداد 0-9",
+      "cabinSub": "معرفی عبارات",
+      "technicianSub": "اصطلاحات فنی",
+      "groundSub": "عبارات Pushback",
+      "dispatcherSub": "شرایط آب و هوا",
+      "generalSub": "تلفظ عمومی"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "صدور مجوز",
+      "sub": "دستورالعمل های ترافیک"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "حل تعارض",
+      "sub": "مسیر جایگزین"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "اعلامیه PA",
+      "sub": "هیئت مدیره / فرود"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "ایمنی مختصر",
+      "sub": "روش های اضطراری"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "نگهداری مختصر",
+      "sub": "چک خدمات"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "گزارش خطا",
+      "sub": "وضعیت AOG"
     },
     "pushback": {
       "label": "Pushback",
-      "sub": "Marshalling signals"
+      "sub": "سیگنال های مارشال"
     },
     "marshalling": {
-      "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "label": "مارشال",
+      "sub": "هماهنگی Ramp"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "آلفابت",
+      "sub": "تلفن همراه ICAO"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "اعداد",
+      "sub": "0-9 عبارت"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "گفتگوی پایه",
+      "sub": "عبارات روزانه"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "برنامه پرواز",
+      "sub": "عبارات مسیر"
     },
     "weather": {
-      "label": "Weather report",
+      "label": "گزارش آب و هوا",
       "sub": "METAR / TAF"
     }
   }

@@ -317,20 +317,20 @@
         "advanced": "上級"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "最初のフライトの準備は?",
+        "subtitle": "お問い合わせ",
+        "subtitleNoRole": "レッスンツリーのロック解除にロールを選択",
+        "cta": "最初のレッスンを開始 →"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "すべてのレッスンを完了",
+        "subtitle": "練習や明日のチェックでマスター",
+        "cta": "練習に行く →"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "近日公開",
+        "subtitle": "今練習を続けよう",
+        "cta": "練習に行く →"
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "ステップ2.5 / 6",
+      "hero1": "どんなタイプか",
+      "hero2": "お問い合わせ",
+      "subtitle": "レッスンやシナリオをパーソナライズするために特定のタイプを選択します。",
+      "eyebrow": "あなたのサブロール",
+      "emptyTitle": "このロールに定義されていないサブルールはまだ",
+      "emptyBody": "一般カリキュラムで継続。 管理者がそれらを追加すると、プロファイルからサブロールを選ぶことができます。",
+      "continue": "続き →",
+      "continueWithout": "続き →"
     }
   },
   "notif": {
@@ -856,95 +856,95 @@
       "unblockConfirm": "Unblock"
     },
     "role": {
-      "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleEyebrow": "サブロール",
+      "subRoleNotSet": "未選択",
+      "subRoleHint": "タップして変更または選択",
+      "updatedReselectSubRole": "ロールの更新。 新しいロールのサブロールを選択します。"
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "リードバックドリル",
+      "pilotSub": "ATCクリアランス",
+      "generalSub": "ラジオ練習"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "リスニング&デコード",
+      "pilotSub": "Garbledのラジオ",
+      "generalSub": "リスニング練習"
     },
     "roleplay": {
-      "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "label": "AIロールプレイ",
+      "pilotSub": "保持パターン",
+      "atcSub": "タワーコム",
+      "cabinSub": "PAの発表",
+      "technicianSub": "メカニック・ブリーフ",
+      "groundSub": "プッシュバック",
+      "studentSub": "基本ダイアログ",
+      "dispatcherSub": "Ops説明会",
+      "generalSub": "AIシナリオ"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "トレーニング",
+      "pilotSub": "番号 0-9",
+      "atcSub": "番号 0-9",
+      "cabinSub": "お知らせ",
+      "technicianSub": "技術用語",
+      "groundSub": "プッシュバックフレーズ",
+      "dispatcherSub": "気象条件",
+      "generalSub": "一般的な発音"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "課題クリアランス",
+      "sub": "交通指示"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "紛争解決",
+      "sub": "代替ルート"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "PAの発表",
+      "sub": "搭乗・着陸"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "安全ブリーフィング",
+      "sub": "緊急手続き"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "メンテナンス説明会",
+      "sub": "サービスチェック"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "故障報告",
+      "sub": "AOGステータス"
     },
     "pushback": {
-      "label": "Pushback",
-      "sub": "Marshalling signals"
+      "label": "プッシュバック",
+      "sub": "マーシャリング信号"
     },
     "marshalling": {
-      "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "label": "マーシャリング",
+      "sub": "ランプコーディネート"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "アルファベット",
+      "sub": "ICAOのphonetic"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "ナンバー",
+      "sub": "0-9 フレーズ"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "基本ダイアログ",
+      "sub": "毎日のフレーズ"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "フライトプラン",
+      "sub": "ルートフレーズ"
     },
     "weather": {
-      "label": "Weather report",
-      "sub": "METAR / TAF"
+      "label": "気象レポート",
+      "sub": "メタ/TAF"
     }
   }
 }

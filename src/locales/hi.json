@@ -317,20 +317,20 @@
         "advanced": "उन्नत"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "अपनी पहली उड़ान के लिए तैयार?",
+        "subtitle": "आपका {{role}} पाठ्यक्रम प्रतीक्षा करता है",
+        "subtitleNoRole": "अपने पाठ के पेड़ को अनलॉक करने के लिए अपनी भूमिका चुनें",
+        "cta": "अपना पहला पाठ शुरू करें →"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "सभी सबक पूरा",
+        "subtitle": "मास्टर अभ्यास के साथ या कल वापस जाँच",
+        "cta": "अभ्यास करने के लिए जाओ →"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "जल्द ही",
+        "subtitle": "अब के लिए अभ्यास के साथ",
+        "cta": "अभ्यास करने के लिए जाओ →"
       }
     },
     "learn": {
@@ -748,14 +748,14 @@
     },
     "subRoleSelect": {
       "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "hero1": "किस प्रकार",
+      "hero2": "क्या आप हैं?",
+      "subtitle": "पाठ और परिदृश्यों को वैयक्तिकृत करने के लिए अपने विशिष्ट प्रकार का चयन करें।",
+      "eyebrow": "आपका SUB-ROLE",
+      "emptyTitle": "इस भूमिका के लिए अभी तक परिभाषित नहीं है",
+      "emptyBody": "सामान्य पाठ्यक्रम को जारी रखना। एक बार व्यवस्थापक उन्हें जोड़ने के बाद आप अपनी प्रोफ़ाइल से एक उप-रोल चुन सकते हैं।",
+      "continue": "जारी रखें",
+      "continueWithout": "जारी रखें"
     }
   },
   "notif": {
@@ -856,94 +856,94 @@
       "unblockConfirm": "Unblock"
     },
     "role": {
-      "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleEyebrow": "सब-रोल",
+      "subRoleNotSet": "अभी तक चयनित नहीं",
+      "subRoleHint": "बदलने या लेने के लिए टैप करें",
+      "updatedReselectSubRole": "रोल अपडेट अब नई भूमिका के लिए अपना उप-रोल चुनें।"
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "री-बैक ड्रिल",
+      "pilotSub": "ATC निकासी",
+      "generalSub": "रेडियो अभ्यास"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "सुनो",
+      "pilotSub": "गार्डन",
+      "generalSub": "सुनना"
     },
     "roleplay": {
       "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "pilotSub": "होल्डिंग पैटर्न",
+      "atcSub": "टॉवर कॉम",
+      "cabinSub": "पीए घोषणा",
+      "technicianSub": "मैकेनिक संक्षिप्त",
+      "groundSub": "पुशबैक संक्षिप्त",
+      "studentSub": "मूल संवाद",
+      "dispatcherSub": "विपक्ष संक्षिप्त",
+      "generalSub": "एआई परिदृश्य"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "उच्चारण",
+      "pilotSub": "संख्या 0-9",
+      "atcSub": "संख्या 0-9",
+      "cabinSub": "घोषणा वाक्यांश",
+      "technicianSub": "तकनीकी शर्तें",
+      "groundSub": "पुशबैक वाक्यांश",
+      "dispatcherSub": "मौसम की स्थिति",
+      "generalSub": "सामान्य उच्चारण"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "निकासी",
+      "sub": "यातायात निर्देश"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "संघर्ष संकल्प",
+      "sub": "वैकल्पिक मार्ग"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "पीए घोषणा",
+      "sub": "बोर्डिंग / लैंडिंग"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "सुरक्षा संक्षेपण",
+      "sub": "आपातकालीन प्रक्रियाएं"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "रखरखाव संक्षिप्त",
+      "sub": "सर्विस चेक"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "दोष रिपोर्ट",
+      "sub": "AOG स्टेटस"
     },
     "pushback": {
-      "label": "Pushback",
-      "sub": "Marshalling signals"
+      "label": "पुशबैक",
+      "sub": "मार्शल सिग्नल"
     },
     "marshalling": {
-      "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "label": "मार्शलिंग",
+      "sub": "Ramp समन्वय"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "वर्णमाला",
+      "sub": "आईसीएओ फोनेटिक"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "संख्या",
+      "sub": "0-9 वाक्यांश"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "मूल संवाद",
+      "sub": "दैनिक वाक्यांश"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "उड़ान योजना",
+      "sub": "रूट वाक्यांश"
     },
     "weather": {
-      "label": "Weather report",
+      "label": "मौसम रिपोर्ट",
       "sub": "METAR / TAF"
     }
   }

@@ -317,20 +317,20 @@
         "advanced": "avanzado"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "¿Listo para tu primer vuelo?",
+        "subtitle": "Tu plan de estudios espera",
+        "subtitleNoRole": "Seleccione su papel para desbloquear su árbol de lecciones",
+        "cta": "Empieza tu primera lección →"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "Todas las lecciones completas",
+        "subtitle": "Maestro con práctica o volver a revisar mañana",
+        "cta": "Ir a la práctica →"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "Pronto.",
+        "subtitle": "Continuar con la práctica por ahora",
+        "cta": "Ir a la práctica →"
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "PASO 2.5 / 6",
+      "hero1": "Qué tipo",
+      "hero2": "¿Lo eres?",
+      "subtitle": "Escoja su tipo específico para personalizar las lecciones y escenarios.",
+      "eyebrow": "SU SUBROLE",
+      "emptyTitle": "No hay sub-roles definidos para este papel todavía",
+      "emptyBody": "Continuando con el currículo general. Usted puede elegir un sub-role de su perfil una vez que admin los añade.",
+      "continue": "Continuar →",
+      "continueWithout": "Continuar →"
     }
   },
   "notif": {
@@ -857,66 +857,66 @@
     },
     "role": {
       "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleNotSet": "Aún no se ha seleccionado",
+      "subRoleHint": "Pulsa para cambiar o elegir",
+      "updatedReselectSubRole": "Función actualizada. Ahora elige tu sub-role para el nuevo papel."
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
+      "label": "Perforación de lectura",
       "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "generalSub": "Práctica de radio"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "Escuchar y decodificar",
+      "pilotSub": "Radio de Garbled",
+      "generalSub": "Práctica de escucha"
     },
     "roleplay": {
-      "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "label": "Juego de roles AI",
+      "pilotSub": "Patrón de retención",
+      "atcSub": "Comidas de torre",
+      "cabinSub": "Anuncio de PA",
+      "technicianSub": "Mecanic brief",
+      "groundSub": "Pulsera breve",
+      "studentSub": "Diálogo básico",
+      "dispatcherSub": "Opciones breves",
+      "generalSub": "Situación AI"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "Pronunciación",
+      "pilotSub": "Números 0-9",
+      "atcSub": "Números 0-9",
+      "cabinSub": "Frases de anuncio",
+      "technicianSub": "Términos técnicos",
+      "groundSub": "Frases de retroceso",
+      "dispatcherSub": "Términos meteorológicos",
+      "generalSub": "pronunciación general"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "Expedición",
+      "sub": "Instrucciones de tráfico"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "Resolución de conflictos",
+      "sub": "Ruta alternativa"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "Anuncio de PA",
+      "sub": "embarque / aterrizaje"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "Reunión informativa sobre seguridad",
+      "sub": "Procedimientos de emergencia"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "Mantenimiento breve",
+      "sub": "Control de servicio"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "Informe por defecto",
+      "sub": "Situación AOG"
     },
     "pushback": {
       "label": "Pushback",
@@ -924,26 +924,26 @@
     },
     "marshalling": {
       "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "sub": "Coordinación de rampas"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "Alfabeto",
+      "sub": "Teléfono de la OACI"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "Números",
+      "sub": "0-9 frases"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "Diálogo básico",
+      "sub": "Frases diarias"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "Plan de vuelo",
+      "sub": "Frases de ruta"
     },
     "weather": {
-      "label": "Weather report",
+      "label": "Informe meteorológico",
       "sub": "METAR / TAF"
     }
   }

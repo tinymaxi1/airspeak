@@ -317,20 +317,20 @@
         "advanced": "gevorderd"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "Klaar voor je eerste vlucht?",
+        "subtitle": "Je {{rol}} curriculum wacht",
+        "subtitleNoRole": "Selecteer uw rol om uw lesboom te ontgrendelen",
+        "cta": "Start je eerste les →"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "Alle lessen voltooid",
+        "subtitle": "Meester met training of kom morgen terug.",
+        "cta": "Ga naar de praktijk →"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "Binnenkort.",
+        "subtitle": "Ga nu door met oefenen.",
+        "cta": "Ga naar de praktijk →"
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "STAP 2.5/6",
+      "hero1": "Welk type",
+      "hero2": "Is dat zo?",
+      "subtitle": "Kies uw specifieke type om lessen en scenario's te personaliseren.",
+      "eyebrow": "UW SUBROLE",
+      "emptyTitle": "Nog geen sub-rollen gedefinieerd voor deze rol",
+      "emptyBody": "Doorgaan met het algemene curriculum. U kunt een sub-role kiezen uit uw profiel zodra admin ze toevoegt.",
+      "continue": "Doorgaan →",
+      "continueWithout": "Doorgaan →"
     }
   },
   "notif": {
@@ -856,94 +856,94 @@
       "unblockConfirm": "Unblock"
     },
     "role": {
-      "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleEyebrow": "SUBROL",
+      "subRoleNotSet": "Nog niet geselecteerd",
+      "subRoleHint": "Tik om te veranderen of te kiezen",
+      "updatedReselectSubRole": "Rol bijgewerkt. Kies nu je subrol voor de nieuwe rol."
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "Terugleesboor",
+      "pilotSub": "ATC-klaringen",
+      "generalSub": "Radiopraktijk"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "Luister & decoderen",
+      "pilotSub": "Begrippen radio",
+      "generalSub": "Luisterpraktijk"
     },
     "roleplay": {
-      "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
+      "label": "AI rollenspel",
+      "pilotSub": "Behoudpatroon",
       "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
+      "cabinSub": "PA-mededeling",
+      "technicianSub": "Mechanisch overzicht",
+      "groundSub": "Terugduwen",
+      "studentSub": "Basisdialoog",
       "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "generalSub": "AI-scenario"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "Uitspraak",
+      "pilotSub": "Aantallen 0-9",
+      "atcSub": "Aantallen 0-9",
+      "cabinSub": "Aankondigingszinnen",
+      "technicianSub": "Technische termen",
+      "groundSub": "Pushback-zinnen",
+      "dispatcherSub": "Weertermen",
+      "generalSub": "Algemene uitspraak"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "Goedkeuring van afgifte",
+      "sub": "Verkeersinstructies"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "Conflictoplossing",
+      "sub": "Alternatieve route"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "PA-mededeling",
+      "sub": "Aan boord/landing"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "Veiligheidsvoorlichting",
+      "sub": "Noodprocedures"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "Onderhoudsbrief",
+      "sub": "Dienstcontrole"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "Foutmelding",
+      "sub": "AOG-status"
     },
     "pushback": {
-      "label": "Pushback",
-      "sub": "Marshalling signals"
+      "label": "Terugduwen",
+      "sub": "Marshallsignalen"
     },
     "marshalling": {
       "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "sub": "Rampcoördinatie"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "Alfabet",
+      "sub": "ICAO fonetisch"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "Getallen",
+      "sub": "0-9 zinnen"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "Basisdialoog",
+      "sub": "Dagelijkse zinnen"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "Vluchtplan",
+      "sub": "Routezinnen"
     },
     "weather": {
-      "label": "Weather report",
+      "label": "Weerrapport",
       "sub": "METAR / TAF"
     }
   }

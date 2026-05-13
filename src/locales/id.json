@@ -317,20 +317,20 @@
         "advanced": "lanjutan"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "Siap untuk penerbangan pertamamu?",
+        "subtitle": "Kurikulum Anda menunggu",
+        "subtitleNoRole": "Pilih peran Anda untuk membuka tree pelajaran Anda",
+        "cta": "Mulai pelajaran pertamamu."
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "Semua pelajaran selesai",
+        "subtitle": "Guru dengan praktek atau cek kembali besok",
+        "cta": "Pergi latihan."
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "Segera datang.",
+        "subtitle": "Lanjutkan dengan latihan untuk saat ini",
+        "cta": "Pergi latihan."
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "STEP 2,5 / 6",
+      "hero1": "Jenis apa",
+      "hero2": "Kau?",
+      "subtitle": "Pilih tipe spesifik untuk personalisasi pelajaran dan skenario.",
+      "eyebrow": "♪ Your SUB-ROLE ♪",
+      "emptyTitle": "Tidak ada sub- peran didefinisikan untuk peran ini belum",
+      "emptyBody": "Melanjutkan dengan kurikulum umum. Anda dapat memilih peran sub- dari profil Anda sekali admin menambahkan mereka.",
+      "continue": "Lanjutkan",
+      "continueWithout": "Lanjutkan"
     }
   },
   "notif": {
@@ -857,93 +857,93 @@
     },
     "role": {
       "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleNotSet": "Belum dipilih",
+      "subRoleHint": "Sentuh untuk mengubah atau memilih",
+      "updatedReselectSubRole": "Peran diperbarui. Sekarang pilih peran sub- Anda untuk peran baru."
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "Bor baca-belakang",
+      "pilotSub": "ATC izin",
+      "generalSub": "Latihan radio"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "Dengarkan & decode",
+      "pilotSub": "Radio rusak",
+      "generalSub": "Mendengarkan latihan"
     },
     "roleplay": {
       "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "pilotSub": "Tahan pola",
+      "atcSub": "Komunikasi menara",
+      "cabinSub": "Pengumuman PA",
+      "technicianSub": "Mekanik singkat",
+      "groundSub": "Singkat Pushback",
+      "studentSub": "Dialog dasar",
+      "dispatcherSub": "Ops singkat",
+      "generalSub": "Skenario AI"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "Pengucapan",
+      "pilotSub": "Nomor 0-9",
+      "atcSub": "Nomor 0-9",
+      "cabinSub": "Pengumuman frasa",
+      "technicianSub": "Istilah teknis",
+      "groundSub": "Kalimat Pushback",
+      "dispatcherSub": "Istilah cuaca",
+      "generalSub": "Pengucapan Umum"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "Izin Issue",
+      "sub": "Instruksi lalu lintas"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "Resolusi konflik",
+      "sub": "Rute alternatif"
     },
     "announcement": {
-      "label": "PA announcement",
+      "label": "Pengumuman PA",
       "sub": "Boarding / landing"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "Pengarahan keselamatan",
+      "sub": "Prosedur darurat"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "Singkat perbaikan",
+      "sub": "Pemeriksaan layanan"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "Laporan Fault",
+      "sub": "Status AOG"
     },
     "pushback": {
       "label": "Pushback",
-      "sub": "Marshalling signals"
+      "sub": "Sinyal marshall"
     },
     "marshalling": {
-      "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "label": "Pemasaran",
+      "sub": "Koordinat Ramp"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "Alfabet",
+      "sub": "fonetik ICAO"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "Nomor",
+      "sub": "0- 9 frase"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "Dialog dasar",
+      "sub": "Kalimat harian"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "Rencana penerbangan",
+      "sub": "Frasa rute"
     },
     "weather": {
-      "label": "Weather report",
+      "label": "Laporan Cuaca",
       "sub": "METAR / TAF"
     }
   }

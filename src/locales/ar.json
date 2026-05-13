@@ -317,20 +317,20 @@
         "advanced": "متقدم"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "جاهز لرحلة طيرانك الأولى؟",
+        "subtitle": "المنهاج الدراسي الخاص بك {role} في انتظار",
+        "subtitleNoRole": "اختيار دورك لفتح شجرة الدرس",
+        "cta": "ابدأ درسك الأول"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "اكتملت جميع الدروس",
+        "subtitle": "ماجستير في التدريب أو التحقق غدا",
+        "cta": "اذهب إلى التدريب"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "قريباً",
+        "subtitle": "تابعي التدريب الآن",
+        "cta": "اذهب إلى التدريب"
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "2-5/ 6",
+      "hero1": "أي نوع",
+      "hero2": "أنت؟",
+      "subtitle": "اختر نوعك المحدد لإضفاء الطابع الشخصي على الدروس والسيناريوهات",
+      "eyebrow": "قصتك",
+      "emptyTitle": "No subroles defined for this role yet",
+      "emptyBody": "الاستمرار في المناهج الدراسية العامة. يمكنك أن تختاري قطعة فرعية من ملفك بمجرد أن يضيفها (اسمين)",
+      "continue": "استمر",
+      "continueWithout": "استمر"
     }
   },
   "notif": {
@@ -856,94 +856,94 @@
       "unblockConfirm": "Unblock"
     },
     "role": {
-      "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleEyebrow": "المجموع الفرعي",
+      "subRoleNotSet": "لم يُختار بعد",
+      "subRoleHint": "Tap to change or choice",
+      "updatedReselectSubRole": "تحديث الأدوار. الآن إختاري دوركِ الفرعي للدور الجديد"
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "التدريب الاحتياطي",
+      "pilotSub": "تصريحات لجنة مكافحة الإرهاب",
+      "generalSub": "الممارسة الإذاعية"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "اسمع",
+      "pilotSub": "راديو غاربلد",
+      "generalSub": "ممارسة الاستماع"
     },
     "roleplay": {
-      "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
+      "label": "I roleplay",
+      "pilotSub": "نمط الانتظار",
+      "atcSub": "برج الاتصالات",
+      "cabinSub": "إعلان السلطة الفلسطينية",
+      "technicianSub": "موجز ميكانيكي",
+      "groundSub": "موجز",
+      "studentSub": "النظام الأساسي",
+      "dispatcherSub": "موجز العمليات",
       "generalSub": "AI scenario"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "النطق",
+      "pilotSub": "الأرقام 0-9",
+      "atcSub": "الأرقام 0-9",
+      "cabinSub": "عبارات إعلانية",
+      "technicianSub": "المصطلحات التقنية",
+      "groundSub": "عبارات الاسترداد",
+      "dispatcherSub": "شروط الطقس",
+      "generalSub": "إعلان عام"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "إصدار التصاريح",
+      "sub": "تعليمات المرور"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "تسوية المنازعات",
+      "sub": "الطريق البديل"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "إعلان السلطة الفلسطينية",
+      "sub": "الصعود/الهبوط"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "إحاطة السلامة",
+      "sub": "إجراءات الطوارئ"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "موجز الصيانة",
+      "sub": "التحقق من الخدمات"
     },
     "faultReport": {
-      "label": "Fault report",
+      "label": "التقرير الافتراضي",
       "sub": "AOG status"
     },
     "pushback": {
       "label": "Pushback",
-      "sub": "Marshalling signals"
+      "sub": "إشارات الفصل"
     },
     "marshalling": {
-      "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "label": "مارشال",
+      "sub": "تنسيق البحث"
     },
     "alphabet": {
       "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "sub": "منظمة الطيران المدني الدولي"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "الأرقام",
+      "sub": "0-9 عبارات"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "النظام الأساسي",
+      "sub": "الكلمات اليومية"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "خطة الطيران",
+      "sub": "عبارات الطريق"
     },
     "weather": {
-      "label": "Weather report",
+      "label": "تقرير الطقس",
       "sub": "METAR / TAF"
     }
   }

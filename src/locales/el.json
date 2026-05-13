@@ -317,20 +317,20 @@
         "advanced": "προχωρημένο"
       },
       "emptyState": {
-        "title": "Ready for your first flight?",
-        "subtitle": "Your {{role}} curriculum awaits",
-        "subtitleNoRole": "Select your role to unlock your lesson tree",
-        "cta": "Start your first lesson →"
+        "title": "Έτοιμος για την πρώτη σου πτήση;",
+        "subtitle": "Το πρόγραμμα σπουδών σας περιμένει",
+        "subtitleNoRole": "Επιλέξτε το ρόλο σας για να ξεκλειδώσετε το δέντρο μαθήματός σας",
+        "cta": "Ξεκινήστε το πρώτο σας μάθημα →"
       },
       "allDone": {
-        "title": "All lessons complete",
-        "subtitle": "Master with practice or check back tomorrow",
-        "cta": "Go to practice →"
+        "title": "Όλα τα μαθήματα ολοκληρώθηκαν",
+        "subtitle": "Δάσκαλος με εξάσκηση ή έλεγχος πίσω αύριο",
+        "cta": "Πηγαίνετε στην προπόνηση →"
       },
       "comingSoon": {
-        "title": "Coming soon",
-        "subtitle": "Continue with practice for now",
-        "cta": "Go to practice →"
+        "title": "Έρχομαι σύντομα.",
+        "subtitle": "Συνεχίστε με την πρακτική προς το παρόν",
+        "cta": "Πηγαίνετε στην προπόνηση →"
       }
     },
     "learn": {
@@ -747,15 +747,15 @@
       "goToWelcome": "Back to start"
     },
     "subRoleSelect": {
-      "step": "STEP 2.5 / 6",
-      "hero1": "What type",
-      "hero2": "are you?",
-      "subtitle": "Pick your specific type to personalize lessons and scenarios.",
-      "eyebrow": "YOUR SUB-ROLE",
-      "emptyTitle": "No sub-roles defined for this role yet",
-      "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
-      "continue": "Continue →",
-      "continueWithout": "Continue →"
+      "step": "ΒΗΜΑ 2.5 / 6",
+      "hero1": "Τι τύπος",
+      "hero2": "Είσαι;",
+      "subtitle": "Επιλέξτε τον συγκεκριμένο τύπο σας για να εξατομικεύσετε τα μαθήματα και τα σενάρια.",
+      "eyebrow": "Ο ΥΠΟΡΟΛΟΣ ΣΑΣ",
+      "emptyTitle": "Δεν έχουν καθοριστεί υπο-ρολ για αυτόν τον ρόλο ακόμα",
+      "emptyBody": "Συνεχίζοντας το γενικό πρόγραμμα σπουδών. Μπορείτε να επιλέξετε ένα sub-role από το προφίλ σας μόλις ο διαχειριστής τους προσθέτει.",
+      "continue": "Συνέχεια →",
+      "continueWithout": "Συνέχεια →"
     }
   },
   "notif": {
@@ -856,95 +856,95 @@
       "unblockConfirm": "Unblock"
     },
     "role": {
-      "subRoleEyebrow": "SUB-ROLE",
-      "subRoleNotSet": "Not selected yet",
-      "subRoleHint": "Tap to change or pick",
-      "updatedReselectSubRole": "Role updated. Now pick your sub-role for the new role."
+      "subRoleEyebrow": "ΥΠΟΔΕΙΓΜΑ",
+      "subRoleNotSet": "Δεν έχει επιλεγεί ακόμα",
+      "subRoleHint": "Πατήστε για αλλαγή ή επιλογή",
+      "updatedReselectSubRole": "Ο ρόλος ανανεώθηκε. Τώρα διάλεξε τον υπο-ρολό σου για το νέο ρόλο."
     }
   },
   "quick": {
     "readback": {
-      "label": "Read-back drill",
-      "pilotSub": "ATC clearances",
-      "generalSub": "Radio practice"
+      "label": "Τρύπα ανάγνωσης",
+      "pilotSub": "Εκκαθαρίσεις ATC",
+      "generalSub": "Πρακτική ραδιοφώνου"
     },
     "listen": {
-      "label": "Listen & decode",
-      "pilotSub": "Garbled radio",
-      "generalSub": "Listening practice"
+      "label": "Ακούστε & αποκωδικοποιήστε",
+      "pilotSub": "Ασυρματισμός με σφυρηλάτηση",
+      "generalSub": "Πρακτική ακρόασης"
     },
     "roleplay": {
-      "label": "AI roleplay",
-      "pilotSub": "Holding pattern",
-      "atcSub": "Tower comms",
-      "cabinSub": "PA announcement",
-      "technicianSub": "Mechanic brief",
-      "groundSub": "Pushback brief",
-      "studentSub": "Basic dialog",
-      "dispatcherSub": "Ops brief",
-      "generalSub": "AI scenario"
+      "label": "Παιχνίδι roleόλων AI",
+      "pilotSub": "Μοτίβο αναμονής",
+      "atcSub": "Επικοινωνίες πύργου",
+      "cabinSub": "Ανακοίνωση PA",
+      "technicianSub": "Μηχανική σύντομη",
+      "groundSub": "Σύντομη ανασκόπηση",
+      "studentSub": "Βασικός διάλογος",
+      "dispatcherSub": "Ενημέρωση επιχειρήσεων",
+      "generalSub": "Σενάριο AI"
     },
     "pronunciation": {
-      "label": "Pronunciation",
-      "pilotSub": "Numbers 0-9",
-      "atcSub": "Numbers 0-9",
-      "cabinSub": "Announcement phrases",
-      "technicianSub": "Technical terms",
-      "groundSub": "Pushback phrases",
-      "dispatcherSub": "Weather terms",
-      "generalSub": "General pronunciation"
+      "label": "Εκφώνηση",
+      "pilotSub": "Αριθμοί 0-9",
+      "atcSub": "Αριθμοί 0-9",
+      "cabinSub": "Φράσεις ανακοίνωσης",
+      "technicianSub": "Τεχνικοί όροι",
+      "groundSub": "Φράσεις pushback",
+      "dispatcherSub": "Όροι καιρού",
+      "generalSub": "Γενική προφορά"
     },
     "clearance": {
-      "label": "Issue clearance",
-      "sub": "Traffic instructions"
+      "label": "Εκκαθάριση έκδοσης",
+      "sub": "Οδηγίες κυκλοφορίας"
     },
     "conflict": {
-      "label": "Conflict resolution",
-      "sub": "Alternative route"
+      "label": "Ανάλυση συγκρούσεων",
+      "sub": "Εναλλακτική διαδρομή"
     },
     "announcement": {
-      "label": "PA announcement",
-      "sub": "Boarding / landing"
+      "label": "Ανακοίνωση PA",
+      "sub": "Επιβίβαση / προσγείωση"
     },
     "safety": {
-      "label": "Safety briefing",
-      "sub": "Emergency procedures"
+      "label": "Ενημέρωση για την ασφάλεια",
+      "sub": "Διαδικασίες έκτακτης ανάγκης"
     },
     "maintenance": {
-      "label": "Maintenance brief",
-      "sub": "Service check"
+      "label": "Συντόμευση συντήρησης",
+      "sub": "Έλεγχος υπηρεσίας"
     },
     "faultReport": {
-      "label": "Fault report",
-      "sub": "AOG status"
+      "label": "Έκθεση σφάλματος",
+      "sub": "Κατάσταση AOG"
     },
     "pushback": {
-      "label": "Pushback",
-      "sub": "Marshalling signals"
+      "label": "Αναστροφή",
+      "sub": "Σήματα συγκράτησης"
     },
     "marshalling": {
-      "label": "Marshalling",
-      "sub": "Ramp coordination"
+      "label": "Αποκατάσταση",
+      "sub": "Συντονισμός διαδρόμου"
     },
     "alphabet": {
-      "label": "Alphabet",
-      "sub": "ICAO phonetic"
+      "label": "Αλφάβητο",
+      "sub": "Φωνητική ΔΟΠΑ"
     },
     "numbers": {
-      "label": "Numbers",
-      "sub": "0-9 phrases"
+      "label": "Αριθμοί",
+      "sub": "0-9 φράσεις"
     },
     "basics": {
-      "label": "Basic dialog",
-      "sub": "Daily phrases"
+      "label": "Βασικός διάλογος",
+      "sub": "Καθημερινές φράσεις"
     },
     "flightPlan": {
-      "label": "Flight plan",
-      "sub": "Route phrases"
+      "label": "Σχέδιο πτήσης",
+      "sub": "Φράσεις διαδρομής"
     },
     "weather": {
-      "label": "Weather report",
-      "sub": "METAR / TAF"
+      "label": "Έκθεση καιρού",
+      "sub": "ΜΕΤΑAR / TAF"
     }
   }
 }
