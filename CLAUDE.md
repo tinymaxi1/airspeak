@@ -669,3 +669,71 @@ DEEPL_API_KEY=...
 **Son güncelleme**: 2026-05-09 — 14-Phase design refactor + production launch prep. Local main `ad36c8b` (push edilmedi — GitHub auth conflict, 8 commit local). BUILD 11 cloud'da. Domain `airspeak.app` + Resend SMTP kuruldu. User GoDaddy DNS aşamasında takılı.
 
 **Tüm tamamlanan iş**: Faz 0-8 (admin/content pipeline) + Sprint 3a, 3e, 3f, 4, 5, 6, 7 (gamification, community, oral exam, stats, placement adaptive) + Sprint 8.A.2/A.3/B.1/C.1-3 (store hazırlık) + Sprint 11.A/B.1-11 (glossary 921 terim) + Sprint 12.A-D (theory + unit intro) + Sprint 13.A.1-7 (RevenueCat IAP) + Sprint 13.B.1 (eas.json Android profil).
+
+---
+
+## İçerik Üretimi Sprint (Lansman öncesi — PLANLI)
+
+**Tarih**: 2026-05-13 sonrası planlanır. Lansmandan 4 ay önce başlat, 1-2 hafta her rol.
+
+### Mevcut Durum (v1.0 UX REAL FIX Pack sonrası)
+
+- 7 rol sistemde: pilot, atc, cabin, technician, ground, student, **dispatcher** (eklendi)
+- `profiles_role_check` + `modules_role_check` 7 rolü destekler (migration `20260513000001`)
+- **Eksik CHECK constraint'ler** (içerik üretimi öncesi ek migration gerekli):
+  - `interview_questions_role_check` (eski 5 rol, atc + dispatcher YOK)
+  - `league_groups_role_check` (eski 5 rol + 'all')
+  - `scenarios_role_check` (eski 5 rol + 'all')
+  - `vocab_terms_role_check` (eski 5 rol + 'all')
+  - `word_of_the_day_target_roles_check` (6 rol, dispatcher YOK)
+
+### Eksik İçerik
+
+| Rol | scenarios | vocab_terms | interview_qns | modules |
+|---|---|---|---|---|
+| **pilot** | ✅ mevcut | ✅ mevcut | ✅ mevcut | ✅ mevcut |
+| **atc** | 0 | az | 0 | az |
+| **dispatcher** | 0 | 0 | 0 | 0 |
+| **technician** | az | mevcut | mevcut | az |
+| **ground** | az | mevcut | mevcut | az |
+| **student** | az | mevcut | mevcut | az |
+| **cabin** | ✅ mevcut | ✅ mevcut | ✅ mevcut | ✅ mevcut |
+
+### Hedef (her rol için minimum)
+
+- 5 module × 3 unit × 3 lesson = **45 lesson**
+- **5-10 conversation scenario**
+- **30-50 vocab term**
+- **10-20 interview question**
+- **1 league group seed**
+
+### Tahmini Süre
+
+- Rol başına: 8-15 saat
+- Toplam (6 eksik rol × 10 saat): **~60 saat**
+  (pilot mevcut, cabin mevcut, diğerleri kısmi veya sıfır)
+
+### Yöntem
+
+1. **Admin paneli `/admin/tree` ile manuel CRUD** (slow but quality control)
+2. **Claude ile lesson generation pipeline**:
+   - Role + module spec input
+   - Generation script (Anthropic API) + admin import endpoint
+   - Tahmini hızlandırma: 5-10x
+
+### Bağlantılı Eksik Altyapı (içerik üretimi başlamadan ÖNCE ~2 saat)
+
+1. **Ek CHECK constraint migration** — 5 tabloya 7 rol kabul ettir
+2. **`/readback?category=xxx` param desteği** + `getRandomClearances(count, category?)` filter
+3. **`/practice` DRILLS array genişletme** — yeni category enum değerleri
+4. **`/pronunciation/alphabet` + `/pronunciation/numbers` static route'lar** (veya `[id].tsx` alphabet/numbers ID handle)
+5. **`AtcClearance.category` enum genişletme** — fault_reporting, marshalling, conflict_resolution, pa_announcement, vb.
+
+### Sprint Aşamaları (önerilen)
+
+- **Hafta 1**: Altyapı (constraint migration + route param + clearance category) + dispatcher cards minimum content
+- **Hafta 2-3**: ATC content (en kritik eksik)
+- **Hafta 4**: Dispatcher content
+- **Hafta 5-6**: Technician + Ground content güçlendirme
+- **Hafta 7**: Student content güçlendirme + cross-rol vocab
+- **Hafta 8**: QA + admin review
