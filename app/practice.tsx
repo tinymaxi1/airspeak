@@ -42,11 +42,12 @@ interface Drill {
 const DRILLS: Drill[] = [
   { title: 'ATC read-back rapid fire', sub: '60 sec · 12 clearances', icon: '🎙', accent: '#E63946', xp: 80, mins: 2, route: '/readback', category: 'speaking' },
   { title: 'Numbers 0–9 (decimals)', sub: 'Pronunciation · 3 stars', icon: '🔊', accent: '#F2C14E', xp: 50, mins: 3, stars: 2, route: { pathname: '/pronunciation/[id]', params: { id: 'p1' } }, category: 'speaking' },
-  { title: 'Garbled radio decode', sub: 'Listening · noise +30%', icon: '🎧', accent: '#2EA8FF', xp: 65, mins: 4, category: 'listening' },
-  { title: 'Emergency vocabulary', sub: 'Match · 24 words', icon: '🛡', accent: '#7C5CFF', xp: 60, mins: 3, stars: 3, category: 'emergency' },
-  { title: 'Weather phenomena', sub: 'Reading · METAR/TAF', icon: '☁', accent: '#2DBE6C', xp: 75, mins: 5, category: 'vocab' },
-  { title: 'Aviation vocab matching', sub: '300 terim · 5 dakika', icon: '📖', accent: '#7C5CFF', xp: 40, mins: 5, category: 'vocab' },
-  { title: 'ATC tower listening', sub: 'Audio + transcribe', icon: '🎧', accent: '#2EA8FF', xp: 55, mins: 4, category: 'listening' },
+  // Sprint C1 — Listen & Solve gerçek engine'e bağlandı (önceden route'suz drill'ler)
+  { title: 'Garbled radio decode', sub: 'Listening · noise +30%', icon: '🎧', accent: '#2EA8FF', xp: 65, mins: 4, route: { pathname: '/listen-solve/[id]', params: { id: 'garbled' } }, category: 'listening' },
+  { title: 'ATC tower listening', sub: 'Audio + transcribe', icon: '🎧', accent: '#2EA8FF', xp: 55, mins: 4, route: { pathname: '/listen-solve/[id]', params: { id: 'atc_listen' } }, category: 'listening' },
+  { title: 'Emergency vocabulary', sub: 'Match · 24 words', icon: '🛡', accent: '#7C5CFF', xp: 60, mins: 3, stars: 3, route: { pathname: '/listen-solve/[id]', params: { id: 'pa_decode' } }, category: 'emergency' },
+  { title: 'Weather phenomena', sub: 'Reading · METAR/TAF', icon: '☁', accent: '#2DBE6C', xp: 75, mins: 5, route: { pathname: '/listen-solve/[id]', params: { id: 'metar_notam' } }, category: 'vocab' },
+  { title: 'Aviation vocab matching', sub: '300 terim · 5 dakika', icon: '📖', accent: '#7C5CFF', xp: 40, mins: 5, route: { pathname: '/listen-solve/[id]', params: { id: 'practice' } }, category: 'vocab' },
 ];
 
 export default function PracticeScreen() {

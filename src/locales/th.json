@@ -792,6 +792,43 @@
       "emptyBody": "Continuing with the general curriculum. You can pick a sub-role from your profile once admin adds them.",
       "continue": "Continue →",
       "continueWithout": "Continue →"
+    },
+    "listenSolve": {
+      "briefing": {
+        "eyebrow": "LISTEN & SOLVE",
+        "title": "Listen and answer",
+        "subtitle": "{{count}} drills · {{cat}}. Audio plays, pick the right answer.",
+        "generalCat": "Mixed",
+        "howEyebrow": "HOW TO PLAY",
+        "howStep1": "1. Device reads audio — listen carefully",
+        "howStep2": "2. Tap \"Replay\" to hear again",
+        "howStep3": "3. Pick the correct answer from 4 options",
+        "howStep4": "4. Each correct +10 XP",
+        "start": "Start →"
+      },
+      "playing": {
+        "now": "Playing…",
+        "replay": "Replay"
+      },
+      "answering": {
+        "prompt": "Pick the correct answer"
+      },
+      "feedback": {
+        "correct": "Correct!",
+        "incorrect": "Incorrect",
+        "transcript": "AUDIO:"
+      },
+      "result": {
+        "title": "Drill done",
+        "score": "{{correct}}/{{total}} correct · score {{score}}",
+        "tryAgain": "Try again",
+        "next": "Exit"
+      },
+      "empty": {
+        "title": "Content coming soon for this category"
+      },
+      "exitConfirm": "Exit the drill?",
+      "hintLabel": "HINT"
     }
   },
   "notif": {

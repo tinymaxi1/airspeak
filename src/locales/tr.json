@@ -382,6 +382,43 @@
         "subtitle": "Admin yakında bu role uygun ders ekleyecek. Bu arada pratiklerden devam edebilirsin."
       }
     },
+    "listenSolve": {
+      "briefing": {
+        "eyebrow": "DİNLE & ÇÖZ",
+        "title": "Dinle ve cevap ver",
+        "subtitle": "{{count}} drill · {{cat}}. Audio okunur, doğru cevabı seç.",
+        "generalCat": "Karışık",
+        "howEyebrow": "NASIL OYNANIR",
+        "howStep1": "1. Cihaz audio okur — dikkatle dinle",
+        "howStep2": "2. \"Tekrar dinle\" ile tekrar edebilirsin",
+        "howStep3": "3. 4 seçenekten doğru cevabı seç",
+        "howStep4": "4. Her doğru +10 XP",
+        "start": "Başla →"
+      },
+      "playing": {
+        "now": "Çalıyor…",
+        "replay": "Tekrar dinle"
+      },
+      "answering": {
+        "prompt": "Doğru cevabı seç"
+      },
+      "feedback": {
+        "correct": "Doğru!",
+        "incorrect": "Yanlış",
+        "transcript": "AUDIO:"
+      },
+      "result": {
+        "title": "Drill bitti",
+        "score": "{{correct}}/{{total}} doğru · skor {{score}}",
+        "tryAgain": "Tekrar dene",
+        "next": "Çık"
+      },
+      "empty": {
+        "title": "Bu kategori için içerik yakında"
+      },
+      "exitConfirm": "Drill'den çıkmak istiyor musun?",
+      "hintLabel": "İPUCU"
+    },
     "practice": {
       "eyebrow": "HIZLI UÇUŞ · STREAK CEZASI YOK",
       "title": "Pratik",

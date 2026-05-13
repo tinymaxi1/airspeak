@@ -792,6 +792,43 @@
       "emptyBody": "일반 커리큘럼과 계속. 한 번 관리자가 추가하면 프로필에서 하위로를 선택할 수 있습니다.",
       "continue": "계속 →",
       "continueWithout": "계속 →"
+    },
+    "listenSolve": {
+      "briefing": {
+        "eyebrow": "LISTEN & SOLVE",
+        "title": "Listen and answer",
+        "subtitle": "{{count}} drills · {{cat}}. Audio plays, pick the right answer.",
+        "generalCat": "Mixed",
+        "howEyebrow": "HOW TO PLAY",
+        "howStep1": "1. Device reads audio — listen carefully",
+        "howStep2": "2. Tap \"Replay\" to hear again",
+        "howStep3": "3. Pick the correct answer from 4 options",
+        "howStep4": "4. Each correct +10 XP",
+        "start": "Start →"
+      },
+      "playing": {
+        "now": "Playing…",
+        "replay": "Replay"
+      },
+      "answering": {
+        "prompt": "Pick the correct answer"
+      },
+      "feedback": {
+        "correct": "Correct!",
+        "incorrect": "Incorrect",
+        "transcript": "AUDIO:"
+      },
+      "result": {
+        "title": "Drill done",
+        "score": "{{correct}}/{{total}} correct · score {{score}}",
+        "tryAgain": "Try again",
+        "next": "Exit"
+      },
+      "empty": {
+        "title": "Content coming soon for this category"
+      },
+      "exitConfirm": "Exit the drill?",
+      "hintLabel": "HINT"
     }
   },
   "notif": {
