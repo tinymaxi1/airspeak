@@ -116,7 +116,19 @@
     "streak": "Streak",
     "xp": "XP",
     "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
-    "viewOffline": "VIEW"
+    "viewOffline": "VIEW",
+    "proBadge": "Member",
+    "dailyLimits": {
+      "title": "TODAY'S CREDITS",
+      "lesson": "Lesson",
+      "ai": "AI Scenario",
+      "readback": "Read-back",
+      "listenSolve": "Listen & Solve",
+      "pronunciation": "Pronunciation",
+      "resetNote": "Refreshes at midnight",
+      "premiumEyebrow": "PRO MEMBER",
+      "premiumBanner": "Unlimited lessons · practice · hearts"
+    }
   },
   "learn": {
     "title": "Learn",
@@ -124,7 +136,15 @@
   },
   "practice": {
     "title": "Practice",
-    "subtitle": "AI conversation · Quiz · Exam · Pronunciation · SRS"
+    "subtitle": "AI conversation · Quiz · Exam · Pronunciation · SRS",
+    "lastChance": {
+      "eyebrow": "LAST CHANCE",
+      "body": "1 credit left today. Resets tomorrow after use."
+    },
+    "limitReached": {
+      "title": "Today's limit reached",
+      "body": "Pro: unlimited access — tap"
+    }
   },
   "league": {
     "title": "League",

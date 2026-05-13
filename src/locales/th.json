@@ -116,7 +116,19 @@
     "streak": "สไตรก",
     "xp": "XP",
     "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
-    "viewOffline": "VIEW"
+    "viewOffline": "VIEW",
+    "proBadge": "Member",
+    "dailyLimits": {
+      "title": "TODAY'S CREDITS",
+      "lesson": "Lesson",
+      "ai": "AI Scenario",
+      "readback": "Read-back",
+      "listenSolve": "Listen & Solve",
+      "pronunciation": "Pronunciation",
+      "resetNote": "Refreshes at midnight",
+      "premiumEyebrow": "PRO MEMBER",
+      "premiumBanner": "Unlimited lessons · practice · hearts"
+    }
   },
   "learn": {
     "title": "เรียน",
@@ -124,7 +136,15 @@
   },
   "practice": {
     "title": "ฝึก",
-    "subtitle": "การสนทนาแบบ AI access Quiz as Exam as Prouncation asRS"
+    "subtitle": "การสนทนาแบบ AI access Quiz as Exam as Prouncation asRS",
+    "lastChance": {
+      "eyebrow": "LAST CHANCE",
+      "body": "1 credit left today. Resets tomorrow after use."
+    },
+    "limitReached": {
+      "title": "Today's limit reached",
+      "body": "Pro: unlimited access — tap"
+    }
   },
   "league": {
     "title": "สันนิบาต",
@@ -1032,5 +1052,16 @@
       "label": "Weather report",
       "sub": "METAR / TAF"
     }
+  },
+  "heartRefill": {
+    "countdownLabel": "{{h}}h {{m}}m",
+    "refillReady": "Ready to refill",
+    "insufficientTitle": "Not enough coins",
+    "insufficientBody": "Need {{cost}} coins, you have {{balance}}.",
+    "failTitle": "Error",
+    "failBody": "Please try again.",
+    "coinSuccess": "+1 heart · {{cost}} coins",
+    "coinBalance": "Balance: {{balance}}",
+    "coinButtonInsufficient": "Not enough coins"
   }
 }

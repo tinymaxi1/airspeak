@@ -23,6 +23,7 @@ import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
 import { useListenSolveLimit, bumpServerUsage } from '@/features/config/limits';
 import { bumpUserXpForLeague } from '@/features/gamification/api';
 import { PaywallSheet } from '@/components/paywall/PaywallSheet';
+import { LastChanceBanner } from '@/components/practice/LastChanceBanner';
 import { track } from '@/lib/posthog';
 import {
   Eyebrow,
@@ -272,6 +273,11 @@ export default function ListenSolveScreen() {
           </SafeAreaView>
 
           <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 100, flexGrow: 1 }}>
+            <LastChanceBanner
+              used={listenSolveLimit.used}
+              limit={listenSolveLimit.limit}
+              paywallReason="listen_solve_limit"
+            />
             <Text style={{ fontSize: 64, textAlign: 'center', marginVertical: 20 }}>🎧</Text>
             <Text
               style={{

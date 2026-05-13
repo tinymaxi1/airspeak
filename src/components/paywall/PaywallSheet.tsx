@@ -6,6 +6,7 @@
 import { Modal, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useAppConfig } from '@/features/config/api';
 import { useAuthStore } from '@/stores/authStore';
 import { useTrialStatus, startTrial } from '@/features/trial/api';
@@ -20,7 +21,8 @@ interface Props {
   reason?: 'lesson_limit' | 'ai_limit' | 'readback_limit' | 'listen_solve_limit' | 'pronunciation_limit' | 'icao4_locked' | 'feature_locked' | 'manual';
 }
 
-export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
+export function PaywallSheet({ visible, onClose, reason }: Props) {
+  const { t } = useTranslation();
   const cfg = useAppConfig();
   const setPremium = useAuthStore((s) => s.setPremium);
   const userId = useAuthStore((s) => s.user?.id);
@@ -125,6 +127,24 @@ export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {
               >
                 <Text style={{ fontSize: 40 }}>👑</Text>
               </View>
+              {/* Reason-specific reason banner (lansman polish) */}
+              {reason && reason !== 'manual' && (
+                <View
+                  style={{
+                    backgroundColor: 'rgba(230,57,70,0.18)',
+                    borderWidth: 1,
+                    borderColor: 'rgba(230,57,70,0.5)',
+                    paddingHorizontal: 14,
+                    paddingVertical: 8,
+                    borderRadius: 10,
+                    marginBottom: 14,
+                  }}
+                >
+                  <Text style={{ fontSize: 13, color: '#FFFFFF', fontWeight: '600', textAlign: 'center' }}>
+                    {t(`screens.paywall.reason.${reason}`, cfg['paywall.headline_tr'] ?? '')}
+                  </Text>
+                </View>
+              )}
               <Text
                 style={{
                   fontSize: 26,

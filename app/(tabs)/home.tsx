@@ -45,6 +45,7 @@ import { safeSpeechSpeak, safeSpeechStop } from '@/lib/speechSafe';
 import { useWordOfTheDay } from '@/features/words/useWordOfTheDay';
 import { getQuickCardsForRole } from '@/features/home/quickPracticeCards';
 import { track } from '@/lib/posthog';
+import { DailyLimitsCard } from '@/components/home/DailyLimitsCard';
 
 export default function HomeScreen() {
   const c = usePalette();
@@ -327,12 +328,20 @@ export default function HomeScreen() {
               </View>
             </View>
 
-            {/* Stat pills row */}
+            {/* Stat pills row — Premium ise hearts yerine ∞ + Pro rozet */}
             <View style={{ flexDirection: 'row', gap: 8 }}>
               <StatPill icon="🔥" value={String(streak)} label={t('screens.home.streak')} />
-              <StatPill icon="❤" value={String(hearts)} label={t('screens.home.hearts')} />
+              <StatPill
+                icon="❤"
+                value={(profile as any)?.premium_until && new Date((profile as any).premium_until) > new Date() ? '∞' : String(hearts)}
+                label={t('screens.home.hearts')}
+              />
               <StatPill icon="⭐" value={xp.toLocaleString()} label={t('screens.home.xp')} />
-              <StatPill icon="🌐" value={level} label={t('screens.home.level')} />
+              {(profile as any)?.premium_until && new Date((profile as any).premium_until) > new Date() ? (
+                <StatPill icon="✨" value="PRO" label={t('home.proBadge', 'Üye')} />
+              ) : (
+                <StatPill icon="🌐" value={level} label={t('screens.home.level')} />
+              )}
             </View>
           </View>
         </SafeAreaView>
@@ -438,6 +447,9 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         )}
+
+        {/* Bugünkü hakların — premium ise sınırsız banner, değilse 5 sayaç */}
+        <DailyLimitsCard />
 
         {/* Daily Flight Plan card — 4-state (current / empty / allDone / comingSoon) */}
         <Card3D style={{ padding: 0, overflow: 'hidden', marginBottom: 18 }}>

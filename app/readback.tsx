@@ -30,6 +30,7 @@ import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
 import { useReadbackLimit, bumpServerUsage } from '@/features/config/limits';
 import { bumpUserXpForLeague } from '@/features/gamification/api';
 import { PaywallSheet } from '@/components/paywall/PaywallSheet';
+import { LastChanceBanner } from '@/components/practice/LastChanceBanner';
 import { useQuestsStore } from '@/stores/questsStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import {
@@ -236,6 +237,14 @@ export default function ReadbackDrillScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }}>
+        {/* Son hak / limit doldu uyarı */}
+        {stage === 'briefing' && (
+          <LastChanceBanner
+            used={readbackLimit.used}
+            limit={readbackLimit.limit}
+            paywallReason="readback_limit"
+          />
+        )}
         {/* Briefing */}
         {stage === 'briefing' && (
           <View

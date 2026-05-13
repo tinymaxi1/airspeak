@@ -116,7 +116,19 @@
     "streak": "Seri",
     "xp": "XP",
     "offline": "ÇEVRİMDIŞI MOD · İNDİRİLMİŞ DERSLER ÇALIŞIR",
-    "viewOffline": "GÖR"
+    "viewOffline": "GÖR",
+    "proBadge": "Üye",
+    "dailyLimits": {
+      "title": "BUGÜNKÜ HAKLARIN",
+      "lesson": "Ders",
+      "ai": "AI Senaryo",
+      "readback": "Telsiz Tekrarı",
+      "listenSolve": "Dinle & Çöz",
+      "pronunciation": "Telaffuz",
+      "resetNote": "Gece 00:00'da yenilenir",
+      "premiumEyebrow": "PRO ÜYE",
+      "premiumBanner": "Sınırsız ders · sınırsız pratik · sınırsız kalp"
+    }
   },
   "learn": {
     "title": "Öğren",
@@ -124,7 +136,26 @@
   },
   "practice": {
     "title": "Pratik",
-    "subtitle": "AI konuşma · Quiz · Sınav · Telaffuz · SRS"
+    "subtitle": "AI konuşma · Quiz · Sınav · Telaffuz · SRS",
+    "lastChance": {
+      "eyebrow": "SON HAKKIN",
+      "body": "Bugün 1 hakkın kaldı. Kullandıktan sonra yarın yenilenir."
+    },
+    "limitReached": {
+      "title": "Bugünkü hakkın doldu",
+      "body": "Pro ile sınırsız erişim — tıkla"
+    }
+  },
+  "heartRefill": {
+    "countdownLabel": "{{h}} saat {{m}} dk",
+    "refillReady": "Şimdi yenilenebilir",
+    "insufficientTitle": "Yeterli coin yok",
+    "insufficientBody": "{{cost}} coin gerekli, sende {{balance}} coin var.",
+    "failTitle": "Hata",
+    "failBody": "Tekrar deneyin.",
+    "coinSuccess": "+1 kalp · {{cost}} coin",
+    "coinBalance": "Bakiyen: {{balance}}",
+    "coinButtonInsufficient": "Yeterli coin yok"
   },
   "league": {
     "title": "Lig",

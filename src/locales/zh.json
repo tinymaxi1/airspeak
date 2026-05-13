@@ -116,7 +116,19 @@
     "streak": "连胜",
     "xp": "经验值",
     "offline": "OFFLINE MODE · DOWNLOADED LESSONS WORK",
-    "viewOffline": "VIEW"
+    "viewOffline": "VIEW",
+    "proBadge": "Member",
+    "dailyLimits": {
+      "title": "TODAY'S CREDITS",
+      "lesson": "Lesson",
+      "ai": "AI Scenario",
+      "readback": "Read-back",
+      "listenSolve": "Listen & Solve",
+      "pronunciation": "Pronunciation",
+      "resetNote": "Refreshes at midnight",
+      "premiumEyebrow": "PRO MEMBER",
+      "premiumBanner": "Unlimited lessons · practice · hearts"
+    }
   },
   "learn": {
     "title": "学习",
@@ -124,7 +136,15 @@
   },
   "practice": {
     "title": "练习",
-    "subtitle": "AI对话 · 测验 · 考试 · 发音 · 间隔重复法"
+    "subtitle": "AI对话 · 测验 · 考试 · 发音 · 间隔重复法",
+    "lastChance": {
+      "eyebrow": "LAST CHANCE",
+      "body": "1 credit left today. Resets tomorrow after use."
+    },
+    "limitReached": {
+      "title": "Today's limit reached",
+      "body": "Pro: unlimited access — tap"
+    }
   },
   "league": {
     "title": "联赛",
@@ -1032,5 +1052,16 @@
       "label": "天气报告",
       "sub": "METAR / TAF 设备"
     }
+  },
+  "heartRefill": {
+    "countdownLabel": "{{h}}h {{m}}m",
+    "refillReady": "Ready to refill",
+    "insufficientTitle": "Not enough coins",
+    "insufficientBody": "Need {{cost}} coins, you have {{balance}}.",
+    "failTitle": "Error",
+    "failBody": "Please try again.",
+    "coinSuccess": "+1 heart · {{cost}} coins",
+    "coinBalance": "Balance: {{balance}}",
+    "coinButtonInsufficient": "Not enough coins"
   }
 }
