@@ -43,6 +43,7 @@ import {
 import { TabletShell } from '@/components/tablet';
 import { safeSpeechSpeak, safeSpeechStop } from '@/lib/speechSafe';
 import { useWordOfTheDay } from '@/features/words/useWordOfTheDay';
+import { getQuickCardsForRole } from '@/features/home/quickPracticeCards';
 
 export default function HomeScreen() {
   const c = usePalette();
@@ -577,34 +578,16 @@ export default function HomeScreen() {
           {t('screens.home.fastPracticeSub', 'Kısa, odaklı seanslar — mola arası ideal')}
         </Body>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
-          <QuickCard
-            icon="🎙"
-            label={t('screens.home.qReadback', 'Telsiz tekrarı')}
-            sub={t('screens.home.qReadbackSub', 'ATC izinleri')}
-            color="#E63946"
-            onPress={() => router.push('/readback')}
-          />
-          <QuickCard
-            icon="🎧"
-            label={t('screens.home.qListen', 'Dinle & çöz')}
-            sub={t('screens.home.qListenSub', 'Parazitli telsiz')}
-            color="#2EA8FF"
-            onPress={() => router.push({ pathname: '/practice', params: { category: 'listening' } })}
-          />
-          <QuickCard
-            icon="🤖"
-            label={t('screens.home.qAi', 'AI ile rol yap')}
-            sub={t('screens.home.qAiSub', 'Bekleme deseni')}
-            color="#7C5CFF"
-            onPress={() => router.push('/conversation')}
-          />
-          <QuickCard
-            icon="🔊"
-            label={t('screens.home.qPronounce', 'Telaffuz')}
-            sub={t('screens.home.qPronounceSub', 'Sayılar 0-9')}
-            color="#F2C14E"
-            onPress={() => router.push('/pronunciation/p1')}
-          />
+          {getQuickCardsForRole(role).map((card, idx) => (
+            <QuickCard
+              key={`${card.route}-${idx}`}
+              icon={card.icon}
+              label={t(card.labelKey)}
+              sub={t(card.subKey)}
+              color={card.color}
+              onPress={() => router.push({ pathname: card.route as any, params: card.routeParams ?? {} })}
+            />
+          ))}
         </View>
 
         {/* Career Hub kartı — kullanıcının kariyer odaklı tüm kaynakları */}
