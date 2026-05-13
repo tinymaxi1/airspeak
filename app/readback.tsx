@@ -16,7 +16,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as Speech from 'expo-speech';
+import { safeSpeechSpeak, safeSpeechStop } from '@/lib/speechSafe';
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
@@ -73,7 +73,7 @@ export default function ReadbackDrillScreen() {
       } catch {
         /* ignore */
       }
-      Speech.stop();
+      safeSpeechStop();
     };
   }, []);
 
@@ -84,13 +84,17 @@ export default function ReadbackDrillScreen() {
 
   function playAtcClearance() {
     if (!current) return;
-    Speech.speak(current.atcUtterance, {
+    const spoke = safeSpeechSpeak(current.atcUtterance, {
       language: 'en-US',
       rate: 1.0,
       pitch: 1.0,
       onDone: () => setStage('awaiting'),
       onError: () => setStage('awaiting'),
     });
+    // TTS yoksa stage'i awaiting'e elle düş, kullanıcı metni okur.
+    if (!spoke) {
+      setStage('awaiting');
+    }
   }
 
   async function startRecording() {

@@ -22,7 +22,7 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import * as Speech from 'expo-speech';
+import { safeSpeechSpeak, safeSpeechStop } from '@/lib/speechSafe';
 import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -128,8 +128,8 @@ export default function VocabScreen() {
   const masteryPct = filtered.length > 0 ? (masteredCount / filtered.length) * 100 : 0;
 
   const handleSpeak = (text: string) => {
-    Speech.stop();
-    Speech.speak(text, { language: 'en-US', rate: 0.9 });
+    safeSpeechStop();
+    safeSpeechSpeak(text, { language: 'en-US', rate: 0.9 });
   };
 
   return (
