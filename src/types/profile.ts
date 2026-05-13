@@ -1,4 +1,4 @@
-export type UserRole = 'pilot' | 'atc' | 'cabin' | 'technician' | 'ground' | 'student';
+export type UserRole = 'pilot' | 'atc' | 'cabin' | 'technician' | 'ground' | 'student' | 'dispatcher';
 export type Level = 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
 
 /**
