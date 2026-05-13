@@ -1,0 +1,440 @@
+[
+  {
+    "slug": "departure-clearance-runway-change",
+    "role": "atc",
+    "level": "B2",
+    "title": "Departure Clearance with Runway Change",
+    "title_tr": "Pist Değişikliği ile Kalkış İzni",
+    "setup": "You are working as Istanbul Tower controller. Turkish Airlines flight TK1453 is ready for departure to London Heathrow, but due to windshear reports on runway 35L, you must issue a revised clearance using runway 35R instead.",
+    "setup_tr": "İstanbul Kule kontrolörü olarak görev yapıyorsunuz. Londra Heathrow'a gidecek olan Türk Hava Yolları TK1453 uçuşu kalkışa hazır, ancak 35L pistindeki rüzgar kayması raporları nedeniyle 35R pistini kullanarak revize edilmiş bir izin vermelisiniz.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": {
+      "alt": "0",
+      "hdg": "350",
+      "spd": "0",
+      "freq": "118.1"
+    },
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "TURKISH 1453",
+        "frequency": "118.1",
+        "atcUtterance": "Istanbul Tower, Turkish 1453, holding short runway 35L, ready for departure.",
+        "expectedReadback": "Turkish 1453, Istanbul Tower, stand by for revised clearance due to windshear on runway 35L.",
+        "keyPhrases": [
+          [
+            "stand by",
+            "standby",
+            "wait"
+          ],
+          [
+            "revised clearance",
+            "new clearance",
+            "amended clearance"
+          ],
+          [
+            "windshear",
+            "wind shear"
+          ],
+          [
+            "35L",
+            "three five left"
+          ]
+        ],
+        "correctionTr": "Pilota beklemesini söyleyin ve 35L pistindeki rüzgar kayması nedeniyle revize edilmiş bir izin vereceğinizi bildirin.",
+        "hintTr": "Pilotun güvenliği için pist değişikliği gerekiyor.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "TURKISH 1453",
+        "frequency": "118.1",
+        "atcUtterance": "Standing by, Turkish 1453.",
+        "expectedReadback": "Turkish 1453, cleared to London Heathrow via TAVMA1B departure, runway 35R, climb initially to 5000 feet, squawk 2341.",
+        "keyPhrases": [
+          [
+            "cleared to London",
+            "cleared to Heathrow"
+          ],
+          [
+            "TAVMA1B",
+            "TAVMA one bravo"
+          ],
+          [
+            "runway 35R",
+            "runway three five right"
+          ],
+          [
+            "climb initially",
+            "initial climb"
+          ],
+          [
+            "5000 feet",
+            "five thousand feet"
+          ],
+          [
+            "squawk 2341",
+            "squawk two three four one"
+          ]
+        ],
+        "correctionTr": "Londra Heathrow'a izin verin, TAVMA1B kalkış prosedürü ile 35R pistini kullanarak, başlangıç tırmanış 5000 fit, transponder kodu 2341.",
+        "hintTr": "Tüm kalkış izin bilgilerini eksiksiz verin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "TURKISH 1453",
+        "frequency": "118.1",
+        "atcUtterance": "Cleared to London Heathrow via TAVMA1B departure, runway 35R, climb initially 5000 feet, squawk 2341, Turkish 1453. Confirm taxi instructions for new runway.",
+        "expectedReadback": "Turkish 1453, taxi via Echo, cross runway 35L, hold short runway 35R at Bravo 2, contact Ground on 121.9 for pushback coordination.",
+        "keyPhrases": [
+          [
+            "taxi via Echo",
+            "taxi echo"
+          ],
+          [
+            "cross runway 35L",
+            "cross three five left"
+          ],
+          [
+            "hold short runway 35R",
+            "hold short three five right",
+            "hold short 35R"
+          ],
+          [
+            "Bravo 2",
+            "bravo two"
+          ],
+          [
+            "contact Ground",
+            "call Ground"
+          ],
+          [
+            "121.9",
+            "one two one decimal nine",
+            "one two one point nine"
+          ]
+        ],
+        "correctionTr": "Echo taksi yolu üzerinden, 35L pistini geçerek, 35R pistinde Bravo 2'de beklemesini söyleyin ve pushback koordinasyonu için 121.9'dan Yer kontrolü ile iletişime geçmesini bildirin.",
+        "hintTr": "Yeni piste gitmek için detaylı taksi talimatları verin.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "boarding-pa-announcement-b1",
+    "role": "cabin",
+    "level": "B1",
+    "title": "Boarding PA Announcement",
+    "title_tr": "Biniş Anons Duyurusu",
+    "setup": "You are a cabin crew member at the gate. The Captain has just informed you that boarding can begin for flight Turkish 1453 to London Heathrow, departing from gate A12. Make the boarding announcement.",
+    "setup_tr": "Kapıda görevli bir kabin görevlisisiniz. Kaptan, Londra Heathrow'a gidecek olan Turkish 1453 sefer sayılı uçuşun A12 kapısından binişe başlanabileceğini size bildirdi. Biniş anonsunu yapın.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CAPTAIN",
+        "frequency": null,
+        "atcUtterance": "Cabin crew, we are ready for boarding. Please begin the announcement for passengers at gate A12.",
+        "expectedReadback": "Good morning ladies and gentlemen. Welcome to Turkish Airlines flight 1453 to London Heathrow. We are now ready to begin boarding at gate A12. Passengers with small children and those requiring special assistance may board first.",
+        "keyPhrases": [
+          [
+            "good morning",
+            "good afternoon",
+            "good evening",
+            "ladies and gentlemen"
+          ],
+          [
+            "welcome",
+            "Turkish Airlines"
+          ],
+          [
+            "flight 1453",
+            "TK 1453",
+            "Turkish 1453"
+          ],
+          [
+            "London Heathrow",
+            "Heathrow",
+            "London"
+          ],
+          [
+            "ready",
+            "begin boarding",
+            "commence boarding"
+          ],
+          [
+            "gate A12",
+            "gate A 12"
+          ],
+          [
+            "small children",
+            "children",
+            "passengers with children"
+          ],
+          [
+            "special assistance",
+            "requiring assistance"
+          ]
+        ],
+        "correctionTr": "Yolculara nezaketle hitap edin: 'Good morning/afternoon ladies and gentlemen, welcome to Turkish Airlines flight 1453 to London Heathrow' diyerek başlayın. Ardından 'We are now ready to begin boarding at gate A12' ve öncelikli binişi belirtin.",
+        "hintTr": "Profesyonel bir havayolu anonsunda nezaket ifadeleri, uçuş numarası, varış noktası ve kapi numarası mutlaka yer almalıdır.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "GROUND STAFF",
+        "frequency": null,
+        "atcUtterance": "Cabin crew, we have priority passengers ready. Should we also call business class now?",
+        "expectedReadback": "Yes, we may now invite business class passengers and our Star Alliance Gold members to board through gate A12. Please have your boarding passes and passports ready.",
+        "keyPhrases": [
+          [
+            "yes",
+            "affirmative",
+            "correct"
+          ],
+          [
+            "invite",
+            "call",
+            "welcome"
+          ],
+          [
+            "business class",
+            "business"
+          ],
+          [
+            "Star Alliance Gold",
+            "Gold members",
+            "frequent flyers"
+          ],
+          [
+            "board",
+            "boarding"
+          ],
+          [
+            "gate A12",
+            "gate A 12"
+          ],
+          [
+            "boarding passes",
+            "boarding pass"
+          ],
+          [
+            "passports",
+            "travel documents",
+            "documents"
+          ]
+        ],
+        "correctionTr": "Önce 'Yes' ya da onay verin, ardından 'We may now invite business class passengers and Star Alliance Gold members to board through gate A12' deyin. Son olarak yolcuları belge hazırlamaya davet edin: 'Please have your boarding passes and passports ready.'",
+        "hintTr": "İş dünyası yolcularını ve sadakat programı üyelerini çağırırken nezaket ve profesyonellik önemlidir.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "GROUND STAFF",
+        "frequency": null,
+        "atcUtterance": "Understood. Business class is boarding now. Should we proceed with general boarding?",
+        "expectedReadback": "Affirmative. We now invite all remaining passengers holding boarding passes for flight Turkish 1453 to London Heathrow to board at gate A12. Please proceed to the gate in an orderly manner. Thank you.",
+        "keyPhrases": [
+          [
+            "affirmative",
+            "yes",
+            "correct",
+            "roger"
+          ],
+          [
+            "invite",
+            "call",
+            "welcome"
+          ],
+          [
+            "all remaining passengers",
+            "remaining passengers",
+            "all passengers"
+          ],
+          [
+            "boarding passes",
+            "boarding pass"
+          ],
+          [
+            "flight Turkish 1453",
+            "TK 1453",
+            "Turkish 1453",
+            "flight 1453"
+          ],
+          [
+            "London Heathrow",
+            "Heathrow"
+          ],
+          [
+            "gate A12",
+            "gate A 12"
+          ],
+          [
+            "orderly manner",
+            "orderly",
+            "in order"
+          ],
+          [
+            "thank you"
+          ]
+        ],
+        "correctionTr": "Genel binişi başlatın: 'We now invite all remaining passengers holding boarding passes for flight Turkish 1453 to London Heathrow to board at gate A12.' Düzenli binişi hatırlatın ve teşekkür edin.",
+        "hintTr": "Genel biniş çağrısında tüm yolcuları davet ederken uçuş numarası ve kapıyı tekrar belirtmek önemlidir.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "preflight-walkround-hydraulic-leak-found",
+    "role": "technician",
+    "level": "B2",
+    "title": "Pre-flight Walk-around Hydraulic Leak",
+    "title_tr": "Uçuş Öncesi Çevir Kontrolünde Hidrolik Sızıntı",
+    "setup": "You are a licensed aircraft technician conducting the morning walk-around inspection on Turkish 1453, a Boeing 737-800 scheduled to depart Istanbul for Antalya in 45 minutes. During your external inspection near the left main landing gear, you discover fresh hydraulic fluid pooling on the ramp.",
+    "setup_tr": "Istanbul'dan Antalya'ya 45 dakika sonra kalkması planlanan Turkish 1453, bir Boeing 737-800 uçağında sabah çevir kontrolünü yapan yetkili bir uçak teknisyenisiniz. Sol ana iniş takımı yakınındaki dış muayene sırasında, apron üzerinde taze hidrolik sıvısı birikintisi keşfediyorsunuz.",
+    "estimated_minutes": 3,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "MAINTENANCE CONTROL",
+        "frequency": "131.8",
+        "atcUtterance": "Maintenance Control, go ahead with your report.",
+        "expectedReadback": "Maintenance Control, this is technician on Turkish 1453, I have discovered a hydraulic leak on the left main landing gear during walk-around inspection, requesting guidance.",
+        "keyPhrases": [
+          [
+            "hydraulic leak",
+            "hydraulic fluid leak",
+            "hydraulic leakage"
+          ],
+          [
+            "left main landing gear",
+            "left main gear",
+            "port main gear"
+          ],
+          [
+            "walk-around",
+            "walkaround",
+            "external inspection",
+            "pre-flight inspection"
+          ],
+          [
+            "requesting guidance",
+            "need guidance",
+            "require instructions",
+            "what are my instructions"
+          ]
+        ],
+        "correctionTr": "Hidrolik sızıntısını, yerini (sol ana iniş takımı) ve ne yaptığınızı (çevir kontrolü) belirtmeniz gerekiyor. 'Requesting guidance' ile talimat istediğinizi söyleyin.",
+        "hintTr": "Sorunu net tanımlayın: ne buldunuz, nerede, ne yaparken?",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "MAINTENANCE CONTROL",
+        "frequency": "131.8",
+        "atcUtterance": "Roger, can you confirm the approximate quantity of fluid and whether the leak appears active or residual?",
+        "expectedReadback": "Affirmative, I estimate approximately two litres of fluid pooled on the ramp, and the leak appears active with dripping visible from the hydraulic line.",
+        "keyPhrases": [
+          [
+            "affirmative",
+            "affirm",
+            "confirmed",
+            "roger",
+            "yes"
+          ],
+          [
+            "approximately",
+            "estimate",
+            "roughly",
+            "around"
+          ],
+          [
+            "two litres",
+            "2 litres",
+            "two liters",
+            "two to three litres"
+          ],
+          [
+            "pooled",
+            "pooling",
+            "collected",
+            "accumulated"
+          ],
+          [
+            "active",
+            "active leak",
+            "ongoing"
+          ],
+          [
+            "dripping",
+            "dripping visible",
+            "fluid dripping",
+            "continues to drip"
+          ]
+        ],
+        "correctionTr": "Sıvı miktarını tahmin edin (yaklaşık iki litre) ve sızıntının aktif olduğunu (damlama devam ediyor) açıklayın.",
+        "hintTr": "Gözleminizi rakamlarla destekleyin ve sızıntının hala devam edip etmediğini belirtin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "MAINTENANCE CONTROL",
+        "frequency": "131.8",
+        "atcUtterance": "Copy that. Ground the aircraft immediately and tag the hydraulic system as unserviceable. Dispatch a hydraulic specialist to your location and inform the captain that departure will be delayed pending repair. Do you copy?",
+        "expectedReadback": "Wilco, grounding the aircraft now, tagging hydraulic system unserviceable, dispatching specialist, and will inform the captain of the delay, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "wilco",
+            "will comply",
+            "roger wilco",
+            "understood"
+          ],
+          [
+            "grounding",
+            "ground the aircraft",
+            "grounding aircraft"
+          ],
+          [
+            "tagging",
+            "tag",
+            "marking"
+          ],
+          [
+            "hydraulic system",
+            "hydraulic"
+          ],
+          [
+            "unserviceable",
+            "u/s",
+            "out of service"
+          ],
+          [
+            "specialist",
+            "hydraulic specialist",
+            "technician"
+          ],
+          [
+            "inform the captain",
+            "inform captain",
+            "notify captain",
+            "advise captain"
+          ],
+          [
+            "delay",
+            "delayed",
+            "departure delay"
+          ]
+        ],
+        "correctionTr": "'Wilco' diyerek talimatları kabul edin ve yapacaklarınızı özetleyin: uçağı yere indirme, sistemi etiketleme, uzman çağırma ve kaptanı bilgilendirme.",
+        "hintTr": "Tüm talimatları kısa ve net bir şekilde onaylayın.",
+        "isFinal": true
+      }
+    ]
+  }
+]

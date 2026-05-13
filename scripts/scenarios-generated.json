@@ -1,0 +1,3641 @@
+[
+  {
+    "slug": "weather-diversion-request-b2",
+    "role": "pilot",
+    "level": "B2",
+    "title": "Weather Diversion Request",
+    "title_tr": "Hava Durumu Nedeniyle Diversion Talebi",
+    "setup": "You are flying Turkish 1453 from Istanbul to Ankara. Approaching Ankara, you observe severe thunderstorms over the destination. You need to request diversion to Antalya due to weather.",
+    "setup_tr": "Turkish 1453 ile İstanbul'dan Ankara'ya uçuyorsunuz. Ankara'ya yaklaşırken varış noktasında şiddetli fırtına gözlemliyorsunuz. Hava durumu nedeniyle Antalya'ya diversion talep etmeniz gerekiyor.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": {
+      "alt": "FL180",
+      "hdg": "085",
+      "spd": "290",
+      "freq": "119.1"
+    },
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "ANKARA APPROACH",
+        "frequency": "119.1",
+        "atcUtterance": "Turkish 1453, Ankara Approach, descend to flight level one four zero, expect ILS runway zero three left.",
+        "expectedReadback": "Ankara Approach, Turkish 1453, unable due to weather, request diversion to Antalya.",
+        "keyPhrases": [
+          [
+            "unable",
+            "unable to comply",
+            "cannot"
+          ],
+          [
+            "weather",
+            "thunderstorm",
+            "severe weather"
+          ],
+          [
+            "request diversion",
+            "divert",
+            "alternate"
+          ],
+          [
+            "Antalya"
+          ]
+        ],
+        "correctionTr": "Approach'a iniş yapamayacağınızı hava durumu nedeniyle bildirip Antalya'ya diversion talep edin. 'Unable due to weather, request diversion to Antalya' deyin.",
+        "hintTr": "Hava koşulları güvenli iniş yapmaya uygun değil, alternatif havaalanı talep edin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "ANKARA APPROACH",
+        "frequency": "119.1",
+        "atcUtterance": "Turkish 1453, roger, diversion approved. Climb to flight level two zero zero, turn right heading one eight zero, contact Antalya Control on one two four decimal six five.",
+        "expectedReadback": "Climb flight level two zero zero, right heading one eight zero, contact Antalya one two four decimal six five, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "climb",
+            "climbing"
+          ],
+          [
+            "flight level two zero zero",
+            "FL200",
+            "two zero zero"
+          ],
+          [
+            "right",
+            "turn right"
+          ],
+          [
+            "heading one eight zero",
+            "one eight zero",
+            "180"
+          ],
+          [
+            "Antalya",
+            "one two four decimal six five",
+            "124.65"
+          ]
+        ],
+        "correctionTr": "Talimatları tam readback yapın: Yükseliş seviyesi FL200, sağa dönüş heading 180, Antalya Control frekansı 124.65. Örnek: 'Climb FL200, right heading 180, contact Antalya 124.65, Turkish 1453'.",
+        "hintTr": "Clearance'ı eksiksiz tekrarlayın: irtifa, heading ve yeni frekans.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "ANTALYA CONTROL",
+        "frequency": "124.65",
+        "atcUtterance": "Turkish 1453, Antalya Control, identified, descend to flight level one six zero, expect vectors for ILS runway zero two right, weather at Antalya, wind zero three zero degrees at one five knots, visibility one zero kilometers, few clouds at three thousand feet.",
+        "expectedReadback": "Descend flight level one six zero, expect vectors ILS zero two right, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "descend",
+            "descending"
+          ],
+          [
+            "flight level one six zero",
+            "FL160",
+            "one six zero"
+          ],
+          [
+            "expect vectors",
+            "vectors"
+          ],
+          [
+            "ILS",
+            "ILS approach"
+          ],
+          [
+            "zero two right",
+            "runway zero two right",
+            "02R"
+          ]
+        ],
+        "correctionTr": "Antalya Control'ün talimatını onaylayın: İniş FL160'a, ILS runway 02R için vectors bekleyin. Örnek: 'Descend FL160, expect vectors ILS 02R, Turkish 1453'.",
+        "hintTr": "Yeni approach clearance'ını kısa ve net readback edin.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "taxi-clearance-runway-crossing-b1",
+    "role": "atc",
+    "level": "B1",
+    "title": "Taxi Clearance with Runway Crossing",
+    "title_tr": "Pist Geçiş Talimatı ile Taxi Clearance",
+    "setup": "You are ground controller at Istanbul Airport. Turkish 1453, an A321, has just pushed back from Gate 23 and is ready to taxi. Runway 35L is active with departures. The aircraft must cross Runway 35R to reach the holding point for Runway 35L.",
+    "setup_tr": "İstanbul Havalimanı'nda Yer kontrolörüsünüz. Turkish 1453, bir A321, Gate 23'ten pushback yaptı ve taxi için hazır. Runway 35L kalkışlar için aktif. Uçak, Runway 35L holding point'e ulaşmak için Runway 35R'yi geçmeli.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": {
+      "alt": "42 ft",
+      "hdg": "350",
+      "spd": "0 kts",
+      "freq": "121.75"
+    },
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "ISTANBUL GROUND",
+        "frequency": "121.75",
+        "atcUtterance": "Turkish 1453, Istanbul Ground, taxi to holding point Runway 35 Left via Alpha, cross Runway 35 Right.",
+        "expectedReadback": "Taxi to holding point Runway 35 Left via Alpha, cross Runway 35 Right, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "taxi",
+            "taxiing"
+          ],
+          [
+            "holding point",
+            "holding"
+          ],
+          [
+            "35 left",
+            "35L",
+            "three five left"
+          ],
+          [
+            "alpha"
+          ],
+          [
+            "cross",
+            "crossing"
+          ],
+          [
+            "35 right",
+            "35R",
+            "three five right"
+          ],
+          [
+            "1453",
+            "turkish 1453"
+          ]
+        ],
+        "correctionTr": "Taxi clearance'ı tam readback yapmalısınız: taxi rotası (Alpha), varış noktası (holding point Runway 35 Left) ve önemli olan runway crossing talimatı (cross Runway 35 Right). Call sign'ınızla bitirin.",
+        "hintTr": "Routing'i ve runway crossing'i net tekrarlayın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "ISTANBUL GROUND",
+        "frequency": "121.75",
+        "atcUtterance": "Turkish 1453, hold short of Runway 35 Right, traffic on final.",
+        "expectedReadback": "Holding short of Runway 35 Right, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "holding short",
+            "hold short",
+            "holding"
+          ],
+          [
+            "35 right",
+            "35R",
+            "three five right"
+          ],
+          [
+            "1453",
+            "turkish 1453"
+          ]
+        ],
+        "correctionTr": "Hold short emrini onaylamalısınız: hangi runway'de durduğunuzu (Runway 35 Right) belirtin ve call sign'ınızı ekleyin.",
+        "hintTr": "Kısa ve net: hangi runway'de hold short yapıyorsunuz?",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "ISTANBUL GROUND",
+        "frequency": "121.75",
+        "atcUtterance": "Turkish 1453, cross Runway 35 Right, contact Tower 118.7.",
+        "expectedReadback": "Cross Runway 35 Right, contact Tower 118.7, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "cross",
+            "crossing"
+          ],
+          [
+            "35 right",
+            "35R",
+            "three five right"
+          ],
+          [
+            "contact",
+            "contacting"
+          ],
+          [
+            "tower"
+          ],
+          [
+            "118.7",
+            "one one eight decimal seven",
+            "one one eight point seven"
+          ],
+          [
+            "1453",
+            "turkish 1453"
+          ]
+        ],
+        "correctionTr": "Runway crossing izni ve frekans değişikliğini readback edin: cross Runway 35 Right, yeni frekans (Tower 118.7) ve call sign.",
+        "hintTr": "İki talimat var: runway crossing ve frekans değişimi.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "vectoring-for-ils-approach-b2",
+    "role": "atc",
+    "level": "B2",
+    "title": "Vectoring for ILS Approach",
+    "title_tr": "ILS Yaklaşması için Vectoring",
+    "setup": "You are Istanbul Approach controlling Turkish Airlines 1453, an A321 inbound from Athens. The aircraft is descending and you will vector them onto the ILS runway 35L at Istanbul Airport.",
+    "setup_tr": "İstanbul Yaklaşma kontrolörüsünüz, Atina'dan gelen Turkish Airlines 1453 (A321) uçağını kontrol ediyorsunuz. İniş yapacak, siz de ILS runway 35L'ye vectoring yapacaksınız.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": {
+      "alt": "7000",
+      "hdg": "350",
+      "spd": "210",
+      "freq": "119.1"
+    },
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "TURKISH 1453",
+        "frequency": "119.1",
+        "atcUtterance": "Istanbul Approach, Turkish 1453, passing flight level one zero zero, descending to seven thousand feet.",
+        "expectedReadback": "Turkish 1453, Istanbul Approach, roger, continue descent to four thousand feet, QNH one zero one three.",
+        "keyPhrases": [
+          [
+            "Turkish 1453",
+            "Turkish fourteen fifty-three"
+          ],
+          [
+            "continue descent",
+            "descend",
+            "continue descending"
+          ],
+          [
+            "four thousand",
+            "4000"
+          ],
+          [
+            "QNH",
+            "altimeter"
+          ],
+          [
+            "one zero one three",
+            "1013"
+          ]
+        ],
+        "correctionTr": "Uçağı dört bin feet'e indirme talimatı verin ve QNH değerini bildirin. 'Continue descent to four thousand feet, QNH one zero one three' deyin.",
+        "hintTr": "Pilot iniş bilgisi veriyor, siz yeni irtifa ve basınç değeri verin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "TURKISH 1453",
+        "frequency": "119.1",
+        "atcUtterance": "Continue descent four thousand, QNH one zero one three, Turkish 1453.",
+        "expectedReadback": "Turkish 1453, turn left heading three one zero, reduce speed to one eight zero knots, vectors for ILS runway three five left.",
+        "keyPhrases": [
+          [
+            "Turkish 1453",
+            "Turkish fourteen fifty-three"
+          ],
+          [
+            "turn left",
+            "left turn"
+          ],
+          [
+            "heading three one zero",
+            "heading 310"
+          ],
+          [
+            "reduce speed",
+            "reduce to",
+            "speed"
+          ],
+          [
+            "one eight zero",
+            "180",
+            "one eighty"
+          ],
+          [
+            "knots"
+          ],
+          [
+            "vectors",
+            "vectoring"
+          ],
+          [
+            "ILS"
+          ],
+          [
+            "runway three five left",
+            "three five left",
+            "35L"
+          ]
+        ],
+        "correctionTr": "Uçağı sola 310 heading'e döndürün, hızı 180 knot'a düşürmesini isteyin ve ILS runway 35L için vectoring yaptığınızı bildirin. Örnek: 'Turn left heading three one zero, reduce speed to one eight zero knots, vectors for ILS runway three five left.'",
+        "hintTr": "Şimdi pilotu ILS'e yönlendirin: heading, hız azaltma ve amaç.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "TURKISH 1453",
+        "frequency": "119.1",
+        "atcUtterance": "Left heading three one zero, reducing to one eight zero knots, Turkish 1453.",
+        "expectedReadback": "Turkish 1453, turn left heading two eight five, intercept localizer runway three five left, cleared ILS approach runway three five left, contact Istanbul Tower on one one eight decimal one.",
+        "keyPhrases": [
+          [
+            "Turkish 1453",
+            "Turkish fourteen fifty-three"
+          ],
+          [
+            "turn left",
+            "left turn"
+          ],
+          [
+            "heading two eight five",
+            "heading 285"
+          ],
+          [
+            "intercept localizer",
+            "intercept"
+          ],
+          [
+            "runway three five left",
+            "three five left",
+            "35L"
+          ],
+          [
+            "cleared ILS approach",
+            "cleared ILS",
+            "cleared for ILS"
+          ],
+          [
+            "contact"
+          ],
+          [
+            "Istanbul Tower",
+            "Tower"
+          ],
+          [
+            "one one eight decimal one",
+            "one one eight point one",
+            "118.1"
+          ]
+        ],
+        "correctionTr": "Son heading'i verin (285), localizer'ı kesmesini söyleyin, ILS yaklaşmasını onaylayın ve Kule frekansına geçirmek için 'contact Istanbul Tower on 118.1' deyin.",
+        "hintTr": "Final vectoring talimatı: heading, localizer intercept, clearance ve frekans değişikliği.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "conflict-resolution-two-departures-l4",
+    "role": "atc",
+    "level": "L4",
+    "title": "Conflict Resolution: Two Departures",
+    "title_tr": "Çakışma Çözümü: İki Kalkış",
+    "setup": "You are working Istanbul Tower. Two aircraft are ready for departure on intersecting runways. Turkish 1453 is holding at runway 35L, ready for immediate departure. Pegasus 752 has just called ready on runway 06, which intersects 35L. You must resolve the conflict and coordinate the departures safely.",
+    "setup_tr": "İstanbul Kule'de görev yapıyorsunuz. Kesişen runway'lerde iki uçak kalkışa hazır. Turkish 1453, 35L'de immediate kalkış için bekliyor. Pegasus 752 az önce 06 pistinde hazır olduğunu bildirdi; bu pist 35L ile kesişiyor. Çakışmayı çözmeli ve kalkışları güvenli şekilde koordine etmelisiniz.",
+    "estimated_minutes": 2,
+    "difficulty": 5,
+    "gauges": {
+      "alt": "Field elevation 163 ft",
+      "hdg": "350°",
+      "spd": "—",
+      "freq": "118.1"
+    },
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "PEGASUS 752",
+        "frequency": "118.1",
+        "atcUtterance": "Istanbul Tower, Pegasus 752 holding point runway 06, ready for departure.",
+        "expectedReadback": "Pegasus 752, hold position, traffic departing runway 35L will cross your departure path, standby.",
+        "keyPhrases": [
+          [
+            "Pegasus 752",
+            "752"
+          ],
+          [
+            "hold position",
+            "hold",
+            "hold short"
+          ],
+          [
+            "traffic",
+            "traffic departing"
+          ],
+          [
+            "35L",
+            "three five left"
+          ],
+          [
+            "cross",
+            "crossing",
+            "will cross"
+          ],
+          [
+            "standby",
+            "stand by"
+          ]
+        ],
+        "correctionTr": "Pegasus 752'ye hold position talimatı verin ve 35L'den kalkacak traffic'in yolunu keseceğini belirtin. 'Hold position, traffic departing 35L will cross your path, standby' gibi bir ifade kullanın.",
+        "hintTr": "Kesişen runway'lerde önce hangi uçağı gönderebileceğinizi düşünün ve diğerini bekletin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "TURKISH 1453",
+        "frequency": "118.1",
+        "atcUtterance": "Tower, Turkish 1453, we are ready for immediate departure, request clearance runway 35L.",
+        "expectedReadback": "Turkish 1453, cleared for takeoff runway 35L, traffic holding runway 06, expedite departure.",
+        "keyPhrases": [
+          [
+            "Turkish 1453",
+            "1453"
+          ],
+          [
+            "cleared for takeoff",
+            "cleared takeoff"
+          ],
+          [
+            "runway 35L",
+            "35L",
+            "three five left"
+          ],
+          [
+            "traffic",
+            "traffic holding"
+          ],
+          [
+            "runway 06",
+            "06",
+            "zero six"
+          ],
+          [
+            "expedite",
+            "expedite departure"
+          ]
+        ],
+        "correctionTr": "Turkish 1453'e takeoff clearance verin ve runway 06'da bekleyen traffic olduğunu belirterek expedite departure isteyin. 'Cleared for takeoff 35L, traffic holding 06, expedite departure' şeklinde ifade edin.",
+        "hintTr": "Immediate kalkışa hazır olan uçağı önce göndermek mantıklı. Diğer uçağa trafik bilgisi vermeyi unutmayın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "PEGASUS 752",
+        "frequency": "118.1",
+        "atcUtterance": "Tower, Pegasus 752, traffic in sight, still ready for departure.",
+        "expectedReadback": "Pegasus 752, traffic airborne, cleared for takeoff runway 06, wind 040 degrees 8 knots.",
+        "keyPhrases": [
+          [
+            "Pegasus 752",
+            "752"
+          ],
+          [
+            "traffic airborne",
+            "traffic is airborne",
+            "traffic departed"
+          ],
+          [
+            "cleared for takeoff",
+            "cleared takeoff"
+          ],
+          [
+            "runway 06",
+            "06",
+            "zero six"
+          ],
+          [
+            "wind",
+            "wind 040",
+            "040 degrees",
+            "8 knots"
+          ]
+        ],
+        "correctionTr": "Traffic artık airborne olduğuna göre Pegasus 752'ye takeoff clearance verebilirsiniz. 'Traffic airborne, cleared for takeoff runway 06, wind 040 degrees 8 knots' gibi söyleyin.",
+        "hintTr": "İlk uçak havalandıktan sonra ikinci uçağa clearance verebilirsiniz. Rüzgar bilgisini eklemeyi unutmayın.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "medical-emergency-priority-handling-l4",
+    "role": "atc",
+    "level": "L4",
+    "title": "Medical Emergency Priority Handling",
+    "title_tr": "Tıbbi Acil Durum Öncelik Yönetimi",
+    "setup": "You are Istanbul Approach Controller. Turkish 1453, a B737 inbound from Athens, declares a medical emergency and requests priority landing at IST.",
+    "setup_tr": "Istanbul Yaklaşma kontrolörüsünüz. Atina'dan gelen Turkish 1453 (B737), tıbbi emergency ilan ediyor ve IST'ye öncelikli iniş talep ediyor.",
+    "estimated_minutes": 2,
+    "difficulty": 5,
+    "gauges": {
+      "alt": "FL180",
+      "hdg": "310",
+      "spd": "280",
+      "freq": "119.1"
+    },
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "TURKISH 1453",
+        "frequency": "119.1",
+        "atcUtterance": "Istanbul Approach, Turkish 1453, we have a medical emergency on board, one passenger unconscious, request priority landing runway 35L.",
+        "expectedReadback": "Turkish 1453, Istanbul Approach, roger your emergency, squawk 7700, maintain flight level 180, expect vectors for ILS approach runway 35L, confirm souls on board and fuel endurance.",
+        "keyPhrases": [
+          [
+            "roger",
+            "copied",
+            "acknowledge",
+            "affirm"
+          ],
+          [
+            "emergency",
+            "mayday"
+          ],
+          [
+            "squawk 7700",
+            "7700"
+          ],
+          [
+            "maintain",
+            "flight level 180",
+            "FL180",
+            "one eight zero"
+          ],
+          [
+            "vectors",
+            "vector"
+          ],
+          [
+            "ILS",
+            "runway 35L",
+            "three five left"
+          ],
+          [
+            "souls on board",
+            "POB",
+            "persons on board"
+          ],
+          [
+            "fuel",
+            "endurance",
+            "fuel remaining"
+          ]
+        ],
+        "correctionTr": "Emergency'yi acknowledge edin, squawk 7700 verin, altitude talimatı (FL180 maintain), yaklaşma için vectoring belirtin (ILS 35L), ve souls on board ile fuel endurance sorun. Emergency handling'de her bilgi kritik.",
+        "hintTr": "Acil durumda metodlu olun: önce emergency'yi teyit, sonra squawk, sonra talimat, sonra bilgi isteyin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "TURKISH 1453",
+        "frequency": "119.1",
+        "atcUtterance": "Squawking 7700, maintaining flight level 180, 156 souls on board, fuel endurance 2 hours 15 minutes, Turkish 1453.",
+        "expectedReadback": "Turkish 1453, roger, turn left heading 280, descend to altitude 8000 feet, QNH 1013, medical assistance and fire services will be standing by.",
+        "keyPhrases": [
+          [
+            "roger",
+            "copied"
+          ],
+          [
+            "turn left",
+            "left turn"
+          ],
+          [
+            "heading 280",
+            "two eight zero"
+          ],
+          [
+            "descend",
+            "descent"
+          ],
+          [
+            "8000 feet",
+            "eight thousand",
+            "8000"
+          ],
+          [
+            "QNH 1013",
+            "one zero one three"
+          ],
+          [
+            "medical",
+            "assistance",
+            "ambulance"
+          ],
+          [
+            "fire services",
+            "rescue",
+            "emergency services"
+          ],
+          [
+            "standing by",
+            "stand by",
+            "ready"
+          ]
+        ],
+        "correctionTr": "Heading talimatı (left 280), descent clearance (8000 feet ile QNH), ve medical assistance + fire services'in hazır olduğunu bildirin. Emergency handling'de koordinasyon gösterin.",
+        "hintTr": "Pilot rahatlatılmalı: hem talimat net, hem de yerde hazırlık olduğunu bilin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "TURKISH 1453",
+        "frequency": "119.1",
+        "atcUtterance": "Left heading 280, descending to 8000 feet, QNH 1013, thank you for assistance, Turkish 1453.",
+        "expectedReadback": "Turkish 1453, contact Istanbul Tower on 118.7, good day.",
+        "keyPhrases": [
+          [
+            "contact",
+            "call"
+          ],
+          [
+            "Istanbul Tower",
+            "tower"
+          ],
+          [
+            "118.7",
+            "one one eight decimal seven",
+            "one one eight point seven"
+          ],
+          [
+            "good day",
+            "good afternoon"
+          ]
+        ],
+        "correctionTr": "Frekans değişikliği verin (Istanbul Tower 118.7) ve nazikçe bitirin. Emergency transfer'de Tower ile koordinasyonu sağladığınızı gösterin.",
+        "hintTr": "Tüm prosedürü tamamladınız, şimdi Tower'a güvenle devredin.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "cabin-pre-departure-safety-demo-briefing",
+    "role": "cabin",
+    "level": "B1",
+    "title": "Pre-Departure Safety Demonstration Briefing",
+    "title_tr": "Uçuş Öncesi Güvenlik Demosu Briefing",
+    "setup": "You are cabin crew preparing for departure. The Cabin Chief briefs you on today's safety demonstration responsibilities before boarding is complete.",
+    "setup_tr": "Kabin görevlisisiniz, kalkış hazırlığındasınız. Boarding bitmeden önce Kabin Amiri size bugünkü güvenlik demosu sorumluluklarını anlatıyor.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CABIN CHIEF",
+        "frequency": null,
+        "atcUtterance": "Good morning. You'll demonstrate the oxygen mask and life vest at door two left during the safety demo. Confirm your position, please.",
+        "expectedReadback": "Roger, I'll demonstrate oxygen mask and life vest at door two left.",
+        "keyPhrases": [
+          [
+            "oxygen mask",
+            "oxygen"
+          ],
+          [
+            "life vest",
+            "lifevest"
+          ],
+          [
+            "door two left",
+            "2L",
+            "door 2 left"
+          ]
+        ],
+        "correctionTr": "Kabin Amiri sizden pozisyonunuzu teyit etmenizi istedi. 'Oxygen mask ve life vest gösterimi door 2L'de yapacağım' şeklinde onaylayın.",
+        "hintTr": "Sadece hangi ekipmanı nerede göstereceğinizi tekrar edin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "CABIN CHIEF",
+        "frequency": null,
+        "atcUtterance": "Correct. Remember, wait for my signal before you start. If the PA system fails, we'll do manual demo. Any questions?",
+        "expectedReadback": "Understood, I'll wait for your signal. No questions.",
+        "keyPhrases": [
+          [
+            "wait",
+            "waiting"
+          ],
+          [
+            "signal",
+            "your signal"
+          ],
+          [
+            "no questions",
+            "no question",
+            "all clear"
+          ]
+        ],
+        "correctionTr": "Kabin Amiri sizden talimatı anladığınızı ve soru olup olmadığını söylemenizi bekliyor. 'Sinyalinizi bekleyeceğim, sorum yok' deyin.",
+        "hintTr": "Talimatı onaylayın ve soru olmadığını bildirin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "CABIN CHIEF",
+        "frequency": null,
+        "atcUtterance": "Good. Check your demo equipment now and report back if there's any problem. We depart in fifteen minutes.",
+        "expectedReadback": "Wilco, I'll check the demo equipment and report any problems.",
+        "keyPhrases": [
+          [
+            "wilco",
+            "will comply",
+            "roger"
+          ],
+          [
+            "check",
+            "checking"
+          ],
+          [
+            "demo equipment",
+            "equipment"
+          ],
+          [
+            "report",
+            "report back"
+          ]
+        ],
+        "correctionTr": "Kabin Amiri demo ekipmanını kontrol edip sorun varsa bildirmenizi istiyor. 'Wilco, ekipmanı kontrol edip sorun olursa bildireceğim' şeklinde yanıt verin.",
+        "hintTr": "Talimatı kabul edin ve ne yapacağınızı tekrarlayın.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "cabin-medical-emergency-coordination",
+    "role": "cabin",
+    "level": "B2",
+    "title": "Medical Emergency Coordination with Flight Deck",
+    "title_tr": "Kabin İçi Tıbbi Acil Durum Koordinasyonu",
+    "setup": "You are the cabin chief on a transatlantic flight. A passenger has collapsed in the rear galley and appears unconscious. You need to coordinate with the flight deck immediately.",
+    "setup_tr": "Transatlantik uçuşta Kabin Amiri'siniz. Arka galley'de bir yolcu bayıldı ve bilinçsiz görünüyor. Kokpit ile hemen koordinasyon yapmanız gerekiyor.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CABIN CHIEF",
+        "frequency": "INTERPHONE",
+        "atcUtterance": "Flight deck, cabin chief. We have a medical emergency in the rear cabin. Passenger unconscious, not responding. Requesting immediate assistance and doctor call.",
+        "expectedReadback": "Cabin chief, flight deck. Copy medical emergency, unconscious passenger. Will make PA for doctor immediately. What is passenger condition now?",
+        "keyPhrases": [
+          [
+            "copy",
+            "roger",
+            "understood",
+            "acknowledge"
+          ],
+          [
+            "medical emergency",
+            "emergency"
+          ],
+          [
+            "unconscious",
+            "not responding"
+          ],
+          [
+            "PA",
+            "call",
+            "announcement"
+          ],
+          [
+            "doctor",
+            "medical professional"
+          ],
+          [
+            "condition",
+            "status",
+            "situation"
+          ]
+        ],
+        "correctionTr": "Kokpit'e durumu onayladığınızı gösterin: 'copy medical emergency' veya 'understood'. PA yapacaklarını kabul edin ve yolcunun mevcut durumunu sorun.",
+        "hintTr": "Acil durumu teyit edin, doktor çağrısı yapılacağını belirtin ve güncel durum sorun.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "CAPTAIN",
+        "frequency": "INTERPHONE",
+        "atcUtterance": "Cabin chief, we have a doctor on board responding. Do you need medical kit and AED? Also advise if diversion required.",
+        "expectedReadback": "Yes captain, we need both medical kit and AED to seat 42A immediately. Stand by for diversion decision, doctor assessing now.",
+        "keyPhrases": [
+          [
+            "yes",
+            "affirmative",
+            "confirm"
+          ],
+          [
+            "medical kit",
+            "kit"
+          ],
+          [
+            "AED"
+          ],
+          [
+            "seat",
+            "42A",
+            "location"
+          ],
+          [
+            "immediately",
+            "urgent",
+            "ASAP"
+          ],
+          [
+            "stand by",
+            "standby",
+            "wait"
+          ],
+          [
+            "diversion",
+            "alternate"
+          ],
+          [
+            "doctor",
+            "assessing",
+            "assessment"
+          ]
+        ],
+        "correctionTr": "Tıbbi ekipman talebinizi açıkça belirtin: 'medical kit' ve 'AED' gerekli, koltuk numarası verin. Diversion kararı için doktorun değerlendirmesini beklediğinizi söyleyin.",
+        "hintTr": "İhtiyaç duyduğunuz ekipmanı, yerini ve diversion hakkında doktor değerlendirmesi beklediğinizi bildirin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "CABIN CHIEF",
+        "frequency": "INTERPHONE",
+        "atcUtterance": "Flight deck, cabin chief. Doctor advises passenger is stable now, conscious and responsive. No diversion necessary. Continue to destination. Will monitor closely.",
+        "expectedReadback": "Roger cabin chief, copy passenger stable and conscious. No diversion required, continuing to destination. Keep us informed of any changes.",
+        "keyPhrases": [
+          [
+            "roger",
+            "copy",
+            "understood"
+          ],
+          [
+            "passenger stable",
+            "stable"
+          ],
+          [
+            "conscious",
+            "responsive"
+          ],
+          [
+            "no diversion",
+            "continue",
+            "continuing"
+          ],
+          [
+            "destination"
+          ],
+          [
+            "keep informed",
+            "advise",
+            "update",
+            "monitor"
+          ]
+        ],
+        "correctionTr": "Durumu onaylayın: yolcu 'stable' ve 'conscious'. Diversion gerekli değil, hedefe devam. Değişiklik olursa bilgi istediğinizi ekleyin.",
+        "hintTr": "İyi haberi teyit edin, yolcunun durumu iyileşti ve uçuş normale dönüyor.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "cabin-evacuation-command-sequence-l4",
+    "role": "cabin",
+    "level": "L4",
+    "title": "Emergency Evacuation Command Coordination",
+    "title_tr": "Acil Tahliye Komut Koordinasyonu",
+    "setup": "You are a purser on Turkish 1453 at Istanbul Airport. The captain has detected smoke in the cargo hold after landing. He orders an immediate evacuation on the taxiway.",
+    "setup_tr": "Turkish 1453'te Kabin Amiri olarak İstanbul Havalimanı'ndasınız. Kaptan, iniş sonrası kargo bölmesinde duman tespit etti ve taksi yolunda acil tahliye emri verdi.",
+    "estimated_minutes": 2,
+    "difficulty": 5,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CAPTAIN",
+        "frequency": null,
+        "atcUtterance": "Cabin crew, this is the captain. Evacuate, evacuate, evacuate! Doors left side only.",
+        "expectedReadback": "Evacuate, evacuate, evacuate! Doors left side only, confirmed.",
+        "keyPhrases": [
+          [
+            "evacuate",
+            "evacuation"
+          ],
+          [
+            "left side",
+            "left doors",
+            "port side"
+          ],
+          [
+            "only",
+            "confirmed",
+            "wilco",
+            "understood"
+          ]
+        ],
+        "correctionTr": "Kaptan'ın acil tahliye emrini tekrarlamalısınız: 'Evacuate, evacuate, evacuate!' ve sadece sol taraf kapılarının kullanılacağını onaylayın.",
+        "hintTr": "Acil durumda komut tekrarı hayati önem taşıyor.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "SENIOR CABIN ATTENDANT",
+        "frequency": null,
+        "atcUtterance": "Purser, door 2L slide not deployed, jammed mechanism. What are your instructions?",
+        "expectedReadback": "Door 2L jammed, use doors 1L and 3L only. Redirect passengers aft and forward.",
+        "keyPhrases": [
+          [
+            "door 2L",
+            "2 left",
+            "two left"
+          ],
+          [
+            "jammed",
+            "not deployed",
+            "inoperative"
+          ],
+          [
+            "doors 1L",
+            "door one left",
+            "1 left"
+          ],
+          [
+            "3L",
+            "three left",
+            "door 3 left"
+          ],
+          [
+            "redirect",
+            "send",
+            "move passengers"
+          ]
+        ],
+        "correctionTr": "2L kapısının arızalı olduğunu kabul edin ve yolcuların 1L ve 3L kapılarına yönlendirilmesi talimatını verin.",
+        "hintTr": "Ekip üyelerine net alternatif rota bildirin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "CAPTAIN",
+        "frequency": null,
+        "atcUtterance": "Cabin, all passengers clear of aircraft? Confirm headcount and status.",
+        "expectedReadback": "Affirmative, all 187 passengers and 6 crew evacuated safely. No injuries reported.",
+        "keyPhrases": [
+          [
+            "affirmative",
+            "yes",
+            "confirmed",
+            "correct"
+          ],
+          [
+            "all passengers",
+            "everyone",
+            "187",
+            "all pax"
+          ],
+          [
+            "evacuated",
+            "clear",
+            "off aircraft"
+          ],
+          [
+            "safely",
+            "safe"
+          ],
+          [
+            "no injuries",
+            "no casualties",
+            "all safe"
+          ]
+        ],
+        "correctionTr": "Kaptan'a tüm yolcu ve ekip sayısını (187 yolcu, 6 ekip) onaylayın ve yaralanma olmadığını bildirin.",
+        "hintTr": "Sayı ve durum raporu acil protokolün son adımıdır.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "unruly-passenger-cabin-crew-coordination",
+    "role": "cabin",
+    "level": "B2",
+    "title": "Unruly Passenger Coordination",
+    "title_tr": "Disiplin Dışı Yolcu Koordinasyonu",
+    "setup": "You are a cabin crew member on Turkish 1453 cruising at FL370 to London. A passenger in 28C is intoxicated, shouting, and refusing to sit down. The cabin chief calls you to assist.",
+    "setup_tr": "Turkish 1453'te Londra'ya FL370'de cruise yapıyorsunuz. 28C'deki yolcu sarhoş, bağırıyor ve oturmayı reddediyor. Kabin Amiri sizi yardıma çağırıyor.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CABIN CHIEF",
+        "frequency": null,
+        "atcUtterance": "Crew at 28C, passenger is becoming aggressive and refuses to comply. I need you to secure surrounding passengers and standby to assist.",
+        "expectedReadback": "Roger, securing passengers around 28C and standing by to assist.",
+        "keyPhrases": [
+          [
+            "roger",
+            "wilco",
+            "copy",
+            "understood"
+          ],
+          [
+            "securing",
+            "moving",
+            "clear",
+            "relocate"
+          ],
+          [
+            "passengers",
+            "pax"
+          ],
+          [
+            "28C",
+            "twenty-eight charlie"
+          ],
+          [
+            "standing by",
+            "standby",
+            "ready to assist",
+            "ready"
+          ]
+        ],
+        "correctionTr": "Kabin Amiri'ne önce onay ver (roger/wilco), sonra etraftaki yolcuları güvenli hale getireceğini ve yardıma hazır olduğunu belirt. Koltuk numarasını tekrarla.",
+        "hintTr": "Önce anladığını belirt, sonra yapacağın eylemi açıkla.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "CABIN CHIEF",
+        "frequency": null,
+        "atcUtterance": "Notify the captain immediately. Tell him we have an unruly passenger, possible restraint required, and request his presence in the cabin.",
+        "expectedReadback": "Wilco, notifying captain of unruly passenger, possible restraint, requesting his presence in cabin.",
+        "keyPhrases": [
+          [
+            "wilco",
+            "roger",
+            "copy"
+          ],
+          [
+            "notifying",
+            "informing",
+            "advising",
+            "contacting"
+          ],
+          [
+            "captain",
+            "commander"
+          ],
+          [
+            "unruly passenger",
+            "disruptive passenger",
+            "unruly pax"
+          ],
+          [
+            "restraint",
+            "restrain"
+          ],
+          [
+            "requesting",
+            "request"
+          ],
+          [
+            "presence",
+            "come",
+            "attend"
+          ]
+        ],
+        "correctionTr": "Kaptan'ı bilgilendireceğini onayla. Unruly passenger durumunu, olası restraint ihtiyacını ve kabin'e gelmesini istediğini aktar.",
+        "hintTr": "Kaptan'a durumu tam ve net bildir.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "CAPTAIN",
+        "frequency": null,
+        "atcUtterance": "Cabin crew, captain here. Confirm passenger is restrained and no immediate threat to flight safety. I will file a report and notify authorities at destination.",
+        "expectedReadback": "Affirmative captain, passenger restrained, no immediate threat to flight safety, thank you.",
+        "keyPhrases": [
+          [
+            "affirmative",
+            "affirm",
+            "confirmed",
+            "roger",
+            "correct"
+          ],
+          [
+            "captain"
+          ],
+          [
+            "passenger restrained",
+            "restrained",
+            "secured"
+          ],
+          [
+            "no threat",
+            "no immediate threat",
+            "safe",
+            "flight safety"
+          ],
+          [
+            "thank you",
+            "copy"
+          ]
+        ],
+        "correctionTr": "Kaptan'a yolcunun restraint edildiğini ve uçuş güvenliğine tehdit olmadığını onayla. Teşekkür et veya onay ver.",
+        "hintTr": "Durumu Kaptan'a net bir şekilde onayla.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "mel-item-dispatch-decision-b1",
+    "role": "technician",
+    "level": "B1",
+    "title": "MEL Item Dispatch Decision",
+    "title_tr": "MEL Maddesi Dispatch Kararı",
+    "setup": "You are the line technician at Istanbul airport. The captain reports a minor hydraulic leak during walk-around. You must consult the MEL and coordinate with maintenance control.",
+    "setup_tr": "Istanbul havalimanında hat teknisyenisiniz. Kaptan walk-around sırasında küçük bir hidrolik kaçak bildirdi. MEL'e bakıp bakım kontrol ile koordinasyon yapmalısınız.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CAPTAIN",
+        "frequency": "Ground Comm",
+        "atcUtterance": "Good morning, we found a small hydraulic leak on the left main gear. Can you check if this is MEL acceptable for dispatch?",
+        "expectedReadback": "Good morning Captain, I will check the MEL and contact maintenance control, stand by please.",
+        "keyPhrases": [
+          [
+            "check",
+            "consult",
+            "review"
+          ],
+          [
+            "MEL"
+          ],
+          [
+            "maintenance control",
+            "control",
+            "maintenance"
+          ],
+          [
+            "stand by",
+            "standby",
+            "wait"
+          ]
+        ],
+        "correctionTr": "Kaptan'a MEL'e bakacağınızı ve maintenance control ile iletişime geçeceğinizi bildirin. 'Stand by' deyin.",
+        "hintTr": "Kibarca onaylayın ve beklemesini isteyin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "MAINTENANCE CONTROL",
+        "frequency": "Maintenance Freq",
+        "atcUtterance": "Go ahead, what is the issue?",
+        "expectedReadback": "We have a hydraulic leak on the left main gear, aircraft Tango Charlie 1453, requesting MEL guidance for dispatch.",
+        "keyPhrases": [
+          [
+            "hydraulic leak",
+            "hydraulic",
+            "leak"
+          ],
+          [
+            "left main gear",
+            "main gear",
+            "gear"
+          ],
+          [
+            "MEL",
+            "guidance"
+          ],
+          [
+            "dispatch"
+          ]
+        ],
+        "correctionTr": "Sorunu açıklayın: hidrolik kaçak, hangi uçak, MEL dispatch onayı istiyorsunuz.",
+        "hintTr": "Durum raporunu net verin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "MAINTENANCE CONTROL",
+        "frequency": "Maintenance Freq",
+        "atcUtterance": "Roger, that leak is acceptable under MEL item 29-21. You may dispatch with conditions: observe leak rate, no increase permitted. Confirm understood.",
+        "expectedReadback": "Understood, MEL item 29-21 acceptable, observe leak rate, no increase. We will dispatch. Thank you.",
+        "keyPhrases": [
+          [
+            "understood",
+            "roger",
+            "copied"
+          ],
+          [
+            "MEL",
+            "29-21",
+            "item"
+          ],
+          [
+            "observe",
+            "monitor"
+          ],
+          [
+            "leak rate",
+            "leak"
+          ],
+          [
+            "no increase"
+          ],
+          [
+            "dispatch"
+          ]
+        ],
+        "correctionTr": "MEL maddesini ve koşulları tekrarlayın: kaçak hızı izlenecek, artış olmayacak, dispatch yapılacak.",
+        "hintTr": "Readback ile onaylayın ve teşekkür edin.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "aog-hydraulic-snag-report-ops",
+    "role": "technician",
+    "level": "B2",
+    "title": "AOG Hydraulic Snag Report to OCC",
+    "title_tr": "AOG Hidrolik Arıza Raporu OCC'ye",
+    "setup": "You are a line technician at Istanbul Airport. During morning walk-around inspection of TC-JYA (A320), you discovered hydraulic fluid leaking from the left main landing gear. The aircraft is AOG. You must report the snag to Operations Control Centre and provide an estimated rectification time.",
+    "setup_tr": "İstanbul Havalimanı'nda hat teknisyenisiniz. TC-JYA (A320) sabah walk-around sırasında sol ana iniş takımında hidrolik sıvısı sızıntısı tespit ettiniz. Uçak AOG durumunda. OCC'ye snag raporlamanız ve tahmini tamir süresini bildirmeniz gerekiyor.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "OPERATIONS CONTROL",
+        "frequency": "131.8",
+        "atcUtterance": "Good morning, TC-JYA has been reported AOG. What is the nature of the defect?",
+        "expectedReadback": "Ops Control, TC-JYA has hydraulic fluid leak on left main landing gear, discovered during walk-around inspection",
+        "keyPhrases": [
+          [
+            "hydraulic",
+            "hydraulics",
+            "fluid"
+          ],
+          [
+            "leak",
+            "leaking",
+            "leakage"
+          ],
+          [
+            "left main",
+            "left gear",
+            "left landing gear"
+          ],
+          [
+            "walk-around",
+            "walkaround",
+            "inspection"
+          ]
+        ],
+        "correctionTr": "OCC'ye defektin ne olduğunu açıkça bildirin: 'hydraulic fluid leak', 'left main landing gear', ve 'walk-around inspection' ifadelerini kullanın.",
+        "hintTr": "Arızayı net tanımlayın - hangi sistem, hangi konum, nasıl keşfedildi.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "OPERATIONS CONTROL",
+        "frequency": "131.8",
+        "atcUtterance": "Copy that, hydraulic leak on left main gear. Can you confirm MEL applicability and estimated time to rectify?",
+        "expectedReadback": "Negative, not MEL deferrable. Require hydraulic component replacement. Estimated rectification time three hours, need spare part from warehouse",
+        "keyPhrases": [
+          [
+            "negative",
+            "no",
+            "not MEL"
+          ],
+          [
+            "not deferrable",
+            "cannot defer",
+            "not MEL deferrable"
+          ],
+          [
+            "replacement",
+            "replace",
+            "component replacement"
+          ],
+          [
+            "three hours",
+            "3 hours",
+            "three-hour"
+          ],
+          [
+            "spare part",
+            "spare",
+            "warehouse",
+            "part"
+          ]
+        ],
+        "correctionTr": "MEL uygulanabilirliğini ('not MEL deferrable') ve tamir süresini ('three hours', 'spare part from warehouse') net belirtin.",
+        "hintTr": "MEL durumunu, gerekli işlemi ve tahmini süreyi sırayla bildirin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "OPERATIONS CONTROL",
+        "frequency": "131.8",
+        "atcUtterance": "Roger, three-hour rectification with warehouse spare required. Will you need any additional support or tooling for the repair?",
+        "expectedReadback": "Affirmative, request hydraulic ground cart and one additional technician for system pressurization test after repair",
+        "keyPhrases": [
+          [
+            "affirmative",
+            "affirm",
+            "yes",
+            "positive"
+          ],
+          [
+            "hydraulic ground cart",
+            "ground cart",
+            "cart"
+          ],
+          [
+            "additional technician",
+            "one technician",
+            "another technician",
+            "extra technician"
+          ],
+          [
+            "pressurization test",
+            "system test",
+            "pressure test",
+            "test"
+          ]
+        ],
+        "correctionTr": "İhtiyacınız olan ekipmanı ('hydraulic ground cart') ve destek personeli ('additional technician', 'pressurization test') açıkça talep edin.",
+        "hintTr": "Test için gerekli ekipman ve ek personel ihtiyacını bildirin.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "tech-log-snag-entry-hydraulic-leak",
+    "role": "technician",
+    "level": "B2",
+    "title": "Snag Entry: Hydraulic Leak Discovery",
+    "title_tr": "Snag Kaydı: Hidrolik Kaçak Tespiti",
+    "setup": "During a routine walk-around inspection of Turkish 1453 (B737-800) at gate 23, you discovered hydraulic fluid pooling under the left main landing gear. You must report this snag to the maintenance supervisor and document it in the aircraft technical log.",
+    "setup_tr": "Gate 23'te park halindeki Turkish 1453 (B737-800) uçağının rutin walk-around kontrolü sırasında sol ana iniş takımı altında hidrolik sıvısı birikintisi fark ettiniz. Bu snag'i bakım süpervisörüne bildirip aircraft technical log'a kaydetmeniz gerekiyor.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "MAINTENANCE SUPERVISOR",
+        "frequency": null,
+        "atcUtterance": "Go ahead with your snag report for Turkish 1453.",
+        "expectedReadback": "Turkish 1453, hydraulic fluid leak observed under left main landing gear during walk-around, requesting tech log entry and further inspection.",
+        "keyPhrases": [
+          [
+            "hydraulic",
+            "fluid",
+            "leak"
+          ],
+          [
+            "left main",
+            "landing gear",
+            "left gear"
+          ],
+          [
+            "tech log",
+            "technical log",
+            "log entry"
+          ],
+          [
+            "inspection",
+            "further inspection",
+            "check"
+          ]
+        ],
+        "correctionTr": "Snag bildiriminde şu unsurlar bulunmalı: uçak call sign (Turkish 1453), sorunun ne olduğu (hydraulic leak), nerede (left main landing gear), ne istediğiniz (tech log entry ve inspection). Örnek: 'Turkish 1453, left main landing gear altında hydraulic fluid leak gözlemledim, tech log entry ve inspection talep ediyorum.'",
+        "hintTr": "Sorunun yerini ve ne gördüğünüzü net belirtin, sonra ne yapılması gerektiğini söyleyin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "MAINTENANCE SUPERVISOR",
+        "frequency": null,
+        "atcUtterance": "Copy that. Can you estimate the quantity of fluid and confirm if the hydraulic reservoir level is still within limits?",
+        "expectedReadback": "Approximately two litres of fluid on the ground, I will check the reservoir level from the cockpit panel now and advise.",
+        "keyPhrases": [
+          [
+            "two litre",
+            "2 litre",
+            "approximately two"
+          ],
+          [
+            "check",
+            "checking",
+            "will check"
+          ],
+          [
+            "reservoir",
+            "level"
+          ],
+          [
+            "cockpit",
+            "panel"
+          ],
+          [
+            "advise",
+            "report back",
+            "confirm"
+          ]
+        ],
+        "correctionTr": "Süpervisör sıvı miktarını ve reservoir seviyesini soruyor. Yaklaşık miktarı tahmin edin (örneğin 'approximately two litres') ve reservoir level'ı cockpit panel'den kontrol edeceğinizi belirtin. 'Advise' veya 'report back' diyerek geri bildirim vereceğinizi söyleyin.",
+        "hintTr": "Gördüğünüz sıvı miktarını tahmin edin, sonra reservoir seviyesini nereden kontrol edeceğinizi açıklayın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "MAINTENANCE SUPERVISOR",
+        "frequency": null,
+        "atcUtterance": "Understood. After you check the reservoir, enter the snag in the tech log under ATA chapter 29, and I will dispatch a hydraulic specialist to the aircraft. Do you copy?",
+        "expectedReadback": "Wilco, I will check reservoir level, enter snag in tech log ATA 29, awaiting hydraulic specialist at gate 23.",
+        "keyPhrases": [
+          [
+            "wilco",
+            "roger",
+            "copy"
+          ],
+          [
+            "check",
+            "reservoir"
+          ],
+          [
+            "enter",
+            "snag",
+            "tech log"
+          ],
+          [
+            "ATA 29",
+            "ATA chapter 29"
+          ],
+          [
+            "hydraulic specialist",
+            "specialist"
+          ],
+          [
+            "gate 23",
+            "awaiting"
+          ]
+        ],
+        "correctionTr": "Süpervisör size üç görev veriyor: reservoir kontrol et, snag'i tech log'a ATA 29 altına kaydet, hydraulic specialist gelecek. Readback şöyle olmalı: 'Wilco, reservoir level kontrol edeceğim, snag'i tech log ATA 29'a kaydediyorum, gate 23'te hydraulic specialist bekliyorum.' Tüm talimatları onaylayın.",
+        "hintTr": "Verilen tüm talimatları sırayla onaylayın: kontrol, kayıt, specialist bekleme.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "post-flight-inspection-hydraulic-leak",
+    "role": "technician",
+    "level": "B1",
+    "title": "Post-Flight Inspection Report",
+    "title_tr": "Uçuş Sonrası İnceleme Raporu",
+    "setup": "You are a line technician completing the post-flight walk-around. You discovered a hydraulic fluid leak under the left wing and must report it to your maintenance supervisor.",
+    "setup_tr": "Hat teknisyeni olarak uçuş sonrası walk-around yapıyorsunuz. Sol kanat altında hidrolik sıvısı sızıntısı tespit ettiniz ve Maintenance Supervisor'ünüze bildirmeniz gerekiyor.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "MAINTENANCE SUPERVISOR",
+        "frequency": null,
+        "atcUtterance": "Go ahead with your post-flight report.",
+        "expectedReadback": "Hydraulic leak found under left wing, approximately two litres on ground, system A",
+        "keyPhrases": [
+          [
+            "hydraulic",
+            "leak",
+            "fluid"
+          ],
+          [
+            "left wing",
+            "port wing"
+          ],
+          [
+            "system a",
+            "system alpha",
+            "hydraulic a"
+          ]
+        ],
+        "correctionTr": "Supervisor'e önce hydraulic leak olduğunu, nerede olduğunu (left wing altı) ve hangi sistem olduğunu (System A) söyle.",
+        "hintTr": "Bulguyu net ve kısa bildir: ne, nerede, hangi sistem.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "MAINTENANCE SUPERVISOR",
+        "frequency": null,
+        "atcUtterance": "Copy that. Can you confirm if the reservoir level is below minimum?",
+        "expectedReadback": "Checking now… Affirmative, reservoir is below minimum, red line visible",
+        "keyPhrases": [
+          [
+            "affirmative",
+            "yes",
+            "confirmed",
+            "correct"
+          ],
+          [
+            "below minimum",
+            "under minimum",
+            "low"
+          ],
+          [
+            "red line",
+            "minimum mark"
+          ]
+        ],
+        "correctionTr": "Supervisor rezervuar seviyesinin minimum altında olup olmadığını soruyor. 'Affirmative' ya da 'Yes' ile onayla, ardından 'below minimum' ve 'red line visible' de.",
+        "hintTr": "Önce onay ver, sonra gördüğün durumu tanımla.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "MAINTENANCE SUPERVISOR",
+        "frequency": null,
+        "atcUtterance": "Roger. Tag the aircraft as AOG, open a snag in the tech log, and notify dispatch. We'll send another technician to assist.",
+        "expectedReadback": "Wilco, tagging aircraft AOG, opening snag, and notifying dispatch",
+        "keyPhrases": [
+          [
+            "wilco",
+            "will comply",
+            "roger"
+          ],
+          [
+            "aog",
+            "aircraft on ground"
+          ],
+          [
+            "snag",
+            "defect",
+            "tech log"
+          ],
+          [
+            "dispatch",
+            "operations",
+            "notify"
+          ]
+        ],
+        "correctionTr": "Supervisor üç talimat verdi: uçağı AOG olarak etiketle, tech log'a snag gir, dispatch'e bildir. 'Wilco' diyerek tümünü kabul et ve kısaca tekrarla.",
+        "hintTr": "Talimatları kısa ve net readback yap.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "pushback-coordination-with-cockpit-b1",
+    "role": "ground",
+    "level": "B1",
+    "title": "Pushback Coordination with Cockpit",
+    "title_tr": "Kokpit ile Pushback Koordinasyonu",
+    "setup": "You are a ground crew member at Istanbul Airport. Turkish 1453 is ready for pushback from Gate 23. You need to coordinate with the captain before starting the pushback procedure.",
+    "setup_tr": "İstanbul Havalimanı'nda yer elemanısınız. Turkish 1453, 23 numaralı gate'ten pushback için hazır. Pushback prosedürüne başlamadan önce Kaptan ile koordinasyon yapmanız gerekiyor.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CAPTAIN",
+        "frequency": "129.8",
+        "atcUtterance": "Ground crew, Turkish 1453, ready for pushback. Confirm brakes set and all doors closed.",
+        "expectedReadback": "Turkish 1453, brakes set, all doors closed, ready to commence pushback.",
+        "keyPhrases": [
+          [
+            "brakes set",
+            "brakes are set",
+            "parking brake set"
+          ],
+          [
+            "doors closed",
+            "all doors closed",
+            "doors secure"
+          ],
+          [
+            "ready",
+            "ready to commence",
+            "ready for pushback"
+          ]
+        ],
+        "correctionTr": "Kaptan'a brake'lerin set olduğunu, tüm kapıların kapalı olduğunu ve pushback'e hazır olduğunuzu onaylamanız gerek.",
+        "hintTr": "Standart prosedür: brake durumu, kapı durumu, hazırlık.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "CAPTAIN",
+        "frequency": "129.8",
+        "atcUtterance": "Roger, cleared to push. Advise when tug is connected and ready to push back.",
+        "expectedReadback": "Cleared to push, will advise when tug connected.",
+        "keyPhrases": [
+          [
+            "cleared to push",
+            "cleared for push",
+            "roger cleared"
+          ],
+          [
+            "advise",
+            "will advise",
+            "will inform",
+            "will call"
+          ],
+          [
+            "tug connected",
+            "when connected",
+            "tug is connected"
+          ]
+        ],
+        "correctionTr": "Pushback clearance'ı onaylayın ve tug bağlandığında haber vereceğinizi bildirin.",
+        "hintTr": "Kısa ve net: clearance onayı + ne zaman bilgi vereceğiniz.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "CAPTAIN",
+        "frequency": "129.8",
+        "atcUtterance": "Standing by. Confirm direction of push, facing north or south?",
+        "expectedReadback": "Pushback direction facing north, push tail to the south.",
+        "keyPhrases": [
+          [
+            "facing north",
+            "nose north",
+            "north direction"
+          ],
+          [
+            "tail south",
+            "tail to south",
+            "push tail south",
+            "pushing south"
+          ]
+        ],
+        "correctionTr": "Pushback yönünü net belirtin: uçak hangi tarafa bakacak (facing) ve kuyruk hangi yöne gidecek (tail to).",
+        "hintTr": "Yön: nose/facing ve tail direction ayrı ayrı belirtilir.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "marshalling-aircraft-to-gate-b1",
+    "role": "ground",
+    "level": "B1",
+    "title": "Marshalling Aircraft to Gate",
+    "title_tr": "Uçağı Kapıya Marshalling İle Yönlendirme",
+    "setup": "You are a marshaller at Istanbul Airport. Turkish Airlines flight TK1923, an A320, is taxiing toward Gate 12. You will guide the aircraft to park safely using standard hand signals and radio communication.",
+    "setup_tr": "İstanbul Havalimanı'nda marshaller olarak görev yapıyorsunuz. Turkish Airlines TK1923 sefer sayılı A320 uçağı 12 numaralı kapıya doğru taksi yapıyor. Standart el işaretleri ve telsiz iletişimi kullanarak uçağı güvenli şekilde park ettireceksiniz.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "TK1923 PILOT",
+        "frequency": "129.6",
+        "atcUtterance": "Ground, Turkish 1923, approaching Gate 12, request marshalling.",
+        "expectedReadback": "Turkish 1923, marshaller ready, continue taxi, follow my signals.",
+        "keyPhrases": [
+          [
+            "marshaller ready",
+            "ready"
+          ],
+          [
+            "continue taxi",
+            "continue",
+            "taxi"
+          ],
+          [
+            "follow",
+            "signals",
+            "my signals"
+          ]
+        ],
+        "correctionTr": "Pilot'a marshaller'ın hazır olduğunu ve taksi'ye devam edip işaretlerini takip etmesi gerektiğini söyleyin. 'Marshaller ready, continue taxi, follow my signals' deyin.",
+        "hintTr": "Pilot'a hazır olduğunuzu bildirin ve işaretlerinizi takip etmesini isteyin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "TK1923 PILOT",
+        "frequency": "129.6",
+        "atcUtterance": "Continuing taxi, following your signals, Turkish 1923.",
+        "expectedReadback": "Turkish 1923, roger, slow down, ten meters to stop.",
+        "keyPhrases": [
+          [
+            "roger",
+            "copied",
+            "affirm"
+          ],
+          [
+            "slow down",
+            "reduce speed"
+          ],
+          [
+            "ten meters",
+            "10 meters",
+            "ten metres"
+          ],
+          [
+            "stop",
+            "stopping position"
+          ]
+        ],
+        "correctionTr": "Uçağa yavaşlamasını ve duruş noktasına 10 metre kaldığını bildirin. 'Roger, slow down, ten meters to stop' deyin.",
+        "hintTr": "Uçak yaklaşıyor, yavaşlatıp mesafeyi bildirin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "TK1923 PILOT",
+        "frequency": "129.6",
+        "atcUtterance": "Slowing down, Turkish 1923.",
+        "expectedReadback": "Turkish 1923, stop, chocks in place, shutdown engines.",
+        "keyPhrases": [
+          [
+            "stop"
+          ],
+          [
+            "chocks",
+            "chocks in place",
+            "chocked"
+          ],
+          [
+            "shutdown",
+            "shut down",
+            "engines"
+          ]
+        ],
+        "correctionTr": "Uçağa durmasını, takozların yerinde olduğunu ve motorları kapatmasını söyleyin. 'Stop, chocks in place, shutdown engines' deyin.",
+        "hintTr": "Uçak durdu, şimdi park prosedürünü tamamlayın.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "refueling-supervision-quantity-discrepancy",
+    "role": "ground",
+    "level": "B2",
+    "title": "Refueling Quantity Discrepancy",
+    "title_tr": "Yakıt İkmali Miktar Uyumsuzluğu",
+    "setup": "You are supervising refueling operations for Turkish 1453 at IST. The refueling operator reports a discrepancy between the requested fuel load and what can be delivered.",
+    "setup_tr": "IST'de Turkish 1453 için refueling süpervizörlüğü yapıyorsunuz. Refueling operatörü, talep edilen yakıt miktarı ile verilebilecek miktar arasında uyumsuzluk bildiriyor.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "REFUELING OPERATOR",
+        "frequency": "131.7",
+        "atcUtterance": "Ground supervisor, refueling operator. We have a problem with Turkish 1453. They requested 18,500 kilos but our bowser only has 15,000 kilos remaining. Advise.",
+        "expectedReadback": "Refueling operator, copied. Stand by while I coordinate with operations for Turkish 1453.",
+        "keyPhrases": [
+          [
+            "copied",
+            "roger",
+            "received"
+          ],
+          [
+            "stand by",
+            "standby",
+            "wait"
+          ],
+          [
+            "coordinate",
+            "check",
+            "contact"
+          ],
+          [
+            "operations",
+            "ops",
+            "dispatch"
+          ]
+        ],
+        "correctionTr": "Operatörün mesajını anladığınızı onaylayın ve operations ile koordinasyon yapacağınızı bildirin. 'Copied' veya 'roger' ile başlayıp 'stand by' kullanabilirsiniz.",
+        "hintTr": "Önce durumu kabul edin, sonra ne yapacağınızı net söyleyin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "OPERATIONS",
+        "frequency": "131.7",
+        "atcUtterance": "Ground supervisor, ops. We can accept 15,000 kilos for Turkish 1453. Flight plan will be adjusted. Confirm you will supervise partial refueling.",
+        "expectedReadback": "Operations, affirm. I will supervise 15,000 kilos refueling for Turkish 1453 and ensure bowser is disconnected safely.",
+        "keyPhrases": [
+          [
+            "affirm",
+            "affirmative",
+            "confirmed",
+            "roger"
+          ],
+          [
+            "supervise",
+            "monitor",
+            "oversee"
+          ],
+          [
+            "15,000",
+            "fifteen thousand",
+            "15000"
+          ],
+          [
+            "refueling",
+            "fueling"
+          ],
+          [
+            "disconnected",
+            "disconnect",
+            "safe",
+            "safely"
+          ]
+        ],
+        "correctionTr": "Operations'a onay verin: 15,000 kilo refueling'i süpervize edeceğinizi ve güvenli şekilde tamamlanacağını bildirin. 'Affirm' veya 'confirmed' kullanın.",
+        "hintTr": "Görev sorumluluğunu net kabul edin ve güvenlik vurgusunu unutmayın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "REFUELING OPERATOR",
+        "frequency": "131.7",
+        "atcUtterance": "Ground supervisor, refueling complete. 15,000 kilos delivered. Bowser disconnected, all caps secured. Turkish 1453 ready for departure preparation.",
+        "expectedReadback": "Refueling operator, thank you. 15,000 kilos confirmed. I will inform operations that Turkish 1453 is clear for departure preparation.",
+        "keyPhrases": [
+          [
+            "thank you",
+            "thanks",
+            "roger"
+          ],
+          [
+            "15,000",
+            "fifteen thousand",
+            "15000"
+          ],
+          [
+            "confirmed",
+            "confirm",
+            "received"
+          ],
+          [
+            "inform",
+            "notify",
+            "advise",
+            "contact"
+          ],
+          [
+            "operations",
+            "ops"
+          ],
+          [
+            "clear",
+            "ready"
+          ],
+          [
+            "departure preparation",
+            "departure prep",
+            "pushback"
+          ]
+        ],
+        "correctionTr": "Operatörün tamamlama raporunu kabul edin, yakıt miktarını onaylayın ve operations'ı bilgilendireceğinizi söyleyin. 'Thank you' ile nezaket gösterin.",
+        "hintTr": "Süpervizör olarak döngüyü tamamlayın: miktar onayı + operations'a haber verme.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "deicing-fluid-request-hot-time",
+    "role": "ground",
+    "level": "B2",
+    "title": "De-icing Fluid Request and HOT Time",
+    "title_tr": "De-icing Sıvısı Talebi ve HOT Süresi",
+    "setup": "You are a ground operations coordinator at Istanbul Airport during snowy conditions. The ramp supervisor asks you about de-icing requirements for Turkish 1453 departing to Frankfurt.",
+    "setup_tr": "İstanbul Havalimanı'nda kar yağışı sırasında yer operasyon koordinatörüsünüz. Ramp süpervisörü, Frankfurt'a gidecek olan Turkish 1453 için de-icing gereksinimleri hakkında bilgi istiyor.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "RAMP SUPERVISOR",
+        "frequency": "129.8",
+        "atcUtterance": "Ground Ops, Ramp. Turkish 1453 heavy requesting de-icing. What type and quantity do you recommend for these conditions?",
+        "expectedReadback": "Ramp, Ground Ops. Recommend Type Four fluid, fifty liters per wing. Holdover time approximately forty-five minutes in current precipitation.",
+        "keyPhrases": [
+          [
+            "type four",
+            "type 4",
+            "type IV"
+          ],
+          [
+            "fifty liters",
+            "50 liters",
+            "fifty litres"
+          ],
+          [
+            "holdover time",
+            "HOT"
+          ],
+          [
+            "forty-five minutes",
+            "45 minutes",
+            "four five minutes"
+          ]
+        ],
+        "correctionTr": "Type Four fluid (donma önleyici sıvı tipi), her kanada 50 litre ve HOT time (koruma süresi) yaklaşık 45 dakika olduğunu belirtmelisiniz. Mevcut yağış koşullarını da ekleyin.",
+        "hintTr": "De-icing için sıvı tipi, miktar ve holdover time bilgilerini net bir şekilde verin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "RAMP SUPERVISOR",
+        "frequency": "129.8",
+        "atcUtterance": "Ground Ops, copied. Confirm you will coordinate de-icing pad availability and update Turkish 1453 on completion time?",
+        "expectedReadback": "Affirm. Will coordinate pad two availability and advise Turkish 1453 estimated completion in one-zero minutes.",
+        "keyPhrases": [
+          [
+            "affirm",
+            "affirmative",
+            "confirm",
+            "roger"
+          ],
+          [
+            "coordinate",
+            "check",
+            "arrange"
+          ],
+          [
+            "pad two",
+            "pad 2",
+            "de-icing pad two"
+          ],
+          [
+            "one-zero minutes",
+            "10 minutes",
+            "ten minutes"
+          ]
+        ],
+        "correctionTr": "Onay verip (affirm), pad 2'nin müsaitliğini koordine edeceğinizi ve Turkish 1453'e tahmini tamamlanma süresini (yaklaşık 10 dakika) bildireceğinizi söylemelisiniz.",
+        "hintTr": "Onaylayın ve ne yapacağınızı net bir şekilde ifade edin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "RAMP SUPERVISOR",
+        "frequency": "129.8",
+        "atcUtterance": "Wilco. Also advise the crew to begin their holdover time from de-icing completion, not from pushback.",
+        "expectedReadback": "Copied. Will inform Turkish 1453 crew to start holdover time from de-icing completion. Ground Ops standing by.",
+        "keyPhrases": [
+          [
+            "copied",
+            "copy",
+            "roger",
+            "wilco"
+          ],
+          [
+            "inform",
+            "advise",
+            "notify"
+          ],
+          [
+            "Turkish 1453",
+            "the crew"
+          ],
+          [
+            "start holdover time",
+            "begin HOT",
+            "commence holdover"
+          ],
+          [
+            "de-icing completion",
+            "completion of de-icing"
+          ]
+        ],
+        "correctionTr": "Mesajı aldığınızı (copied/wilco) ve mürettebata HOT time'ın de-icing tamamlandıktan sonra başlayacağını bildireceğinizi söylemelisiniz. Pushback değil, de-icing bitiminden itibaren.",
+        "hintTr": "Kritik bilgiyi doğru anladığınızı gösterin ve mürettebata aktaracağınızı belirtin.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "baggage-loading-coordination-b1",
+    "role": "ground",
+    "level": "B1",
+    "title": "Baggage Loading Coordination",
+    "title_tr": "Bagaj Yükleme Koordinasyonu",
+    "setup": "You are a ramp agent at Istanbul Airport. Flight TK1453 to London is boarding. The load supervisor calls you on frequency about a baggage compartment issue.",
+    "setup_tr": "İstanbul Havalimanı'nda ramp ajanısınız. Londra'ya gidecek TK1453 boarding yapıyor. Load süpervisör bagaj bölmesiyle ilgili sizi frekansta arıyor.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "LOAD SUPERVISOR",
+        "frequency": "131.7",
+        "atcUtterance": "Ramp, Load. We have fifteen additional bags for TK1453. Can you confirm aft cargo compartment has space available?",
+        "expectedReadback": "Load, Ramp. Stand by, checking aft compartment capacity for fifteen bags.",
+        "keyPhrases": [
+          [
+            "stand by",
+            "standby",
+            "wait"
+          ],
+          [
+            "checking",
+            "check",
+            "verifying"
+          ],
+          [
+            "aft compartment",
+            "aft cargo",
+            "rear compartment"
+          ],
+          [
+            "fifteen bags",
+            "15 bags",
+            "one five bags"
+          ]
+        ],
+        "correctionTr": "Load süpervisörüne 'stand by' diyerek 15 bagaj için aft compartment kapasitesini kontrol edeceğinizi bildirin.",
+        "hintTr": "Önce beklemesini isteyin, sonra neyi kontrol edeceğinizi söyleyin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "LOAD SUPERVISOR",
+        "frequency": "131.7",
+        "atcUtterance": "Ramp, roger. Also, we need to offload two pieces from forward compartment due to weight and balance. Confirm when ready.",
+        "expectedReadback": "Load, wilco. We'll offload two bags from forward compartment and advise when complete.",
+        "keyPhrases": [
+          [
+            "wilco",
+            "will comply",
+            "roger"
+          ],
+          [
+            "offload",
+            "remove",
+            "unload"
+          ],
+          [
+            "two bags",
+            "two pieces",
+            "2 bags"
+          ],
+          [
+            "forward compartment",
+            "forward cargo",
+            "front compartment"
+          ],
+          [
+            "advise",
+            "inform",
+            "report"
+          ]
+        ],
+        "correctionTr": "Load süpervisörüne talimatı anladığınızı (wilco), forward compartment'tan 2 bagaj çıkaracağınızı ve bitince haber vereceğinizi söyleyin.",
+        "hintTr": "Wilco kullanın, hangi bölmeden kaç bagaj çıkaracağınızı ve ne zaman bildireceğinizi söyleyin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "LOAD SUPERVISOR",
+        "frequency": "131.7",
+        "atcUtterance": "Ramp, understood. Please coordinate with baggage handler and call me back on this frequency when loading is complete.",
+        "expectedReadback": "Roger, Load. Will coordinate with baggage handler and report back when loading complete on one three one decimal seven.",
+        "keyPhrases": [
+          [
+            "roger",
+            "wilco",
+            "affirm"
+          ],
+          [
+            "coordinate",
+            "work with",
+            "contact"
+          ],
+          [
+            "baggage handler",
+            "handler",
+            "baggage team"
+          ],
+          [
+            "report back",
+            "call back",
+            "advise"
+          ],
+          [
+            "loading complete",
+            "complete",
+            "finished"
+          ],
+          [
+            "one three one decimal seven",
+            "131.7",
+            "this frequency"
+          ]
+        ],
+        "correctionTr": "Baggage handler ile koordine olacağınızı ve yükleme bitince 131.7'de rapor edeceğinizi onaylayın.",
+        "hintTr": "Roger ile başlayın, kiminle koordine olacağınızı ve hangi frekansta geri döneceğinizi söyleyin.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "basic-atc-readback-taxi-clearance",
+    "role": "student",
+    "level": "B1",
+    "title": "Basic Taxi Clearance Readback",
+    "title_tr": "Temel Taxi İzni Readback",
+    "setup": "You are the first officer on Turkish 1453, a B737 at Istanbul Airport stand G12. The captain has just received pushback clearance and you are now ready to taxi.",
+    "setup_tr": "Turkish 1453'te first officer'sınız, B737 ile İstanbul Havalimanı G12 parkında duruyorsunuz. Kaptan pushback iznini aldı, şimdi taxi için hazırsınız.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "ISTANBUL GROUND",
+        "frequency": "121.9",
+        "atcUtterance": "Turkish 1453, taxi to holding point runway 35L via taxiway B and A.",
+        "expectedReadback": "Taxi to holding point runway 35L via taxiway B and A, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "taxi",
+            "taxiing"
+          ],
+          [
+            "holding point",
+            "holding"
+          ],
+          [
+            "runway 35L",
+            "35L"
+          ],
+          [
+            "taxiway B",
+            "via B"
+          ],
+          [
+            "taxiway A",
+            "and A",
+            "via A"
+          ],
+          [
+            "Turkish 1453",
+            "1453"
+          ]
+        ],
+        "correctionTr": "Ground kontrolü size taxi rotasını verdi. Readback yaparken route'u tekrar edin: taxiway B, sonra A, runway 35L holding point'e kadar. Call sign'ınızı da ekleyin.",
+        "hintTr": "İyi başlangıç! Ground talimatlarını eksiksiz tekrar edin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "ISTANBUL GROUND",
+        "frequency": "121.9",
+        "atcUtterance": "Turkish 1453, hold short of taxiway C, give way to Lufthansa A320 passing left to right.",
+        "expectedReadback": "Hold short of taxiway C, give way to Lufthansa A320, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "hold short",
+            "holding short"
+          ],
+          [
+            "taxiway C",
+            "C"
+          ],
+          [
+            "give way",
+            "giving way"
+          ],
+          [
+            "Lufthansa",
+            "A320"
+          ],
+          [
+            "Turkish 1453",
+            "1453"
+          ]
+        ],
+        "correctionTr": "Ground size başka bir uçağa yol vermenizi istedi. 'Hold short of taxiway C' ve 'give way to Lufthansa A320' ifadelerini readback'te kullanın. Traffic awareness önemli.",
+        "hintTr": "Çok iyi! Son talimatı da doğru anlayın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "ISTANBUL GROUND",
+        "frequency": "121.9",
+        "atcUtterance": "Turkish 1453, traffic is clear, continue taxi, contact tower 118.1.",
+        "expectedReadback": "Continue taxi, contact tower 118.1, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "continue taxi",
+            "continue",
+            "taxi"
+          ],
+          [
+            "contact tower",
+            "tower"
+          ],
+          [
+            "118.1",
+            "one one eight decimal one"
+          ],
+          [
+            "Turkish 1453",
+            "1453"
+          ]
+        ],
+        "correctionTr": "Ground size devam etmenizi ve Tower frekansına geçmenizi söyledi. Readback'te 'continue taxi' ve 'contact tower 118.1' deyin. Frekansı doğru tekrar edin.",
+        "hintTr": "Mükemmel! Artık Tower ile konuşmaya hazırsınız.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "icao-phonetic-alphabet-drill-b1",
+    "role": "student",
+    "level": "B1",
+    "title": "ICAO Phonetic Alphabet Drill",
+    "title_tr": "ICAO Fonetik Alfabe Alıştırması",
+    "setup": "You are a student pilot practicing radio communication at a controlled airport. The tower will give you taxi instructions using phonetic alphabet callsigns and taxiway identifiers. You must read back correctly using proper ICAO phonetics.",
+    "setup_tr": "Kontrollü bir havalimanında radyo iletişimi pratik yapan öğrenci pilotunuz. Kule size fonetik alfabe ile çağrı işaretleri ve taksi yolu tanımlayıcıları verecek. ICAO fonetik alfabesini kullanarak doğru readback yapmalısınız.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "ANKARA GROUND",
+        "frequency": "121.7",
+        "atcUtterance": "Turkish November Papa Bravo, taxi via Alpha, Bravo, hold short of runway Three Five Left.",
+        "expectedReadback": "Taxi via Alpha, Bravo, hold short of runway Three Five Left, Turkish November Papa Bravo.",
+        "keyPhrases": [
+          [
+            "taxi",
+            "taxiing"
+          ],
+          [
+            "alpha"
+          ],
+          [
+            "bravo"
+          ],
+          [
+            "hold short",
+            "holding short"
+          ],
+          [
+            "runway",
+            "rwy"
+          ],
+          [
+            "three five left",
+            "35 left",
+            "three-five-left"
+          ],
+          [
+            "november papa bravo",
+            "NPB"
+          ]
+        ],
+        "correctionTr": "Taksi talimatını fonetik alfabeyle tekrar edin: Alpha, Bravo taksi yollarından, runway Three Five Left öncesi hold short. Callsign'ınızı sonda ekleyin.",
+        "hintTr": "ICAO fonetik alfabesini harfleri söylerken kullanın: A=Alpha, B=Bravo, N=November, P=Papa.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "ANKARA GROUND",
+        "frequency": "121.7",
+        "atcUtterance": "Turkish November Papa Bravo, cross runway Three Five Left, taxi to stand Delta Two via Charlie, Whiskey.",
+        "expectedReadback": "Cross runway Three Five Left, taxi to stand Delta Two via Charlie, Whiskey, Turkish November Papa Bravo.",
+        "keyPhrases": [
+          [
+            "cross",
+            "crossing"
+          ],
+          [
+            "runway",
+            "rwy"
+          ],
+          [
+            "three five left",
+            "35 left",
+            "three-five-left"
+          ],
+          [
+            "taxi",
+            "taxiing"
+          ],
+          [
+            "stand",
+            "gate",
+            "parking"
+          ],
+          [
+            "delta two",
+            "delta 2",
+            "D2"
+          ],
+          [
+            "charlie"
+          ],
+          [
+            "whiskey"
+          ],
+          [
+            "november papa bravo",
+            "NPB"
+          ]
+        ],
+        "correctionTr": "Runway'i geçme ve stand talimatını tekrar edin: runway Three Five Left'i cross, Charlie ve Whiskey üzerinden Delta Two stand'a taxi. Fonetik alfabeyi doğru kullanın.",
+        "hintTr": "C=Charlie, D=Delta, W=Whiskey fonetik karşılıklarını unutmayın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "ANKARA GROUND",
+        "frequency": "121.7",
+        "atcUtterance": "Turkish November Papa Bravo, contact Ankara Tower on One One Eight Decimal Niner.",
+        "expectedReadback": "Contact Ankara Tower on One One Eight Decimal Niner, Turkish November Papa Bravo.",
+        "keyPhrases": [
+          [
+            "contact"
+          ],
+          [
+            "ankara tower",
+            "tower"
+          ],
+          [
+            "one one eight",
+            "118"
+          ],
+          [
+            "decimal",
+            "point"
+          ],
+          [
+            "niner",
+            "nine"
+          ],
+          [
+            "november papa bravo",
+            "NPB"
+          ]
+        ],
+        "correctionTr": "Frekans değişimi talimatını tekrar edin: Ankara Tower ile One One Eight Decimal Niner frekansında contact kurun. Callsign'ı sonda söyleyin.",
+        "hintTr": "Frekansları her rakamı ayrı söyleyerek okuyun: 118.9 = One One Eight Decimal Niner.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "number-transmission-altitude-heading-frequency",
+    "role": "student",
+    "level": "B1",
+    "title": "Number Transmission Practice",
+    "title_tr": "Sayı İletimi Pratiği",
+    "setup": "You are a student pilot on a training flight near Ankara. ATC will give you altitude, heading, and frequency changes. Practice correct number pronunciation.",
+    "setup_tr": "Ankara yakınlarında eğitim uçuşundasınız. Kule size irtifa, yön ve frekans değişiklikleri verecek. Doğru sayı telaffuzu pratik edin.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "ANKARA APPROACH",
+        "frequency": "119.7",
+        "atcUtterance": "Student One Two Three, climb to flight level one five zero, turn left heading two seven zero.",
+        "expectedReadback": "Climb to flight level one five zero, left heading two seven zero, Student One Two Three.",
+        "keyPhrases": [
+          [
+            "climb",
+            "climbing"
+          ],
+          [
+            "flight level",
+            "FL"
+          ],
+          [
+            "one five zero",
+            "150"
+          ],
+          [
+            "left",
+            "turn left"
+          ],
+          [
+            "heading"
+          ],
+          [
+            "two seven zero",
+            "270"
+          ]
+        ],
+        "correctionTr": "İrtifa ve yön değişikliğini okuyun: 'Climb to flight level one five zero' ve 'left heading two seven zero' deyin. Sayıları tek tek telaffuz edin.",
+        "hintTr": "Her rakamı ayrı ayrı söyleyin: one-five-zero, two-seven-zero.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "ANKARA APPROACH",
+        "frequency": "119.7",
+        "atcUtterance": "Student One Two Three, contact Ankara Tower on frequency one two zero decimal niner.",
+        "expectedReadback": "Contact Tower one two zero decimal niner, Student One Two Three.",
+        "keyPhrases": [
+          [
+            "contact"
+          ],
+          [
+            "tower",
+            "Ankara Tower"
+          ],
+          [
+            "one two zero",
+            "120"
+          ],
+          [
+            "decimal"
+          ],
+          [
+            "niner",
+            "nine",
+            "9"
+          ]
+        ],
+        "correctionTr": "Frekans değişikliğini okuyun: 'Contact Tower one two zero decimal niner' deyin. 'Decimal' kelimesini unutmayın, 9 için 'niner' kullanın.",
+        "hintTr": "Frekansları söylerken: 'one two zero decimal niner' şeklinde.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "ANKARA TOWER",
+        "frequency": "120.9",
+        "atcUtterance": "Student One Two Three, maintain two thousand five hundred feet, runway heading.",
+        "expectedReadback": "Maintain two thousand five hundred feet, runway heading, Student One Two Three.",
+        "keyPhrases": [
+          [
+            "maintain",
+            "maintaining"
+          ],
+          [
+            "two thousand five hundred",
+            "2500",
+            "two five zero zero"
+          ],
+          [
+            "feet"
+          ],
+          [
+            "runway heading"
+          ]
+        ],
+        "correctionTr": "İrtifa talimatını okuyun: 'Maintain two thousand five hundred feet, runway heading' deyin. Ayak (feet) cinsinden irtifayı tam söyleyin veya rakam rakam okuyun.",
+        "hintTr": "Ayak cinsinden irtifalar: 'two thousand five hundred' veya 'two five zero zero feet'.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "standard-taxi-clearance-readback-b2",
+    "role": "student",
+    "level": "B2",
+    "title": "Standard Taxi Clearance Readback",
+    "title_tr": "Standart Taxi İzni Readback",
+    "setup": "You are the First Officer of Turkish 1453, an A321 that has just landed on runway 35L at Istanbul Airport. Tower is now handing you over to Ground for taxi instructions.",
+    "setup_tr": "Turkish 1453'ün First Officer'ısınız, IST'de 35L pistine iniş yaptınız. Kule sizi Ground'a devredecek, taxi talimatlarını alacaksınız.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "ISTANBUL TOWER",
+        "frequency": "118.1",
+        "atcUtterance": "Turkish 1453, contact Ground 121.9.",
+        "expectedReadback": "Ground 121.9, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "ground",
+            "121.9",
+            "121 point 9"
+          ],
+          [
+            "turkish",
+            "1453",
+            "turkish one four five three"
+          ]
+        ],
+        "correctionTr": "Frekans değişimi için önce yeni frekansı, sonra call sign'ınızı okuyun: 'Ground 121.9, Turkish 1453.'",
+        "hintTr": "Kule sizi yeni frekansa yönlendiriyor, kısa ve net readback yapın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "ISTANBUL GROUND",
+        "frequency": "121.9",
+        "atcUtterance": "Turkish 1453, Istanbul Ground, taxi to stand A12 via A, B3, hold short of taxiway C.",
+        "expectedReadback": "Taxi to stand A12 via A, B3, hold short of taxiway C, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "taxi",
+            "stand",
+            "a12",
+            "a 12"
+          ],
+          [
+            "via",
+            "a",
+            "b3",
+            "b 3"
+          ],
+          [
+            "hold short",
+            "taxiway",
+            "c"
+          ],
+          [
+            "turkish",
+            "1453"
+          ]
+        ],
+        "correctionTr": "Taxi talimatını tam olarak tekrarlayın: 'Taxi to stand A12 via A, B3, hold short of taxiway C, Turkish 1453.' Rota ve hold short noktası önemli.",
+        "hintTr": "Yer kontrolü size park yerini ve rotayı veriyor, eksiksiz readback yapın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "ISTANBUL GROUND",
+        "frequency": "121.9",
+        "atcUtterance": "Turkish 1453, cross taxiway C, continue to A12.",
+        "expectedReadback": "Cross taxiway C, continue to A12, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "cross",
+            "taxiway",
+            "c"
+          ],
+          [
+            "continue",
+            "a12",
+            "a 12"
+          ],
+          [
+            "turkish",
+            "1453"
+          ]
+        ],
+        "correctionTr": "Geçiş izni verildiğinde 'Cross taxiway C, continue to A12, Turkish 1453' şeklinde onaylayın.",
+        "hintTr": "Hold short kaldırıldı, devam izni aldınız.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "mock-pilot-interview-qa-b2",
+    "role": "student",
+    "level": "B2",
+    "title": "Mock Pilot Interview Q&A",
+    "title_tr": "Pilot Mülakat Simülasyonu",
+    "setup": "You are attending a pilot job interview with a Turkish airline. The interviewer will ask you standard aviation questions. Answer clearly and professionally.",
+    "setup_tr": "Türk hava yolu şirketinde pilot mülakatındasınız. Mülakat yetkilileri standart havacılık soruları soracak. Net ve profesyonel cevap verin.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "INTERVIEW PANEL",
+        "frequency": null,
+        "atcUtterance": "Good morning. Thank you for coming. Can you tell us about your most challenging flight experience and how you handled it?",
+        "expectedReadback": "Good morning. Thank you for having me. My most challenging experience was during a winter flight when we encountered unexpected severe icing conditions. I immediately coordinated with ATC, requested lower altitude, activated all anti-ice systems, and informed the cabin crew. We diverted to the nearest suitable airport safely.",
+        "keyPhrases": [
+          [
+            "most challenging",
+            "difficult",
+            "hardest"
+          ],
+          [
+            "icing",
+            "ice",
+            "winter"
+          ],
+          [
+            "ATC",
+            "air traffic control"
+          ],
+          [
+            "diverted",
+            "diversion",
+            "alternate"
+          ],
+          [
+            "safely",
+            "safe landing"
+          ]
+        ],
+        "correctionTr": "Zorlayıcı bir uçuş deneyiminizi anlatın: durumu (örneğin buzlanma, weather, teknik arıza), aldığınız aksiyonları (ATC koordinasyonu, sistem kullanımı, diversion kararı) ve sonucu belirtin. Cevabınız yapılandırılmış ve profesyonel olmalı.",
+        "hintTr": "Gerçek bir uçuş olayını düşünün ve CRM prensiplerini vurgulayarak açıklayın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "INTERVIEW PANEL",
+        "frequency": null,
+        "atcUtterance": "I see. Now, what would you do if you discovered a significant MEL item just before pushback that the previous crew didn't report?",
+        "expectedReadback": "I would immediately inform the captain if I'm the first officer. We would review the MEL together to determine if the item is dispatchable. I would contact maintenance and operations to report the discrepancy. If it affects safety or dispatch, we would delay the flight until resolved. Proper documentation is essential.",
+        "keyPhrases": [
+          [
+            "inform",
+            "notify",
+            "tell"
+          ],
+          [
+            "captain",
+            "PIC"
+          ],
+          [
+            "MEL",
+            "minimum equipment list"
+          ],
+          [
+            "maintenance",
+            "engineer",
+            "technician"
+          ],
+          [
+            "safety",
+            "dispatch"
+          ],
+          [
+            "documentation",
+            "report",
+            "log"
+          ]
+        ],
+        "correctionTr": "MEL item bulduğunuzda yapmanız gerekenleri sıralayın: Kaptan'a bilgi verme, MEL'i kontrol etme, maintenance ve ops ile iletişim, safety/dispatch durumunu değerlendirme, ve doğru dökümantasyon. SOP'lara uygun prosedür önemli.",
+        "hintTr": "Ekip koordinasyonu, prosedür takibi ve safety kültürünü vurgulayın.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "INTERVIEW PANEL",
+        "frequency": null,
+        "atcUtterance": "Very good. Final question: Why do you want to fly for our airline specifically, and what can you bring to our team?",
+        "expectedReadback": "I have great respect for your airline's safety culture and modern fleet. Your international network offers excellent career development. I bring strong technical skills, good CRM abilities, and experience in multi-cultural environments. I'm a team player who values professionalism and continuous learning. I would be honored to contribute to your operation.",
+        "keyPhrases": [
+          [
+            "safety culture",
+            "safety",
+            "reputation"
+          ],
+          [
+            "fleet",
+            "aircraft",
+            "modern"
+          ],
+          [
+            "career",
+            "development",
+            "growth"
+          ],
+          [
+            "CRM",
+            "crew resource management",
+            "teamwork"
+          ],
+          [
+            "team player",
+            "contribute",
+            "professional"
+          ]
+        ],
+        "correctionTr": "Şirketi neden seçtiğinizi (safety kültürü, filo, network) ve siz ne katabileceğinizi (teknik beceri, CRM, takım ruhu, tecrübe) açıklayın. Samimi ve profesyonel bir ton kullanın. Bu soru motivasyonunuzu ve uyumunuzu ölçer.",
+        "hintTr": "Şirket hakkında bilginizi ve kişisel güçlü yönlerinizi dengeli şekilde sunun.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "metar-taf-briefing-to-flight-crew",
+    "role": "dispatcher",
+    "level": "B2",
+    "title": "METAR and TAF Briefing to Flight Crew",
+    "title_tr": "Uçuş Ekibine METAR ve TAF Briefing",
+    "setup": "You are the dispatcher briefing the captain of Turkish 847 on weather conditions for the Istanbul–London Heathrow flight. The crew has just arrived at operations and needs current METAR and TAF information.",
+    "setup_tr": "Turkish 847'nin Kaptanına İstanbul–London Heathrow uçuşu için hava durumu briefing veriyorsunuz. Ekip operasyon odasına yeni geldi ve güncel METAR ile TAF bilgilerine ihtiyaç var.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CAPTAIN",
+        "frequency": null,
+        "atcUtterance": "Good morning, Dispatch. Turkish 847. Could you give us the current weather for Istanbul and our destination, London Heathrow?",
+        "expectedReadback": "Good morning, Captain. Istanbul METAR shows winds two seven zero at one five knots, visibility one zero kilometers, few clouds at two thousand feet, temperature one eight, QNH one zero one three. Heathrow METAR winds two five zero at two zero knots gusting three zero, visibility eight kilometers in light rain, broken clouds at one thousand two hundred feet, temperature one two, QNH nine nine eight.",
+        "keyPhrases": [
+          [
+            "winds",
+            "wind"
+          ],
+          [
+            "two seven zero",
+            "270"
+          ],
+          [
+            "one five",
+            "15"
+          ],
+          [
+            "visibility",
+            "vis"
+          ],
+          [
+            "one zero kilometers",
+            "10 kilometers",
+            "10km"
+          ],
+          [
+            "few clouds",
+            "few"
+          ],
+          [
+            "two thousand",
+            "2000"
+          ],
+          [
+            "temperature",
+            "temp"
+          ],
+          [
+            "one eight",
+            "18"
+          ],
+          [
+            "QNH",
+            "altimeter"
+          ],
+          [
+            "one zero one three",
+            "1013"
+          ],
+          [
+            "Heathrow"
+          ],
+          [
+            "two five zero",
+            "250"
+          ],
+          [
+            "two zero",
+            "20",
+            "twenty"
+          ],
+          [
+            "gusting",
+            "gust"
+          ],
+          [
+            "three zero",
+            "30",
+            "thirty"
+          ],
+          [
+            "eight kilometers",
+            "8 kilometers",
+            "8km"
+          ],
+          [
+            "light rain",
+            "rain"
+          ],
+          [
+            "broken",
+            "BKN"
+          ],
+          [
+            "one thousand two hundred",
+            "1200"
+          ],
+          [
+            "one two",
+            "12"
+          ],
+          [
+            "nine nine eight",
+            "998"
+          ]
+        ],
+        "correctionTr": "Kaptan'a İstanbul ve Heathrow METAR bilgilerini net şekilde ilet. Rüzgar yönü/hızı, visibility, bulut durumu, sıcaklık ve QNH değerlerini içermelisin. Örnek: 'Istanbul METAR: winds 270 at 15 knots, visibility 10 kilometers...'",
+        "hintTr": "METAR okurken sayıları gruplayarak söyle, Heathrow'da gusting var, bunu belirt.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "CAPTAIN",
+        "frequency": null,
+        "atcUtterance": "Copy that. What does the TAF say for Heathrow around our arrival time, roughly one three zero zero Zulu?",
+        "expectedReadback": "Heathrow TAF valid from zero six to one eight Zulu. From one two zero zero, winds two six zero at two two knots gusting three five, visibility six kilometers in moderate rain, broken clouds at one thousand feet, temporarily visibility four kilometers, overcast at eight hundred feet. Conditions improving after one five zero zero with winds two seven zero at one eight knots, visibility more than ten kilometers.",
+        "keyPhrases": [
+          [
+            "TAF"
+          ],
+          [
+            "valid",
+            "validity"
+          ],
+          [
+            "zero six",
+            "06",
+            "0600"
+          ],
+          [
+            "one eight",
+            "18",
+            "1800"
+          ],
+          [
+            "from one two zero zero",
+            "1200",
+            "twelve hundred"
+          ],
+          [
+            "two six zero",
+            "260"
+          ],
+          [
+            "two two",
+            "22"
+          ],
+          [
+            "gusting",
+            "gust"
+          ],
+          [
+            "three five",
+            "35"
+          ],
+          [
+            "six kilometers",
+            "6 kilometers",
+            "6km"
+          ],
+          [
+            "moderate rain",
+            "rain"
+          ],
+          [
+            "broken"
+          ],
+          [
+            "one thousand",
+            "1000"
+          ],
+          [
+            "temporarily",
+            "tempo",
+            "TEMPO"
+          ],
+          [
+            "four kilometers",
+            "4 kilometers",
+            "4km"
+          ],
+          [
+            "overcast",
+            "OVC"
+          ],
+          [
+            "eight hundred",
+            "800"
+          ],
+          [
+            "improving",
+            "improve"
+          ],
+          [
+            "one five zero zero",
+            "1500",
+            "fifteen hundred"
+          ],
+          [
+            "two seven zero",
+            "270"
+          ],
+          [
+            "one eight",
+            "18"
+          ],
+          [
+            "more than ten",
+            "greater than 10",
+            "10 plus"
+          ]
+        ],
+        "correctionTr": "TAF'ı özetle: geçerlilik süresi, 1200Z'den itibaren rüzgar/visibility/bulut durumu, TEMPO koşulları ve 1500Z'den sonra iyileşme. Kaptan varış saatine (1300Z) odaklanıyor, o zaman dilimini vurgula.",
+        "hintTr": "TAF okurken zaman gruplarını (FROM, TEMPO) açıkça belirt, Kaptan'ın varış saatini kapsayan bölümü öne çıkar.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "CAPTAIN",
+        "frequency": null,
+        "atcUtterance": "Understood. So we can expect low visibility and gusty winds on arrival. Do you recommend any alternate or extra fuel?",
+        "expectedReadback": "Affirm, Captain. I recommend Gatwick as alternate. Weather there is better, winds light, visibility good. I have already added one five minutes holding fuel and alternate fuel to your flight plan. Total fuel uplift is two three thousand kilograms.",
+        "keyPhrases": [
+          [
+            "affirm",
+            "affirmative",
+            "yes",
+            "correct"
+          ],
+          [
+            "recommend",
+            "suggest"
+          ],
+          [
+            "Gatwick"
+          ],
+          [
+            "alternate",
+            "ALT"
+          ],
+          [
+            "weather",
+            "conditions"
+          ],
+          [
+            "better"
+          ],
+          [
+            "winds light",
+            "light winds"
+          ],
+          [
+            "visibility good",
+            "good visibility"
+          ],
+          [
+            "added",
+            "included"
+          ],
+          [
+            "one five minutes",
+            "15 minutes",
+            "fifteen minutes"
+          ],
+          [
+            "holding fuel",
+            "holding"
+          ],
+          [
+            "alternate fuel"
+          ],
+          [
+            "flight plan",
+            "FPL"
+          ],
+          [
+            "total fuel",
+            "fuel uplift"
+          ],
+          [
+            "two three thousand",
+            "23000",
+            "23 thousand"
+          ],
+          [
+            "kilograms",
+            "kg",
+            "kgs"
+          ]
+        ],
+        "correctionTr": "Kaptan'a alternate havalimanı (Gatwick) ve yakıt planını açıkla. Holding fuel ve alternate fuel eklendiğini, toplam yakıt miktarını (23,000 kg) net söyle. 'Affirm' ile başla, tavsiyeni belirt.",
+        "hintTr": "Dispatcher olarak yakıt planını önceden hazırladın, Kaptan'a güven ver: alternate Gatwick, ekstra holding fuel var, toplam 23,000 kg.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "dispatcher-route-notam-airspace-closure",
+    "role": "dispatcher",
+    "level": "B2",
+    "title": "Route Planning with Active NOTAM",
+    "title_tr": "Aktif NOTAM ile Rota Planlaması",
+    "setup": "You are a dispatcher preparing TK1984 LTFM-EDDF. ATC coordination office calls regarding an active NOTAM closing part of your filed route over Romania.",
+    "setup_tr": "TK1984 LTFM-EDDF uçuşu için dispatcher olarak çalışıyorsunuz. ATC koordinasyon ofisi Romanya üzerindeki filed rotanızın bir kısmını kapatan aktif bir NOTAM hakkında arıyor.",
+    "estimated_minutes": 2,
+    "difficulty": 3,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "BUCHAREST IFPS",
+        "frequency": "N/A",
+        "atcUtterance": "Turkish one-niner-eight-four, Bucharest IFPS. We have a NOTAM affecting your route. Airway M853 between PIXUM and RUDIK is closed due to military activity until 1800 Zulu. Request you refile via L984 or advise alternate.",
+        "expectedReadback": "Bucharest IFPS, Turkish one-niner-eight-four copies. M853 PIXUM to RUDIK closed until 1800 Zulu. We will refile via L984 and advise estimated time.",
+        "keyPhrases": [
+          [
+            "copies",
+            "copy",
+            "roger",
+            "understood"
+          ],
+          [
+            "M853",
+            "M 853"
+          ],
+          [
+            "PIXUM",
+            "RUDIK"
+          ],
+          [
+            "closed",
+            "closure"
+          ],
+          [
+            "1800",
+            "eighteen hundred"
+          ],
+          [
+            "refile",
+            "re-file",
+            "file"
+          ],
+          [
+            "L984",
+            "L 984"
+          ],
+          [
+            "advise",
+            "inform",
+            "send"
+          ]
+        ],
+        "correctionTr": "NOTAM bilgisini doğrulaman lazım: hangi airway (M853), hangi noktalar arası (PIXUM-RUDIK), kapanış saati (1800Z), ve alternatif rotayı (L984) kullanacağını belirtmelisin. 'Copies' veya 'roger' ile başla, sonra detayları tekrarla.",
+        "hintTr": "ATC'nin verdiği tüm kritik bilgileri readback et: airway adı, fix'ler, zaman, yeni rota.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "BUCHAREST IFPS",
+        "frequency": "N/A",
+        "atcUtterance": "Turkish one-niner-eight-four, roger. Confirm your revised estimate for RUDIK and total flight time via L984. Also state if fuel reserve remains within limits.",
+        "expectedReadback": "Standby for revised estimate. We calculate RUDIK estimate time 1445 Zulu, total flight time two hours fifty-three minutes. Fuel reserve remains within limits, no additional fuel required.",
+        "keyPhrases": [
+          [
+            "standby",
+            "stand by",
+            "calculating"
+          ],
+          [
+            "RUDIK"
+          ],
+          [
+            "1445",
+            "fourteen forty-five"
+          ],
+          [
+            "flight time",
+            "total time"
+          ],
+          [
+            "two hours fifty",
+            "two hours five three",
+            "2:53"
+          ],
+          [
+            "fuel reserve",
+            "reserve fuel"
+          ],
+          [
+            "within limits",
+            "sufficient",
+            "adequate"
+          ],
+          [
+            "no additional",
+            "no extra"
+          ]
+        ],
+        "correctionTr": "Yeni hesaplamaları net şekilde iletmelisin: RUDIK'e varış tahmini (estimate), toplam flight time ve yakıt rezervinin yeterli olduğunu (within limits) onaylaman gerekiyor. 'Standby' diyerek zaman kazanabilirsin.",
+        "hintTr": "Dispatcher olarak rakamları ve fuel durumunu kesin ifade et. ATC sana güvenmeli.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "BUCHAREST IFPS",
+        "frequency": "N/A",
+        "atcUtterance": "Turkish one-niner-eight-four, roger your revised routing and fuel status. New flight plan accepted. Slot time remains unchanged at 1415 Zulu. Contact Istanbul Clearance on one-two-one-decimal-seven-five-zero for updated clearance.",
+        "expectedReadback": "Roger, slot time 1415 Zulu unchanged. Will contact Istanbul Clearance one-two-one-decimal-seven-five-zero for updated clearance. Turkish one-niner-eight-four, thank you.",
+        "keyPhrases": [
+          [
+            "roger",
+            "copy",
+            "copied"
+          ],
+          [
+            "slot time",
+            "slot"
+          ],
+          [
+            "1415",
+            "fourteen fifteen"
+          ],
+          [
+            "unchanged",
+            "remains"
+          ],
+          [
+            "Istanbul Clearance",
+            "clearance"
+          ],
+          [
+            "121.750",
+            "one two one decimal seven five",
+            "one two one point seven five"
+          ],
+          [
+            "updated clearance",
+            "new clearance"
+          ],
+          [
+            "thank you",
+            "thanks",
+            "good day"
+          ]
+        ],
+        "correctionTr": "Onay ver: slot time değişmedi (1415Z), ve Istanbul Clearance'ı hangi frekansta (121.750) arayacağını belirt. Nazik bir kapanış yap. Tüm sayıları tekrarla.",
+        "hintTr": "Profesyonel bir kapanış: slot, frekans, teşekkür. Dispatcher koordinasyonu böyle biter.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "weather-diversion-coordination-severe-tstm",
+    "role": "dispatcher",
+    "level": "L4",
+    "title": "Weather Diversion Coordination",
+    "title_tr": "Hava Durumu Diversion Koordinasyonu",
+    "setup": "Turkish 1453 en route to Athens reports severe thunderstorms ahead. As dispatcher, you must coordinate alternate routing and fuel requirements with the crew.",
+    "setup_tr": "Turkish 1453 Atina'ya giderken şiddetli fırtına bildiriyor. Dispatcher olarak ekiple alternatif rota ve yakıt ihtiyacını koordine etmelisiniz.",
+    "estimated_minutes": 2,
+    "difficulty": 5,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "TURKISH 1453 CAPTAIN",
+        "frequency": "131.3",
+        "atcUtterance": "Turkish 1453, we have weather radar showing severe cell direct course, request diversion options and fuel status from dispatch.",
+        "expectedReadback": "Turkish 1453, roger, checking weather. Recommend divert to Izmir, current fuel sufficient for Izmir plus 45 minutes holding, advise intentions.",
+        "keyPhrases": [
+          [
+            "roger",
+            "copied",
+            "affirm"
+          ],
+          [
+            "checking weather",
+            "weather check",
+            "reviewing weather"
+          ],
+          [
+            "recommend",
+            "suggest",
+            "advise"
+          ],
+          [
+            "divert",
+            "alternate",
+            "diversion"
+          ],
+          [
+            "Izmir",
+            "LTFJ"
+          ],
+          [
+            "fuel sufficient",
+            "fuel adequate",
+            "enough fuel"
+          ],
+          [
+            "45 minutes",
+            "four five minutes"
+          ],
+          [
+            "holding",
+            "hold"
+          ],
+          [
+            "advise intentions",
+            "request intentions",
+            "your intentions"
+          ]
+        ],
+        "correctionTr": "Kaptan'a hava durumunu kontrol ettiğinizi, Izmir'e diversion önerdiğinizi, yakıtın Izmir artı 45 dakika holding için yeterli olduğunu söyleyin ve niyetini sorun. 'Roger, checking weather, recommend divert Izmir, fuel sufficient for Izmir plus 45 minutes holding, advise intentions' diyebilirsiniz.",
+        "hintTr": "Dispatcher olarak alternatifleri hızlıca değerlendirip Kaptan'a net öneri sunun.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "TURKISH 1453 CAPTAIN",
+        "frequency": "131.3",
+        "atcUtterance": "Affirm, proceeding Izmir. Request you coordinate slot time and notify ground services for immediate turnaround.",
+        "expectedReadback": "Wilco, coordinating Izmir slot and ground services now, will advise slot time shortly, Turkish 1453.",
+        "keyPhrases": [
+          [
+            "wilco",
+            "will comply",
+            "roger wilco"
+          ],
+          [
+            "coordinating",
+            "coordinate",
+            "arranging"
+          ],
+          [
+            "Izmir slot",
+            "slot",
+            "slot time"
+          ],
+          [
+            "ground services",
+            "handling",
+            "ground handling"
+          ],
+          [
+            "now",
+            "immediately"
+          ],
+          [
+            "advise",
+            "confirm",
+            "update"
+          ],
+          [
+            "shortly",
+            "soon",
+            "momentarily"
+          ],
+          [
+            "Turkish 1453",
+            "1453"
+          ]
+        ],
+        "correctionTr": "Kaptan'ın talebini onaylayın ve Izmir slot koordinasyonu ile yer hizmetlerini hemen ayarlayacağınızı, slot bilgisini kısa sürede vereceğinizi belirtin. 'Wilco, coordinating Izmir slot and ground services now, will advise slot time shortly' şeklinde cevap verin.",
+        "hintTr": "OCC ile koordinasyon başlattığınızı ve kısa sürede bilgi vereceğinizi bildirin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "OPERATIONS CENTER",
+        "frequency": "ACARS",
+        "atcUtterance": "Dispatch, Izmir slot confirmed in 35 minutes, ground crew standing by, METAR shows VFR conditions, runway 16 in use.",
+        "expectedReadback": "Roger operations, relaying to Turkish 1453, slot 35 minutes, ground ready, VFR conditions runway 16, thanks.",
+        "keyPhrases": [
+          [
+            "roger",
+            "copied",
+            "received"
+          ],
+          [
+            "operations",
+            "ops",
+            "OCC"
+          ],
+          [
+            "relaying",
+            "passing",
+            "advising"
+          ],
+          [
+            "Turkish 1453",
+            "1453",
+            "crew"
+          ],
+          [
+            "slot 35 minutes",
+            "three five minutes",
+            "35 minutes"
+          ],
+          [
+            "ground ready",
+            "ground standing by",
+            "ground crew ready"
+          ],
+          [
+            "VFR",
+            "VFR conditions"
+          ],
+          [
+            "runway 16",
+            "runway one six",
+            "RWY 16"
+          ],
+          [
+            "thanks",
+            "thank you"
+          ]
+        ],
+        "correctionTr": "Operasyon'dan gelen slot, yer ekibi ve hava durumu bilgisini onaylayın ve ekibe ileteceğinizi belirtin. 'Roger operations, relaying to Turkish 1453, slot 35 minutes, ground ready, VFR conditions runway 16' deyin.",
+        "hintTr": null,
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "etops-fuel-calculation-dispatcher",
+    "role": "dispatcher",
+    "level": "B2",
+    "title": "ETOPS Fuel Calculation Coordination",
+    "title_tr": "ETOPS Yakıt Hesaplama Koordinasyonu",
+    "setup": "You are the dispatcher for Turkish 1453, a B777 ETOPS flight from Istanbul to New York JFK. The captain calls you on ARINC to discuss fuel requirements due to forecast strong headwinds over the North Atlantic and a potential diversion scenario.",
+    "setup_tr": "Turkish 1453 için dispatcher olarak çalışıyorsunız, IST-JFK arası B777 ETOPS uçuşu. Kaptan ARINC üzerinden arayarak Kuzey Atlantik üzerinde şiddetli rüzgar tahmini ve olası divert senaryosu nedeniyle yakıt gereksinimlerini görüşmek istiyor.",
+    "estimated_minutes": 3,
+    "difficulty": 4,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CAPTAIN TURKISH 1453",
+        "frequency": "ARINC 131.550",
+        "atcUtterance": "Dispatch, Turkish 1453 heavy. We've reviewed the latest winds aloft for our ETOPS routing. Showing 120 knots headwind component at flight level 350. Request you recalculate critical point fuel and confirm adequate reserves for Keflavik and Shannon alternates.",
+        "expectedReadback": "Turkish 1453, Roger. I'll recalculate the critical point fuel with 120 knot headwind at flight level 350 and verify reserves for Keflavik and Shannon. Stand by approximately five minutes.",
+        "keyPhrases": [
+          [
+            "recalculate",
+            "re-calculate",
+            "calculate"
+          ],
+          [
+            "critical point",
+            "CP"
+          ],
+          [
+            "120",
+            "one two zero",
+            "one twenty"
+          ],
+          [
+            "flight level 350",
+            "FL350",
+            "three five zero"
+          ],
+          [
+            "Keflavik",
+            "KEF"
+          ],
+          [
+            "Shannon",
+            "SNN"
+          ],
+          [
+            "stand by",
+            "standby"
+          ]
+        ],
+        "correctionTr": "Kaptan'a yakıt hesaplamasını yapacağınızı ve ETOPS alternate havaalanları için yeterli rezerv kontrolü yapacağınızı onaylayın. 'Recalculate critical point fuel' ve '120 knot headwind at FL350' bilgilerini readback edin.",
+        "hintTr": "Rüzgar değerini ve flight level bilgisini tekrar edin, sonra ne kadar süre beklenmesi gerektiğini belirtin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "CAPTAIN TURKISH 1453",
+        "frequency": "ARINC 131.550",
+        "atcUtterance": "Dispatch, Turkish 1453. After recalculation, do we need additional tankering, or is planned fuel still adequate? Also confirm ETOPS critical fuel at 58 West is still above minimum required.",
+        "expectedReadback": "Turkish 1453, based on updated winds, planned fuel remains adequate. ETOPS critical fuel at 58 West is 24,800 kilos, which is 1,200 kilos above minimum required. No additional tankering needed.",
+        "keyPhrases": [
+          [
+            "planned fuel",
+            "current fuel"
+          ],
+          [
+            "adequate",
+            "sufficient"
+          ],
+          [
+            "58 West",
+            "fifty-eight West"
+          ],
+          [
+            "24,800",
+            "twenty-four thousand eight hundred",
+            "two four eight zero zero"
+          ],
+          [
+            "1,200",
+            "one thousand two hundred",
+            "one two zero zero"
+          ],
+          [
+            "above minimum",
+            "exceeds minimum"
+          ],
+          [
+            "no additional",
+            "no extra"
+          ],
+          [
+            "tankering"
+          ]
+        ],
+        "correctionTr": "Hesaplanan yakıt miktarının yeterli olduğunu ve 58 West noktasındaki ETOPS critical fuel değerinin minimum gerekliliğin üzerinde olduğunu bildirin. Ek tankering gerekmediğini belirtin.",
+        "hintTr": "Critical fuel miktarını ve minimum üzerindeki farkı kilogram cinsinden verin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "CAPTAIN TURKISH 1453",
+        "frequency": "ARINC 131.550",
+        "atcUtterance": "Copy that, Dispatch. Confirm final figures: total fuel on board at departure and estimated fuel remaining at JFK touchdown.",
+        "expectedReadback": "Turkish 1453, confirmed. Total fuel at departure 98,500 kilos. Estimated fuel remaining at JFK touchdown 12,300 kilos. You have 3,500 kilos above minimum reserve.",
+        "keyPhrases": [
+          [
+            "98,500",
+            "ninety-eight thousand five hundred",
+            "nine eight five zero zero"
+          ],
+          [
+            "departure"
+          ],
+          [
+            "12,300",
+            "twelve thousand three hundred",
+            "one two three zero zero"
+          ],
+          [
+            "JFK",
+            "Kennedy"
+          ],
+          [
+            "touchdown",
+            "landing"
+          ],
+          [
+            "3,500",
+            "three thousand five hundred",
+            "three five zero zero"
+          ],
+          [
+            "above minimum",
+            "over minimum"
+          ],
+          [
+            "reserve"
+          ]
+        ],
+        "correctionTr": "Kalkış yakıtı ve JFK'ye iniş anındaki tahmini kalan yakıt miktarlarını kilogram olarak onaylayın. Minimum reserve üzerindeki fazla yakıt miktarını da ekleyin.",
+        "hintTr": "İki ana rakamı net bir şekilde verin: departure fuel ve landing fuel. Reserve farkını da belirtin.",
+        "isFinal": true
+      }
+    ]
+  },
+  {
+    "slug": "notam-runway-closure-briefing",
+    "role": "dispatcher",
+    "level": "B1",
+    "title": "NOTAM Impact Briefing",
+    "title_tr": "NOTAM Etkisi Briefing",
+    "setup": "You are the dispatcher for Turkish 2468 (IST–AMS). A new NOTAM just arrived: runway 35L at Istanbul will be closed for maintenance during your departure slot. You must inform the captain about the runway change and confirm new departure time.",
+    "setup_tr": "Turkish 2468 (IST–AMS) uçuşu için dispatcher'sınız. Yeni bir NOTAM geldi: İstanbul'da 35L pisti bakım için kalkış saatinizde kapalı olacak. Kaptana pist değişikliğini bildirmeli ve yeni kalkış saatini onaylamalısınız.",
+    "estimated_minutes": 2,
+    "difficulty": 1,
+    "gauges": null,
+    "turns": [
+      {
+        "id": "turn-1",
+        "atcStation": "CAPTAIN",
+        "frequency": "OPS",
+        "atcUtterance": "Ops, Turkish 2468, good morning. We're ready for departure briefing, go ahead.",
+        "expectedReadback": "Turkish 2468, morning Captain. New NOTAM issued, runway 35L closed for maintenance from 0800 to 1000 Zulu. Departure now from runway 35R, revised slot 0815.",
+        "keyPhrases": [
+          [
+            "notam",
+            "new notam"
+          ],
+          [
+            "35L",
+            "three five left",
+            "runway 35L"
+          ],
+          [
+            "closed",
+            "closure"
+          ],
+          [
+            "35R",
+            "three five right",
+            "runway 35R"
+          ],
+          [
+            "0815",
+            "zero eight one five",
+            "revised slot"
+          ]
+        ],
+        "correctionTr": "Kaptana NOTAM'ı açıkça bildirmelisiniz: hangi pist kapalı (35L), hangi piste geçiliyor (35R), ve yeni slot saati (0815 Zulu).",
+        "hintTr": "NOTAM detaylarını net ve sırayla verin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-2",
+        "atcStation": "CAPTAIN",
+        "frequency": "OPS",
+        "atcUtterance": "Copy 35R and 0815 Zulu. Will the runway length affect our takeoff performance with current weight?",
+        "expectedReadback": "Negative Captain, 35R length is 3000 meters, sufficient for your current weight. Performance data confirms normal takeoff.",
+        "keyPhrases": [
+          [
+            "negative",
+            "no"
+          ],
+          [
+            "35R",
+            "three five right"
+          ],
+          [
+            "3000",
+            "three thousand"
+          ],
+          [
+            "meters",
+            "metres"
+          ],
+          [
+            "sufficient",
+            "enough",
+            "adequate"
+          ],
+          [
+            "performance",
+            "takeoff performance"
+          ],
+          [
+            "normal",
+            "confirms"
+          ]
+        ],
+        "correctionTr": "Kaptanın sorusunu yanıtlayın: 35R pistinin uzunluğu (3000 metre) mevcut ağırlık için yeterli mi, performance hesabı normal mi?",
+        "hintTr": "Pist uzunluğunu ve performance onayını açıkça belirtin.",
+        "isFinal": false
+      },
+      {
+        "id": "turn-3",
+        "atcStation": "CAPTAIN",
+        "frequency": "OPS",
+        "atcUtterance": "Roger that, we'll update the FMS for 35R. Please send revised loadsheet to the aircraft.",
+        "expectedReadback": "Wilco Captain, revised loadsheet will be uploaded in five minutes. Contact ground on 121.9 when ready to push.",
+        "keyPhrases": [
+          [
+            "wilco",
+            "will comply",
+            "roger"
+          ],
+          [
+            "loadsheet",
+            "load sheet"
+          ],
+          [
+            "uploaded",
+            "sent",
+            "send"
+          ],
+          [
+            "five minutes",
+            "5 minutes"
+          ],
+          [
+            "ground",
+            "contact ground"
+          ],
+          [
+            "121.9",
+            "one two one decimal nine"
+          ]
+        ],
+        "correctionTr": "Kaptanın isteğini onaylayın (wilco), loadsheet'in ne zaman gönderileceğini (beş dakika) ve ground frekansını (121.9) bildirin.",
+        "hintTr": "İşlemi onaylayın ve yer frekansını verin.",
+        "isFinal": true
+      }
+    ]
+  }
+]
