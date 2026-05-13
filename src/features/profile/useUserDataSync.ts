@@ -23,7 +23,7 @@
  * Eski versiyon bir undefined call yüzünden patladığında app freeze oluyordu.
  * Şimdi: bir step fail olsa diğerleri devam, app patlamaz.
  */
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
@@ -56,9 +56,14 @@ function safeSetHydrating(value: boolean) {
   }
 }
 
-export function useUserDataSync(userId: string | null | undefined): { hydrating: boolean } {
-  const [hydrating, setHydrating] = useState(false);
-
+/**
+ * CRASH 2 fix (BUILD 29 sonrası): Lokal useState `hydrating` kaldırıldı —
+ * tüketici (`app/_layout.tsx:116`) return değerini hiç okumuyordu, ölü koddu.
+ * Single source of truth artık `authStore.hydrating`. `setHydrating` (local
+ * setter) çağrıları da tamamen silindi (Sentry trace bu satırlarda race
+ * gösteriyordu).
+ */
+export function useUserDataSync(userId: string | null | undefined): void {
   useEffect(() => {
     if (!userId) {
       // Logout veya henüz login yok — hydrating global'i false'a çek.
@@ -70,7 +75,6 @@ export function useUserDataSync(userId: string | null | undefined): { hydrating:
 
     async function run() {
       try {
-        setHydrating(true);
         // Global hydrating flag — Router (app/index.tsx) bunu okur, splash gösterir.
         safeSetHydrating(true);
 
@@ -194,7 +198,6 @@ export function useUserDataSync(userId: string | null | undefined): { hydrating:
         safeCapture(err, 'run_top_level');
       } finally {
         if (!cancelled) {
-          setHydrating(false);
           safeSetHydrating(false);
         }
       }
@@ -205,6 +208,4 @@ export function useUserDataSync(userId: string | null | undefined): { hydrating:
       cancelled = true;
     };
   }, [userId]);
-
-  return { hydrating };
 }
