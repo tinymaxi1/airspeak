@@ -23,6 +23,7 @@ import { createRow, updateRow } from '@/lib/content/actions';
 import { uniqueSlug } from '@/lib/content/slug';
 import { toast } from 'sonner';
 import { Plus, Crown } from 'lucide-react';
+import { SubRolePicker } from '@/components/sub-roles/SubRolePicker';
 
 const ROLES = [
   { id: 'all', label: 'Tümü', emoji: '👥' },
@@ -51,6 +52,8 @@ type Category = (typeof CATEGORIES)[number]['id'];
 interface ScenarioFormInitial {
   id?: string;
   role?: string | null;
+  /** FAZ 4 — granular alt-rol filter (opsiyonel, boş = parent role tüm sub'larına açık). */
+  target_sub_roles?: string[] | null;
   category?: string | null;
   title?: string | null;
   title_tr?: string | null;
@@ -64,6 +67,8 @@ interface ScenarioFormInitial {
   is_premium?: boolean | null;
   audio_intro_url?: string | null;
 }
+
+const ALL_PARENT_ROLES = ['pilot','atc','cabin','technician','ground','student','dispatcher'];
 
 function ScenarioFormBody({
   mode,
@@ -90,10 +95,20 @@ function ScenarioFormBody({
     estimated_minutes: initial?.estimated_minutes ?? 5,
     is_premium: initial?.is_premium ?? false,
     audio_intro_url: initial?.audio_intro_url ?? '',
+    target_sub_roles: initial?.target_sub_roles ?? [],
   });
+
+  // SubRolePicker parent'larını role'den derive et.
+  // role='all' → tüm 7 parent. Diğerleri → tek parent.
+  const subRoleParentRoles = form.role === 'all' ? ALL_PARENT_ROLES : [form.role];
 
   function setField<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((s) => ({ ...s, [key]: value }));
+  }
+
+  function setRole(newRole: Role) {
+    // Role değişince target_sub_roles reset — eski sub'lar yeni parent'a uymaz
+    setForm((s) => ({ ...s, role: newRole, target_sub_roles: [] }));
   }
 
   function submit(e: React.FormEvent) {
@@ -105,6 +120,7 @@ function ScenarioFormBody({
 
     const payload = {
       role: form.role,
+      target_sub_roles: form.target_sub_roles,
       category: form.category,
       title: form.title.trim(),
       title_tr: form.title_tr.trim() || null,
@@ -167,7 +183,7 @@ function ScenarioFormBody({
                 <button
                   key={r.id}
                   type="button"
-                  onClick={() => setField('role', r.id)}
+                  onClick={() => setRole(r.id)}
                   className={`px-2 py-2 rounded-lg border-2 text-xs font-semibold transition ${
                     active
                       ? 'bg-airspeak-navy border-airspeak-navy text-white'
@@ -180,6 +196,18 @@ function ScenarioFormBody({
               );
             })}
           </div>
+        </div>
+
+        {/* Target Sub-Roles (FAZ 4 — opsiyonel granular filter) */}
+        <div>
+          <Label hint="Boş = parent role içeren tüm alt-rollere açık">
+            Hedef alt-roller (opsiyonel)
+          </Label>
+          <SubRolePicker
+            parentRoles={subRoleParentRoles}
+            value={form.target_sub_roles}
+            onChange={(next) => setField('target_sub_roles', next)}
+          />
         </div>
 
         {/* Category + Difficulty + Estimated min */}

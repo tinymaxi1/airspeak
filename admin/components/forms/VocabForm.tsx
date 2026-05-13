@@ -10,6 +10,7 @@ import { createRow, updateRow } from '@/lib/content/actions';
 import { uniqueSlug } from '@/lib/content/slug';
 import { toast } from 'sonner';
 import { Plus } from 'lucide-react';
+import { SubRolePicker } from '@/components/sub-roles/SubRolePicker';
 
 const ROLES = [
   { id: 'all', label: 'Tüm roller' },
@@ -19,6 +20,8 @@ const ROLES = [
   { id: 'ground', label: 'Yer hizmetleri' },
   { id: 'student', label: 'Öğrenci' },
 ];
+
+const ALL_PARENT_ROLES_VOCAB = ['pilot','atc','cabin','technician','ground','student','dispatcher'];
 
 interface VocabFormProps {
   mode: 'create' | 'edit';
@@ -31,6 +34,7 @@ function VocabForm({ mode, initial, onClose }: VocabFormProps) {
   const [isPending, startTransition] = useTransition();
   const [form, setForm] = useState({
     role: initial?.role ?? 'pilot',
+    target_sub_roles: (initial?.target_sub_roles as string[] | undefined) ?? [],
     category: initial?.category ?? 'general',
     term: initial?.term ?? '',
     term_tr: initial?.term_tr ?? '',
@@ -44,6 +48,14 @@ function VocabForm({ mode, initial, onClose }: VocabFormProps) {
     is_premium: initial?.is_premium ?? false,
     audio_url: initial?.audio_url ?? '',
   });
+
+  // SubRolePicker için parent listesini role'den derive et
+  const subRoleParentRoles =
+    form.role === 'all' ? ALL_PARENT_ROLES_VOCAB : [form.role];
+
+  function setRoleAndResetSubRoles(newRole: string) {
+    setForm({ ...form, role: newRole, target_sub_roles: [] });
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -89,7 +101,7 @@ function VocabForm({ mode, initial, onClose }: VocabFormProps) {
         <div className="grid grid-cols-3 gap-3">
           <div>
             <Label required>Rol</Label>
-            <Select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+            <Select value={form.role} onChange={(e) => setRoleAndResetSubRoles(e.target.value)}>
               {ROLES.map((r) => (
                 <option key={r.id} value={r.id}>
                   {r.label}
@@ -115,6 +127,18 @@ function VocabForm({ mode, initial, onClose }: VocabFormProps) {
               onChange={(e) => setForm({ ...form, difficulty: Number(e.target.value) })}
             />
           </div>
+        </div>
+
+        {/* FAZ 4 — Target sub-roles (opsiyonel granular filter) */}
+        <div>
+          <Label hint="Boş = parent role içeren tüm alt-rollere açık">
+            Hedef alt-roller (opsiyonel)
+          </Label>
+          <SubRolePicker
+            parentRoles={subRoleParentRoles}
+            value={form.target_sub_roles}
+            onChange={(next) => setForm({ ...form, target_sub_roles: next })}
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
