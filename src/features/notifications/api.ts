@@ -115,21 +115,34 @@ export function useNotifications(userId: string | null | undefined): {
   useEffect(() => {
     void load();
     if (!userId) return;
-    const ch = supabase
-      .channel(`notif_unified_${userId}_${instanceId}`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'notification_log', filter: `user_id=eq.${userId}` },
-        () => void load(),
-      )
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'community_notifications', filter: `user_id=eq.${userId}` },
-        () => void load(),
-      )
-      .subscribe();
+    // Sentry RN-4/5 ek savunma: subscribe / on / removeChannel'da runtime
+    // exception oluşsa bile app crash etmesin (realtime opsiyonel feature).
+    let ch: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      ch = supabase
+        .channel(`notif_unified_${userId}_${instanceId}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'notification_log', filter: `user_id=eq.${userId}` },
+          () => void load(),
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'community_notifications', filter: `user_id=eq.${userId}` },
+          () => void load(),
+        )
+        .subscribe();
+    } catch (err) {
+      if (__DEV__) console.warn('[notifications] realtime subscribe failed', err);
+      ch = null;
+    }
     return () => {
-      void supabase.removeChannel(ch);
+      if (!ch) return;
+      try {
+        void supabase.removeChannel(ch);
+      } catch {
+        /* ignore — channel zaten kapatılmış olabilir */
+      }
     };
   }, [userId, load, instanceId]);
 
@@ -189,21 +202,33 @@ export function useUnreadCount(userId: string | null | undefined): number {
       if (data?.ok) setCount(data.total ?? 0);
     };
     void fetchCount();
-    const ch = supabase
-      .channel(`unread_count_${userId}_${instanceId}`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'notification_log', filter: `user_id=eq.${userId}` },
-        fetchCount,
-      )
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'community_notifications', filter: `user_id=eq.${userId}` },
-        fetchCount,
-      )
-      .subscribe();
+    // Sentry RN-4/5 ek savunma: subscribe / removeChannel try/catch.
+    let ch: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      ch = supabase
+        .channel(`unread_count_${userId}_${instanceId}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'notification_log', filter: `user_id=eq.${userId}` },
+          fetchCount,
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'community_notifications', filter: `user_id=eq.${userId}` },
+          fetchCount,
+        )
+        .subscribe();
+    } catch (err) {
+      if (__DEV__) console.warn('[notifications] unread_count subscribe failed', err);
+      ch = null;
+    }
     return () => {
-      void supabase.removeChannel(ch);
+      if (!ch) return;
+      try {
+        void supabase.removeChannel(ch);
+      } catch {
+        /* ignore */
+      }
     };
   }, [userId, instanceId]);
 
