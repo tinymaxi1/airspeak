@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/auth/guard';
-import { CreateReadbackButton, EditReadbackButton } from '@/components/forms/ReadbackForm';
-import { StatusActions } from '@/components/forms/StatusActions';
+import { CreateReadbackButton } from '@/components/forms/ReadbackForm';
 import { BulkPracticePanel, type PracticeRow } from '@/components/forms/BulkPracticePanel';
 
 export default async function ReadbackClearancesPage() {
@@ -43,19 +42,6 @@ export default async function ReadbackClearancesPage() {
         rows={rows}
         columnHeaders={{ summary: 'ATC Utterance', meta: 'İstasyon · Freq' }}
         canDelete={me.admin_role === 'super_admin'}
-        renderActions={(row) => (
-          <>
-            <EditReadbackButton row={row.raw} />
-            <StatusActions
-              table="readback_clearances"
-              id={row.id}
-              status={row.status}
-              revalidate="/readback-clearances"
-              label={row.summary?.slice(0, 60)}
-              canDelete={me.admin_role === 'super_admin'}
-            />
-          </>
-        )}
       />
     </div>
   );

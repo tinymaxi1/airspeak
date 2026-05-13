@@ -25,6 +25,10 @@ import { bulkSetStatus, bulkDelete } from '@/lib/content/bulk-actions';
 import { toast } from 'sonner';
 import { Send, Archive, Trash2, RotateCcw, CheckSquare, Square } from 'lucide-react';
 import type { ContentTable } from '@/lib/content/actions';
+import { EditReadbackButton } from '@/components/forms/ReadbackForm';
+import { EditPronunciationButton } from '@/components/forms/PronunciationForm';
+import { EditListenSolveButton } from '@/components/forms/ListenSolveForm';
+import { StatusActions } from '@/components/forms/StatusActions';
 
 type Status = 'draft' | 'published' | 'archived';
 
@@ -55,19 +59,47 @@ interface Props {
   table: ContentTable;
   revalidate: string;
   rows: PracticeRow[];
-  /** Liste içindeki edit/status komponentleri */
-  renderActions: (row: PracticeRow) => React.ReactNode;
   /** Kolon başlıkları + meta label */
   columnHeaders: { summary: string; meta: string };
   /** Super admin? — bulk delete için */
   canDelete?: boolean;
 }
 
+/** Tablo bazlı per-row action render (client-side, Server function prop yasağına çare). */
+function PracticeRowActions({
+  table,
+  row,
+  revalidate,
+  canDelete,
+}: {
+  table: ContentTable;
+  row: PracticeRow;
+  revalidate: string;
+  canDelete: boolean;
+}) {
+  let editBtn: React.ReactNode = null;
+  if (table === 'readback_clearances') editBtn = <EditReadbackButton row={row.raw} />;
+  else if (table === 'pronunciation_sentences') editBtn = <EditPronunciationButton row={row.raw} />;
+  else if (table === 'listen_solve_drills') editBtn = <EditListenSolveButton row={row.raw} />;
+  return (
+    <>
+      {editBtn}
+      <StatusActions
+        table={table}
+        id={row.id}
+        status={row.status}
+        revalidate={revalidate}
+        label={row.summary?.slice(0, 60)}
+        canDelete={canDelete}
+      />
+    </>
+  );
+}
+
 export function BulkPracticePanel({
   table,
   revalidate,
   rows,
-  renderActions,
   columnHeaders,
   canDelete = false,
 }: Props) {
@@ -342,7 +374,14 @@ export function BulkPracticePanel({
                   <StatusPill status={r.status} />
                 </td>
                 <td className="px-3 py-2.5">
-                  <div className="flex items-center justify-end gap-1">{renderActions(r)}</div>
+                  <div className="flex items-center justify-end gap-1">
+                    <PracticeRowActions
+                      table={table}
+                      row={r}
+                      revalidate={revalidate}
+                      canDelete={canDelete}
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/auth/guard';
-import { CreateListenSolveButton, EditListenSolveButton } from '@/components/forms/ListenSolveForm';
-import { StatusActions } from '@/components/forms/StatusActions';
+import { CreateListenSolveButton } from '@/components/forms/ListenSolveForm';
 import { BulkPracticePanel, type PracticeRow } from '@/components/forms/BulkPracticePanel';
 
 export default async function ListenSolvePage() {
@@ -43,19 +42,6 @@ export default async function ListenSolvePage() {
         rows={rows}
         columnHeaders={{ summary: 'Audio + Soru', meta: 'Kategori · Cevap' }}
         canDelete={me.admin_role === 'super_admin'}
-        renderActions={(row) => (
-          <>
-            <EditListenSolveButton row={row.raw} />
-            <StatusActions
-              table="listen_solve_drills"
-              id={row.id}
-              status={row.status}
-              revalidate="/listen-solve"
-              label={row.summary?.slice(0, 60)}
-              canDelete={me.admin_role === 'super_admin'}
-            />
-          </>
-        )}
       />
     </div>
   );

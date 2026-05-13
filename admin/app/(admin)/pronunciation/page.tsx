@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/auth/guard';
-import { CreatePronunciationButton, EditPronunciationButton } from '@/components/forms/PronunciationForm';
-import { StatusActions } from '@/components/forms/StatusActions';
+import { CreatePronunciationButton } from '@/components/forms/PronunciationForm';
 import { BulkPracticePanel, type PracticeRow } from '@/components/forms/BulkPracticePanel';
 
 export default async function PronunciationPage() {
@@ -43,19 +42,6 @@ export default async function PronunciationPage() {
         rows={rows}
         columnHeaders={{ summary: 'Cümle (EN)', meta: 'IPA / Kategori' }}
         canDelete={me.admin_role === 'super_admin'}
-        renderActions={(row) => (
-          <>
-            <EditPronunciationButton row={row.raw} />
-            <StatusActions
-              table="pronunciation_sentences"
-              id={row.id}
-              status={row.status}
-              revalidate="/pronunciation"
-              label={row.summary?.slice(0, 60)}
-              canDelete={me.admin_role === 'super_admin'}
-            />
-          </>
-        )}
       />
     </div>
   );
