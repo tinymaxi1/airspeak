@@ -55,6 +55,7 @@ const ROLES: RoleSpec[] = [
   { id: 'technician', icon: '⚙', code: 'TEC', accent: '#2EA8FF', tk: 'roleTech', dk: 'roleTechDesc' },
   { id: 'ground', icon: '💼', code: 'GND', accent: '#2DBE6C', tk: 'roleGround', dk: 'roleGroundDesc' },
   { id: 'student', icon: '📖', code: 'STU', accent: '#F2C14E', tk: 'roleStudent', dk: 'roleStudentDesc' },
+  { id: 'dispatcher', icon: '📊', code: 'DSP', accent: '#5B8AB5', tk: 'roleDispatcher', dk: 'roleDispatcherDesc' },
 ];
 
 export default function RoleSelectScreen() {

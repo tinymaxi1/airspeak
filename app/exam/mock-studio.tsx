@@ -66,6 +66,7 @@ const ROLES: { id: UserRole; label: string; emoji: string }[] = [
   { id: 'technician', label: 'Teknisyen', emoji: '🛠' },
   { id: 'ground', label: 'Yer', emoji: '🦺' },
   { id: 'student', label: 'Öğrenci', emoji: '🎓' },
+  { id: 'dispatcher', label: 'Dispatcher', emoji: '📊' },
 ];
 
 type Category = string;
