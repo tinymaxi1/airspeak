@@ -471,7 +471,20 @@
       "bestValue": "NAJLEPSZY STOSUNEK JAKOŚCI DO CENY",
       "cta": "Rozpocznij 7-dniowy bezpłatny okres próbny",
       "restore": "Przywróć",
-      "disclaimer": "Można zrezygnować w dowolnym momencie. Subskrypcja zostanie automatycznie przedłużona, o ile nie zostanie anulowana na 24 godziny przed końcem okresu."
+      "disclaimer": "Można zrezygnować w dowolnym momencie. Subskrypcja zostanie automatycznie przedłużona, o ile nie zostanie anulowana na 24 godziny przed końcem okresu.",
+      "reason": {
+        "lesson_limit": "You've reached today's free lesson limit",
+        "ai_limit": "You've reached today's free AI conversation limit",
+        "readback_limit": "You've reached today's free read-back drill limit",
+        "listen_solve_limit": "You've reached today's free listen & solve limit",
+        "pronunciation_limit": "You've reached today's free pronunciation limit"
+      },
+      "hearts": {
+        "depleted": "You've lost all your hearts",
+        "refillIn": "Refills in {{hours}} hours",
+        "refillFull": "Hearts refilled!",
+        "max": "Max {{max}} hearts"
+      }
     },
     "settings": {
       "eyebrow": "ACCOUNT · CALLSIGN MTC-038",

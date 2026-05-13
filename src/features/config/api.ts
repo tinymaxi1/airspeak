@@ -25,6 +25,8 @@ export interface AppConfig {
   'freemium.max_ai_conversations_per_day': number;
   'freemium.max_vocab_lookups_per_day': number;
   'freemium.max_pronunciation_per_day': number;
+  'freemium.max_readback_per_day': number;
+  'freemium.max_listen_solve_per_day': number;
   'freemium.placement_test_free': boolean;
   'freemium.icao4_set1_free': boolean;
   'freemium.icao4_set2_free': boolean;
@@ -79,7 +81,9 @@ const DEFAULTS: AppConfig = {
   'freemium.max_lessons_per_day': 5,
   'freemium.max_ai_conversations_per_day': 1,
   'freemium.max_vocab_lookups_per_day': 50,
-  'freemium.max_pronunciation_per_day': 10,
+  'freemium.max_pronunciation_per_day': 2,
+  'freemium.max_readback_per_day': 2,
+  'freemium.max_listen_solve_per_day': 2,
   'freemium.placement_test_free': true,
   'freemium.icao4_set1_free': true,
   'freemium.icao4_set2_free': false,

@@ -34,6 +34,8 @@ import {
   useSpeechRecognitionEvent,
 } from '@/lib/speechRecognition';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { bumpUserXpForLeague } from '@/features/gamification/api';
+import { bumpServerUsage } from '@/features/config/limits';
 import { useQuestsStore } from '@/stores/questsStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useActivityStore } from '@/stores/activityStore';
@@ -101,11 +103,15 @@ export default function PronunciationScreen() {
 
     setResult(scored);
     setStage('result');
-    addXp(scored.overallScore >= 70 ? 30 : 10, 'pronunciation_drill');
+    const xpGain = scored.overallScore >= 70 ? 30 : 10;
+    addXp(xpGain, 'pronunciation_drill');
     incrementQuest('practice_pronunciation', 1);
     incrementQuest('streak_check', 1);
     recordDailyActivity();
     recordHistoryActivity('lesson');
+    // Sprint (post-C3d) — server counter + league XP
+    void bumpServerUsage('pronunciation_attempts', 1);
+    void bumpUserXpForLeague('pronunciation', xpGain);
     recordRecentActivity({
       type: 'pronunciation',
       refId: sentence.id,

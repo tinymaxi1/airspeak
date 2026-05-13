@@ -19,6 +19,10 @@ import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useActivityStore } from '@/stores/activityStore';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useAuthStore } from '@/stores/authStore';
+import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
+import { useListenSolveLimit, bumpServerUsage } from '@/features/config/limits';
+import { bumpUserXpForLeague } from '@/features/gamification/api';
+import { PaywallSheet } from '@/components/paywall/PaywallSheet';
 import { track } from '@/lib/posthog';
 import {
   Eyebrow,
@@ -73,6 +77,11 @@ export default function ListenSolveScreen() {
   const [correctCount, setCorrectCount] = useState(0);
   const startedAtRef = useRef<number>(0);
 
+  // Sprint (post-C3d) — günlük limit + paywall
+  const listenSolveLimit = useListenSolveLimit();
+  const bumpDaily = useDailyLimitsStore((s) => s.bump);
+  const [paywallOpen, setPaywallOpen] = useState(false);
+
   const current = drills[idx];
   const total = drills.length;
 
@@ -115,6 +124,11 @@ export default function ListenSolveScreen() {
   }
 
   function startDrill() {
+    // Sprint (post-C3d) — günlük limit kontrolü
+    if (!listenSolveLimit.allowed) {
+      setPaywallOpen(true);
+      return;
+    }
     startedAtRef.current = Date.now();
     track('listen_solve_started', {
       drill_count: total,
@@ -159,6 +173,10 @@ export default function ListenSolveScreen() {
     addXp(xpGain, 'listen_solve');
     recordDailyActivity();
     recordHistoryActivity('lesson');
+    // Sprint (post-C3d) — server counter + league XP
+    void bumpServerUsage('listen_solve_attempts', 1);
+    if (xpGain > 0) void bumpUserXpForLeague('listen_solve', xpGain);
+    bumpDaily('listen_solve_attempts', 1);
     recordRecentActivity({
       type: 'lesson',
       refId: `listen-solve-${id}`,
@@ -532,6 +550,11 @@ export default function ListenSolveScreen() {
             </View>
           )}
         </ScrollView>
+        <PaywallSheet
+          visible={paywallOpen}
+          onClose={() => setPaywallOpen(false)}
+          reason="listen_solve_limit"
+        />
       </View>
     </TabletShell>
   );

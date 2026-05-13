@@ -471,7 +471,20 @@
       "bestValue": "A MELHOR RELAÇÃO QUALIDADE-PREÇO",
       "cta": "Comece o período de avaliação gratuita de 7 dias",
       "restore": "Restaurar",
-      "disclaimer": "Pode cancelar a qualquer momento. A assinatura renova-se automaticamente, a menos que seja cancelada 24 horas antes do fim do período."
+      "disclaimer": "Pode cancelar a qualquer momento. A assinatura renova-se automaticamente, a menos que seja cancelada 24 horas antes do fim do período.",
+      "reason": {
+        "lesson_limit": "You've reached today's free lesson limit",
+        "ai_limit": "You've reached today's free AI conversation limit",
+        "readback_limit": "You've reached today's free read-back drill limit",
+        "listen_solve_limit": "You've reached today's free listen & solve limit",
+        "pronunciation_limit": "You've reached today's free pronunciation limit"
+      },
+      "hearts": {
+        "depleted": "You've lost all your hearts",
+        "refillIn": "Refills in {{hours}} hours",
+        "refillFull": "Hearts refilled!",
+        "max": "Max {{max}} hearts"
+      }
     },
     "settings": {
       "eyebrow": "ACCOUNT · CALLSIGN MTC-038",

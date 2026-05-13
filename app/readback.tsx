@@ -26,6 +26,10 @@ import { useReadbackClearances, pickRandomClearances } from '@/features/readback
 import { matchTranscript } from '@/features/conversation/scenarios';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { useDailyLimitsStore } from '@/stores/dailyLimitsStore';
+import { useReadbackLimit, bumpServerUsage } from '@/features/config/limits';
+import { bumpUserXpForLeague } from '@/features/gamification/api';
+import { PaywallSheet } from '@/components/paywall/PaywallSheet';
 import { useQuestsStore } from '@/stores/questsStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import {
@@ -52,6 +56,11 @@ export default function ReadbackDrillScreen() {
   const [clearances] = useState<AtcClearance[]>(
     () => dbPool && dbPool.length > 0 ? pickRandomClearances(dbPool, 8) : getRandomClearances(8),
   );
+
+  // Sprint (post-C3d) — günlük limit kontrolü + paywall trigger
+  const readbackLimit = useReadbackLimit();
+  const bumpDaily = useDailyLimitsStore((s) => s.bump);
+  const [paywallOpen, setPaywallOpen] = useState(false);
   const [idx, setIdx] = useState(0);
   const [stage, setStage] = useState<Stage>('briefing');
   const [recognized, setRecognized] = useState('');
@@ -85,6 +94,11 @@ export default function ReadbackDrillScreen() {
   }, []);
 
   function startDrill() {
+    // Sprint (post-C3d) — günlük limit kontrolü
+    if (!readbackLimit.allowed) {
+      setPaywallOpen(true);
+      return;
+    }
     setStage('listening');
     playAtcClearance();
   }
@@ -165,6 +179,10 @@ export default function ReadbackDrillScreen() {
     incrementQuest('streak_check', 1);
     recordDailyActivity();
     recordHistoryActivity('lesson');
+    // Sprint (post-C3d) — server-side counter + league XP
+    void bumpServerUsage('readback_attempts', 1);
+    void bumpUserXpForLeague('readback', xp);
+    bumpDaily('readback_attempts', 1);
     track('readback_drill_completed', {
       avg_score: avg,
       total: total,
@@ -475,6 +493,11 @@ export default function ReadbackDrillScreen() {
           )}
         </View>
       </SafeAreaView>
+      <PaywallSheet
+        visible={paywallOpen}
+        onClose={() => setPaywallOpen(false)}
+        reason="readback_limit"
+      />
     </View>
   );
 }

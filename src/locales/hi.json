@@ -471,7 +471,20 @@
       "bestValue": "सर्वश्रेष्ठ मूल्य",
       "cta": "7 दिन के नि: शुल्क परीक्षण शुरू",
       "restore": "स्टोर",
-      "disclaimer": "किसी भी समय रद्द करना जब तक कि अवधि समाप्त होने से पहले 24h को रद्द नहीं किया गया।"
+      "disclaimer": "किसी भी समय रद्द करना जब तक कि अवधि समाप्त होने से पहले 24h को रद्द नहीं किया गया।",
+      "reason": {
+        "lesson_limit": "You've reached today's free lesson limit",
+        "ai_limit": "You've reached today's free AI conversation limit",
+        "readback_limit": "You've reached today's free read-back drill limit",
+        "listen_solve_limit": "You've reached today's free listen & solve limit",
+        "pronunciation_limit": "You've reached today's free pronunciation limit"
+      },
+      "hearts": {
+        "depleted": "You've lost all your hearts",
+        "refillIn": "Refills in {{hours}} hours",
+        "refillFull": "Hearts refilled!",
+        "max": "Max {{max}} hearts"
+      }
     },
     "settings": {
       "eyebrow": "ACCOUNT · CALLSIGN MTC-038",

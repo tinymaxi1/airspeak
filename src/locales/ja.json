@@ -471,7 +471,20 @@
       "bestValue": "お買い得",
       "cta": "7日間の無料トライアルを開始する",
       "restore": "復元",
-      "disclaimer": "いつでも解約できます。期間終了の24時間前までに解約しない限り、自動更新されます。"
+      "disclaimer": "いつでも解約できます。期間終了の24時間前までに解約しない限り、自動更新されます。",
+      "reason": {
+        "lesson_limit": "You've reached today's free lesson limit",
+        "ai_limit": "You've reached today's free AI conversation limit",
+        "readback_limit": "You've reached today's free read-back drill limit",
+        "listen_solve_limit": "You've reached today's free listen & solve limit",
+        "pronunciation_limit": "You've reached today's free pronunciation limit"
+      },
+      "hearts": {
+        "depleted": "You've lost all your hearts",
+        "refillIn": "Refills in {{hours}} hours",
+        "refillFull": "Hearts refilled!",
+        "max": "Max {{max}} hearts"
+      }
     },
     "settings": {
       "eyebrow": "ACCOUNT · CALLSIGN MTC-038",

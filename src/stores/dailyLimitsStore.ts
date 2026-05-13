@@ -18,6 +18,9 @@ interface DailyCounters {
   vocab_lookups: number;
   pronunciation_attempts: number;
   oral_attempts: number;
+  /** Sprint (post-C3d) — readback + listen_solve counter */
+  readback_attempts: number;
+  listen_solve_attempts: number;
   ads_watched: number;
   hearts_refilled_via_ad: number;
 }
@@ -42,6 +45,8 @@ const empty = (): DailyCounters => ({
   vocab_lookups: 0,
   pronunciation_attempts: 0,
   oral_attempts: 0,
+  readback_attempts: 0,
+  listen_solve_attempts: 0,
   ads_watched: 0,
   hearts_refilled_via_ad: 0,
 });

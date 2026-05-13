@@ -482,7 +482,23 @@ iOS test key konfigüre edildi (`test_bepbobVLqibOscaAJFmISTcTuMv`), Android key
    - Eski 4 score kolonu DROP (vocabulary/grammar/listening/reading_score)
    - Detaylı attempt history tablosu (şu an latest-only)
 
-9. **Sprint C — Quick Practice DB-driven** (2026-05-13)
+9. **Sprint Freemium Tightening** (2026-05-13, migration `20260513000016`)
+   - **Limit sıkılaştırma**: lessons 3→2, pronunciation 5→2, readback +2, listen_solve +2 (yeni 2 counter)
+   - **Hearts**: max 5→2, refill_hours 4→24, kod aynı (REFILL_INTERVAL_MS = 24h)
+   - **`profiles.hearts` + `hearts_refill_at`** DB persist (eskiden MMKV)
+   - **`user_streaks`** yeni tablo (current/longest/last_activity_date)
+   - **`daily_usage`**: readback_attempts + listen_solve_attempts kolonları
+   - **RPC'ler**:
+     - `bump_user_xp_v2(source, xp)` — pratiklerden lesson_id'siz çağrı (user_xp_summary upsert + league sync)
+     - `decrement_hearts()` — kalp -1 + hearts_refill_at set (24h)
+     - `refill_hearts_if_due()` — refill_at geçince hearts → max
+     - `upsert_streak()` — DB streak ardışık gün logic
+     - `bump_daily_usage(p_field, p_delta)` — eski imza değişti, 2 yeni field whitelist
+   - **Pratik XP league entegrasyonu**: readback/listen-solve/pronunciation/scenario/theory → `bumpUserXpForLeague` (eskiden sadece lesson_completed)
+   - **Ads** (`ads.enabled`, `freemium.rewarded_ad_extra_lesson`) → `false` (lansman için)
+   - **`src/features/gamification/api.ts`** yeni modül — 4 RPC wrapper
+
+10. **Sprint C — Quick Practice DB-driven** (2026-05-13)
    - **C1 (TAMAM)**: Listen & Solve gerçek engine + 14 TS drill role-aware (commit `30f4a90`)
    - **C2 (TAMAM)**: 3 yeni DB tablo + admin CRUD + mobile hook'lar (migration `20260513000015`)
      - `readback_clearances` (12 satır seed) — admin `/readback-clearances`

@@ -46,6 +46,7 @@ import { addCoins as addCoinsServer } from '@/features/wallet/api';
 import { showPaywall } from '@/stores/paywallStore';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useAuthStore } from '@/stores/authStore';
+import { bumpUserXpForLeague } from '@/features/gamification/api';
 
 export default function LessonScreen() {
   const c = usePalette();

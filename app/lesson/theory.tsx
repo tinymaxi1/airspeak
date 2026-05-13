@@ -76,6 +76,10 @@ export default function TheoryScreen() {
     void addCoinsServer({ amount: 2, reason: 'lesson_completed', source: 'lesson_completed' });
     recordDailyActivity();
     recordHistoryActivity('lesson');
+    // Sprint (post-C3d) — league XP
+    void import('@/features/gamification/api').then(({ bumpUserXpForLeague }) =>
+      bumpUserXpForLeague('theory', THEORY_XP),
+    );
     markLessonCompleted(lessonSlug, 100);
     markLessonProgressCompleted(lessonSlug);
     recordRecentActivity({

@@ -510,6 +510,19 @@
       "tierSubtitleDynamic": "İlk 10 ilerleyecek · {{h}}sa kaldı"
     },
     "paywall": {
+      "reason": {
+        "lesson_limit": "Bugünkü ücretsiz ders limitin doldu",
+        "ai_limit": "Bugünkü ücretsiz AI sohbet limitin doldu",
+        "readback_limit": "Bugünkü ücretsiz telsiz tekrar limitin doldu",
+        "listen_solve_limit": "Bugünkü ücretsiz dinle & çöz limitin doldu",
+        "pronunciation_limit": "Bugünkü ücretsiz telaffuz limitin doldu"
+      },
+      "hearts": {
+        "depleted": "Tüm kalplerini kaybettin",
+        "refillIn": "{{hours}} saat sonra dolacak",
+        "refillFull": "Şimdi dolduruldu!",
+        "max": "Max {{max}} kalp"
+      },
       "badge": "PRO PİLOT",
       "hero1": "Sınırsız",
       "hero2": "uçuş saati.",

@@ -40,6 +40,8 @@ import { useScenario, dbToStaticScenario } from '@/features/conversation/useScen
 import { useConversationPlayStore } from '@/stores/conversationPlayStore';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
+import { bumpUserXpForLeague } from '@/features/gamification/api';
+import { bumpServerUsage } from '@/features/config/limits';
 import { useQuestsStore } from '@/stores/questsStore';
 import { useLessonHistoryStore } from '@/stores/lessonHistoryStore';
 import { useActivityStore } from '@/stores/activityStore';
@@ -375,6 +377,9 @@ export default function ConversationScreen() {
     incrementQuest('practice_conversation', 1);
     recordDailyActivity();
     recordHistoryActivity('conversation');
+    // Sprint (post-C3d) — server counter + league XP
+    void bumpServerUsage('ai_conversations', 1);
+    void bumpUserXpForLeague('scenario', xp);
     recordRecentActivity({
       type: 'conversation',
       refId: scenario.id,

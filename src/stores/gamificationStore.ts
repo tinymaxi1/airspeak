@@ -104,8 +104,8 @@ const initialState = {
   currentStreak: 0,
   longestStreak: 0,
   lastActivityDate: null,
-  hearts: 5,
-  maxHearts: 5,
+  hearts: 2,
+  maxHearts: 2,
   lastHeartRefill: Date.now(),
   coins: 0,
   streakFreezes: 0,
@@ -200,6 +200,10 @@ export const useGamificationStore = create<GamificationState>()(
           lastActivityDate: today,
         });
         track('streak_increased', { current_streak: newStreak });
+        // DB sync (best-effort)
+        void import('@/features/gamification/api').then(({ upsertStreak }) =>
+          upsertStreak().catch(() => {}),
+        );
       },
 
       loseHeart: () => {
@@ -209,30 +213,37 @@ export const useGamificationStore = create<GamificationState>()(
         if (current - 1 === 0) {
           track('hearts_depleted');
         }
+        // DB sync (best-effort, hata sessizce yutulur — local already updated)
+        void import('@/features/gamification/api').then(({ decrementHearts }) =>
+          decrementHearts().catch(() => {}),
+        );
       },
 
       refillHearts: () => {
-        // Sprint 14.B.3 — saatte 1 can dolar (max 5).
-        // Fraction'ı koru: kalan dakikalar bir sonraki regen'e devreder
-        // (örn. 75 dk geçtiyse +1 heart + 15 dk kredi).
+        // Sprint (post-C3d): 24 saat sonra full refill (max 2).
+        // Eski "saatte 1 dolar" davranışı kaldırıldı — DB'de hearts_refill_at
+        // set ediliyor, kalp 0 olduktan 24h sonra otomatik 2'ye dolar.
         const now = Date.now();
         const last = get().lastHeartRefill;
         const current = get().hearts;
         const max = get().maxHearts;
         if (current >= max) return;
 
-        const REFILL_INTERVAL_MS = 60 * 60 * 1000; // 60 dakika
+        const REFILL_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 saat (Sprint post-C3d)
         const elapsedMs = now - last;
-        if (elapsedMs < REFILL_INTERVAL_MS) return;
+        if (elapsedMs < REFILL_INTERVAL_MS) {
+          // DB tarafında refill_hearts_if_due RPC kontrolü yap (server-side authoritative)
+          void import('@/features/gamification/api').then(({ refillHeartsIfDue }) =>
+            refillHeartsIfDue().catch(() => {}),
+          );
+          return;
+        }
 
-        const refillCount = Math.floor(elapsedMs / REFILL_INTERVAL_MS);
-        if (refillCount === 0) return;
-
-        const newHearts = Math.min(current + refillCount, max);
-        // Fraction'ı koru: kullanılmamış dakikalar bir sonraki refill için saklanır
-        const remainderMs = elapsedMs - refillCount * REFILL_INTERVAL_MS;
-        const newLastRefill = now - remainderMs;
-        set({ hearts: newHearts, lastHeartRefill: newLastRefill });
+        // 24 saat geçti — full refill (max 2)
+        set({ hearts: max, lastHeartRefill: now });
+        void import('@/features/gamification/api').then(({ refillHeartsIfDue }) =>
+          refillHeartsIfDue().catch(() => {}),
+        );
       },
 
       addCoins: (amount, reason) => {

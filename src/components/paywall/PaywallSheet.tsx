@@ -17,7 +17,7 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   /** Trigger sebebi — analytics için */
-  reason?: 'lesson_limit' | 'ai_limit' | 'icao4_locked' | 'feature_locked' | 'manual';
+  reason?: 'lesson_limit' | 'ai_limit' | 'readback_limit' | 'listen_solve_limit' | 'pronunciation_limit' | 'icao4_locked' | 'feature_locked' | 'manual';
 }
 
 export function PaywallSheet({ visible, onClose, reason: _reason }: Props) {

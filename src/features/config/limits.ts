@@ -53,6 +53,42 @@ export function useAiLimit(): LimitCheckResult {
   };
 }
 
+export function useReadbackLimit(): LimitCheckResult {
+  const cfg = useAppConfig();
+  const isPremium = useAuthStore((s) => s.isPremium);
+  const counters = useDailyLimitsStore((s) => s.counters) as any;
+
+  if (isPremium && cfg['premium.unlimited_lessons']) {
+    return { allowed: true, used: counters.readback_attempts ?? 0, limit: -1, reason: 'premium' };
+  }
+  const limit = (cfg['freemium.max_readback_per_day'] as number) ?? 2;
+  const used = counters.readback_attempts ?? 0;
+  return {
+    allowed: used < limit,
+    used,
+    limit,
+    reason: used < limit ? 'within_limit' : 'exceeded',
+  };
+}
+
+export function useListenSolveLimit(): LimitCheckResult {
+  const cfg = useAppConfig();
+  const isPremium = useAuthStore((s) => s.isPremium);
+  const counters = useDailyLimitsStore((s) => s.counters) as any;
+
+  if (isPremium && cfg['premium.unlimited_lessons']) {
+    return { allowed: true, used: counters.listen_solve_attempts ?? 0, limit: -1, reason: 'premium' };
+  }
+  const limit = (cfg['freemium.max_listen_solve_per_day'] as number) ?? 2;
+  const used = counters.listen_solve_attempts ?? 0;
+  return {
+    allowed: used < limit,
+    used,
+    limit,
+    reason: used < limit ? 'within_limit' : 'exceeded',
+  };
+}
+
 export function useVocabLookupLimit(): LimitCheckResult {
   const cfg = useAppConfig();
   const isPremium = useAuthStore((s) => s.isPremium);
@@ -113,12 +149,14 @@ export async function bumpServerUsage(
     | 'vocab_lookups'
     | 'pronunciation_attempts'
     | 'oral_attempts'
+    | 'readback_attempts'
+    | 'listen_solve_attempts'
     | 'ads_watched'
     | 'hearts_refilled_via_ad',
   amount: number = 1,
 ): Promise<void> {
   try {
-    await supabase.rpc('bump_daily_usage', { field, amount });
+    await supabase.rpc('bump_daily_usage', { p_field: field, p_delta: amount });
   } catch (e) {
     Sentry.captureException(e, {
       tags: { function: 'bumpServerUsage', field },
