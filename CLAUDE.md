@@ -737,3 +737,56 @@ DEEPL_API_KEY=...
 - **Hafta 5-6**: Technician + Ground content güçlendirme
 - **Hafta 7**: Student content güçlendirme + cross-rol vocab
 - **Hafta 8**: QA + admin review
+
+---
+
+## Sentry Workflow (FAZ 7 — Observability)
+
+**Setup**:
+- Org: `airspeak` · Project: `react-native`
+- Mobile init: `src/lib/sentry.ts` → `Sentry.init()` + `setExpoUpdateTags()` (OTA #17 sonrası her event'te `expo-update-id`, `expo-channel`, `expo-runtime-version`, `expo-update-embedded` tag'leri attach edilir)
+- Auth token env: `SENTRY_AUTH_TOKEN` (write scope dahil: `event:admin`, `event:write`, `org:read`, `project:read`)
+- ⚠️ Token'ı **dosyaya yazma** — sadece env var (in-memory)
+
+### Helper Script: `scripts/sentry-helper.sh`
+
+```bash
+export SENTRY_AUTH_TOKEN="sntryu_..."
+./scripts/sentry-helper.sh list 24h           # son 24h unresolved (14d, 7d, 24h)
+./scripts/sentry-helper.sh latest             # en son crash özeti
+./scripts/sentry-helper.sh trace <event_id>   # tam stack trace + breadcrumbs + tag'ler
+./scripts/sentry-helper.sh issue <id>         # issue summary JSON
+./scripts/sentry-helper.sh resolve <id>       # status=resolved
+./scripts/sentry-helper.sh unresolve <id>     # status=unresolved (test)
+```
+
+`<id>` formatı: `REACT-NATIVE-7` (shortId, case-insensitive) veya `119572632` (numeric).
+
+### Yeni Crash Bildirimi → Akış
+
+1. Kullanıcı: "Sentry'de crash var, event_id X" der
+2. `./scripts/sentry-helper.sh trace X` → tam stack trace + tag'ler (expo-update-id ile hangi OTA tespit)
+3. `./scripts/sentry-helper.sh issue <groupId>` → issue history (kaç event, kaç user, ilk/son seen)
+4. Kod incele → fix yaz → commit + push + OTA
+5. OTA telefonlara inince 10-15 dk bekle → yeni event yoksa `./scripts/sentry-helper.sh resolve <id>`
+6. Yeni event gelirse: tag'lerden hangi OTA'da olduğunu doğrula (eğer fix sonrası OTA'da event geliyorsa fix yetersiz, regression)
+
+### Tag Bazlı Filtreleme (Sentry UI)
+
+```
+expo-update-id:019e20ed-3b89-...           → sadece OTA #17 event'leri
+expo-update-embedded:true                  → OTA inmemiş, embedded JS
+release:app.airspeak.mobile@1.0.0+29       → BUILD 29 native
+```
+
+### Resolved Issue Geçmişi (FAZ 7 sonrası)
+
+| shortId | Cause | Resolved |
+|---|---|---|
+| RN-1 | register.tsx:68 handleRegister undefined (build 15 eski) | ✅ FAZ 7 |
+| RN-2 | presence.ts:75 bumpLastActive undefined (cascading) | ✅ FAZ 7 |
+| RN-3 | AvatarUploader.tsx:65 uploadToStorage (eski) | ✅ FAZ 7 |
+| RN-4 | home.tsx postgres_changes (build 22, fix OTA #14+) | UNRESOLVED — OTA #15+ ile test |
+| RN-5 | _layout.tsx postgres_changes (38 event, fix var) | UNRESOLVED |
+| RN-6 | useUserDataSync run undefined (OTA #14 fix) | UNRESOLVED — OTA #16+ test |
+| RN-7 | conversation infinite loop (OTA #14 fix) | UNRESOLVED — OTA #16+ test |
