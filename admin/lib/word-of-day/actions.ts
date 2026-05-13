@@ -19,6 +19,13 @@ export interface WordOfDayPayload {
   ipa?: string | null;
   word_type?: WotdWordType | null;
   target_roles: WotdRole[];
+  /**
+   * Opsiyonel granular sub-role filter. Boş array = parent role içeren TÜM
+   * alt-rollere açık (target_roles üzerinden filter). Dolu ise sadece bu
+   * sub_role.id değerine sahip user'lar görür.
+   * Migration 20260513000003 ile eklendi.
+   */
+  target_sub_roles?: string[];
   definition_en: string;
   definition_tr: string;
   example_en: string;

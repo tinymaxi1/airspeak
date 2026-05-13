@@ -8,6 +8,7 @@ import {
   type WordOfDayPayload,
   type WotdRole,
 } from '@/lib/word-of-day/actions';
+import { SubRolePicker } from '@/components/sub-roles/SubRolePicker';
 
 const ROLES: { id: WotdRole; label: string; emoji: string }[] = [
   { id: 'pilot', label: 'Pilot', emoji: '✈' },
@@ -68,6 +69,7 @@ export function WordOfDayForm({ mode, initial, onClose }: Props) {
   const [ipa, setIpa] = useState(initial?.ipa ?? '');
   const [wordType, setWordType] = useState<string>(initial?.word_type ?? 'noun');
   const [targetRoles, setTargetRoles] = useState<WotdRole[]>(initial?.target_roles ?? ['pilot']);
+  const [targetSubRoles, setTargetSubRoles] = useState<string[]>(initial?.target_sub_roles ?? []);
   const [definitionEn, setDefinitionEn] = useState(initial?.definition_en ?? '');
   const [definitionTr, setDefinitionTr] = useState(initial?.definition_tr ?? '');
   const [exampleEn, setExampleEn] = useState(initial?.example_en ?? '');
@@ -96,6 +98,7 @@ export function WordOfDayForm({ mode, initial, onClose }: Props) {
       ipa: ipa.trim() || null,
       word_type: (wordType as any) || null,
       target_roles: targetRoles,
+      target_sub_roles: targetSubRoles,
       definition_en: definitionEn.trim(),
       definition_tr: definitionTr.trim(),
       example_en: exampleEn.trim(),
@@ -217,6 +220,18 @@ export function WordOfDayForm({ mode, initial, onClose }: Props) {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Target Sub-Roles (opsiyonel granular filter) */}
+          <div>
+            <label className="block text-xs font-semibold mb-2">
+              Hedef alt-roller (opsiyonel — boş = tüm alt-roller)
+            </label>
+            <SubRolePicker
+              parentRoles={targetRoles}
+              value={targetSubRoles}
+              onChange={setTargetSubRoles}
+            />
           </div>
 
           {/* Definitions */}
