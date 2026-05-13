@@ -306,7 +306,12 @@
         "श",
         "र"
       ],
-      "perfectWeek": "नए साप्ताहिक बैज में {{days}} दिन।"
+      "perfectWeek": "नए साप्ताहिक बैज में {{days}} दिन।",
+      "difficulty": {
+        "basic": "प्रारंभिक",
+        "intermediate": "मध्यम",
+        "advanced": "उन्नत"
+      }
     },
     "learn": {
       "unit": "यूनिट",

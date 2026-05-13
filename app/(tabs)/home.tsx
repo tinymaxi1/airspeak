@@ -825,7 +825,7 @@ export default function HomeScreen() {
                           );
                         })}
                         <Text style={{ fontSize: 10, color: '#8A93A6', marginLeft: 4, fontFamily: FONTS.mono }}>
-                          {wordOfDay.difficulty}
+                          {t(`screens.home.difficulty.${wordOfDay.difficulty}`, wordOfDay.difficulty)}
                         </Text>
                       </View>
                     </View>

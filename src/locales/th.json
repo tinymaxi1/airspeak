@@ -306,7 +306,12 @@
         "ส",
         "อา"
       ],
-      "perfectWeek": "อีก {{days}} วันถึงเหรียญสัปดาห์."
+      "perfectWeek": "อีก {{days}} วันถึงเหรียญสัปดาห์.",
+      "difficulty": {
+        "basic": "พื้นฐาน",
+        "intermediate": "กลาง",
+        "advanced": "สูง"
+      }
     },
     "learn": {
       "unit": "สหรัฐ",

@@ -293,6 +293,11 @@
         "dialogue": "diyalog",
         "tip": "ipucu"
       },
+      "difficulty": {
+        "basic": "temel",
+        "intermediate": "orta",
+        "advanced": "ileri"
+      },
       "wordOfDaySubtitle": "Rolüne özel · her gün yenilenir",
       "wordOfDayLoadError": "İçerik yüklenemedi",
       "wordOfDayEmpty": "Yakında yeni içerik",

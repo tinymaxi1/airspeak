@@ -306,7 +306,12 @@
         "S",
         "D"
       ],
-      "perfectWeek": "{{days}} dias para o novo distintivo semanal."
+      "perfectWeek": "{{days}} dias para o novo distintivo semanal.",
+      "difficulty": {
+        "basic": "básico",
+        "intermediate": "intermediário",
+        "advanced": "avançado"
+      }
     },
     "learn": {
       "unit": "UNIDADE",

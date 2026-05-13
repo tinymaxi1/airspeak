@@ -306,7 +306,12 @@
         "س",
         "ح"
       ],
-      "perfectWeek": "{{days}} أيام لشارة الأسبوع المثالي."
+      "perfectWeek": "{{days}} أيام لشارة الأسبوع المثالي.",
+      "difficulty": {
+        "basic": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدم"
+      }
     },
     "learn": {
       "unit": "الوحدة",

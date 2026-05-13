@@ -306,7 +306,12 @@
         "پ",
         "ج"
       ],
-      "perfectWeek": "{{days}} روز تا نشان هفته کامل."
+      "perfectWeek": "{{days}} روز تا نشان هفته کامل.",
+      "difficulty": {
+        "basic": "مبتدی",
+        "intermediate": "متوسط",
+        "advanced": "پیشرفته"
+      }
     },
     "learn": {
       "unit": "ایالات متحده آمریکا",

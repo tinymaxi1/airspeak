@@ -306,7 +306,12 @@
         "土",
         "日"
       ],
-      "perfectWeek": "完璧な週バッジまで残り{{days}}日。"
+      "perfectWeek": "完璧な週バッジまで残り{{days}}日。",
+      "difficulty": {
+        "basic": "初級",
+        "intermediate": "中級",
+        "advanced": "上級"
+      }
     },
     "learn": {
       "unit": "ユニット",

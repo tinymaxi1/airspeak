@@ -306,7 +306,12 @@
         "S",
         "D"
       ],
-      "perfectWeek": "{{days}} días para la nueva insignia semanal."
+      "perfectWeek": "{{days}} días para la nueva insignia semanal.",
+      "difficulty": {
+        "basic": "básico",
+        "intermediate": "intermedio",
+        "advanced": "avanzado"
+      }
     },
     "learn": {
       "unit": "UNIDAD",

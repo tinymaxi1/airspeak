@@ -306,7 +306,12 @@
         "토",
         "일"
       ],
-      "perfectWeek": "완벽한 주 배지까지 {{days}}일."
+      "perfectWeek": "완벽한 주 배지까지 {{days}}일.",
+      "difficulty": {
+        "basic": "초급",
+        "intermediate": "중급",
+        "advanced": "고급"
+      }
     },
     "learn": {
       "unit": "단위",

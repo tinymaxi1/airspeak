@@ -306,7 +306,12 @@
         "С",
         "В"
       ],
-      "perfectWeek": "{{days}} дней до недельного значка."
+      "perfectWeek": "{{days}} дней до недельного значка.",
+      "difficulty": {
+        "basic": "начальный",
+        "intermediate": "средний",
+        "advanced": "продвинутый"
+      }
     },
     "learn": {
       "unit": "ЕДИНИЦА",

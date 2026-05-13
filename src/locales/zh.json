@@ -306,7 +306,12 @@
         "六",
         "日"
       ],
-      "perfectWeek": "完美一周徽章还差{{days}}天."
+      "perfectWeek": "完美一周徽章还差{{days}}天.",
+      "difficulty": {
+        "basic": "初级",
+        "intermediate": "中级",
+        "advanced": "高级"
+      }
     },
     "learn": {
       "unit": "UNIT",

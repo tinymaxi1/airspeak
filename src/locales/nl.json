@@ -306,7 +306,12 @@
         "Z",
         "Z"
       ],
-      "perfectWeek": "Nog {{days}} dagen voor je nieuwe weekbadge."
+      "perfectWeek": "Nog {{days}} dagen voor je nieuwe weekbadge.",
+      "difficulty": {
+        "basic": "basis",
+        "intermediate": "midden",
+        "advanced": "gevorderd"
+      }
     },
     "learn": {
       "unit": "EENHEID",

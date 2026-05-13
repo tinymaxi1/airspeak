@@ -306,7 +306,12 @@
         "S",
         "M"
       ],
-      "perfectWeek": "{{days}} hari menuju lencana mingguan."
+      "perfectWeek": "{{days}} hari menuju lencana mingguan.",
+      "difficulty": {
+        "basic": "dasar",
+        "intermediate": "menengah",
+        "advanced": "lanjutan"
+      }
     },
     "learn": {
       "unit": "UNIT",

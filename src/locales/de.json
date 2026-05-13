@@ -257,6 +257,11 @@
       "today": "TODAY'S FLIGHT PLAN",
       "weeklyChallenge": "WEEKLY CHALLENGE",
       "wordOfFlight": "WORD OF THE FLIGHT",
+      "difficulty": {
+        "basic": "Grundstufe",
+        "intermediate": "Mittelstufe",
+        "advanced": "Fortgeschritten"
+      },
       "speak": "Speak",
       "resume": "Resume",
       "streak": "streak",

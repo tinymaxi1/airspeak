@@ -287,8 +287,8 @@
       "qListenSub": "Garbled radio",
       "qAi": "AI roleplay",
       "qAiSub": "Holding pattern",
-      "qPronounce": "Pronunciation",
-      "qPronounceSub": "Numbers 0-9",
+      "qPronounce": "Pronounce",
+      "qPronounceSub": "Numbers 0–9",
       "greetingMorning": "Good morning, {{name}}.",
       "greetingDay": "Good afternoon, {{name}}.",
       "greetingEvening": "Good evening, {{name}}.",
@@ -319,14 +319,6 @@
       "firstTimeTitle": "Start your first lesson",
       "firstTimeSub": "~3 min · begin your streak",
       "firstTimeStart": "START →",
-      "qReadback": "Read-back drill",
-      "qReadbackSub": "ATC clearances",
-      "qListen": "Listen & decode",
-      "qListenSub": "Garbled radio",
-      "qAi": "AI roleplay",
-      "qAiSub": "Holding pattern",
-      "qPronounce": "Pronounce",
-      "qPronounceSub": "Numbers 0–9",
       "careerEyebrow": "CAREER HUB",
       "careerTitle": "ICAO 4 · 41 Airlines · AI",
       "careerSub": "Interview + exam + B2B cohort",
@@ -346,7 +338,12 @@
         "S",
         "S"
       ],
-      "perfectWeek": "{{days}} days till new perfect week badge."
+      "perfectWeek": "{{days}} days till new perfect week badge.",
+      "difficulty": {
+        "basic": "basic",
+        "intermediate": "intermediate",
+        "advanced": "advanced"
+      }
     },
     "learn": {
       "unit": "UNIT",

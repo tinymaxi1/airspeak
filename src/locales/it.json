@@ -306,7 +306,12 @@
         "S",
         "D"
       ],
-      "perfectWeek": "{{days}} giorni al nuovo badge settimanale."
+      "perfectWeek": "{{days}} giorni al nuovo badge settimanale.",
+      "difficulty": {
+        "basic": "base",
+        "intermediate": "intermedio",
+        "advanced": "avanzato"
+      }
     },
     "learn": {
       "unit": "UNITÀ",

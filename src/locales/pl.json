@@ -306,7 +306,12 @@
         "S",
         "N"
       ],
-      "perfectWeek": "{{days}} dni do nowej odznaki tygodnia."
+      "perfectWeek": "{{days}} dni do nowej odznaki tygodnia.",
+      "difficulty": {
+        "basic": "podstawowy",
+        "intermediate": "średni",
+        "advanced": "zaawansowany"
+      }
     },
     "learn": {
       "unit": "JEDNOSTKA",
