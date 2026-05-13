@@ -5,6 +5,11 @@
 ## Kullanıcı tercihleri (kuralı bozma)
 
 1. **Yanıtlar Türkçe**, kısa, net, az token. Açıklayıcı paragraf yerine madde işaretleri.
+   - **Çok kısa yaz** — ilk defa kodlama yapan biriyle konuşur gibi
+   - Teknik jargon yerine basit kelimeler
+   - Gerekirse **örnek** ver (kod parçası, komut, çıktı)
+   - Tablo/madde işaretleri uzun açıklamadan yeğdir
+   - Kullanıcı sormadıkça "neden" anlatma — sadece "ne yapacağım/yaptım"
 2. **Varsayım yapma — önce kodu kontrol et.** Tespit yapmadan plan değiştirme.
 3. **Atomik commit'ler.** A+B birleşik sprint **RED**. Her alt-sprint kendi commit'i.
 4. Plan değişikliği önce **tespit + öneri**, kullanıcı onayı sonrası implementasyon.
