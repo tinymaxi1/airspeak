@@ -2,8 +2,8 @@
  * Settings → Role — kullanıcı role değiştirme.
  * profiles.role günceller. Onboarding flow'undan ayrı, hesap değişiminden değil.
  */
-import { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import type { UserRole } from '@/types/profile';
 import { Eyebrow, Mono, Body, FONTS, BackButton, Button3D } from '@/components/airspeak';
+import { useLocalizedSubRoles } from '@/features/profile/useSubRoles';
 
 interface RoleSpec {
   id: UserRole;
@@ -43,12 +44,18 @@ export default function RoleSettingsScreen() {
   );
   const [saving, setSaving] = useState(false);
 
+  // Mevcut sub_role'u lokalize göster (varsa)
+  const currentRole = profile?.role as UserRole | undefined;
+  const { items: currentSubRoleItems } = useLocalizedSubRoles(currentRole);
+  const currentSubRoleItem = currentSubRoleItems.find((it) => it.id === profile?.sub_role);
+
   async function onSave() {
     if (!userId || !selected || selected === profile?.role) return;
     setSaving(true);
+    // Role değişiyorsa sub_role'u NULL'a düşür — eski sub_role yeni role'e uymaz.
     const { data, error } = await (supabase as any)
       .from('profiles')
-      .update({ role: selected })
+      .update({ role: selected, sub_role: null })
       .eq('id', userId)
       .select()
       .single();
@@ -61,8 +68,16 @@ export default function RoleSettingsScreen() {
     if (data) setProfile(data);
     Alert.alert(
       t('common.success', 'Tamam'),
-      t('settings.role.updated', 'Rolün güncellendi. İçerik buna göre filtrelenecek.'),
-      [{ text: 'OK', onPress: () => router.back() }],
+      t(
+        'settings.role.updatedReselectSubRole',
+        'Rol güncellendi. Şimdi yeni rolün için alt-rolünü seç.',
+      ),
+      [
+        {
+          text: t('common.continue', 'Devam'),
+          onPress: () => router.push('/(auth)/onboarding/sub-role-select'),
+        },
+      ],
     );
   }
 
@@ -95,6 +110,50 @@ export default function RoleSettingsScreen() {
             'Rolünü değiştirirsen ders/sınav içeriği yeni role göre filtrelenir. İlerlemen kaybolmaz.',
           )}
         </Body>
+
+        {/* Mevcut sub_role (varsa) — bilgi + değiştir butonu */}
+        {currentRole && (
+          <View style={{ marginBottom: 24 }}>
+            <Eyebrow>{t('settings.role.subRoleEyebrow', 'ALT-ROL')}</Eyebrow>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={() => router.push('/(auth)/onboarding/sub-role-select')}
+              style={{
+                marginTop: 8,
+                padding: 14,
+                backgroundColor: '#FFFFFF',
+                borderRadius: 14,
+                borderWidth: 1.5,
+                borderColor: '#DCE0E8',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+              }}
+            >
+              <View
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 10,
+                  backgroundColor: '#F5F5F0',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{ fontSize: 22 }}>{currentSubRoleItem?.icon ?? '·'}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: FONTS.body700, fontSize: 15, color: '#0E1116' }}>
+                  {currentSubRoleItem?.name ?? t('settings.role.subRoleNotSet', 'Henüz seçilmedi')}
+                </Text>
+                <Body color="#5A6478" style={{ fontSize: 12, marginTop: 2 }}>
+                  {t('settings.role.subRoleHint', 'Tıkla — değiştir veya seç')}
+                </Body>
+              </View>
+              <Text style={{ fontSize: 18, color: '#8A93A6' }}>›</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         <Eyebrow>{t('settings.role.eyebrow', 'ROLLER')}</Eyebrow>
         <View style={{ marginTop: 8, gap: 10 }}>
