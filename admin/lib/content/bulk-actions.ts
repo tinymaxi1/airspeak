@@ -4,26 +4,25 @@
  * Bulk content actions — Sprint C3c
  *
  * Çoklu satır status update + delete. RLS admin guard'dan geçer.
+ *
+ * NOT: 'use server' dosyasında SADECE async function export edilebilir.
+ * Type/const/sync helper'lar non-export olmalı veya başka dosyaya taşınmalı.
+ * (ActionResult type → actions.ts'ten import edilir.)
  */
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { requireAdminRole } from '@/lib/auth/guard';
-import type { ContentTable } from './actions';
+import type { ContentTable, ActionResult } from './actions';
 
-export type ActionResult<T = unknown> =
-  | { ok: true; data: T }
-  | { ok: false; error: string };
-
-const BULK_TABLES: ContentTable[] = [
+// File-level non-export helper'lar (server action bundler bunları ayırır)
+const BULK_TABLES = [
   'readback_clearances',
   'pronunciation_sentences',
   'listen_solve_drills',
-];
+] as const;
 
-function assertTable(table: string): asserts table is ContentTable {
-  if (!BULK_TABLES.includes(table as ContentTable)) {
-    throw new Error(`Bulk action allowed only for: ${BULK_TABLES.join(', ')}`);
-  }
+function isBulkTable(table: string): table is ContentTable {
+  return (BULK_TABLES as readonly string[]).includes(table);
 }
 
 /** Toplu status update (publish / draft / archive). */
@@ -34,7 +33,9 @@ export async function bulkSetStatus(
   revalidate?: string | string[],
 ): Promise<ActionResult<{ updated: number }>> {
   await requireAdminRole('editor');
-  assertTable(table);
+  if (!isBulkTable(table)) {
+    return { ok: false, error: `Bulk action allowed only for: ${BULK_TABLES.join(', ')}` };
+  }
   if (!Array.isArray(ids) || ids.length === 0) {
     return { ok: false, error: 'no ids' };
   }
@@ -66,7 +67,9 @@ export async function bulkDelete(
   revalidate?: string | string[],
 ): Promise<ActionResult<{ deleted: number }>> {
   await requireAdminRole('super_admin');
-  assertTable(table);
+  if (!isBulkTable(table)) {
+    return { ok: false, error: `Bulk action allowed only for: ${BULK_TABLES.join(', ')}` };
+  }
   if (!Array.isArray(ids) || ids.length === 0) {
     return { ok: false, error: 'no ids' };
   }
