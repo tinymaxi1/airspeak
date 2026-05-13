@@ -81,10 +81,14 @@ export default function HomeScreen() {
           : 'comingSoon';
 
   // SRS: bugün tekrar etmesi gereken kart sayısı
-  const dueCount = useSrsStore((s) => {
+  // (Audit fix: selector raw cards döndürür, count useMemo'da hesaplanır.
+  // Number döndüğü için infinite loop riski yoktu ama selector her render
+  // tekrar tekrar Object.values+filter çalıştırıyordu — pahalı hesap useMemo'da.)
+  const srsCards = useSrsStore((s) => s.cards);
+  const dueCount = useMemo(() => {
     const now = Date.now();
-    return Object.values(s.cards).filter((c) => c.nextReviewAt <= now).length;
-  });
+    return Object.values(srsCards).filter((c) => c.nextReviewAt <= now).length;
+  }, [srsCards]);
 
   // Offline durumu
   const isOnline = useOfflineStore((s) => s.isOnline);
