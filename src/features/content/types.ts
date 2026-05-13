@@ -220,6 +220,12 @@ export interface AirlineRow extends ContentBase {
 
 export interface ScenarioRow extends ContentBase {
   role: Role | 'all' | null;
+  /**
+   * Sub-role filter array. Migration 20260513000003 ile eklendi.
+   * Boş array (default) = parent role içeren tüm sub_role'lara açık.
+   * Dolu ise sadece bu sub_role id'leri içeren kullanıcılar görür.
+   */
+  target_sub_roles?: string[];
   category: string | null;
   title: string;
   title_tr: string | null;

@@ -25,6 +25,11 @@ export interface WordOfDayRow {
   ipa: string | null;
   word_type: WordOfDayWordType | null;
   target_roles: string[];
+  /**
+   * Sub-role filter array. Migration 20260513000003 ile eklendi.
+   * Boş = sadece target_roles ile filtre. Dolu = ek sub_role kısıtlaması.
+   */
+  target_sub_roles?: string[];
   definition_en: string;
   definition_tr: string;
   example_en: string;
