@@ -1,0 +1,49 @@
+appId: app.airspeak.mobile
+name: ai-roleplay
+tags:
+  - critical
+  - regression
+---
+# AI roleplay — RN-7 infinite loop regression test
+
+- launchApp
+- assertVisible: ".*Hızlı Alıştırma.*"
+
+# AI ile rol yap kartı
+- tapOn: ".*AI ile rol yap.*"
+
+# Scenario list açılır (5+ scenario)
+- assertVisible: ".*Senaryo seç.*"
+- assertVisible: ".*holding.*|.*taxi.*|.*MAYDAY.*|.*PA.*"
+
+# Filter tab tıklama — RN-7 bookmarkedSet infinite loop test bunda
+- tapOn: ".*Pilot.*"
+- assertVisible: ".*Senaryo seç.*"
+
+# Bir scenario seç
+- tapOn:
+    text: ".*holding.*|.*VECON.*|.*taxi.*"
+    index: 0
+
+# Detail screen açılır (BRİFİNG veya turn meta)
+- assertVisible: ".*BRİFİNG.*|.*turn.*|.*ATC.*"
+
+# Mic butonu yok değil görünürlük testi (TTS çalışmasını test etmiyoruz)
+- assertVisible: ".*BAŞLAT.*|.*CEVAP.*|.*DİNLE.*"
+
+# Geri dön — cleanup test
+- tapOn:
+    id: "back-button"
+    optional: true
+- runFlow:
+    when:
+      visible: "✕"
+    commands:
+      - tapOn: "✕"
+
+# Liste hala açık, crash yok
+- assertVisible: ".*Senaryo seç.*"
+
+# Home'a geri
+- back
+- assertVisible: ".*Hızlı Alıştırma.*"

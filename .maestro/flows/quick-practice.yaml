@@ -1,0 +1,34 @@
+appId: app.airspeak.mobile
+name: quick-practice
+tags:
+  - smoke
+  - faz-2
+---
+# Hızlı Alıştırma 4 kart navigate test
+
+- launchApp
+- assertVisible: ".*Hızlı Alıştırma.*|.*Quick.*"
+
+# 4 kart sırayla — her birine tap, geri dön
+- tapOn:
+    text: ".*Telsiz tekrarı.*|.*Klerans.*|.*Bakım.*|.*Alfabe.*"
+    index: 0
+- back
+- assertVisible: ".*Hızlı Alıştırma.*"
+
+- tapOn:
+    text: ".*Dinle.*|.*Çatışma.*|.*Arıza.*|.*Sayılar.*"
+    index: 0
+- back
+- assertVisible: ".*Hızlı Alıştırma.*"
+
+# AI ile rol yap kartı
+- tapOn: ".*AI ile rol yap.*|.*roleplay.*"
+- assertVisible: ".*Senaryo seç.*|.*senaryo.*"
+- back
+- assertVisible: ".*Hızlı Alıştırma.*"
+
+# Telaffuz
+- tapOn: ".*Telaffuz.*|.*Alfabe.*|.*Sayılar.*"
+- back
+- assertVisible: ".*BUGÜNKÜ.*"

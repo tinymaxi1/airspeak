@@ -1,0 +1,37 @@
+appId: app.airspeak.mobile
+name: all-tabs
+tags:
+  - smoke
+  - critical
+---
+# 5 tab arasında dön, hiçbiri patlamasın
+
+- launchApp
+
+# Home tab (default)
+- assertVisible: ".*BUGÜNKÜ.*|.*Hızlı Alıştırma.*"
+
+# Öğren tab
+- tapOn:
+    id: "tab-learn"
+- assertVisible: ".*Öğren.*|.*Modül.*"
+
+# Lig tab
+- tapOn:
+    id: "tab-league"
+- assertVisible: ".*Lig.*|.*Tier.*"
+
+# Topluluk tab
+- tapOn:
+    id: "tab-community"
+- assertVisible: ".*Topluluk.*|.*Grup.*"
+
+# Profil tab
+- tapOn:
+    id: "tab-profile"
+- assertVisible: ".*Profil.*|.*İstatistik.*"
+
+# Geri Home'a
+- tapOn:
+    id: "tab-home"
+- assertVisible: ".*BUGÜNKÜ.*"

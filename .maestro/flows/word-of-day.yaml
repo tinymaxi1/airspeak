@@ -1,0 +1,19 @@
+appId: app.airspeak.mobile
+name: word-of-day
+tags:
+  - smoke
+  - faz-d
+---
+# Home Word of Day kartı + 🔊 buton crash test
+
+- launchApp
+- assertVisible: ".*BUGÜNKÜ.*|.*Hızlı Alıştırma.*"
+
+# Word of Day kartı görünür mü (Eyebrow: GÜNÜN KELİMESİ veya benzeri)
+- assertVisible: ".*GÜNÜN.*"
+
+# 🔊 buton — speaker icon. Maestro'da emoji+text bul.
+- tapOn: "🔊"
+
+# Crash yok kontrolü — Home hala görünür
+- assertVisible: ".*BUGÜNKÜ.*"

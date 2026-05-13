@@ -1,0 +1,11 @@
+# Maestro proje yapılandırması
+# Test cihazı: iOS simulator (iPhone 17 Pro veya benzeri)
+# App: app.airspeak.mobile
+
+executionOrder:
+  flowsOrder:
+    - onboarding
+    - all-tabs
+    - word-of-day
+    - quick-practice
+    - ai-roleplay

@@ -1,0 +1,71 @@
+appId: app.airspeak.mobile
+name: onboarding
+tags:
+  - critical
+  - faz-3
+---
+# Onboarding 2-step: role → sub_role → level → home
+# FAZ 3 (sub-role) sonrası akış zorunlu.
+
+- launchApp:
+    clearState: true
+    clearKeychain: true
+
+# Welcome ekranı
+- assertVisible: ".*AirSpeak.*"
+
+# Continue with Apple yok mock'la geçmek için email/password — mock auth aktif değilse skip
+# Apple Sign-In TestFlight'ta gerçek, dev'de fake olabilir
+- runFlow:
+    when:
+      visible: "Devam et"
+    commands:
+      - tapOn: "Devam et"
+
+# 1. Sign up / Sign in (mock veya email)
+- runFlow:
+    when:
+      visible: "Kayıt ol"
+    commands:
+      - tapOn: "Kayıt ol"
+      - inputText: "maestro-test@airspeak.app"
+      - hideKeyboard
+      - tapOn:
+          id: "password"
+      - inputText: "Maestro2026!"
+      - tapOn: "Hesap oluştur"
+
+# 2. Role select — Teknisyen
+- assertVisible: ".*çağrı kodu.*|.*role.*"
+- tapOn: "Uçak Teknisyeni"
+- tapOn: "Devam"
+
+# 3. Sub-role select — Hat Bakım
+- assertVisible: ".*alt-rol.*|.*Hangi tip.*"
+- tapOn: ".*Hat Bakım.*"
+- tapOn: "Devam"
+
+# 4. Level test — atla veya hızlıca geç
+- runFlow:
+    when:
+      visible: "Teste başla"
+    commands:
+      - tapOn: "Teste başla"
+      # Test 10 soru, "Bilmiyorum" ile hızlı geç
+      - repeat:
+          times: 10
+          commands:
+            - tapOn:
+                text: "Bilmiyorum"
+                optional: true
+
+# 5. Goals
+- runFlow:
+    when:
+      visible: ".*günlük.*|.*hedef.*"
+    commands:
+      - tapOn: "15 dk"
+      - tapOn: "AirSpeak'e başla"
+
+# 6. Home arrival
+- assertVisible: ".*BUGÜNKÜ.*|.*Hızlı Alıştırma.*"
