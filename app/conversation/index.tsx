@@ -4,7 +4,7 @@
  * Kullanıcı buraya gelince tüm 5 (gelecek 50+) senaryoyu görür,
  * birini seçip /conversation/[scenario] route'una gider.
  */
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,7 @@ import {
   CoachMark,
   BackButton,
 } from '@/components/airspeak';
-import { SCENARIOS } from '@/features/conversation/scenarios';
+import { useScenariosAsStatic } from '@/features/conversation/useScenarios';
 import { useBookmarkStore } from '@/stores/bookmarkStore';
 import { useCoachMarkStore } from '@/stores/coachMarkStore';
 import { track } from '@/lib/posthog';
@@ -67,9 +67,10 @@ export default function ConversationIndexScreen() {
   const coachSeen = useCoachMarkStore((s) => s.isSeen('conversation_first_open'));
   const markCoachSeen = useCoachMarkStore((s) => s.markSeen);
 
+  const { items: allScenarios, isLoading } = useScenariosAsStatic();
   const scenarios = useMemo(
-    () => (filter === 'all' ? SCENARIOS : SCENARIOS.filter((s) => s.role === filter)),
-    [filter],
+    () => (filter === 'all' ? allScenarios : allScenarios.filter((s) => s.role === filter)),
+    [filter, allScenarios],
   );
 
   return (
@@ -138,7 +139,12 @@ export default function ConversationIndexScreen() {
       </SafeAreaView>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
-        {scenarios.length === 0 && (
+        {isLoading && (
+          <View style={{ paddingTop: 32, alignItems: 'center' }}>
+            <ActivityIndicator color="#FFD56B" />
+          </View>
+        )}
+        {!isLoading && scenarios.length === 0 && (
           <View
             style={{
               backgroundColor: 'rgba(255,255,255,0.06)',

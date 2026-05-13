@@ -32,12 +32,11 @@ import {
   useSpeechRecognitionEvent,
 } from '@/lib/speechRecognition';
 import {
-  getScenariosForRole,
-  getScenarioById,
   matchTranscript,
   type ConversationScenario,
   type DialogTurn,
 } from '@/features/conversation/scenarios';
+import { useScenario, dbToStaticScenario } from '@/features/conversation/useScenarios';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { useQuestsStore } from '@/stores/questsStore';
@@ -67,8 +66,12 @@ export default function ConversationScreen() {
   const recordRecentActivity = useActivityStore((s) => s.recordActivity);
   const incrementQuest = useQuestsStore((s) => s.incrementProgress);
 
-  // Senaryo seç
-  const scenario = useMemoScenario(params.scenario as string | undefined, role ?? undefined);
+  // Senaryo seç — DB'den slug ile
+  const slug = typeof params.scenario === 'string' ? params.scenario : null;
+  const { data: dbScenario } = useScenario(slug);
+  const scenario: ConversationScenario | undefined = dbScenario
+    ? dbToStaticScenario(dbScenario)
+    : undefined;
 
   const [chat, setChat] = useState<ChatItem[]>([]);
   const [turnIdx, setTurnIdx] = useState(0);
@@ -692,11 +695,7 @@ function DockSideButton({
   );
 }
 
-function useMemoScenario(id: string | undefined, role: string | undefined): ConversationScenario | undefined {
-  if (id) return getScenarioById(id);
-  const all = getScenariosForRole(role);
-  return all[0];
-}
+// useMemoScenario kaldırıldı — useScenario(slug) hook'u DB'den çeker.
 
 function Gauge({ label, value }: { label: string; value: string }) {
   return (
