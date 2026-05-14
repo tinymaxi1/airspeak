@@ -721,7 +721,7 @@ export default function HomeScreen() {
           {t('screens.home.fastPracticeSub', 'Kısa, odaklı seanslar — mola arası ideal')}
         </Body>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 8 }}>
-          {getQuickCardsForRole(role).map((card, idx) => (
+          {getQuickCardsForRole(role, (profile as any)?.sub_role ?? null).map((card, idx) => (
             <QuickCard
               key={`${card.route}-${idx}`}
               icon={card.icon}

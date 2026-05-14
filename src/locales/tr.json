@@ -1129,6 +1129,26 @@
     "weather": {
       "label": "Hava raporu",
       "sub": "METAR / TAF"
-    }
+    },
+    "rotorPower": { "label": "Rotor power", "sub": "Helikopter çağrıları" },
+    "approachPattern": { "label": "Approach pattern", "sub": "VFR yaklaşım" },
+    "turboprop": { "label": "Turboprop OPS", "sub": "Tek motor çağrı" },
+    "groundMovement": { "label": "Ground movement", "sub": "Taksi yönergesi" },
+    "wakeTurbulence": { "label": "Wake turbulence", "sub": "Ayırma kriterleri" },
+    "sequencing": { "label": "Sequencing", "sub": "Yaklaşım sırası" },
+    "vectoring": { "label": "Vectoring", "sub": "Radar talimatı" },
+    "enrouteFreq": { "label": "Enroute freq", "sub": "Frekans değişimi" },
+    "handoff": { "label": "Handoff", "sub": "Sector geçişi" },
+    "premiumService": { "label": "Premium servis", "sub": "First/Business yolcu" },
+    "preflightInspection": { "label": "Pre-flight kontrol", "sub": "Walk-around" },
+    "engineStart": { "label": "Engine start", "sub": "Çalıştırma sekansı" },
+    "aogComm": { "label": "AOG iletişimi", "sub": "Aircraft On Ground" },
+    "tireWear": { "label": "Tire inspection", "sub": "Lastik aşınması" },
+    "hydraulicComm": { "label": "Hydraulic check", "sub": "Sistem briefi" },
+    "handSignals": { "label": "El işaretleri", "sub": "Marshalling kodları" },
+    "fuelOrder": { "label": "Yakıt siparişi", "sub": "Refuel iletişimi" },
+    "qcCheck": { "label": "QC check", "sub": "Quality control" },
+    "descriptorPractice": { "label": "Kriter pratiği", "sub": "ICAO 6 boyut" },
+    "discretionComm": { "label": "Diskresyon iletişimi", "sub": "VIP gizlilik" }
   }
 }
