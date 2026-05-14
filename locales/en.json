@@ -1,0 +1,8 @@
+{
+  "NSMicrophoneUsageDescription": "AirSpeak uses your microphone for pronunciation practice, AI conversation drills, and ICAO speaking assessment.",
+  "NSSpeechRecognitionUsageDescription": "AirSpeak transcribes your speech to evaluate aviation phraseology and ICAO Level 4 readiness.",
+  "NSCameraUsageDescription": "AirSpeak uses your camera so you can take a profile photo.",
+  "NSPhotoLibraryUsageDescription": "AirSpeak accesses your photo library to set your profile picture and attach images to community posts.",
+  "NSPhotoLibraryAddUsageDescription": "AirSpeak saves community post images to your library when you choose to share them.",
+  "NSUserTrackingUsageDescription": "AirSpeak does not track you across other companies' apps and websites. This permission is requested by iOS but is not used by AirSpeak."
+}

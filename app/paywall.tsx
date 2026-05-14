@@ -370,6 +370,48 @@ export default function PaywallScreen() {
           >
             {t('screens.paywall.disclaimer')}
           </Body>
+
+          {/* Faz 2.B — Terms + Privacy links (Apple Guideline 3.1.2 zorunlu) */}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              gap: 16,
+              marginBottom: 16,
+              marginTop: 4,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => router.push('/legal/terms' as any)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text
+                style={{
+                  fontFamily: FONTS.body600,
+                  fontSize: 11,
+                  color: '#FFD56B',
+                  textDecorationLine: 'underline',
+                }}
+              >
+                {t('screens.paywall.terms', 'Kullanım Şartları')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push('/legal/privacy' as any)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text
+                style={{
+                  fontFamily: FONTS.body600,
+                  fontSize: 11,
+                  color: '#FFD56B',
+                  textDecorationLine: 'underline',
+                }}
+              >
+                {t('screens.paywall.privacy', 'Gizlilik Politikası')}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
 
         {/* Sticky CTA */}

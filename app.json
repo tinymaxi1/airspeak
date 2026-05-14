@@ -13,6 +13,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#0F1E47"
     },
+    "locales": {
+      "en": "./locales/en.json"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.airspeak.mobile",
@@ -72,8 +75,7 @@
         "INTERNET",
         "VIBRATE",
         "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS",
-        "com.google.android.gms.permission.AD_ID"
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ]
     },
     "web": {
