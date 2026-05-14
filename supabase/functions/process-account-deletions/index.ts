@@ -70,6 +70,16 @@ Deno.serve(async (req) => {
         target_user_id: p.id,
         metadata: { deletion_requested_at: p.deletion_requested_at },
       });
+      // Faz 2.F — deleted_accounts_log anonymized hash audit (KVKK compliance)
+      try {
+        await admin.rpc('record_hard_deletion', {
+          p_user_id: p.id,
+          p_deletion_requested_at: p.deletion_requested_at,
+          p_reason: null,
+        });
+      } catch {
+        // best-effort, admin_actions yine de var
+      }
     }
   }
 
