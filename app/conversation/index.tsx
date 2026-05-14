@@ -17,7 +17,7 @@ import {
   CoachMark,
   BackButton,
 } from '@/components/airspeak';
-import { useScenariosAsStatic, useScenarios } from '@/features/conversation/useScenarios';
+import { useScenarios, dbToStaticScenario } from '@/features/conversation/useScenarios';
 import { useBookmarkStore } from '@/stores/bookmarkStore';
 import { useCoachMarkStore } from '@/stores/coachMarkStore';
 import { track } from '@/lib/posthog';
@@ -59,18 +59,16 @@ export default function ConversationIndexScreen() {
   const userRole = useAuthStore((s) => s.profile?.role) as UserRole | null;
   const { items: subRoles } = useLocalizedSubRoles(userRole);
 
-  // Senaryolar — user.role'üne ait tümü (sub_role filter UI tarafında)
-  const { items: allScenarios, isLoading } = useScenariosAsStatic();
-
-  // Raw DbScenario verisinden target_sub_roles bilgisine erişmek için Map.
-  // useScenariosAsStatic adapter'i target_sub_roles bilgisini kaybediyor —
-  // useScenarios raw çağırıp slug → target_sub_roles map'ı kuruyoruz.
-  const rawScenarios = useScenarios();
+  // Senaryolar — TEK useScenarios() çağrısı (önceden 2 ayrı çağrı vardı →
+  // React Query çift subscription → useSyncExternalStore re-render loop → RN-7 crash).
+  // dbRows'tan hem static items hem sub_role map türet, tek subscription yeter.
+  const { data: dbRows = [], isLoading } = useScenarios();
+  const allScenarios = useMemo(() => dbRows.map(dbToStaticScenario), [dbRows]);
   const subRoleBySlug = useMemo(() => {
     const m = new Map<string, string[]>();
-    (rawScenarios.data ?? []).forEach((r) => m.set(r.slug, r.target_sub_roles ?? []));
+    dbRows.forEach((r) => m.set(r.slug, r.target_sub_roles ?? []));
     return m;
-  }, [rawScenarios.data]);
+  }, [dbRows]);
 
   // Filter: 'all' tab → tümü; sub_role tab → o sub_role tag'i olan veya boş olanlar
   const scenarios = useMemo(() => {
