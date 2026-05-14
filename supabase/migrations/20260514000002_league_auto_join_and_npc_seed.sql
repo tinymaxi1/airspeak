@@ -74,10 +74,12 @@ DECLARE
   v_xp int;
   v_npc_class league_class;
 BEGIN
-  FOR v_npc IN (
-    VALUES
+  -- PL/pgSQL FOR..IN VALUES list direkt kabul etmez — SELECT * FROM (VALUES ...) AS t(...)
+  -- pattern kullanılır. İlk satıra ::text döküm tipi inference için yeterli.
+  FOR v_npc IN
+    SELECT * FROM (VALUES
       -- (callsign, full_name, role, level)
-      ('TK-Demir',    'Ali Demir',       'pilot',      'B2'),
+      ('TK-Demir'::text,    'Ali Demir'::text,       'pilot'::text,      'B2'::text),
       ('TK-Yılmaz',   'Mehmet Yılmaz',   'pilot',      'B1'),
       ('PG-Çelik',    'Hakan Çelik',     'pilot',      'B2'),
       ('X-Aydın',     'Burak Aydın',     'pilot',      'A2'),
@@ -101,9 +103,9 @@ BEGIN
       ('OGR-Ates',    'Defne Ateş',      'student',    'A1'),
       ('OGR-Tunc',    'Cansu Tunç',      'student',    'A2'),
 
-      ('DSP-Solak',   'Tolga Solak',     'pilot',      'B1'),  -- dispatcher rolü yok, pilot fallback
-      ('DSP-Erim',    'İrem Erim',       'ground',     'B1')   -- ground fallback
-  ) AS t(callsign, full_name, role, level)
+      ('DSP-Solak',   'Tolga Solak',     'pilot',      'B1'),
+      ('DSP-Erim',    'İrem Erim',       'ground',     'B1')
+    ) AS t(callsign, full_name, role, level)
   LOOP
     v_user_id := gen_random_uuid();
     v_xp := 50 + (random() * 750)::int;  -- 50-800 arası
