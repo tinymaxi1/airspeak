@@ -188,6 +188,10 @@ export default function HomeScreen() {
 
   // İlk kullanıcı kontrolü: hiç ders tamamlamadı + XP 0
   const isFirstTime = completedIds.length === 0 && xp === 0;
+  // Faz 3.4 — yeni user için "tek odak" modu: hero banner prominent, diğer kartlar dim
+  // "Tüm özellikleri keşfet" linkine basıldığında dim kalkar
+  const [exploreAll, setExploreAll] = useState(false);
+  const dimSecondary = isFirstTime && !exploreAll;
 
   return (
     <TabletShell background={c.bg}>
@@ -447,6 +451,22 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         )}
+
+        {/* Faz 3.4 — Tüm özellikleri keşfet linki (dim modundayken görünür) */}
+        {dimSecondary && (
+          <TouchableOpacity
+            onPress={() => setExploreAll(true)}
+            style={{ alignItems: 'center', marginBottom: 14 }}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Mono style={{ fontSize: 11, color: '#2EA8FF', letterSpacing: 1.2, textDecorationLine: 'underline' }}>
+              {t('screens.home.exploreAll', 'TÜM ÖZELLİKLERİ KEŞFET →')}
+            </Mono>
+          </TouchableOpacity>
+        )}
+
+        {/* Secondary kartlar — yeni kullanıcı için dim, exploreAll → normal opacity */}
+        <View style={dimSecondary ? { opacity: 0.45 } : undefined}>
 
         {/* Bugünkü hakların — premium ise sınırsız banner, değilse 5 sayaç */}
         <DailyLimitsCard />
@@ -978,6 +998,7 @@ export default function HomeScreen() {
             </>
           );
         })()}
+        </View>
       </ScrollView>
     </View>
     </TabletShell>
