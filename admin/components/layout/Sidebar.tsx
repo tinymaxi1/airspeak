@@ -37,6 +37,7 @@ import {
   Radio,
   Speech,
   Ear,
+  Rocket,
 } from 'lucide-react';
 
 interface NavItem {
@@ -75,6 +76,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/import', label: 'Bulk Import', icon: FileJson, minRole: 'super_admin' },
   { href: '/data-exports', label: 'Veri Export Talepleri', icon: FileDown, minRole: 'super_admin' },
   { href: '/notifications', label: 'Bildirimler', icon: Bell, minRole: 'reviewer' },
+  { href: '/app-releases', label: 'App Releases', icon: Rocket, minRole: 'editor' },
   { href: '/glossary', label: 'Aviation Glossary', icon: BookMarked, minRole: 'reviewer' },
   { href: '/word-of-day', label: 'Günün Kelimesi', icon: Sparkles, minRole: 'reviewer' },
   { href: '/sub-roles', label: 'Alt-Roller', icon: Layers, minRole: 'reviewer' },
