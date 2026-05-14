@@ -75,10 +75,10 @@ export default function CommunityIndexScreen() {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', letterSpacing: 1.4 }}>
-              KOMÜNITE
+              TOPLULUK
             </Mono>
             <Text style={{ fontFamily: FONTS.display, fontSize: 22, color: '#FFFFFF', fontWeight: '700' }}>
-              Squadron Hub
+              Topluluk Merkezi
             </Text>
           </View>
           <TouchableOpacity

@@ -125,7 +125,7 @@ export default function NewGroupScreen() {
             </TouchableOpacity>
             <View style={{ flex: 1 }}>
               <Mono style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', letterSpacing: 1.4 }}>
-                YENI GRUP
+                YENİ GRUP
               </Mono>
               <Text
                 style={{ fontFamily: FONTS.display, fontSize: 22, color: '#FFFFFF', fontWeight: '700' }}

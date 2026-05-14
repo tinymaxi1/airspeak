@@ -562,11 +562,11 @@ export default function ProfileScreen() {
           />
           <SettingsRow
             icon="💬"
-            label="Squadron Hub"
+            label="Topluluk Merkezi"
             value={
               (profile?.community_post_count ?? 0) > 0 || (profile?.community_follower_count ?? 0) > 0
-                ? `${profile?.community_post_count ?? 0} post · ${profile?.community_follower_count ?? 0} takipçi`
-                : 'Komünite — gruplar, postlar, tartışmalar'
+                ? `${profile?.community_post_count ?? 0} gönderi · ${profile?.community_follower_count ?? 0} takipçi`
+                : 'Topluluk — gruplar, gönderiler, tartışmalar'
             }
             onPress={() => router.push('/community' as any)}
           />

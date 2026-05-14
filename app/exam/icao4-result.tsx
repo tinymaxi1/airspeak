@@ -274,7 +274,7 @@ export default function ICAO4ResultScreen() {
                   ? `Claude · ${attempt.examiner_model?.replace('claude-', '') ?? ''}`
                   : attempt.provider === 'gpt'
                     ? `GPT · ${attempt.examiner_model ?? ''}`
-                    : 'Mock (admin yapılandırma)'
+                    : 'Deneme (admin yapılandırma)'
               }
             />
           </View>
@@ -282,7 +282,7 @@ export default function ICAO4ResultScreen() {
 
         {/* 6 descriptor profile */}
         <Mono style={{ fontSize: 10, color: '#5A6478', letterSpacing: 1.4, marginBottom: 8 }}>
-          DESCRIPTOR PROFILE
+          KRİTER PROFİLİ
         </Mono>
         <View
           style={{
@@ -425,7 +425,7 @@ export default function ICAO4ResultScreen() {
             }}
           >
             <Mono style={{ fontSize: 10, color: '#7A5C00', letterSpacing: 1.2 }}>
-              ℹ MOCK MODE
+              ℹ DENEME MODU
             </Mono>
             <Text style={{ fontSize: 12, color: '#7A5C00', marginTop: 4, lineHeight: 17 }}>
               Bu sonuç deterministik mock examiner tarafından üretildi. Admin AI provider'ı

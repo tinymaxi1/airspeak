@@ -361,7 +361,7 @@
       "firstTimeStart": "BAŞLA →",
       "careerEyebrow": "KARİYER MERKEZİ",
       "careerTitle": "ICAO 4 · 41 Havayolu · AI",
-      "careerSub": "Mülakat + sınav + B2B kohort",
+      "careerSub": "Mülakat + sınav + B2B filo eğitimi",
       "fltDay": "UÇUŞ 12 ✦ GÜN {{day}}",
       "noActivityYet": "Henüz aktivite yok",
       "startFirstLesson": "İlk dersini aç",
@@ -623,13 +623,13 @@
       "deleteAccount": "Hesabı sil",
       "deleteAccountDesc": "Kayıt defteri kalıcı silinir",
       "version": "AIRSPEAK v2.4.1 · BUILD 2026.04",
-      "squadron": "Squadron / Kohort",
-      "squadronDesc": "Havayolu / okul kodu ile kohort'a katıl",
+      "squadron": "Squadron / Filo",
+      "squadronDesc": "Havayolu / okul kodu ile filoya katıl",
       "blockedUsers": "Engellenen Kullanıcılar",
       "blockedUsersDesc": "Engelleri yönet"
     },
     "notifications": {
-      "eyebrow": "OPS FREQ · {{count}} YENİ",
+      "eyebrow": "BİLDİRİMLER · {{count}} YENİ",
       "title": "Bildirimler",
       "markRead": "Okundu işaretle",
       "tabAll": "Hepsi",
@@ -691,11 +691,11 @@
       }
     },
     "icao": {
-      "exam": "ICAO L4 ✦ MOCK SINAV",
+      "exam": "ICAO L4 ✦ DENEME SINAVI",
       "briefingSheet": "BRİFİNG NOTU",
       "briefingHero1": "Uçuş öncesi",
       "briefingHero2": "brifingi.",
-      "briefingDesc": "20 dakika · 6 bölüm · 6 ICAO descriptor üzerinden değerlendirilir. Kulaklık önerilir.",
+      "briefingDesc": "20 dakika · 6 bölüm · 6 ICAO değerlendirme kriteri üzerinden değerlendirilir. Kulaklık önerilir.",
       "sectionsTitle": "BÖLÜMLER",
       "section1": "Havacılık konuları — kısa cevaplar",
       "section2": "Resim açıklama",
@@ -725,9 +725,9 @@
       "validUntil": "GEÇERLİ",
       "icaoId": "ICAO ID",
       "examiner": "AI DEĞERLENDİRME",
-      "descriptors": "ALTI DESCRIPTOR PROFİLİ",
+      "descriptors": "ALTI KRİTER PROFİLİ",
       "examinerNote": "AI ANALİZ NOTU",
-      "examinerNoteBody": "AirSpeak AI 6 ICAO descriptor'unu kural-tabanlı değerlendirir. Sonuçlar resmi sertifika DEĞİL — kendi gelişimini takip için pratik araç. Resmi ICAO Level 4 sınavı SHGM yetkili merkezlerinde yapılır.",
+      "examinerNoteBody": "AirSpeak AI 6 ICAO değerlendirme kriterini kural-tabanlı değerlendirir. Sonuçlar resmi sertifika DEĞİL — kendi gelişimini takip için pratik araç. Resmi ICAO Level 4 sınavı SHGM yetkili merkezlerinde yapılır.",
       "share": "Paylaş",
       "aimL5": "L5'e hedef koy →"
     },
@@ -764,17 +764,17 @@
       "codeHint": "8 KARAKTER · BÜYÜK HARF",
       "verified": "● Doğrulandı",
       "academy": "Türk Hava Yolları Uçuş Akademisi",
-      "academyDesc": "Cohort 47 · ICAO L4 programı · 84 öğrenci",
+      "academyDesc": "Filo 47 · ICAO L4 programı · 84 öğrenci",
       "instructor": "EĞİTMEN",
       "instructorName": "Kpt. A. Yılmaz",
       "program": "PROGRAM",
       "programValue": "L3 → L4 · 14 hafta",
       "ends": "BİTİŞ",
       "endsValue": "2026-08-22",
-      "privacy": "Eğitmenin haftalık ilerlemeni, mock skorlarını ve zayıf descriptor'larını görür. Pronunciation kayıtların paylaşılmaz.",
-      "join": "Cohort'a katıl",
+      "privacy": "Eğitmenin haftalık ilerlemeni, deneme skorlarını ve zayıf kriterlerini görür. Telaffuz kayıtların paylaşılmaz.",
+      "join": "Filoya katıl",
       "solo": "Tek başıma uçuyorum",
-      "academyDescDynamic": "Cohort {{n}} · {{program}} · {{cadets}} öğrenci",
+      "academyDescDynamic": "Filo {{n}} · {{program}} · {{cadets}} öğrenci",
       "invalidTitle": "Kod doğrulanamadı",
       "invalidBody": "Bu kod şu an aktif bir squadron ile eşleşmiyor.",
       "joinedTitle": "🎉 Katıldın!",
@@ -969,16 +969,16 @@
     },
     "s3": {
       "eyebrow": "ICAO LEVEL 4",
-      "title": "6 descriptor değerlendirme",
+      "title": "6 kriter değerlendirme",
       "body": "Pronunciation, Structure, Vocabulary, Fluency, Comprehension, Interactions — gerçek puanlama."
     },
     "s4": {
-      "eyebrow": "GAMIFICATION",
+      "eyebrow": "OYUNLAŞTIRMA",
       "title": "Streak + lig + günlük plan",
       "body": "Her gün 15 dk pratik. 14 haftada ICAO 4 hedefli."
     },
     "s5": {
-      "eyebrow": "SQUADRON HUB",
+      "eyebrow": "TOPLULUK MERKEZİ",
       "title": "Diğer pilotlarla bağlan",
       "body": "Açık/kapalı/gizli/Pro gruplar · postlar, yorumlar, mention, takip et. Yalnız uçma."
     }

@@ -83,7 +83,7 @@ export function PostCard({
     >
       {post.pinned && (
         <Mono style={{ fontSize: 9, color: '#F2C14E', letterSpacing: 1.4, marginBottom: 6 }}>
-          📌 SABITLENMIŞ
+          📌 SABİTLENMİŞ
         </Mono>
       )}
 

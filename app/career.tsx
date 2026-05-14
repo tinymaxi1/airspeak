@@ -249,7 +249,7 @@ export default function CareerHubScreen() {
           <View style={{ flex: 1 }}>
             <Mono style={{ fontSize: 10, color: cohort ? '#22A659' : '#5A6478', letterSpacing: 1.8 }}>
               {cohort
-                ? t('career.squadronJoined', 'KOHORTUNDASIN')
+                ? t('career.squadronJoined', 'FİLONDASIN')
                 : t('career.squadronEyebrow', 'B2B / SQUADRON')}
             </Mono>
             <Text
@@ -261,14 +261,14 @@ export default function CareerHubScreen() {
                 lineHeight: 21,
               }}
             >
-              {cohort?.name ?? t('career.squadronTitle', 'Squadron / Kohort')}
+              {cohort?.name ?? t('career.squadronTitle', 'Squadron / Filo')}
             </Text>
             <Body color="#5A6478" style={{ fontSize: 12, marginTop: 4 }}>
               {cohort
                 ? `${cohort.shortCode} · ${cohort.programTr}`
                 : t(
                     'career.squadronSub',
-                    'Havayolu / okul kodu ile kohort\'a katıl, eğitmenle çalış',
+                    'Havayolu / okul kodu ile filoya katıl, eğitmenle çalış',
                   )}
             </Body>
           </View>
