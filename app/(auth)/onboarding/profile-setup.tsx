@@ -17,6 +17,7 @@ import { upsertProfileFields } from '@/features/profile/api';
 import { presentAvatarSheet } from '@/features/profile/AvatarUploader';
 import { Avatar, FONTS, Mono, Body, HHero, Button3D } from '@/components/airspeak';
 import { Camera } from 'lucide-react-native';
+import { track } from '@/lib/posthog';
 
 /**
  * Anlamlı default callsign:
@@ -74,6 +75,9 @@ export default function ProfileSetupScreen() {
   const initials = (fullName || user?.email || 'PI').slice(0, 2).toUpperCase();
 
   async function persistAndContinue(opts: { skip?: boolean }) {
+    if (opts.skip) {
+      track('onboarding_skip_step', { step: 'profile_setup' });
+    }
     if (!user?.id) {
       router.replace('/onboarding-tour');
       return;

@@ -2,7 +2,11 @@
   "common": {
     "back": "Geri",
     "saving": "Kaydediliyor...",
-    "continue": "Devam"
+    "continue": "Devam",
+    "skip": "ATLA →",
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "all": "Tümü"
   },
   "welcome": {
     "tagline": "Havacılık İngilizcesinde Ustalaş",

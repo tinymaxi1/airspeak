@@ -50,13 +50,17 @@ export default function GoalsScreen() {
   const setOnboardingComplete = useAuthStore((s) => s.setOnboardingComplete);
   const [selected, setSelected] = useState<GoalOption['mins']>(15);
 
-  const handleFinish = async () => {
+  const handleFinish = async (skipped = false) => {
     setDailyGoal(selected);
     setOnboardingComplete(true); // optimistic local — UX kesintisiz
+    if (skipped) {
+      track('onboarding_skip_step', { step: 'goals', defaulted_to: selected });
+    }
     track('onboarding_completed', {
       role: role ?? null,
       level: placement?.level ?? null,
       daily_goal: selected,
+      skipped_goals: skipped,
     });
 
     // Server-side mark + daily_goal persist — AWAIT EDİYORUZ.
@@ -117,7 +121,14 @@ export default function GoalsScreen() {
           <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478' }}>
             {t('screens.goals.step')}
           </Mono>
-          <View style={{ width: 24 }} />
+          <TouchableOpacity
+            onPress={() => handleFinish(true)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Mono style={{ fontSize: 10, color: '#8A93A6', letterSpacing: 1.4 }}>
+              {t('common.skip', 'ATLA →')}
+            </Mono>
+          </TouchableOpacity>
         </View>
         {/* Progress 95% */}
         <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
@@ -207,7 +218,7 @@ export default function GoalsScreen() {
 
       <SafeAreaView edges={['bottom']} style={{ borderTopWidth: 1, borderTopColor: '#DCE0E8' }}>
         <View style={{ padding: 16 }}>
-          <Button3D variant="primary" fullWidth onPress={handleFinish}>
+          <Button3D variant="primary" fullWidth onPress={() => handleFinish(false)}>
             {t('screens.goals.takeoff')}
           </Button3D>
         </View>

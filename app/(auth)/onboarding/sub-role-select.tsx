@@ -5,7 +5,8 @@
  * DB'den parent_role'e ait active sub_roles çekilir, dinamik liste gösterilir.
  *
  * Kurallar:
- *   - Skip butonu YOK, zorunlu seç (user kuralı)
+ *   - "Atla" butonu sağ üst → items[0] (display_order ilk) default atanır,
+ *     telemetri "onboarding_skip_step" emit edilir (Faz 3.2).
  *   - "Geri" ile role-select'e dönülebilir (role değiştirme şansı)
  *   - role değişirse subRole reset olur (onboardingStore setRole davranışı)
  *
@@ -72,6 +73,25 @@ export default function SubRoleSelectScreen() {
     router.push('/(auth)/onboarding/level-test');
   }
 
+  async function handleSkip() {
+    // Faz 3.2 — Atla: items[0] (display_order ilk, en yaygın sub-role) default atanır
+    track('onboarding_skip_step', { step: 'sub_role_select', parent_role: role });
+    if (items.length > 0 && userId) {
+      const defaultId = items[0].id;
+      setSubRole(defaultId);
+      try {
+        const { data, error } = await (supabase as any)
+          .from('profiles')
+          .update({ sub_role: defaultId })
+          .eq('id', userId)
+          .select()
+          .single();
+        if (!error && data) setProfile({ ...profile, ...data });
+      } catch { /* graceful */ }
+    }
+    router.push('/(auth)/onboarding/level-test');
+  }
+
   if (!role) {
     // Role seçilmemişse role-select'e geri at — edge case
     router.replace('/(auth)/onboarding/role-select');
@@ -95,6 +115,12 @@ export default function SubRoleSelectScreen() {
           <Mono style={{ fontSize: 11, color: '#8A93A6', letterSpacing: 1.8 }}>
             {t('screens.subRoleSelect.step', 'ADIM 2.5 / 6')}
           </Mono>
+          <View style={{ flex: 1 }} />
+          <TouchableOpacity onPress={handleSkip} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <Mono style={{ fontSize: 11, color: '#8A93A6', letterSpacing: 1.4 }}>
+              {t('common.skip', 'ATLA →')}
+            </Mono>
+          </TouchableOpacity>
         </View>
         <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
           <ProgressBar value={42} />
