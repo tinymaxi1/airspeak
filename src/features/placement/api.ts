@@ -36,6 +36,8 @@ export interface UserPlacementResult {
   test_duration_seconds: number | null;
   attempt_number: number;
   next_test_allowed_at: string;
+  /** Faz 3.1 — 'quick' (10 soru) veya 'full' (22 soru). Default 'full'. */
+  mode?: 'quick' | 'full' | null;
 }
 
 export interface PlacementQuestionPayload {
@@ -203,6 +205,8 @@ export async function finalizePlacement(args: {
   };
   questionsAnswered?: number;
   testDurationSeconds?: number;
+  /** Faz 3.1 — 'quick' (10 soru hızlı) veya 'full' (22 soru tam). Default 'full'. */
+  mode?: 'quick' | 'full';
 }): Promise<FinalizeResult> {
   // Sentry breadcrumb — başarı/başarısızlık takip edilebilir
   try {
@@ -229,6 +233,7 @@ export async function finalizePlacement(args: {
       questionsAnswered: args.questionsAnswered ?? 0,
       testDurationSeconds: args.testDurationSeconds ?? null,
     },
+    p_mode: args.mode ?? 'full',
   });
 
   if (error) {

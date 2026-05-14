@@ -210,6 +210,27 @@ export function PlacementCard({ userId }: Props) {
         </Mono>
       </TouchableOpacity>
 
+      {/* Faz 3.1 — Quick mode için "daha kesin değerlendirme" CTA */}
+      {result.mode === 'quick' && canRetry && (
+        <TouchableOpacity
+          onPress={() => router.push('/(auth)/onboarding/level-test' as any)}
+          activeOpacity={0.85}
+          style={{
+            paddingVertical: 10,
+            backgroundColor: '#E0F0FF',
+            borderRadius: 10,
+            borderWidth: 1.5,
+            borderColor: '#2EA8FF',
+            alignItems: 'center',
+            marginBottom: 8,
+          }}
+        >
+          <Mono style={{ fontSize: 11, color: '#1E8BD9', letterSpacing: 1 }}>
+            {t('screens.profile.placement.upgradeMode', '🎯 DAHA KESİN DEĞERLENDİRME →')}
+          </Mono>
+        </TouchableOpacity>
+      )}
+
       {/* Retry CTA */}
       <TouchableOpacity
         onPress={onRetry}

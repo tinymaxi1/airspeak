@@ -791,6 +791,17 @@
     },
     "levelTest": {
       "step": "ADIM 3 / 6",
+      "modePick": {
+        "hero1": "Ne kadar",
+        "hero2": "vaktin var?",
+        "subtitle": "Seviye değerlendirmesi iki şekilde yapılabilir. Sonra istediğin zaman değiştirebilirsin.",
+        "quickEyebrow": "HIZLI TAHMİN",
+        "quickTitle": "10 soru · ~2 dakika",
+        "quickBody": "Hemen başla. Yaklaşık seviyeni belirleriz, sonra istersen tam değerlendirme yaparsın.",
+        "fullEyebrow": "TAM DEĞERLENDİRME",
+        "fullTitle": "{{count}} soru · ~5 dakika",
+        "fullBody": "4 segment (Genel, Havacılık, Bilgi, İletişim). Daha kesin seviye + öneriler."
+      },
       "intro": {
         "eyebrow": "BRİFİNG NOTU",
         "hero1": "Uçuş öncesi",

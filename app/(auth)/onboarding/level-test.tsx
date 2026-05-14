@@ -57,7 +57,8 @@ const SEGMENTS: SegmentSpec[] = [
   { dim: 'communication', k: 'communication', n: 4, color: '#2DBE6C' },
 ];
 
-type Step = 'intro' | 'segment' | 'segmentBreak';
+type Step = 'modePick' | 'intro' | 'segment' | 'segmentBreak';
+type PlacementMode = 'quick' | 'full';
 
 export default function LevelTestScreen() {
   const c = usePalette();
@@ -66,7 +67,9 @@ export default function LevelTestScreen() {
   const role = useOnboardingStore((s) => s.role);
   const userId = useAuthStore((s) => s.user?.id);
 
-  const [step, setStep] = useState<Step>('intro');
+  const [step, setStep] = useState<Step>('modePick');
+  // Faz 3.1 — Quick mode (10 soru ~2dk) veya Full (mevcut 22 soru ~5dk)
+  const [placementMode, setPlacementMode] = useState<PlacementMode>('full');
   const [segmentIdx, setSegmentIdx] = useState(0);
   const [questionIdx, setQuestionIdx] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -77,8 +80,15 @@ export default function LevelTestScreen() {
   const [testStartedAt, setTestStartedAt] = useState<number | null>(null);
 
   const segmentQuestions = useMemo<PlacementQuestion[][]>(
-    () => SEGMENTS.map((s) => getQuestionsForSegment(role, s.dim)),
-    [role],
+    () => {
+      const full = SEGMENTS.map((s) => getQuestionsForSegment(role, s.dim));
+      if (placementMode !== 'quick') return full;
+      // Faz 3.1 Quick mode: her segmentten ilk 2-3 soru → toplam ~10
+      // Dağılım: 3+2+2+3 = 10 (segment 1 + 4 öncelikli, 2 + 3 ikincil)
+      const quickPerSegment = [3, 2, 2, 3];
+      return full.map((arr, i) => arr.slice(0, quickPerSegment[i] ?? 3));
+    },
+    [role, placementMode],
   );
 
   const totalQuestions = segmentQuestions.reduce((sum, arr) => sum + arr.length, 0);
@@ -88,6 +98,130 @@ export default function LevelTestScreen() {
   const currentSegment = SEGMENTS[segmentIdx]!;
   const currentSegmentPool = segmentQuestions[segmentIdx] ?? [];
   const currentQuestion = currentSegmentPool[questionIdx];
+
+  // ═══════════════ MODE PICK (Faz 3.1) ═══════════════
+  if (step === 'modePick') {
+    return (
+      <View style={{ flex: 1, backgroundColor: c.bg }}>
+        <SafeAreaView edges={['top']}>
+          <View
+            style={{
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 12,
+            }}
+          >
+            <TouchableOpacity onPress={() => router.back()}>
+              <Text style={{ fontSize: 22, color: '#0E1116' }}>←</Text>
+            </TouchableOpacity>
+            <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: '#5A6478', flex: 1, textAlign: 'center' }}>
+              {t('screens.levelTest.step', 'ADIM 3 / 6')}
+            </Mono>
+            <View style={{ width: 22 }} />
+          </View>
+          <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
+            <View style={{ height: 4, backgroundColor: '#DCE0E8', borderRadius: 2, overflow: 'hidden' }}>
+              <View style={{ width: '50%', height: '100%', backgroundColor: '#E63946' }} />
+            </View>
+          </View>
+        </SafeAreaView>
+
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24 }}
+        >
+          <HHero>
+            {t('screens.levelTest.modePick.hero1', 'Ne kadar')}{'\n'}
+            {t('screens.levelTest.modePick.hero2', 'vaktin var?')}
+          </HHero>
+          <Body color="#5A6478" style={{ fontSize: 15, marginVertical: 12, marginBottom: 20 }}>
+            {t(
+              'screens.levelTest.modePick.subtitle',
+              'Seviye değerlendirmesi iki şekilde yapılabilir. Sonra istediğin zaman değiştirebilirsin.',
+            )}
+          </Body>
+
+          {/* Quick (Hızlı) */}
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => {
+              setPlacementMode('quick');
+              setStep('intro');
+            }}
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: 14,
+              borderWidth: 2,
+              borderColor: '#2EA8FF',
+              borderBottomWidth: 4,
+              borderBottomColor: '#1E8BD9',
+              padding: 18,
+              marginBottom: 12,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <Text style={{ fontSize: 32 }}>⚡</Text>
+              <View style={{ flex: 1 }}>
+                <Mono style={{ fontSize: 10, color: '#2EA8FF', letterSpacing: 1.8 }}>
+                  {t('screens.levelTest.modePick.quickEyebrow', 'HIZLI TAHMİN')}
+                </Mono>
+                <Text style={{ fontFamily: FONTS.body800, fontSize: 17, color: '#0E1116', marginTop: 4 }}>
+                  {t('screens.levelTest.modePick.quickTitle', '10 soru · ~2 dakika')}
+                </Text>
+                <Body color="#5A6478" style={{ fontSize: 13, marginTop: 4, lineHeight: 18 }}>
+                  {t(
+                    'screens.levelTest.modePick.quickBody',
+                    'Hemen başla. Yaklaşık seviyeni belirleriz, sonra istersen tam değerlendirme yaparsın.',
+                  )}
+                </Body>
+              </View>
+              <Text style={{ fontSize: 22, color: '#2EA8FF' }}>›</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Full (Tam) */}
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => {
+              setPlacementMode('full');
+              setStep('intro');
+            }}
+            style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: 14,
+              borderWidth: 2,
+              borderColor: '#E63946',
+              borderBottomWidth: 4,
+              borderBottomColor: '#C8202E',
+              padding: 18,
+              marginBottom: 12,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <Text style={{ fontSize: 32 }}>🎯</Text>
+              <View style={{ flex: 1 }}>
+                <Mono style={{ fontSize: 10, color: '#E63946', letterSpacing: 1.8 }}>
+                  {t('screens.levelTest.modePick.fullEyebrow', 'TAM DEĞERLENDİRME')}
+                </Mono>
+                <Text style={{ fontFamily: FONTS.body800, fontSize: 17, color: '#0E1116', marginTop: 4 }}>
+                  {t('screens.levelTest.modePick.fullTitle', `${totalQuestions} soru · ~5 dakika`)}
+                </Text>
+                <Body color="#5A6478" style={{ fontSize: 13, marginTop: 4, lineHeight: 18 }}>
+                  {t(
+                    'screens.levelTest.modePick.fullBody',
+                    '4 segment (Genel, Havacılık, Bilgi, İletişim). Daha kesin seviye + öneriler.',
+                  )}
+                </Body>
+              </View>
+              <Text style={{ fontSize: 22, color: '#E63946' }}>›</Text>
+            </View>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    );
+  }
 
   // ═══════════════ INTRO ═══════════════
   if (step === 'intro') {
@@ -468,6 +602,7 @@ export default function LevelTestScreen() {
           },
           questionsAnswered: newAllAnswers.length,
           testDurationSeconds: durationSec ?? undefined,
+          mode: placementMode,
         }).then((res) => {
           if (!res.ok && __DEV__) console.warn('finalizePlacement failed:', res.error);
           // recommended_lesson_id store'a yaz — placement-result + home kullanır
