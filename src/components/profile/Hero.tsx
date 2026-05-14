@@ -84,7 +84,7 @@ export function Hero({
 
       <View style={{ flex: 1 }}>
         <Mono style={{ fontSize: 10, letterSpacing: 1.8, color: 'rgba(255,255,255,0.7)' }}>
-          CAPTAIN
+          {roleLabel.toUpperCase()}
         </Mono>
         <Text
           style={{

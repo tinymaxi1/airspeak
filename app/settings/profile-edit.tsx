@@ -129,9 +129,22 @@ export default function ProfileEditScreen() {
 
   async function save() {
     if (!user?.id) return;
-    if (bioShort.length > 280) {
-      Alert.alert('Hata', 'Kısa bio en fazla 280 karakter olmalı.');
-      return;
+    // Bio validation — min 10 / max 200 (short), max 1500 (long), gibberish reject
+    const bioShortTrim = bioShort.trim();
+    if (bioShortTrim.length > 0) {
+      if (bioShortTrim.length < 10) {
+        Alert.alert('Hata', 'Kısa bio en az 10 karakter olmalı (veya boş bırak).');
+        return;
+      }
+      if (bioShortTrim.length > 200) {
+        Alert.alert('Hata', 'Kısa bio en fazla 200 karakter olmalı.');
+        return;
+      }
+      // Gibberish kontrolü — sadece harf+rakam+boşluk+noktalama olmayan karakter çoklu varsa reject
+      if (!/^[\p{L}\p{N}\s.,!?;:'"()\-–—@#&/]+$/u.test(bioShortTrim)) {
+        Alert.alert('Hata', 'Bio sadece harf, rakam ve standart noktalama içerebilir.');
+        return;
+      }
     }
     if (bioLong.length > 1500) {
       Alert.alert('Hata', 'Uzun bio en fazla 1500 karakter olmalı.');

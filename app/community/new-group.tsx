@@ -27,7 +27,7 @@ const PRIVACIES: { id: GroupPrivacy; label: string; help: string; emoji: string 
   { id: 'open', label: 'Açık', emoji: '🌐', help: 'Herkes görebilir + katılabilir' },
   { id: 'closed', label: 'Kapalı', emoji: '🔐', help: 'Görünür ama katılım onayla' },
   { id: 'secret', label: 'Gizli', emoji: '🤫', help: 'Listede çıkmaz, passcode ile' },
-  { id: 'premium', label: 'Pro', emoji: '👑', help: 'Sadece Pro üyeler (Pro hakkı)' },
+  { id: 'premium', label: 'Pro', emoji: '👑', help: 'Sadece Pro üyeler' },
 ];
 
 export default function NewGroupScreen() {

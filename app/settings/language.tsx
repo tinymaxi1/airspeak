@@ -2,7 +2,7 @@
  * Dil Seçici — 20 dil arasından seçim.
  *
  * Pazar bilgisi gösterir (hangi havayolları, TAM büyüklüğü).
- * Çeviri kapsamı %0 olan dillerde uyarı gösterir (Sprint 9'da gelecek).
+ * Çeviri kapsamı %0 olan dillerde uyarı gösterir.
  */
 import { ScrollView } from 'react-native';
 import { usePalette } from '@/lib/usePalette';
@@ -46,7 +46,7 @@ export default function LanguagePickerScreen() {
 
         <Card padding="$3" backgroundColor="$warning">
           <Text fontSize="$3" color="$primaryText">
-            ⚠️ EN ve TR dışındaki diller henüz placeholder. Çeviri Sprint 9'da Claude pipeline ile yapılacak.
+            ⚠️ EN ve TR dışındaki diller henüz placeholder. Diğer diller yakında geliyor.
             Şimdi seçersen UI çoğu metin İngilizce kalır.
           </Text>
         </Card>

@@ -18,16 +18,46 @@ import { presentAvatarSheet } from '@/features/profile/AvatarUploader';
 import { Avatar, FONTS, Mono, Body, HHero, Button3D } from '@/components/airspeak';
 import { Camera } from 'lucide-react-native';
 
-function defaultCallsign(name: string, email?: string | null): string {
-  const seed = (name || email?.split('@')[0] || '').trim();
-  if (!seed) return '@captain';
-  const cleaned = seed
+/**
+ * Anlamlı default callsign:
+ * - Önce kullanıcının full_name'inden Türkçe karakterleri sadeleştir
+ * - 3+ harf bulunabilirse onu kullan (örn "Mehmet Kara" → @MEHMETK)
+ * - Apple privaterelay gibi rastgele email'leri YOK SAY (ör 'yhnwv6nw8z@privaterelay' → @PILOT001 fallback)
+ * - Rol bazlı fallback: pilot → PILOT001, technician → TECH001, atc → ATC001 …
+ */
+function defaultCallsign(name: string, email?: string | null, role?: string | null): string {
+  const cleanName = (name || '')
     .toLowerCase()
-    .replace(/[ğüşıöç]/g, (c) =>
-      ({ ğ: 'g', ü: 'u', ş: 's', ı: 'i', ö: 'o', ç: 'c' }[c] ?? c),
-    )
-    .replace(/[^a-z0-9]+/g, '');
-  return `@${cleaned.slice(0, 16) || 'captain'}`;
+    .replace(/[ğüşıöç]/g, (c) => ({ ğ: 'g', ü: 'u', ş: 's', ı: 'i', ö: 'o', ç: 'c' }[c] ?? c))
+    .replace(/[^a-z0-9]+/g, '')
+    .toUpperCase();
+  if (cleanName.length >= 3) return `@${cleanName.slice(0, 10)}`;
+
+  // Email prefix anlamlıysa kullan (apple privaterelay gibi rastgele dizileri at)
+  const emailPrefix = (email?.split('@')[0] ?? '').trim().toLowerCase();
+  const isRandomGarbage = emailPrefix.length >= 10 && !/[aeiouy]/.test(emailPrefix);
+  if (emailPrefix && !isRandomGarbage && emailPrefix.length >= 3) {
+    return `@${emailPrefix.replace(/[^a-z0-9]+/g, '').slice(0, 10).toUpperCase()}`;
+  }
+
+  // Rol bazlı fallback
+  const rolePrefix: Record<string, string> = {
+    pilot: 'PILOT', atc: 'ATC', cabin: 'CABIN', technician: 'TECH',
+    ground: 'GROUND', student: 'STUDENT', dispatcher: 'DISP',
+  };
+  const prefix = (role && rolePrefix[role]) || 'CAPTAIN';
+  const rand = Math.floor(100 + Math.random() * 900);
+  return `@${prefix}${rand}`;
+}
+
+/** Callsign validation: 3-10 karakter (@ hariç), harf+rakam, küçük harf normalize. */
+function validateCallsign(input: string): { ok: boolean; cleaned: string; error?: string } {
+  const trimmed = input.trim().replace(/^@+/, '');
+  if (trimmed.length === 0) return { ok: false, cleaned: '', error: 'Çağrı kodu boş olamaz' };
+  if (trimmed.length < 3) return { ok: false, cleaned: '', error: 'En az 3 karakter olmalı' };
+  if (trimmed.length > 10) return { ok: false, cleaned: '', error: 'En fazla 10 karakter' };
+  if (!/^[a-zA-Z0-9]+$/.test(trimmed)) return { ok: false, cleaned: '', error: 'Sadece harf ve rakam' };
+  return { ok: true, cleaned: `@${trimmed.toUpperCase()}` };
 }
 
 export default function ProfileSetupScreen() {
@@ -39,6 +69,7 @@ export default function ProfileSetupScreen() {
   const [fullName, setFullName] = useState(profile?.full_name ?? '');
   const [callsign, setCallsign] = useState(profile?.callsign ?? '');
   const [saving, setSaving] = useState(false);
+  const role = (profile as any)?.role as string | null;
 
   const initials = (fullName || user?.email || 'PI').slice(0, 2).toUpperCase();
 
@@ -48,9 +79,20 @@ export default function ProfileSetupScreen() {
       return;
     }
     setSaving(true);
-    const finalCallsign = opts.skip
-      ? defaultCallsign(fullName || profile?.full_name || '', user.email)
-      : callsign.trim() || defaultCallsign(fullName, user.email);
+    let finalCallsign: string;
+    if (opts.skip) {
+      finalCallsign = defaultCallsign(fullName || profile?.full_name || '', user.email, role);
+    } else if (callsign.trim()) {
+      const v = validateCallsign(callsign);
+      if (!v.ok) {
+        setSaving(false);
+        Alert.alert(t('common.error', 'Hata'), v.error ?? '');
+        return;
+      }
+      finalCallsign = v.cleaned;
+    } else {
+      finalCallsign = defaultCallsign(fullName, user.email, role);
+    }
 
     const patch: Record<string, unknown> = {
       callsign: finalCallsign,

@@ -62,6 +62,7 @@ type Stage = 'setup' | 'live' | 'done';
 
 const ROLES: { id: UserRole; label: string; emoji: string }[] = [
   { id: 'pilot', label: 'Pilot', emoji: '✈️' },
+  { id: 'atc', label: 'ATC', emoji: '🗼' },
   { id: 'cabin', label: 'Kabin', emoji: '🧳' },
   { id: 'technician', label: 'Teknisyen', emoji: '🛠' },
   { id: 'ground', label: 'Yer', emoji: '🦺' },
