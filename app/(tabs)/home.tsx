@@ -488,8 +488,15 @@ export default function HomeScreen() {
           >
             <View style={{ flex: 1, paddingRight: 12 }}>
               <Eyebrow>{t('screens.home.today')}</Eyebrow>
+              {/* Faz 3.11 — IST→JFK süs metni yerine state'e göre anlamlı içerik */}
               <Mono style={{ fontSize: 12, fontWeight: '700', marginTop: 4 }}>
-                IST <Text style={{ color: '#8A93A6' }}>—————</Text> JFK
+                {flightPlanState === 'current' && nextLesson
+                  ? `${nextLesson.title_tr ?? nextLesson.title ?? ''}`.toUpperCase().slice(0, 36)
+                  : flightPlanState === 'empty'
+                    ? t('screens.home.todayReady', 'İLK UÇUŞUNA HAZIR MISIN?')
+                    : flightPlanState === 'allDone'
+                      ? t('screens.home.todayAllDone', 'TÜM DERSLER TAMAM')
+                      : t('screens.home.todayComing', 'İÇERİK YAKINDA')}
               </Mono>
               <Body color="#8A93A6" style={{ fontSize: 11, marginTop: 4, lineHeight: 15 }}>
                 {t('screens.home.todaySub', 'Bugün için seçilmiş 3 hızlı görev (5-15 dk)')}
