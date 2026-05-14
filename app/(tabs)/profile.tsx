@@ -246,11 +246,9 @@ export default function ProfileScreen() {
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* Logbook + Profile tab'larında ortak içerik (v1.0 — v1.1'de ayrılacak) */}
-        {tab !== 'hangar' && (
-          <>
-        {/* Profesyonel özet + completion CTA */}
-        {profile && (
+        {/* Faz 3.7 — Logbook (uçuş kaydı/performans) + Profile (kim olduğun) ayrıştı */}
+        {/* SummaryCard her iki tab'da görünür (kullanıcının özet kimliği) */}
+        {tab !== 'hangar' && profile && (
           <View style={{ marginBottom: 18 }}>
             <SummaryCard
               position={profile.position}
@@ -264,6 +262,9 @@ export default function ProfileScreen() {
           </View>
         )}
 
+        {/* LOGBOOK TAB — Performans + uçuş kaydı odaklı */}
+        {tab === 'logbook' && (
+          <>
         {/* Stat strip — 3 hücre */}
         <View style={{ marginBottom: 18 }}>
           <StatStrip
@@ -359,49 +360,6 @@ export default function ProfileScreen() {
             <ChampionshipsSection rows={championships} />
           </View>
         )}
-
-        {/* Sprint 3c-B detay bölümleri */}
-        {profile?.bio_long ? (
-          <View style={{ marginBottom: 18 }}>
-            <BioSection bioLong={profile.bio_long} />
-          </View>
-        ) : null}
-
-        <View style={{ marginBottom: 18 }}>
-          <AviationLevelSection
-            icaoLevel={profile?.icao_english_level ?? null}
-            experienceYears={profile?.aviation_experience_years ?? null}
-          />
-        </View>
-
-        <View style={{ marginBottom: 18 }}>
-          <ExperienceTimeline items={experiences} />
-        </View>
-
-        <View style={{ marginBottom: 18 }}>
-          <EducationSection items={education} />
-        </View>
-
-        <View style={{ marginBottom: 18 }}>
-          <CertificationsSection items={certifications} />
-        </View>
-
-        {(role === 'pilot' || typeRatings.length > 0) && (
-          <View style={{ marginBottom: 18 }}>
-            <TypeRatingsSection items={typeRatings} />
-          </View>
-        )}
-
-        <View style={{ marginBottom: 18 }}>
-          <SocialGrid
-            linkedinUrl={profile?.linkedin_url ?? null}
-            instagram={profile?.instagram ?? null}
-            twitter={profile?.twitter ?? null}
-            youtube={profile?.youtube ?? null}
-            facebook={profile?.facebook ?? null}
-            website={profile?.website ?? null}
-          />
-        </View>
 
         {/* Activity heatmap — 84 gün */}
         <View style={{ marginBottom: 18 }}>
@@ -509,6 +467,53 @@ export default function ProfileScreen() {
           ))}
         </View>
 
+          </>
+        )}
+
+        {/* PROFILE TAB — Kim olduğun (identity + bio + aviation level + experience + ed) */}
+        {tab === 'profile' && (
+          <>
+            {profile?.bio_long ? (
+              <View style={{ marginBottom: 18 }}>
+                <BioSection bioLong={profile.bio_long} />
+              </View>
+            ) : null}
+
+            <View style={{ marginBottom: 18 }}>
+              <AviationLevelSection
+                icaoLevel={profile?.icao_english_level ?? null}
+                experienceYears={profile?.aviation_experience_years ?? null}
+              />
+            </View>
+
+            <View style={{ marginBottom: 18 }}>
+              <ExperienceTimeline items={experiences} />
+            </View>
+
+            <View style={{ marginBottom: 18 }}>
+              <EducationSection items={education} />
+            </View>
+
+            <View style={{ marginBottom: 18 }}>
+              <CertificationsSection items={certifications} />
+            </View>
+
+            {(role === 'pilot' || typeRatings.length > 0) && (
+              <View style={{ marginBottom: 18 }}>
+                <TypeRatingsSection items={typeRatings} />
+              </View>
+            )}
+
+            <View style={{ marginBottom: 18 }}>
+              <SocialGrid
+                linkedinUrl={profile?.linkedin_url ?? null}
+                instagram={profile?.instagram ?? null}
+                twitter={profile?.twitter ?? null}
+                youtube={profile?.youtube ?? null}
+                facebook={profile?.facebook ?? null}
+                website={profile?.website ?? null}
+              />
+            </View>
           </>
         )}
 
