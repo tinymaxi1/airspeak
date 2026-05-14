@@ -37,16 +37,18 @@ export default function RegisterScreen() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedKvkk, setAcceptedKvkk] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
+  // Faz 2.E — 13+ yaş onayı (COPPA + App Store age rating zorunlu)
+  const [acceptedAge13Plus, setAcceptedAge13Plus] = useState(false);
 
   async function handleApple() {
     if (Platform.OS !== 'ios') {
       Alert.alert('Apple Sign-In', 'Apple ile giriş yalnızca iOS cihazlarda kullanılabilir.');
       return;
     }
-    if (!acceptedTerms || !acceptedKvkk) {
+    if (!acceptedTerms || !acceptedKvkk || !acceptedAge13Plus) {
       Alert.alert(
         'Onay gerekli',
-        'Apple ile devam etmek için Kullanım Koşulları, Gizlilik Politikası ve KVKK Aydınlatma Metni\'ni kabul etmelisin.',
+        'Apple ile devam etmek için tüm zorunlu onayları işaretle (Şartlar, KVKK, 13+ yaş).',
       );
       return;
     }
@@ -61,10 +63,10 @@ export default function RegisterScreen() {
   }
 
   async function handleGoogle() {
-    if (!acceptedTerms || !acceptedKvkk) {
+    if (!acceptedTerms || !acceptedKvkk || !acceptedAge13Plus) {
       Alert.alert(
         'Onay gerekli',
-        'Google ile devam etmek için Kullanım Koşulları, Gizlilik Politikası ve KVKK Aydınlatma Metni\'ni kabul etmelisin.',
+        'Google ile devam etmek için tüm zorunlu onayları işaretle (Şartlar, KVKK, 13+ yaş).',
       );
       return;
     }
@@ -83,10 +85,10 @@ export default function RegisterScreen() {
       Alert.alert('Eksik bilgi', 'Geçerli e-posta ve en az 6 karakter şifre.');
       return;
     }
-    if (!acceptedTerms || !acceptedKvkk) {
+    if (!acceptedTerms || !acceptedKvkk || !acceptedAge13Plus) {
       Alert.alert(
         'Onay gerekli',
-        'Devam etmek için Kullanım Koşulları, Gizlilik Politikası ve KVKK Aydınlatma Metni\'ni kabul etmelisin.',
+        'Devam etmek için tüm zorunlu onayları işaretle (Şartlar, KVKK, 13+ yaş).',
       );
       return;
     }
@@ -106,6 +108,7 @@ export default function RegisterScreen() {
         p_terms: acceptedTerms,
         p_kvkk: acceptedKvkk,
         p_marketing: marketingConsent,
+        p_age_13_plus: acceptedAge13Plus,
       });
     } catch {
       // best-effort, sessize yut
@@ -282,6 +285,17 @@ export default function RegisterScreen() {
                   KVKK Aydınlatma Metni
                 </Text>
                 {'\'ni okudum, kişisel verilerimin işlenmesini kabul ediyorum.'}
+              </Text>
+            }
+          />
+          {/* Faz 2.E — 13+ yaş onayı (COPPA + App Store age rating zorunlu) */}
+          <ConsentRow
+            checked={acceptedAge13Plus}
+            onToggle={() => setAcceptedAge13Plus((v) => !v)}
+            required
+            content={
+              <Text style={{ fontSize: 13, color: '#3A4254', lineHeight: 18 }}>
+                13 yaşından büyük olduğumu onaylıyorum.
               </Text>
             }
           />
