@@ -162,6 +162,21 @@ async function streakDangerEvening(client: SupabaseClient): Promise<number> {
   return messages.length;
 }
 
+/** 1.b STREAK LOST GENTLE — streak 0'a düştükten sonra kibar motivasyon (Faz 3.6) */
+async function streakLostGentle(client: SupabaseClient, userIds: string[]): Promise<number> {
+  if (!userIds || userIds.length === 0) return 0;
+  const tokens = await getTokensForUsers(client, userIds);
+  const messages = tokens.map((t) => ({
+    to: t.token,
+    title: '💪 Yarın yeniden başla',
+    body: 'Bugün ara verdin — sorun değil. Yarın 1 derste streak\'in geri başlar.',
+    data: { kind: 'streak_lost_gentle' },
+    sound: 'default' as const,
+  }));
+  await sendExpoPush(messages);
+  return messages.length;
+}
+
 /** 2. STREAK MILESTONE — 3/7/14/30 günde DB trigger çağırır */
 async function streakMilestone(client: SupabaseClient, userIds: string[]): Promise<number> {
   const tokens = await getTokensForUsers(client, userIds);
@@ -768,6 +783,7 @@ interface TriggerCtx {
 
 const TRIGGERS: Record<string, (client: SupabaseClient, ctx: TriggerCtx) => Promise<number>> = {
   streak_danger_evening: (c) => streakDangerEvening(c),
+  streak_lost_gentle: (c, ctx) => streakLostGentle(c, ctx.userIds ?? []),
   streak_milestone: (c, ctx) => streakMilestone(c, ctx.userIds ?? []),
   heart_full_refill: (c, ctx) => heartFullRefill(c, ctx.userIds ?? []),
   ai_scenario_weekly: (c) => aiScenarioWeekly(c),

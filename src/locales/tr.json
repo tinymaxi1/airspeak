@@ -122,6 +122,12 @@
     "offline": "ÇEVRİMDIŞI MOD · İNDİRİLMİŞ DERSLER ÇALIŞIR",
     "viewOffline": "GÖR",
     "proBadge": "Üye",
+    "streakRisk": {
+      "eyebrow": "STREAK TEHLİKEDE",
+      "title": "{{n}} günlük serini kaybetme!",
+      "body": "Gece yarısına {{h}}s {{m}}dk kaldı · 1 ders yeterli",
+      "cta": "BAŞLA"
+    },
     "dailyLimits": {
       "title": "BUGÜNKÜ HAKLARIN",
       "lesson": "Ders",

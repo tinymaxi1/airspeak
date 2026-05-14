@@ -46,6 +46,7 @@ import { useWordOfTheDay } from '@/features/words/useWordOfTheDay';
 import { getQuickCardsForRole } from '@/features/home/quickPracticeCards';
 import { track } from '@/lib/posthog';
 import { DailyLimitsCard } from '@/components/home/DailyLimitsCard';
+import { StreakRiskBanner } from '@/components/home/StreakRiskBanner';
 
 export default function HomeScreen() {
   const c = usePalette();
@@ -451,6 +452,17 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         )}
+
+        {/* Faz 3.6 — Streak risk banner (akşam 19:00+ + streak>0 + bugün lesson yok) */}
+        <StreakRiskBanner
+          onPress={() => {
+            if (nextLesson) {
+              router.push({ pathname: '/lesson/[id]', params: { id: nextLesson.slug } });
+            } else {
+              router.push('/(tabs)/learn');
+            }
+          }}
+        />
 
         {/* Faz 3.4 — Tüm özellikleri keşfet linki (dim modundayken görünür) */}
         {dimSecondary && (
