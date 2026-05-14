@@ -33,7 +33,7 @@ import {
   routeFromNotification,
   type UnifiedNotification,
 } from '@/features/notifications/api';
-import { Mono, FONTS, BackButton } from '@/components/airspeak';
+import { Mono, FONTS, BackButton, EmptyState } from '@/components/airspeak';
 
 type FilterKey = 'all' | 'unread' | 'coach' | 'league' | 'community';
 
@@ -194,26 +194,19 @@ export default function NotificationsScreen() {
           <ActivityIndicator color="#0F1E47" />
         </View>
       ) : filtered.length === 0 ? (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingHorizontal: 32,
-          }}
-        >
-          <Text style={{ fontSize: 56, marginBottom: 12 }}>🔔</Text>
-          <Text style={{ fontFamily: FONTS.body700, fontSize: 16, color: '#0E1116', marginBottom: 6 }}>
-            {filter === 'unread'
-              ? t('notif.empty.unread', 'Okunmamış bildirim yok')
-              : t('notif.empty.title', 'Henüz bildirim yok')}
-          </Text>
-          <Text style={{ fontSize: 13, color: '#8A93A6', textAlign: 'center', lineHeight: 18 }}>
-            {t(
+        <View style={{ flex: 1, justifyContent: 'center', padding: 24 }}>
+          <EmptyState
+            icon="🔔"
+            title={
+              filter === 'unread'
+                ? t('notif.empty.unread', 'Okunmamış bildirim yok')
+                : t('notif.empty.title', 'Henüz bildirim yok')
+            }
+            description={t(
               'notif.empty.body',
-              'Streak, lig, komünite ve ICAO sözlü bildirimleri burada toplanır.',
+              'Streak, lig, topluluk ve ICAO sözlü bildirimleri burada toplanır.',
             )}
-          </Text>
+          />
         </View>
       ) : (
         <FlatList

@@ -93,10 +93,15 @@ export default function BookmarksScreen() {
           vocabBookmarks.length === 0 ? (
             <EmptyState
               icon="⭐"
-              message={t(
-                'bookmarks.emptyVocab',
-                'Henüz vocab kaydetmedin. Vocab listesinde ⭐ ikonuna bas.',
+              title={t('bookmarks.emptyVocabTitle', 'Henüz vocab kaydetmedin')}
+              description={t(
+                'bookmarks.emptyVocabDesc',
+                'Vocab listesindeki bir terimi yer imlerine eklemek için ⭐ ikonuna bas.',
               )}
+              cta={{
+                label: t('bookmarks.emptyVocabCta', "Vocab'a git"),
+                onPress: () => router.push('/vocab' as any),
+              }}
             />
           ) : (
             vocabBookmarks.map((v) => (
@@ -143,10 +148,15 @@ export default function BookmarksScreen() {
         ) : scenarioBookmarks.length === 0 ? (
           <EmptyState
             icon="⭐"
-            message={t(
-              'bookmarks.emptyScenarios',
-              'Henüz senaryo kaydetmedin. AI Co-pilot listesinde ⭐ ikonuna bas.',
+            title={t('bookmarks.emptyScenariosTitle', 'Henüz senaryo kaydetmedin')}
+            description={t(
+              'bookmarks.emptyScenariosDesc',
+              'AI Co-pilot listesindeki bir senaryoyu yer imlerine eklemek için ⭐ ikonuna bas.',
             )}
+            cta={{
+              label: t('bookmarks.emptyScenariosCta', "Senaryolara git"),
+              onPress: () => router.push('/conversation' as any),
+            }}
           />
         ) : (
           scenarioBookmarks.map((s) => (

@@ -129,40 +129,136 @@ export function NavCard({
   );
 }
 
+type EmptyStateVariant = 'default' | 'success' | 'warning' | 'error';
+
 interface EmptyStateProps {
+  /** Emoji veya icon karakteri (default 🔍) */
   icon?: string;
-  message: string;
+  /** ESKİ API — eğer title yoksa message'ı başlık olarak kullanır */
+  message?: string;
+  /** YENİ API (Faz 3.5) — kalın başlık */
+  title?: string;
+  /** YENİ API — gri açıklama (eski 'hint' ile aynı slot) */
+  description?: string;
+  /** Eski API — küçük mono hint (description ile aynı slot, biri seçilir) */
   hint?: string;
+  /** Opsiyonel CTA — label + onPress (Faz 3.5) */
+  cta?: { label: string; onPress: () => void };
+  /** Üst eyebrow (Faz 3.5) */
+  eyebrow?: string;
+  /** Renk varyantı (Faz 3.5) */
+  variant?: EmptyStateVariant;
   /** Dashed border (default) veya solid */
   dashed?: boolean;
+  /** Karanlık tema (navy bg üstünde) */
   dark?: boolean;
 }
 
-export function EmptyState({ icon = '🔍', message, hint, dashed = true, dark }: EmptyStateProps) {
+const _VARIANT_BORDER: Record<EmptyStateVariant, { light: string; dark: string }> = {
+  default: { light: '#DCE0E8', dark: 'rgba(255,255,255,0.18)' },
+  success: { light: '#2DBE6C', dark: '#2DBE6C' },
+  warning: { light: '#F2C14E', dark: '#FFD56B' },
+  error: { light: '#FB6D78', dark: '#FB6D78' },
+};
+
+const _VARIANT_CTA_BG: Record<EmptyStateVariant, string> = {
+  default: '#E63946',
+  success: '#2DBE6C',
+  warning: '#F2C14E',
+  error: '#FB6D78',
+};
+
+export function EmptyState({
+  icon = '🔍',
+  message,
+  title,
+  description,
+  hint,
+  cta,
+  eyebrow,
+  variant = 'default',
+  dashed = true,
+  dark,
+}: EmptyStateProps) {
+  // Faz 3.5 — eski API ile uyum: title verilmemişse message'ı kullan
+  const _title = title ?? message ?? '';
+  const _desc = description ?? hint;
+  const _border = dark ? _VARIANT_BORDER[variant].dark : _VARIANT_BORDER[variant].light;
+  const _useBig = !!(title || cta || eyebrow); // yeni API kullanılıyorsa daha büyük
+
   return (
     <View
       style={{
         backgroundColor: dark ? 'rgba(255,255,255,0.06)' : '#FFFFFF',
         borderWidth: 1.5,
         borderStyle: dashed ? 'dashed' : 'solid',
-        borderColor: dark ? 'rgba(255,255,255,0.18)' : '#DCE0E8',
+        borderColor: _border,
         borderRadius: 14,
         padding: 24,
         alignItems: 'center',
         gap: 8,
       }}
     >
-      <Text style={{ fontSize: 36 }}>{icon}</Text>
-      <Body
-        color={dark ? 'rgba(255,255,255,0.7)' : '#5A6478'}
-        style={{ fontSize: 14, textAlign: 'center' }}
-      >
-        {message}
-      </Body>
-      {hint && (
-        <Mono style={{ fontSize: 11, color: dark ? 'rgba(255,255,255,0.5)' : '#8A93A6', textAlign: 'center' }}>
-          {hint}
+      {eyebrow && (
+        <Mono style={{ fontSize: 10, color: dark ? 'rgba(255,255,255,0.55)' : '#8A93A6', letterSpacing: 1.4 }}>
+          {eyebrow}
         </Mono>
+      )}
+      <Text style={{ fontSize: _useBig ? 56 : 36, lineHeight: _useBig ? 60 : 40 }}>{icon}</Text>
+      {/* Title — bold (yeni API ise) veya body (eski API) */}
+      {title ? (
+        <Text
+          style={{
+            fontFamily: FONTS.display,
+            fontSize: 18,
+            fontWeight: '700',
+            color: dark ? '#FFFFFF' : '#0E1116',
+            textAlign: 'center',
+            lineHeight: 22,
+          }}
+        >
+          {_title}
+        </Text>
+      ) : (
+        <Body
+          color={dark ? 'rgba(255,255,255,0.7)' : '#5A6478'}
+          style={{ fontSize: 14, textAlign: 'center' }}
+        >
+          {_title}
+        </Body>
+      )}
+      {_desc && (
+        title || description ? (
+          <Body
+            color={dark ? 'rgba(255,255,255,0.7)' : '#5A6478'}
+            style={{ fontSize: 13, textAlign: 'center', lineHeight: 19, maxWidth: 320 }}
+          >
+            {_desc}
+          </Body>
+        ) : (
+          <Mono style={{ fontSize: 11, color: dark ? 'rgba(255,255,255,0.5)' : '#8A93A6', textAlign: 'center' }}>
+            {_desc}
+          </Mono>
+        )
+      )}
+      {cta && (
+        <TouchableOpacity
+          onPress={cta.onPress}
+          activeOpacity={0.85}
+          style={{
+            marginTop: 8,
+            backgroundColor: _VARIANT_CTA_BG[variant],
+            paddingHorizontal: 18,
+            paddingVertical: 12,
+            borderRadius: 999,
+            borderBottomWidth: 3,
+            borderBottomColor: 'rgba(0,0,0,0.2)',
+          }}
+        >
+          <Text style={{ fontFamily: FONTS.body800, fontSize: 13, color: '#FFFFFF', letterSpacing: 0.4 }}>
+            {cta.label}
+          </Text>
+        </TouchableOpacity>
       )}
     </View>
   );

@@ -19,7 +19,7 @@ import {
 } from '@/features/community/api';
 import { useCommunityNotifications } from '@/features/community/notifications';
 import { GroupCard } from '@/components/community/GroupCard';
-import { FONTS, Mono, Body, TopoBackground } from '@/components/airspeak';
+import { FONTS, Mono, Body, TopoBackground, EmptyState } from '@/components/airspeak';
 import { TabletShell } from '@/components/tablet';
 
 export default function CommunityIndexScreen() {
@@ -281,16 +281,16 @@ export default function CommunityIndexScreen() {
               Feed yükleniyor…
             </Body>
           ) : feedPosts.length === 0 ? (
-            <View style={{ marginTop: 40, paddingHorizontal: 24, alignItems: 'center', gap: 8 }}>
-              <Text style={{ fontSize: 48 }}>📡</Text>
-              <Text
-                style={{ fontFamily: FONTS.body700, fontSize: 15, color: '#0E1116', textAlign: 'center' }}
-              >
-                Henüz post yok
-              </Text>
-              <Body color="#5A6478" style={{ fontSize: 13, textAlign: 'center', maxWidth: 260 }}>
-                İlk postu sen oluştur — bir gruba katıl, paylaş.
-              </Body>
+            <View style={{ marginTop: 24, paddingHorizontal: 16 }}>
+              <EmptyState
+                icon="📡"
+                title="Henüz gönderi yok"
+                description="İlk gönderiyi sen oluştur — bir gruba katıl, paylaş."
+                cta={{
+                  label: 'Grupları gör',
+                  onPress: () => router.push('/community' as any),
+                }}
+              />
             </View>
           ) : (
             feedPosts.map((p) => (
@@ -385,18 +385,23 @@ export default function CommunityIndexScreen() {
                 Yükleniyor…
               </Body>
             ) : rows.length === 0 ? (
-              <View style={{ marginTop: 40, alignItems: 'center', gap: 8 }}>
-                <Text style={{ fontSize: 48 }}>{tab === 'mine' ? '✈️' : '🌐'}</Text>
-                <Text
-                  style={{ fontFamily: FONTS.body700, fontSize: 15, color: '#0E1116', textAlign: 'center' }}
-                >
-                  {tab === 'mine' ? 'Henüz bir grupta değilsin' : 'Henüz açık grup yok'}
-                </Text>
-                <Body color="#5A6478" style={{ fontSize: 13, textAlign: 'center', maxWidth: 260 }}>
-                  {tab === 'mine'
-                    ? '"Keşfet" sekmesinden bir gruba katıl ya da kendin oluştur.'
-                    : 'İlk grubu sen oluştur — diğer pilotları davet et.'}
-                </Body>
+              <View style={{ marginTop: 24, paddingHorizontal: 16 }}>
+                <EmptyState
+                  icon={tab === 'mine' ? '✈️' : '🌐'}
+                  title={tab === 'mine' ? 'Henüz bir grupta değilsin' : 'Henüz açık grup yok'}
+                  description={
+                    tab === 'mine'
+                      ? '"Keşfet" sekmesinden bir gruba katıl ya da kendin oluştur.'
+                      : 'İlk grubu sen oluştur — diğer pilotları davet et.'
+                  }
+                  cta={{
+                    label: tab === 'mine' ? 'Keşfet' : 'Grup oluştur',
+                    onPress: () =>
+                      tab === 'mine'
+                        ? setTab('discover')
+                        : router.push('/community/new-group' as any),
+                  }}
+                />
               </View>
             ) : (
               rows.map((g) => <GroupCard key={g.id} group={g} />)
