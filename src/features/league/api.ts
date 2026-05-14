@@ -68,6 +68,7 @@ export interface LeagueLeaderboardEntry {
   rank: number | null;
   promotion_status: PromotionStatus;
   is_self: boolean;
+  is_npc: boolean;
 }
 
 export interface BumpResult {
@@ -348,7 +349,7 @@ async function fetchGroupLeaderboard(
   const { data, error } = await supabase
     .from('league_memberships')
     .select(
-      'id, user_id, week_xp, rank, promotion_status, profiles!inner(username, full_name, avatar_url)',
+      'id, user_id, week_xp, rank, promotion_status, profiles!inner(username, full_name, avatar_url, is_npc)',
     )
     .eq('group_id', groupId)
     .order('week_xp', { ascending: false })
@@ -367,6 +368,7 @@ async function fetchGroupLeaderboard(
     rank: r.rank ?? idx + 1,
     promotion_status: r.promotion_status,
     is_self: r.user_id === selfUserId,
+    is_npc: r.profiles?.is_npc ?? false,
   }));
 }
 
