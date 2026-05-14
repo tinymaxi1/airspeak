@@ -36,6 +36,8 @@ import { initI18n } from '@/lib/i18n';
 import { initAnalytics, track } from '@/lib/posthog';
 import { initSentry, identifyUser, clearUser, SentryErrorBoundary, sentryWrap } from '@/lib/sentry';
 import { ErrorFallback } from '@/components/ErrorFallback';
+import { UpdateGate } from '@/components/system/UpdateGate';
+import { WhatsNewSheet } from '@/components/system/WhatsNewSheet';
 import { initIap, initRevenueCat, logOutIap, syncPremiumFromIap } from '@/lib/iap';
 import { useTranslation } from 'react-i18next';
 import {
@@ -223,6 +225,7 @@ function RootLayoutInner() {
 
   return (
     <SentryErrorBoundary fallback={(props) => <ErrorFallback {...props} />}>
+    <UpdateGate>
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <TamaguiProvider config={config} defaultTheme={colorScheme}>
@@ -305,10 +308,12 @@ function RootLayoutInner() {
           </Stack>
           <PaywallTriggerSheet />
           <NotificationBannerHost />
+          <WhatsNewSheet />
         </QueryClientProvider>
       </TamaguiProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
+    </UpdateGate>
     </SentryErrorBoundary>
   );
 }

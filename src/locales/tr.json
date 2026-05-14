@@ -8,6 +8,22 @@
     "error": "Hata",
     "all": "Tümü"
   },
+  "whatsNew": {
+    "eyebrow": "YENİ SÜRÜM",
+    "titleSuffix": "Yenilikler",
+    "done": "Tamam, başla",
+    "later": "DAHA SONRA",
+    "empty": "Bu sürüm için detay bulunamadı."
+  },
+  "update": {
+    "title": "Yeni sürüm hazır",
+    "body": "Yeni özellikler ve hata düzeltmeleri içeriyor. Devam etmek için güncellemen gerekiyor.",
+    "button": "ŞİMDİ GÜNCELLE",
+    "downloading": "İNDİRİLİYOR · %{{pct}}",
+    "restarting": "YENİDEN BAŞLATILIYOR...",
+    "slowNetwork": "İnternet yavaş görünüyor. Lütfen sonra tekrar dene.",
+    "later": "DAHA SONRA →"
+  },
   "welcome": {
     "tagline": "Havacılık İngilizcesinde Ustalaş",
     "getStarted": "Başla",
