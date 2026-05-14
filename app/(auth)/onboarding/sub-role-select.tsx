@@ -76,8 +76,9 @@ export default function SubRoleSelectScreen() {
   async function handleSkip() {
     // Faz 3.2 — Atla: items[0] (display_order ilk, en yaygın sub-role) default atanır
     track('onboarding_skip_step', { step: 'sub_role_select', parent_role: role });
-    if (items.length > 0 && userId) {
-      const defaultId = items[0].id;
+    const first = items[0];
+    if (first && userId) {
+      const defaultId = first.id;
       setSubRole(defaultId);
       try {
         const { data, error } = await (supabase as any)

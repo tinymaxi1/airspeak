@@ -31,6 +31,8 @@ export default function SquadronPairingScreen() {
   const { t } = useTranslation();
   const joinCohort = useSquadronStore((s) => s.joinCohort);
   const [input, setInput] = useState('');
+  // Faz 3.3 — Default solo prominent. Kod input gizli, "Kodum var" link tıklanınca expand olur.
+  const [showCodeInput, setShowCodeInput] = useState(false);
   const normalized = normalizeCode(input);
   const cohort = findCohortByCode(normalized);
   const isValid = cohort !== undefined;
@@ -122,7 +124,8 @@ export default function SquadronPairingScreen() {
           {t('screens.squadron.subtitle')}
         </Text>
 
-        {/* Code entry */}
+        {/* Code entry — sadece "kodum var" tıklanınca açılır (Faz 3.3) */}
+        {showCodeInput && (
         <View
           style={{
             backgroundColor: '#FFFFFF',
@@ -201,9 +204,10 @@ export default function SquadronPairingScreen() {
             )}
           </View>
         </View>
+        )}
 
-        {/* Match preview — sadece valid cohort bulunduğunda */}
-        {cohort && (
+        {/* Match preview — sadece valid cohort + showCodeInput aktifken */}
+        {showCodeInput && cohort && (
           <View
             style={{
               backgroundColor: '#FFFFFF',
@@ -325,8 +329,8 @@ export default function SquadronPairingScreen() {
           </View>
         )}
 
-        {/* Geçerli kod yoksa öneriler */}
-        {!cohort && normalized.length > 0 && (
+        {/* Geçerli kod yoksa öneriler — sadece showCodeInput aktifken */}
+        {showCodeInput && !cohort && normalized.length > 0 && (
           <View
             style={{
               backgroundColor: '#FFFFFF',
@@ -361,7 +365,8 @@ export default function SquadronPairingScreen() {
           </View>
         )}
 
-        {/* Privacy banner */}
+        {/* Privacy banner — sadece kod giriş aktifken */}
+        {showCodeInput && (
         <View
           style={{
             backgroundColor: '#E0F0FF',
@@ -386,17 +391,55 @@ export default function SquadronPairingScreen() {
             {t('screens.squadron.privacy')}
           </Text>
         </View>
+        )}
 
-        <View style={{ marginTop: 18 }}>
-          <Button3D variant="primary" fullWidth disabled={!isValid} onPress={handleJoin}>
-            {t('screens.squadron.join')}
-          </Button3D>
-        </View>
-        <View style={{ marginTop: 8 }}>
-          <Button3D variant="ghost" fullWidth onPress={() => router.back()}>
-            {t('screens.squadron.solo')}
-          </Button3D>
-        </View>
+        {/* CTA bölümü — Faz 3.3: Solo varsayılan prominent. Kodum var link ile flip */}
+        {!showCodeInput ? (
+          <>
+            <View style={{ marginTop: 28 }}>
+              <Button3D variant="primary" fullWidth onPress={() => router.back()}>
+                {t('screens.squadron.solo', 'Tek başıma uçuyorum')}
+              </Button3D>
+            </View>
+            <View style={{ marginTop: 12, alignItems: 'center' }}>
+              <TouchableOpacity
+                onPress={() => setShowCodeInput(true)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text
+                  style={{
+                    fontFamily: FONTS.body700,
+                    fontSize: 13,
+                    color: '#2EA8FF',
+                    textDecorationLine: 'underline',
+                  }}
+                >
+                  {t('screens.squadron.haveCode', 'Bir kohort/havayolu kodum var')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={{ marginTop: 18 }}>
+              <Button3D variant="primary" fullWidth disabled={!isValid} onPress={handleJoin}>
+                {t('screens.squadron.join')}
+              </Button3D>
+            </View>
+            <View style={{ marginTop: 8 }}>
+              <Button3D
+                variant="ghost"
+                fullWidth
+                onPress={() => {
+                  setShowCodeInput(false);
+                  setInput('');
+                }}
+              >
+                {t('screens.squadron.solo')}
+              </Button3D>
+            </View>
+          </>
+        )}
       </ScrollView>
     </View>
   );
